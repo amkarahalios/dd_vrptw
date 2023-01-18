@@ -72,6 +72,7 @@ void VRPTWNode::printForDD(int nodeIndex) const
     std::cout << loc << " ";
   }
   std::cout << "cap: " << state.capacity;
+  std::cout << " time: " << state.timeTimesTen;
   std::cout << " curr: " << state.lastVisited;
   std::cout << " pot: " << potential;
   std::cout << " sp: " << shortestPathDistance;
@@ -81,6 +82,7 @@ void VRPTWNode::printForDD(int nodeIndex) const
 void VRPTWNode::print() const
 {
   std::cout << "capacity: " << state.capacity << " ";
+  std::cout << "time: " << state.timeTimesTen << " ";
   std::cout << "location: " << state.lastVisited << " ";
   std::cout << "visited: ";
   for (int location : state.visited)
@@ -279,10 +281,10 @@ void VRPTWDecisionDiagram::compileExactFukasawa(int s)
 
   // root node r and terminal node t
   std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(0,0,initialDeque);
+  VRPTWNodeState rootNodeState(0,0,0,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
-  VRPTWNodeState terminalNodeState(vrptw.capacity,0,initialDeque);
+  VRPTWNodeState terminalNodeState(vrptw.capacity,vrptw.endTimes[0],0,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
 
@@ -292,15 +294,27 @@ void VRPTWDecisionDiagram::compileExactFukasawa(int s)
   {
     for (int location=1; location<vrptw.numLocations; ++location)
     {
+      // check capacity
       int newCapacity = nodes[nodeIndex].state.capacity + vrptw.demands[location];
       if (newCapacity > vrptw.capacity)
       {
         continue;
       }
+
+      // check visited set
       if (std::find(nodes[nodeIndex].state.visited.begin(), nodes[nodeIndex].state.visited.end(), location) != nodes[nodeIndex].state.visited.end())
       {
         continue;
       }
+
+      // check time to begin isnt past endTime
+      int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
+      double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[location][lastVisitedLocation] + vrptw.serviceTimes[lastVisitedLocation];
+      if (earliestStartTime > vrptw.endTimes[location])
+      {
+        continue;
+      }
+
       std::set<int> newVisited = nodes[nodeIndex].state.visited;
       newVisited.insert(location);
       if (s == 1)
@@ -323,7 +337,10 @@ void VRPTWDecisionDiagram::compileExactFukasawa(int s)
         return;
       }
 
-      VRPTWNodeState newState(newCapacity, location, newVisited);
+      int newTimeTimesTen = (int)(earliestStartTime * 10);
+      newTimeTimesTen = std::max(newTimeTimesTen, vrptw.startTimes[location] * 10);
+
+      VRPTWNodeState newState(newCapacity, newTimeTimesTen, location, newVisited);
       int newNodeIndex = addNode(newState);
       addArc(nodeIndex, newNodeIndex);
     }
@@ -377,10 +394,10 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
 
   // root node r and terminal node t
   std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(0,0,initialDeque);
+  VRPTWNodeState rootNodeState(0,0,0,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
-  VRPTWNodeState terminalNodeState(vrptw.capacity,0,initialDeque);
+  VRPTWNodeState terminalNodeState(vrptw.capacity,vrptw.endTimes[0],0,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
 
@@ -411,7 +428,8 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
       std::set_intersection(visitedSet.begin(), visitedSet.end(), ngSet.begin(), ngSet.end(), std::inserter(newVisited, newVisited.begin()));
       newVisited.insert(location);
 
-      VRPTWNodeState newState(newCapacity, location, newVisited);
+      int newTimeTimesTen = 0; // fix this
+      VRPTWNodeState newState(newCapacity, newTimeTimesTen, location, newVisited);
       int newNodeIndex = addNode(newState);
       addArc(nodeIndex, newNodeIndex);
     }

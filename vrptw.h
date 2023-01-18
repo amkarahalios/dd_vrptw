@@ -93,7 +93,6 @@ struct VRPTW
       std::string line;
       while (std::getline(infile, line))
       {
-        std::cout << line << std::endl;
         if (line.empty())
         {
           continue;
@@ -159,7 +158,8 @@ struct VRPTW
       {
         for (int j=0; j < demands.size(); ++j)
         {
-          double distance = (int)(std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2))+0.5);
+          double distance = std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2));
+          distance = (int)( 10 * distance ) / 10.0;
           distances[i][j] = distance;
           distances[j][i] = distance;
         }

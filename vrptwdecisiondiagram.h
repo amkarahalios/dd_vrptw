@@ -11,12 +11,12 @@
 
 struct VRPTWNodeState
 {
-  VRPTWNodeState(int _capacity, int _lastVisited, std::set<int> _visited) : capacity(_capacity), lastVisited(_lastVisited), visited(_visited) {};
-  VRPTWNodeState(const VRPTWNodeState& state) : capacity(state.capacity), lastVisited(state.lastVisited), visited(state.visited) {};
+  VRPTWNodeState(int _capacity, int _timeTimesTen, int _lastVisited, std::set<int> _visited) : capacity(_capacity), timeTimesTen(_timeTimesTen), lastVisited(_lastVisited), visited(_visited) {};
+  VRPTWNodeState(const VRPTWNodeState& state) : capacity(state.capacity), timeTimesTen(state.timeTimesTen), lastVisited(state.lastVisited), visited(state.visited) {};
 
   bool operator==(const VRPTWNodeState & rhs) const
   {
-    if ((capacity == rhs.capacity) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
+    if ((capacity == rhs.capacity) && (timeTimesTen == rhs.timeTimesTen) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
     {
       return true;
     }
@@ -27,6 +27,7 @@ struct VRPTWNodeState
   }
 
   int capacity;
+  int timeTimesTen;
   int lastVisited;
   std::set<int> visited;
 };
@@ -36,13 +37,14 @@ struct hash_state
   std::size_t operator()(const VRPTWNodeState& state) const
   {
     std::size_t h1 = std::hash<int>()(state.capacity);
-    std::size_t h2 = std::hash<int>()(state.lastVisited);
-    std::size_t h3 = 0;
+    std::size_t h2 = std::hash<int>()(state.timeTimesTen);
+    std::size_t h3 = std::hash<int>()(state.lastVisited);
+    std::size_t h4 = 0;
     if (!state.visited.empty())
     {
-      h3 = std::hash<int>()(*state.visited.begin());
+      h4 = std::hash<int>()(*state.visited.begin());
     }
-    return ((h1 ^ h2) ^ h3);
+    return (((h1 ^ h2) ^ h3) ^ h4);
   }
 };
 
