@@ -3,7 +3,7 @@
 #include "vrptwcolgen.h"
 #include "cvrpsep/capsep.h"
 
-VRPTWColGen::VRPTWColGen(VRPTW _vrptw, PricingProblemType _pricingProblemType, InitialStateSpace initialStateSpace, int _s) : vrptw(_vrptw), routeDD(_vrptw), bestLpDistance(0.0), numTrucksDualVariable(0.0), pricingProblemType(_pricingProblemType), s(_s)
+VRPTWColGen::VRPTWColGen(VRPTW _vrptw, PricingProblemType _pricingProblemType, InitialStateSpace initialStateSpace, int _s) : vrptw(_vrptw), routeDD(_vrptw, 1, 1), bestLpDistance(0.0), numTrucksDualVariable(0.0), pricingProblemType(_pricingProblemType), s(_s)
 {
   if (pricingProblemType == PricingProblemType::DD)
   {

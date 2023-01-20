@@ -71,11 +71,11 @@ class VRPTWDDSolver
   private:
     void addSRCCuts(std::vector<double>& srcDuals);
 
-    bool solveLP(std::vector<double>& lambda, double& truckDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
+    bool solveLP(std::vector<double>& lambda, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
     void addColumn();
     void initializeColumns();
-    bool solvePricingProblem(std::vector<double>& lambda, double& truckDual);
-    bool solveLPCG(std::vector<double>& lambda, double& truckDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
+    bool solvePricingProblem(std::vector<double>& lambda);
+    bool solveLPCG(std::vector<double>& lambda, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
     bool solveLagrangeanRelaxation(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& muSRC);
 
     void updateMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<double>& stepSizes, const std::set<int>& solutionArcs, double lagrangeanLowerBound, int iteration);

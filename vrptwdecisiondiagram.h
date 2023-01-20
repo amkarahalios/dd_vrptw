@@ -99,7 +99,7 @@ struct VRPTWArc
 class VRPTWDecisionDiagram
 {
   public:
-    VRPTWDecisionDiagram(const VRPTW& _vrptw) : vrptw(_vrptw) {};
+    VRPTWDecisionDiagram(const VRPTW& _vrptw, int _timeStepSize, int _capacityStepSize) : vrptw(_vrptw), timeStepSize(_timeStepSize), capacityStepSize(_capacityStepSize) {};
 
     void print() const;
     double evaluateRouteCost(const std::vector<int>& routeByArc);
@@ -137,8 +137,8 @@ class VRPTWDecisionDiagram
 
     // network flow for lp/ip
     void initializeColumnsByLPDecomp();
-    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, double& truckDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
-    double fixArcs(const std::vector<double>& lambda, const double& truckDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double lowerBound, LPSolveType solveType);
+    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
+    double fixArcs(const std::vector<double>& lambda, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double lowerBound, LPSolveType solveType);
 
     // primal heuristic and separation methods
     void primalHeuristic(std::vector<std::vector<int>>& routesByLocation);
@@ -164,8 +164,8 @@ class VRPTWDecisionDiagram
     double createSolutionFromReverseArcsAndResetWang(const std::set<int>& clippedArcs, const std::vector<std::vector<int>>& shortestPathsByArc);
     void updateResidualGraphWang(const std::vector<int>& shortestPathByArc, std::vector<int>& treeByParentArc);
     void dijkstraWithBatchProc(std::vector<int>& treeByParentArcs, std::vector<std::vector<int>>& treeByChildArcs, std::set<int>& nodesToUpdate);
-    double solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& truckDual);
-    bool checkFeasibleDual(const std::vector<double>& lambda, const std::vector<double>& rccDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType, double& truckDual);
+    double solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible);
+    bool checkFeasibleDual(const std::vector<double>& lambda, const std::vector<double>& rccDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
 
     int size() const { return nodes.size(); }
 
@@ -208,6 +208,10 @@ class VRPTWDecisionDiagram
     std::map<int,std::vector<int>> capacityNodeIndices;
 
     std::vector<bool> arcsUsed;
+
+    // bucket parameters
+    int timeStepSize;
+    int capacityStepSize;
 
     // data structures for cuts
     // Rounded Capacity Cuts

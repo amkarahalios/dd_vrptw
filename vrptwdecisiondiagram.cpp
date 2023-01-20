@@ -340,6 +340,17 @@ void VRPTWDecisionDiagram::compileExactFukasawa(int s)
       int newTimeTimesTen = (int)(earliestStartTime * 10);
       newTimeTimesTen = std::max(newTimeTimesTen, vrptw.startTimes[location] * 10);
 
+      // bucketing
+      int timeQuotient = newTimeTimesTen / timeStepSize;
+      newTimeTimesTen = timeStepSize * timeQuotient;
+ 
+      int loadQuotient = newCapacity / capacityStepSize;
+      newCapacity = capacityStepSize * loadQuotient;
+      if (vrptw.vrptwType == VRPTWType::RELAX_CAPACITY)
+      {
+        newCapacity = 0;
+      }
+
       VRPTWNodeState newState(newCapacity, newTimeTimesTen, location, newVisited);
       int newNodeIndex = addNode(newState);
       addArc(nodeIndex, newNodeIndex);
@@ -352,6 +363,13 @@ void VRPTWDecisionDiagram::compileExactFukasawa(int s)
   nodeIndex = 2;
   while (nodeIndex < nodes.size())
   {
+    // need to be able to make it back in time
+    int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
+    double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[0][lastVisitedLocation] + vrptw.serviceTimes[lastVisitedLocation];
+    if (earliestStartTime > vrptw.endTimes[0])
+    {
+      continue;
+    }
     addArc(nodeIndex, terminalNodeIndex);
     nodeIndex = nodeIndex + 1;
   }
@@ -417,6 +435,13 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
       {
         continue;
       }
+ 
+      int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
+      double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[location][lastVisitedLocation] + vrptw.serviceTimes[lastVisitedLocation];
+      if (earliestStartTime > vrptw.endTimes[location])
+      {
+        continue;
+      }
 
       std::set<int> visitedSet;
       for (int loc : node.state.visited)
@@ -428,7 +453,20 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
       std::set_intersection(visitedSet.begin(), visitedSet.end(), ngSet.begin(), ngSet.end(), std::inserter(newVisited, newVisited.begin()));
       newVisited.insert(location);
 
-      int newTimeTimesTen = 0; // fix this
+      int newTimeTimesTen = (int)(earliestStartTime * 10);
+      newTimeTimesTen = std::max(newTimeTimesTen, vrptw.startTimes[location] * 10);
+
+      // bucketing
+      int timeQuotient = newTimeTimesTen / timeStepSize;
+      newTimeTimesTen = timeStepSize * timeQuotient;
+ 
+      int loadQuotient = newCapacity / capacityStepSize;
+      newCapacity = capacityStepSize * loadQuotient;
+      if (vrptw.vrptwType == VRPTWType::RELAX_CAPACITY)
+      {
+        newCapacity = 0;
+      }
+
       VRPTWNodeState newState(newCapacity, newTimeTimesTen, location, newVisited);
       int newNodeIndex = addNode(newState);
       addArc(nodeIndex, newNodeIndex);
@@ -441,6 +479,14 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   nodeIndex = 2;
   while (nodeIndex < nodes.size())
   {
+    // need to be able to make it back in time
+    int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
+    double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[0][lastVisitedLocation] + vrptw.serviceTimes[lastVisitedLocation];
+    if (earliestStartTime > vrptw.endTimes[0])
+    {
+      continue;
+    }
+
     addArc(nodeIndex, terminalNodeIndex);
     nodeIndex = nodeIndex + 1;
   }
@@ -1038,7 +1084,7 @@ void VRPTWDecisionDiagram::initializeColumnsByLPDecomp()
   }
 }
 
-double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, double& truckDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals)
+double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals)
 {
   // setup model
   IloEnv env;
@@ -1281,7 +1327,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   return 0;
 };
 
-double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, const double& truckDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double lowerBound, LPSolveType solveType)
+double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double lowerBound, LPSolveType solveType)
 {
   setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(lambda, capDuals, combDuals, srcDuals, solveType);
 
@@ -1331,7 +1377,7 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, const do
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
   {
     const VRPTWArc& arc = arcs[arcIndex];
-    double bestPossibleReducedCost = shortestPathDown[arc.fromNodeIndex] + shortestPathUp[arc.toNodeIndex] - truckDual + arc.coeff;
+    double bestPossibleReducedCost = shortestPathDown[arc.fromNodeIndex] + shortestPathUp[arc.toNodeIndex] + arc.coeff;
     if ((lowerBound + bestPossibleReducedCost) > (vrptw.hgsUpperBound + 0.00001))
     {
       // remove from graph if there
@@ -1699,8 +1745,13 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
         }
       }
     }
+    newState.timeTimesTen = ((newState.timeTimesTen / 10.0) + vrptw.serviceTimes[newState.lastVisited] + vrptw.distances[newState.lastVisited][nextLocation] * 10);
     newState.lastVisited = nextLocation;
     newState.capacity = newState.capacity + vrptw.demands[nextLocation];
+    if (vrptw.vrptwType == VRPTWType::RELAX_CAPACITY)
+    {
+      newState.capacity = 0;
+    }
     nextNodeIndex = addNode(newState);
     if (prevNumNodes < nodes.size())
     {
@@ -2332,7 +2383,7 @@ void VRPTWDecisionDiagram::dijkstraWithBatchProc(std::vector<int>& treeByParentA
   DBG(print();)
 }
 
-double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& truckDual)
+double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible)
 {
   // start potentials and flows at 0
   for (VRPTWNode& node : nodes)
@@ -2367,7 +2418,6 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>
   else
   {
     isDualFeasible = true;
-    truckDual = shortestPathLength;
   }
 
   std::vector<std::vector<int>> treeByChildArcs;
@@ -2498,7 +2548,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>
   return createSolutionFromReverseArcsAndResetWang(clippedArcs, shortestPathsByArc);
 };
 
-bool VRPTWDecisionDiagram::checkFeasibleDual(const std::vector<double>& lambda, const std::vector<double>& rccDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType, double& truckDual)
+bool VRPTWDecisionDiagram::checkFeasibleDual(const std::vector<double>& lambda, const std::vector<double>& rccDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType)
 {
   // get shortest path
   setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(lambda, rccDuals, combDuals, srcDuals, solveType);
@@ -2511,8 +2561,6 @@ bool VRPTWDecisionDiagram::checkFeasibleDual(const std::vector<double>& lambda, 
     return false;
   }
 
-  // otherwise find associated truck dual
-  truckDual = shortestPathDistance;
   return true;
 };
 

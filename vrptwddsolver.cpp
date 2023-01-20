@@ -1,10 +1,11 @@
 #include "vrptwddsolver.h"
 
-VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, LPSolveType _lpSolveType, InitialStateSpace initialStateSpace, int _s, int _maxS, bool _useCuts, int _timeoutSeconds) : vrptw(_vrptw), routeDD(_vrptw), maxS(_maxS), useCuts(_useCuts), timeoutSeconds(_timeoutSeconds), lpSolveType(_lpSolveType)
+VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, LPSolveType _lpSolveType, InitialStateSpace initialStateSpace, int _s, int _maxS, bool _useCuts, int _timeoutSeconds) : vrptw(_vrptw), routeDD(_vrptw, 100, 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()))), maxS(_maxS), useCuts(_useCuts), timeoutSeconds(_timeoutSeconds), lpSolveType(_lpSolveType)
 {
   for (int location=0; location<vrptw.numLocations; ++location)
   {
-    stats.upperBound += (vrptw.distances[location][0] * 2);
+    //stats.upperBound += (vrptw.distances[location][0] * 2);
+    stats.upperBound = vrptw.hgsUpperBound;
   }
 
   auto startCompileTime = std::chrono::high_resolution_clock::now();
@@ -242,7 +243,6 @@ bool VRPTWDDSolver::solve()
   //std::vector<double> lambda(vrptw.numLocations, 0);
   //std::vector<double> lambda(vrptw.numLocations, *std::min_element(vrptw.distances[0].begin()+1, vrptw.distances[0].end()));
   std::vector<double> lambda;
-  double truckDual;
   lambda.push_back(0);
   for (int location=1; location<vrptw.numLocations; ++location)
   {
@@ -260,9 +260,9 @@ bool VRPTWDDSolver::solve()
     {
       if (stats.lpIterations > 1)
       {
-        routeDD.fixArcs(lambda, truckDual, mu, combDuals, srcDuals, stats.lowerBound, lpSolveType);
+        routeDD.fixArcs(lambda, mu, combDuals, srcDuals, stats.lowerBound, lpSolveType);
       }
-      solved = solveLP(lambda, truckDual, mu, combDuals, srcDuals);
+      solved = solveLP(lambda, mu, combDuals, srcDuals);
       // currently turned off - but can solve with CG, need to initialize some columns first though
       //solved = solveLPCG(lambda, truckDual);
       //routeDD.initializeColumnsByLPDecomp();
@@ -281,11 +281,11 @@ bool VRPTWDDSolver::solve()
     // get primal heuristic flow decomp or just a flow decomp for the solution
     std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
     //routeDD.primalHeuristic(routesByLocationPrimalHeuristic);
-    double currentUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristic);
-    if (currentUpperBound < stats.upperBound)
-    {
-      stats.upperBound = currentUpperBound;
-    }
+    //double currentUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristic);
+    //if (currentUpperBound < stats.upperBound)
+    //{
+    //  stats.upperBound = currentUpperBound;
+    //}
 
     // infeasibilities for LP solve
     if (lpSolveType == LPSolveType::LPSolver)
@@ -372,7 +372,7 @@ bool VRPTWDDSolver::solve()
   return true;
 }
 
-bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, double& truckDual, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals)
+bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals)
 {
   routeDD.setCoeffsAsDistances();
   auto startLPTime = std::chrono::high_resolution_clock::now();
@@ -380,11 +380,11 @@ bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, double& truckDual, std:
   if ((routeDD.getPercentFixedArcs() >= 95) && MIPOn)
   {
     std::cout << "solving IP" << std::endl;
-    stats.lowerBound = routeDD.setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, lambda, truckDual, mu, combDuals, srcDuals);
+    stats.lowerBound = routeDD.setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, lambda, mu, combDuals, srcDuals);
   }
   else
   {
-    stats.lowerBound = routeDD.setupAndSolveFlowModel(FlowType::LP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, lambda, truckDual, mu, combDuals, srcDuals);
+    stats.lowerBound = routeDD.setupAndSolveFlowModel(FlowType::LP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, lambda, mu, combDuals, srcDuals);
   }
   auto endLPTime = std::chrono::high_resolution_clock::now();
   auto lpSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endLPTime - startLPTime).count();
@@ -395,13 +395,13 @@ bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, double& truckDual, std:
   return true;
 };
 
-bool VRPTWDDSolver::solvePricingProblem(std::vector<double>& lambda, double& truckDual)
+bool VRPTWDDSolver::solvePricingProblem(std::vector<double>& lambda)
 {
   routeDD.setCoeffsAsDistancesMinusLagrangean(lambda);
 
   std::vector<int> newRoute;
   double shortestPathLength = routeDD.computeShortestPathBFS(ShortestPathMode::SHORTEST_PATH, newRoute);
-  shortestPathLength = shortestPathLength - truckDual;
+  shortestPathLength = shortestPathLength;
   std::cout << "spl: " << shortestPathLength << std::endl;
   if (shortestPathLength < -0.00000001)
   {
@@ -462,7 +462,7 @@ void VRPTWDDSolver::initializeColumns()
   }
 };
 
-bool VRPTWDDSolver::solveLPCG(std::vector<double>& lambda, double& truckDual, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals)
+bool VRPTWDDSolver::solveLPCG(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals)
 {
   // column generation - RMP <-> pricing problem
   //initializeColumns();
@@ -473,10 +473,10 @@ bool VRPTWDDSolver::solveLPCG(std::vector<double>& lambda, double& truckDual, st
   while (!solved)
   {
     routeDD.setCoeffsAsDistances();
-    flowObj = routeDD.setupAndSolveFlowModel(FlowType::LP, IncludeCoverConstraints::Y, UseColumnGeneration::USE_CG, lambda, truckDual, mu, combDuals, srcDuals);
+    flowObj = routeDD.setupAndSolveFlowModel(FlowType::LP, IncludeCoverConstraints::Y, UseColumnGeneration::USE_CG, lambda, mu, combDuals, srcDuals);
     std::cout << "flowobj: " << flowObj << std::endl;
 
-    bool addedColumn = solvePricingProblem(lambda, truckDual);
+    bool addedColumn = solvePricingProblem(lambda);
     if (!addedColumn)
     {
       solved = true;
@@ -665,9 +665,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
       auto startSSPTime = std::chrono::high_resolution_clock::now();
       DBG(std::cout << "start" << std::endl;)
       bool isDualFeasible = false;
-      double truckDual = 0.0;
       //double lagrangeanLowerBound = routeDD.solveMinCostFlowModel(lambda, shortestPaths);
-      double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(lambda, mu, combDuals, srcDuals, shortestPaths, isDualFeasible, truckDual);
+      double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(lambda, mu, combDuals, srcDuals, shortestPaths, isDualFeasible);
       DBG(std::cout << "finish" << std::endl;)
       stats.numSSPIterations = stats.numSSPIterations + shortestPaths.size();
       auto endSSPTime = std::chrono::high_resolution_clock::now();
@@ -733,7 +732,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
       // some rounds let's force dual feasibility to find the bound and fix some arcs?
       if (isDualFeasible)
       {
-        double percentFixed = routeDD.fixArcs(lambda, truckDual, mu, combDuals, srcDuals, lagrangeanLowerBound, lpSolveType);
+        double percentFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, lagrangeanLowerBound, lpSolveType);
         if (percentFixed > 95)
         {
           lpSolveType = LPSolveType::LPSolver;
