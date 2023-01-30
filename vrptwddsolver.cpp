@@ -270,6 +270,11 @@ bool VRPTWDDSolver::solve()
     else if (lpSolveType == LPSolveType::LAGSolver)
     {
       solved = solveLagrangeanRelaxation(lambda, mu, combDuals, srcDuals);
+      // if switching to LP, go right to next iter
+      if (lpSolveType == LPSolveType::LPSolver)
+      {
+        continue;
+      }
     }
 
     if (!solved)
@@ -304,12 +309,14 @@ bool VRPTWDDSolver::solve()
         addRCCs(edgeTail, edgeHead, edgeFlow, cutAdded);
 
         // Combs
+        /*
 	addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
 
         // SRC - subset row cuts
         std::vector<double> emptySizes;
         std::vector<std::set<int>> emptyDecomp;
         routeDD.findSRCThree(emptyDecomp, emptySizes, cutAdded);
+        */
       }
 
       bool stopFindingInfeasibilities = false;
@@ -344,6 +351,19 @@ bool VRPTWDDSolver::solve()
       }
       else
       {
+        // print decomposed routes
+        std::cout << "routes: " << std::endl;
+        int index = 0;
+        for (auto route : decomposedRoutes)
+        {
+          std::cout << "flow {" << routeFlows[index] << "}: ";
+          for (int loc : route)
+          {
+            std::cout << loc << " ";
+          }
+          std::cout << std::endl;
+          index = index + 1;
+        }
         std::cout << "no more separations possible" << std::endl;
       }
 
@@ -736,6 +756,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
         if (percentFixed > 95)
         {
           lpSolveType = LPSolveType::LPSolver;
+          //useCuts = true;
           shouldTerminate = true;
         }
       }

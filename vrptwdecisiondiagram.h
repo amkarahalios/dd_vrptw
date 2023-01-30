@@ -205,7 +205,7 @@ class VRPTWDecisionDiagram
     std::unordered_map<VRPTWNodeState,int,hash_state> stateToNodes;
     std::unordered_map<int,std::vector<int>> locationToArcs;
     std::unordered_map<int,int> arcReverseArc;
-    std::map<int,std::vector<int>> capacityNodeIndices;
+    std::map<int,std::vector<int>> timeNodeIndices;
 
     std::vector<bool> arcsUsed;
 
