@@ -397,7 +397,7 @@ logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
 test_set = ["col_elim_hg_lag_ng_4_20_N_3600"]
 
 instances = []
-instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/"
+instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"
 for instance in os.listdir(instance_dir):
   instances.append(instance)
 
@@ -426,7 +426,7 @@ for test in test_set:
         sspSolveTime = colelim_match.group(6)
         lpSolveTime = colelim_match.group(7)
         lb = math.ceil(float(colelim_match.group(8)))
-        ub = int(colelim_match.group(9))
+        ub = float(colelim_match.group(9))
         size = colelim_match.group(10)
         time = colelim_match.group(11)
         time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'size': size, 'time' : time}
@@ -584,56 +584,49 @@ if experiment2:
   instances_to_consider = instances
   #instances_to_consider = instances['X']
   for instance in instances_to_consider:
-    if 'X' in instance:
-      time = list(range(0,50000,100))
-    else:
-      time = list(range(0,3600,100))
+    time = list(range(0,3600,100))
     lbs = []
     labels = []
     instance_results = time_results_df[time_results_df['instance'] == instance]
-    for test in tests_to_compare:
-      instance_test_results = instance_results[instance_results['test'] == test]
-      if not instance_test_results.empty:
-        instance_test_lb = []
-        for t in time:
-          instance_test_results_time = instance_test_results[instance_test_results['time'].astype(int) <= t]
-          if (instance_test_results_time.empty):
-            lb = 0
-          else:
-            lb = max(instance_test_results_time['lb'])
-          instance_test_lb.append(lb)
-        lbs.append(instance_test_lb)
-        labels.append(test)
+    if not instance_results.empty:
+      for test in tests_to_compare:
+        instance_test_results = instance_results[instance_results['test'] == test]
+        if not instance_test_results.empty:
+          instance_test_lb = []
+          for t in time:
+            instance_test_results_time = instance_test_results[instance_test_results['time'].astype(int) <= t]
+            if (instance_test_results_time.empty):
+              lb = 0
+            else:
+              lb = max(instance_test_results_time['lb'])
+            instance_test_lb.append(lb)
+          lbs.append(instance_test_lb)
+          labels.append(test)
 
-    min_val = 10000000
-    max_val = 0
-    for (label, lb) in zip(labels, lbs):
-      if len([l for l in lb if l >0]) == 0:
-        continue
-      to_plot = zip(time,lb)
-      to_plot = [data for data in to_plot if data[1] > 0]
-      times_to_plot = [d[0] for d in to_plot]
-      lbs_to_plot = [d[1] for d in to_plot]
-      plt.plot(times_to_plot,lbs_to_plot,label=label)
-      min_value = min([l for l in lb if l > 0])
-      max_value = max(lb)
-      min_val = min(min_val, min_value)
-      max_val = max(max_val, max_value)
-    plt.title(instance)
-    plt.xlabel('time (s)')
-    plt.ylabel('lb')
-    if instance in instance_upper_bounds:
-      plt.axhline(y=instance_upper_bounds[instance],linewidth=2,label="opt",color="magenta")
-      plt.ylim(min_val-10,instance_upper_bounds[instance]+10)
-    else:
-      plt.ylim(min_val,max_val)
-    if instance in pecin_root_lbs:
-      if 'X' in instance:
-        plt.scatter([pecin_root_lbs[instance][1]*60], [pecin_root_lbs[instance][0]],label="pecin_root_lb")
+      min_val = 10000000
+      max_val = 0
+      for (label, lb) in zip(labels, lbs):
+        if len([l for l in lb if l >0]) == 0:
+          continue
+        to_plot = zip(time,lb)
+        to_plot = [data for data in to_plot if data[1] > 0]
+        times_to_plot = [d[0] for d in to_plot]
+        lbs_to_plot = [d[1] for d in to_plot]
+        plt.plot(times_to_plot,lbs_to_plot,label=label)
+        min_value = min([l for l in lb if l > 0])
+        max_value = max(lb)
+        min_val = min(min_val, min_value)
+        max_val = max(max_val, max_value)
+      plt.title(instance)
+      plt.xlabel('time (s)')
+      plt.ylabel('lb')
+      if instance in instance_upper_bounds:
+        plt.axhline(y=instance_upper_bounds[instance],linewidth=2,label="opt",color="magenta")
+        plt.ylim(min_val-10,instance_upper_bounds[instance]+10)
       else:
-        plt.scatter([pecin_root_lbs[instance][1]], [pecin_root_lbs[instance][0]],label="pecin_root_lb")
-    plt.legend()
-    plt.show()
+        plt.ylim(min_val,max_val)
+      plt.legend()
+      plt.show()
 
 # experiment 3 - lp runtimes
 experiment3 = False
