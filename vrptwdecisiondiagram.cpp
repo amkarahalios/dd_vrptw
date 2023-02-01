@@ -415,7 +415,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   VRPTWNodeState rootNodeState(0,0,0,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
-  VRPTWNodeState terminalNodeState(vrptw.capacity,vrptw.endTimes[0],0,initialDeque);
+  VRPTWNodeState terminalNodeState(vrptw.capacity,vrptw.endTimes[0]*10,0,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
 
@@ -1376,8 +1376,8 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, const st
   // fix arcs based on lb + rc > ub
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
   {
-    const VRPTWArc& arc = arcs[arcIndex];
-    double bestPossibleReducedCost = shortestPathDown[arc.fromNodeIndex] + shortestPathUp[arc.toNodeIndex] + arc.coeff;
+    const VRPTWArc& arcToCheck = arcs[arcIndex];
+    double bestPossibleReducedCost = shortestPathDown[arcToCheck.fromNodeIndex] + shortestPathUp[arcToCheck.toNodeIndex] + arcToCheck.coeff;
     if ((lowerBound + bestPossibleReducedCost) > (vrptw.hgsUpperBound + 0.00001))
     {
       // remove from graph if there
@@ -1540,13 +1540,14 @@ void VRPTWDecisionDiagram::primalHeuristic(std::vector<std::vector<int>>& routes
 
 bool VRPTWDecisionDiagram::doesRouteExistByArcs(const std::vector<int>& routeArcs) const
 {
+/*
   int firstLocation = nodes[arcs[routeArcs[0]].fromNodeIndex].state.lastVisited;
   int lastLocation = arcs[routeArcs.back()].location;
   if (firstLocation != lastLocation)
   {
     return false;
   }
-
+*/
   for (int index=0; index<(routeArcs.size()-1); ++index)
   {
     int currNodeIndex = arcs[routeArcs[index]].toNodeIndex;
@@ -1626,8 +1627,7 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
           // get time of current route decomposing
           int currLocation = routeByLoc[routeByLoc.size()-1];
           int lastLocation = routeByLoc[routeByLoc.size()-2];
-          double routeTime = routeTime + vrptw.serviceTimes[lastLocation] + vrptw.distances[currLocation][lastLocation];
-
+          routeTime = routeTime + vrptw.serviceTimes[lastLocation] + vrptw.distances[currLocation][lastLocation];
           if (decompositionReason == DecompositionReason::SEPARATE)
           {
             for (int lastLocationIndex=0; lastLocationIndex<lastLocationsVisited.size(); ++lastLocationIndex)
@@ -1646,21 +1646,21 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
                 }
                 return;
               }
+            }
 
-              // if we are past the time window, return the route of arcs causing this
-              if (vrptw.endTimes[currLocation] < routeTime)
+            // if we are past the time window, return the route of arcs causing this
+            if (vrptw.endTimes[currLocation] < routeTime)
+            {
+              //std::cout << "infeas time window, separate " << vrptw.endTimes[currLocation] << " " << routeTime << std::endl;
+              for (int index=0; index<route.size(); ++index)
               {
-                std::cout << "infeas time window, separate " << vrptw.endTimes[currLocation] << " " << routeTime << std::endl;
-                for (int index=0; index<route.size(); ++index)
-                {
-                  routeArcs.push_back(route[index]);
-                }
-                for (int routeArcIndex : route)
-                {
-                  arcs[routeArcIndex].decompositionFlow = arcs[routeArcIndex].decompositionFlow - routeFlow;
-                }
-                return;
+                routeArcs.push_back(route[index]);
               }
+              for (int routeArcIndex : route)
+              {
+                arcs[routeArcIndex].decompositionFlow = arcs[routeArcIndex].decompositionFlow - routeFlow;
+              }
+              return;
             }
 
             if (lastLocationsVisited.size() == maxS)
@@ -1727,7 +1727,8 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
   }
   fixedArcs.clear();
 
-  DBG(std::cout << "separating route: ";
+  DBG(
+  std::cout << "separating route: ";
   for (int arcIndex : routeArcs)
   {
     std::cout << arcIndex << " ";
@@ -2417,7 +2418,7 @@ void VRPTWDecisionDiagram::dijkstraWithBatchProc(std::vector<int>& treeByParentA
   DBG(print();)
 }
 
-double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible)
+double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& shortestPathLength)
 {
   // start potentials and flows at 0
   for (VRPTWNode& node : nodes)
@@ -2437,7 +2438,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>
   treeByParentArcs.resize(nodes.size());
   std::vector<int> shortestPathByArc;
   setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(duals, capDuals, combDuals, srcDuals, LPSolveType::LAGSolver);
-  double shortestPathLength = computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc);
+  shortestPathLength = computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc);
   // NOTE: when fixing arcs, if there is no path to terminal, no paths exist
   if (shortestPathLength == INF)
   {
@@ -2448,6 +2449,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>
   if (shortestPathLength < 0)
   {
     isDualFeasible = false;
+    std::cout << "dual not feasible: " << shortestPathLength << std::endl;
   }
   else
   {
@@ -2598,42 +2600,69 @@ bool VRPTWDecisionDiagram::checkFeasibleDual(const std::vector<double>& lambda, 
   return true;
 };
 
-bool VRPTWDecisionDiagram::checkAn33k5SolutionPossible() const
+void VRPTWDecisionDiagram::getLocationsOnArcPaths(const std::vector<std::vector<int>>& shortestPathsByArc, std::set<int>& locations)
+{
+  for (auto path : shortestPathsByArc)
+  {
+    for (int arcIndex : path)
+    {
+      int loc = arcs[arcIndex].location;
+      if (loc != 0)
+      {
+        locations.insert(loc);
+      }
+    }
+  }
+};
+
+bool VRPTWDecisionDiagram::checkC141SolutionPossible() const
 {
   std::vector<std::vector<int>> routesByLocation;
-  routesByLocation.push_back({0,2,0});
-  routesByLocation.push_back({0,12,5,27,30,5,27,12,0});
-  routesByLocation.push_back({0,20,32,13,26,7,8,13,32,20,0});
-  routesByLocation.push_back({0,11,19,1,14,21,1,14,21,1,14,19,11,0});
-  routesByLocation.push_back({0,16,3,9,17,3,16,29,0});
-  routesByLocation.push_back({0,24,6,19,21,1,31,18,0});
-  routesByLocation.push_back({0,5,25,30,27,25,5,4,0});
-  routesByLocation.push_back({0,23,18,31,29,15,22,0});
-  routesByLocation.push_back({0,11,19,14,21,1,14,21,1,14,21,1,29,0}); // index 8
-  routesByLocation.push_back({0,12,10,17,9,16,15,0});
-  routesByLocation.push_back({0,4,5,27,25,30,10,0});
-  routesByLocation.push_back({0,4,5,27,25,30,12,4,0});
-  routesByLocation.push_back({0,11,31,1,21,14,19,6,24,0});
-  routesByLocation.push_back({0,24,6,19,14,1,21,14,19,11,0});
-  routesByLocation.push_back({0,20,4,12,10,17,9,29,0});
-  routesByLocation.push_back({0,30,25,27,30,25,12,0});
-  routesByLocation.push_back({0,22,15,29,31,18,28,0});
-  routesByLocation.push_back({0,22,23,18,28,23,22,0});
-  routesByLocation.push_back({0,2,32,13,8,7,26,5,12,0});
-  routesByLocation.push_back({0,32,13,8,7,26,8,7,26,20,0}); // index 19
-  routesByLocation.push_back({0,11,19,21,14,1,21,19,6,24,0});
-  routesByLocation.push_back({0,29,3,9,17,3,16,29,0});
-  routesByLocation.push_back({0,22,23,11,6,24,2,0});
-  routesByLocation.push_back({0,23,28,18,31,28,23,0});
-  routesByLocation.push_back({0,2,24,6,11,18,28,0});
-  routesByLocation.push_back({0,16,3,9,17,3,15,0});
-  routesByLocation.push_back({0,12,27,25,30,27,12,0});
-  routesByLocation.push_back({0,4,5,30,25,27,5,4,0});
+  routesByLocation.push_back({5,160,337,330,143,215,46,147,153,89,166,258,0});
+  routesByLocation.push_back({17,326,214,355,117,247,162,320,168,283,289,158,104,227,0});
+  routesByLocation.push_back({23,371,38,333,111,194,363,251,316,276,142,0});
+  routesByLocation.push_back({33,255,29,157,212,169,237,28,0});
+  routesByLocation.push_back({49,298,87,70,302,201,25,96,353,0});
+  routesByLocation.push_back({51,181,389,1,116,127,245,242,259,0});
+  routesByLocation.push_back({56,141,252,370,274,138,170,4,190,275,0});
+  routesByLocation.push_back({63,213,121,233,173,161,50,383,261,131,0});
+  routesByLocation.push_back({73,265,380,85,328,177,95,30,0});
+  routesByLocation.push_back({80,315,221,284,351,58,356,134,107,0});
+  routesByLocation.push_back({92,266,165,308,146,268,79,0});
+  routesByLocation.push_back({94,54,180,179,386,379,312,246,81,197,84,0});
+  routesByLocation.push_back({97,375,149,101,7,257,300,13,15,0});
+  routesByLocation.push_back({102,69,222,159,304,71,113,211,59,253,0});
+  routesByLocation.push_back({105,155,395,361,272,306,377,124,2,347,376,0});
+  routesByLocation.push_back({114,44,348,235,388,281,129,263,176,137,384,0});
+  routesByLocation.push_back({126,115,331,398,66,277,325,368,37,20,0});
+  routesByLocation.push_back({186,154,381,202,342,309,118,21,346,45,0});
+  routesByLocation.push_back({189,174,390,271,244,57,48,345,98,250,234,0});
+  routesByLocation.push_back({267,364,340,373,167,148,378,164,367,391,0});
+  routesByLocation.push_back({286,88,217,209,185,10,152,336,0});
+  routesByLocation.push_back({287,31,362,108,248,171,243,239,192,128,27,0});
+  routesByLocation.push_back({290,182,236,61,218,11,369,110,35,223,240,0});
+  routesByLocation.push_back({291,52,16,314,136,317,22,399,132,0});
+  routesByLocation.push_back({292,226,109,172,26,350,282,352,40,183,123,75,228,0});
+  routesByLocation.push_back({301,139,280,392,36,191,349,344,91,130,372,0});
+  routesByLocation.push_back({303,144,24,93,229,204,295,103,220,122,0});
+  routesByLocation.push_back({322,151,270,193,19,55,120,294,0});
+  routesByLocation.push_back({324,156,133,210,382,338,256,205,0});
+  routesByLocation.push_back({332,310,339,262,400,8,319,260,43,230,41,0});
+  routesByLocation.push_back({334,216,358,195,285,18,238,297,329,0});
+  routesByLocation.push_back({335,385,199,82,296,359,254,293,60,53,313,86,0});
+  routesByLocation.push_back({343,269,64,208,100,145,318,106,163,0});
+  routesByLocation.push_back({357,77,74,394,68,14,288,6,178,327,0});
+  routesByLocation.push_back({360,198,12,9,47,299,305,219,249,0});
+  routesByLocation.push_back({366,150,83,354,206,99,184,175,3,0});
+  routesByLocation.push_back({374,32,62,39,67,65,396,307,264,0});
+  routesByLocation.push_back({387,278,78,231,188,125,225,323,34,224,0});
+  routesByLocation.push_back({393,112,135,140,279,90,196,321,76,311,241,0});
+  routesByLocation.push_back({397,72,203,365,273,341,207,187,200,119,232,42,0});
   for (int routeIndex=0; routeIndex<routesByLocation.size(); ++routeIndex)
   {
     if (!doesRouteExistByLocations(routesByLocation[routeIndex]))
     {
-      std::cout << "failed at index: " << routeIndex << std::endl;
+      std::cout << "ERROR C141: failed at index: " << routeIndex << std::endl;
       return false;
     }
   }

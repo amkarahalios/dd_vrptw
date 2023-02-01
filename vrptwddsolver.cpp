@@ -422,7 +422,7 @@ bool VRPTWDDSolver::solvePricingProblem(std::vector<double>& lambda)
   std::vector<int> newRoute;
   double shortestPathLength = routeDD.computeShortestPathBFS(ShortestPathMode::SHORTEST_PATH, newRoute);
   shortestPathLength = shortestPathLength;
-  std::cout << "spl: " << shortestPathLength << std::endl;
+  //std::cout << "spl: " << shortestPathLength << std::endl;
   if (shortestPathLength < -0.00000001)
   {
     std::cout << "adding route: ";
@@ -685,8 +685,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
       auto startSSPTime = std::chrono::high_resolution_clock::now();
       DBG(std::cout << "start" << std::endl;)
       bool isDualFeasible = false;
+      double minReducedCost = 0.0;
       //double lagrangeanLowerBound = routeDD.solveMinCostFlowModel(lambda, shortestPaths);
-      double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(lambda, mu, combDuals, srcDuals, shortestPaths, isDualFeasible);
+      double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(lambda, mu, combDuals, srcDuals, shortestPaths, isDualFeasible, minReducedCost);
       DBG(std::cout << "finish" << std::endl;)
       stats.numSSPIterations = stats.numSSPIterations + shortestPaths.size();
       auto endSSPTime = std::chrono::high_resolution_clock::now();
@@ -697,8 +698,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
       {
         std::cout << lambda[index] << ",";
       }
-      std::cout << std::endl;
-      )
+      std::cout << std::endl;)
 
       // dTx - lambda_T(Ax - b), so add sum of lambdas
       for (int index=0; index<lambda.size(); ++index)
@@ -744,21 +744,74 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
       }
       if (stats.lowerBound < lagrangeanLowerBound)
       {
-        stats.print(routeDD.size());
         stats.lowerBound = lagrangeanLowerBound;
+        stats.print(routeDD.size());
       }
 
       // see if we can fix arcs based on a feasible dual
       // some rounds let's force dual feasibility to find the bound and fix some arcs?
+      double percentFixed = 0.0;
       if (isDualFeasible)
       {
-        double percentFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, lagrangeanLowerBound, lpSolveType);
+        percentFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, lagrangeanLowerBound, lpSolveType);
+        double checkLambdaLB = 0.0;
+        for (double dual : lambda)
+        {
+          checkLambdaLB += dual;
+        }
+        std::cout << "check lb sum lambda: " << checkLambdaLB << std::endl;
+      }
+      else
+      {
+        // can repair dual to make it feasible, and then try to fix arcs. Min reduced cost would be negative
+        std::vector<double> repairedLambda(lambda);
+        while (true)
+        {
+          routeDD.setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(repairedLambda, mu, combDuals, srcDuals, LPSolveType::LAGSolver);
+
+          std::vector<int> treeByParentArcs;
+          treeByParentArcs.resize(routeDD.getNodes().size());
+          std::vector<int> shortestPathByArc;
+          double shortestPathLength = routeDD.computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc);
+          std::cout << "spl: " << shortestPathLength << std::endl;
+          if (shortestPathLength > 0)
+          {
+            break;
+          }
+          else
+          {
+            std::vector<std::vector<int>> shortestPathsByArc;
+            shortestPathsByArc.push_back(shortestPathByArc);
+            std::set<int> locations;
+            routeDD.getLocationsOnArcPaths(shortestPathsByArc, locations);
+            for (int loc : locations)
+            {
+              repairedLambda[loc] = std::max(0.0, repairedLambda[loc] + (shortestPathLength / (shortestPathByArc.size() - 2)));
+            }
+          }
+        }
+
+        double repairedBound = 0.0;
+        for (int index=1; index<repairedLambda.size(); ++index)
+        {
+          repairedBound += repairedLambda[index];
+        }
+        std::cout << "repaired lb: " << repairedBound << std::endl;
+        percentFixed = routeDD.fixArcs(repairedLambda, mu, combDuals, srcDuals, repairedBound, lpSolveType);
         if (percentFixed > 95)
         {
-          lpSolveType = LPSolveType::LPSolver;
-          //useCuts = true;
-          shouldTerminate = true;
+          for (int index=0; index<lambda.size(); ++index)
+          {
+            lambda[index] = repairedLambda[index];
+          }
         }
+      }
+
+      if (percentFixed > 95)
+      {
+        lpSolveType = LPSolveType::LPSolver;
+        //useCuts = true;
+        shouldTerminate = true;
       }
 
       // get primal solution

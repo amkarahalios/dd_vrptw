@@ -164,15 +164,16 @@ class VRPTWDecisionDiagram
     double createSolutionFromReverseArcsAndResetWang(const std::set<int>& clippedArcs, const std::vector<std::vector<int>>& shortestPathsByArc);
     void updateResidualGraphWang(const std::vector<int>& shortestPathByArc, std::vector<int>& treeByParentArc);
     void dijkstraWithBatchProc(std::vector<int>& treeByParentArcs, std::vector<std::vector<int>>& treeByChildArcs, std::set<int>& nodesToUpdate);
-    double solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible);
+    double solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& shortestPathLength);
     bool checkFeasibleDual(const std::vector<double>& lambda, const std::vector<double>& rccDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
+    void getLocationsOnArcPaths(const std::vector<std::vector<int>>& shortestPathsByArc, std::set<int>& locations);
 
     int size() const { return nodes.size(); }
 
     // for testing
     const std::vector<VRPTWNode>& getNodes() const { return nodes; }
     const std::vector<VRPTWArc>& getArcs() const { return arcs; }
-    bool checkAn33k5SolutionPossible() const;
+    bool checkC141SolutionPossible() const;
 
     // for cuts
     void addCapCutSet(const std::vector<int>& cutSet);
