@@ -23,7 +23,8 @@ struct DDStats
     {
       std::cout << "STATS - lpIterations[" << lpIterations << "] lagIterations[";
       std::cout << numLagIterations << "] sspIterations[" << numSSPIterations;
-      std::cout << "] numSeparations[" << numSeparations << "] compileTime[" << int(millisecondsCompiling / 1000);
+      std::cout << "] numSeparations[" << numSeparations << "] numCuts[" << numCuts;
+      std::cout << "] compileTime[" << int(millisecondsCompiling / 1000);
       std::cout << "] sspSolveTime[" << int(millisecondsSolvingSSP / 1000);
       std::cout << "] lpSolveTime[" << int(millisecondsSolvingLP / 1000);
       std::cout << "] lb[" << lowerBound << "] ub[" << upperBound << "]";
@@ -60,6 +61,7 @@ class VRPTWDDSolver
 
     // public for testing purpose only
     void addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, bool& cutAdded);
+    void addRCCs(const std::vector<std::vector<int>>& routes, bool& cutAdded);
     void addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeHead, std::vector<double>& edgeFlow, bool& cutAdded);
     void convertArcIndicesForVRPTWSep(const std::vector<double>& routeFlows,
                                      const std::vector<std::set<int>>& decomposedRoutes,

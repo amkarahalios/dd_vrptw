@@ -1,4 +1,5 @@
 #include "vrptwddsolver.h"
+#include <math.h>
 
 VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, LPSolveType _lpSolveType, InitialStateSpace initialStateSpace, int _s, int _maxS, bool _useCuts, int _timeoutSeconds) : vrptw(_vrptw), routeDD(_vrptw, 100, 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()))), maxS(_maxS), useCuts(_useCuts), timeoutSeconds(_timeoutSeconds), lpSolveType(_lpSolveType)
 {
@@ -71,6 +72,43 @@ void VRPTWDDSolver::convertArcIndicesForVRPTWSep(const std::vector<double>& rout
   }
 };
 
+void VRPTWDDSolver::addRCCs(const std::vector<std::vector<int>>& routes, bool& cutAdded)
+{
+  // Rounded Capacity Cuts when capacity is relaxed
+  for (auto route : routes)
+  {
+    std::set<int> locations;
+    int load = 0;
+    for (int loc : route)
+    {
+      auto inserted = locations.insert(loc);
+      if (inserted.second)
+      {
+        load = load + vrptw.demands[loc];
+      }
+      if (load > vrptw.capacity)
+      {
+        std::cout << "new capacity cutset: ";
+        std::vector<int> cutSet;
+        for (int loc : locations)
+        {
+          if (loc != 0)
+          {
+            cutSet.push_back(loc);
+            std::cout << loc << " ";
+          }
+        }
+        int RHS = cutSet.size() - ceil(load * 1.0 / vrptw.capacity);
+        std::cout << "<= " << RHS << std::endl;
+        routeDD.addCapCutSet(cutSet);
+        routeDD.addCapCutSetRHS(RHS);
+        stats.numCuts = stats.numCuts + 1;
+        break;
+      }
+    }
+  }
+}
+
 void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, bool& cutAdded)
 {
   // Rounded Capacity Cuts
@@ -94,7 +132,10 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
                          MyCutsCMP); // contains cut
   if (integerAndFeas)
   {
-    std::cout << "integral solution - no cuts found" << std::endl;
+    std::cout << "integral solution" << std::endl;
+
+    // may still need to add cut if we relaxed capacity constraint
+    // want to check each route that it's under capacity
     return;
   }
 
@@ -130,7 +171,7 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
   }
   else
   {
-    std::cout << "fractional solution - no rcc cuts found" << std::endl;
+    std::cout << "no rcc cuts found" << std::endl;
   }
 }
 
@@ -385,41 +426,54 @@ bool VRPTWDDSolver::solve()
           index = index + 1;
         }
         std::cout << "no more separations possible" << std::endl;
+
+        if (useCuts && (vrptw.vrptwType == VRPTWType::RELAX_CAPACITY))
+        {
+          // RCC - rounded capacity cuts
+          std::vector<int> edgeTail;
+          std::vector<int> edgeHead;
+          std::vector<double> edgeFlow;
+          addRCCs(decomposedRoutes, cutAdded);
+        }
       }
 
       if (!cutAdded && !infeasibilityFound)
       {
         std::cout << "no more separations or cuts possible" << std::endl;
-        finishedSolving = true;
-        double percentArcsFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, stats.lowerBound, lpSolveType);
-        if (percentArcsFixed < bestLambdaPercentFixed)
+        if (stats.lowerBound != stats.upperBound)
         {
-          std::vector<double> emptyMu;
-          std::vector<double> emptyComb;
-          std::vector<double> emptySrc;
-          routeDD.fixArcs(bestLambdaArcFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, lpSolveType);
-        }
-        solved = solveIP(lambda, mu, combDuals, srcDuals);
-        std::vector<int> infeasibleRoute;
-        decomposedRoutes.clear();
-        routeFlows.clear();
-        routeDD.decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, maxS, DecompositionReason::SEPARATE);
-        if (infeasibleRoute.empty())
-        {
-          // print decomposed routes
-          std::cout << "routes: " << std::endl;
-          int index = 0;
-          for (auto route : decomposedRoutes)
+          finishedSolving = true;
+          double percentArcsFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, stats.lowerBound, lpSolveType);
+          if (percentArcsFixed < bestLambdaPercentFixed)
           {
-            std::cout << "flow {" << routeFlows[index] << "}: ";
-            for (int loc : route)
-            {
-              std::cout << loc << " ";
-            }
-            std::cout << std::endl;
-            index = index + 1;
+            std::vector<double> emptyMu;
+            std::vector<double> emptyComb;
+            std::vector<double> emptySrc;
+            routeDD.fixArcs(bestLambdaArcFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, lpSolveType);
           }
-          std::cout << "no more separations possible" << std::endl;
+          solved = solveIP(lambda, mu, combDuals, srcDuals);
+          std::vector<int> infeasibleRoute;
+          decomposedRoutes.clear();
+          routeFlows.clear();
+          routeDD.decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, maxS, DecompositionReason::SEPARATE);
+          if (infeasibleRoute.empty())
+          {
+            // print decomposed routes
+            std::cout << "routes: " << std::endl;
+            int index = 0;
+            for (auto route : decomposedRoutes)
+            {
+              std::cout << "flow {" << routeFlows[index] << "}: ";
+              for (int loc : route)
+              {
+                std::cout << loc << " ";
+              }
+              std::cout << std::endl;
+              index = index + 1;
+            }
+            std::cout << "no more separations possible" << std::endl;
+            stats.upperBound = stats.lowerBound;
+          }
         }
       }
     }
