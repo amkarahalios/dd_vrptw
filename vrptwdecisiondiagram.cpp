@@ -1733,6 +1733,13 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
   {
     std::cout << arcIndex << " ";
   }
+  std::cout << std::endl;
+
+  std::cout << "separating route: ";
+  for (int arcIndex : routeArcs)
+  {
+    std::cout << arcs[arcIndex].location << " ";
+  }
   std::cout << std::endl;)
 
   int currNodeIndex = arcs[routeArcs[0]].fromNodeIndex;

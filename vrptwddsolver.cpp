@@ -95,6 +95,7 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
   if (integerAndFeas)
   {
     std::cout << "integral solution - no cuts found" << std::endl;
+    return;
   }
 
   int numCuts = MyCutsCMP->Size;
@@ -248,10 +249,12 @@ bool VRPTWDDSolver::solve()
   {
     lambda.push_back(2 * vrptw.distances[location][0] * vrptw.demands[location] / vrptw.capacity);
   }
+  bestLambdaArcFixing.resize(lambda.size());
   std::vector<double> mu;
   std::vector<double> combDuals;
   std::vector<double> srcDuals;
 
+  bool changedLagToLP = false;
   bool finishedSolving = false;
   while (!finishedSolving)
   {
@@ -260,7 +263,22 @@ bool VRPTWDDSolver::solve()
     {
       if (stats.lpIterations > 1)
       {
-        routeDD.fixArcs(lambda, mu, combDuals, srcDuals, stats.lowerBound, lpSolveType);
+        double percentArcsFixed = 0.0;
+        if (!changedLagToLP)
+        {
+          percentArcsFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, stats.lowerBound, lpSolveType);
+        }
+        if ((percentArcsFixed < bestLambdaPercentFixed) || changedLagToLP)
+        {
+          if (changedLagToLP)
+          {
+            changedLagToLP = false;
+          }
+          std::vector<double> emptyMu;
+          std::vector<double> emptyComb;
+          std::vector<double> emptySrc;
+          routeDD.fixArcs(bestLambdaArcFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, lpSolveType);
+        }
       }
       solved = solveLP(lambda, mu, combDuals, srcDuals);
       // currently turned off - but can solve with CG, need to initialize some columns first though
@@ -270,9 +288,11 @@ bool VRPTWDDSolver::solve()
     else if (lpSolveType == LPSolveType::LAGSolver)
     {
       solved = solveLagrangeanRelaxation(lambda, mu, combDuals, srcDuals);
-      // if switching to LP, go right to next iter
+      // if switching to LP, go right to next iter and use cuts
       if (lpSolveType == LPSolveType::LPSolver)
       {
+        changedLagToLP = true;
+        useCuts = true;
         continue;
       }
     }
@@ -371,6 +391,36 @@ bool VRPTWDDSolver::solve()
       {
         std::cout << "no more separations or cuts possible" << std::endl;
         finishedSolving = true;
+        double percentArcsFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, stats.lowerBound, lpSolveType);
+        if (percentArcsFixed < bestLambdaPercentFixed)
+        {
+          std::vector<double> emptyMu;
+          std::vector<double> emptyComb;
+          std::vector<double> emptySrc;
+          routeDD.fixArcs(bestLambdaArcFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, lpSolveType);
+        }
+        solved = solveIP(lambda, mu, combDuals, srcDuals);
+        std::vector<int> infeasibleRoute;
+        decomposedRoutes.clear();
+        routeFlows.clear();
+        routeDD.decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, maxS, DecompositionReason::SEPARATE);
+        if (infeasibleRoute.empty())
+        {
+          // print decomposed routes
+          std::cout << "routes: " << std::endl;
+          int index = 0;
+          for (auto route : decomposedRoutes)
+          {
+            std::cout << "flow {" << routeFlows[index] << "}: ";
+            for (int loc : route)
+            {
+              std::cout << loc << " ";
+            }
+            std::cout << std::endl;
+            index = index + 1;
+          }
+          std::cout << "no more separations possible" << std::endl;
+        }
       }
     }
 
@@ -391,6 +441,21 @@ bool VRPTWDDSolver::solve()
   CMGR_FreeMemCMgr(&MyOldCutsCMP);
   return true;
 }
+
+bool VRPTWDDSolver::solveIP(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals)
+{
+  routeDD.setCoeffsAsDistances();
+  auto startLPTime = std::chrono::high_resolution_clock::now();
+  std::cout << "solving IP" << std::endl;
+  stats.lowerBound = routeDD.setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, lambda, mu, combDuals, srcDuals);
+  auto endLPTime = std::chrono::high_resolution_clock::now();
+  auto lpSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endLPTime - startLPTime).count();
+  stats.millisecondsSolvingLP = stats.millisecondsSolvingLP + lpSolveTime;
+
+  stats.lpIterations = stats.lpIterations + 1;
+  stats.print(routeDD.size());
+  return true;
+};
 
 bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals)
 {
@@ -754,6 +819,16 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
       if (isDualFeasible)
       {
         percentFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, lagrangeanLowerBound, lpSolveType);
+        if (percentFixed > bestLambdaPercentFixed)
+        {
+          bestLambdaPercentFixed = percentFixed;
+          bestLambdaLowerBound = lagrangeanLowerBound;
+          for (int index=0; index<lambda.size(); ++index)
+          {
+            bestLambdaArcFixing[index] = lambda[index];
+          }
+        }
+
         double checkLambdaLB = 0.0;
         for (double dual : lambda)
         {
@@ -773,7 +848,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
           treeByParentArcs.resize(routeDD.getNodes().size());
           std::vector<int> shortestPathByArc;
           double shortestPathLength = routeDD.computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc);
-          std::cout << "spl: " << shortestPathLength << std::endl;
+          //std::cout << "spl: " << shortestPathLength << std::endl;
           if (shortestPathLength > 0)
           {
             break;
@@ -786,7 +861,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
             routeDD.getLocationsOnArcPaths(shortestPathsByArc, locations);
             for (int loc : locations)
             {
-              repairedLambda[loc] = std::max(0.0, repairedLambda[loc] + (shortestPathLength / (shortestPathByArc.size() - 2)));
+              repairedLambda[loc] = std::max(0.0, repairedLambda[loc] + (shortestPathLength / (shortestPathByArc.size() - 2)) - 0.000001);
             }
           }
         }
@@ -798,6 +873,16 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
         }
         std::cout << "repaired lb: " << repairedBound << std::endl;
         percentFixed = routeDD.fixArcs(repairedLambda, mu, combDuals, srcDuals, repairedBound, lpSolveType);
+        if (percentFixed > bestLambdaPercentFixed)
+        {
+          bestLambdaPercentFixed = percentFixed;
+          bestLambdaLowerBound = repairedBound;
+          for (int index=0; index<lambda.size(); ++index)
+          {
+            bestLambdaArcFixing[index] = repairedLambda[index];
+          }
+        }
+
         if (percentFixed > 95)
         {
           for (int index=0; index<lambda.size(); ++index)
@@ -810,6 +895,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
       if (percentFixed > 95)
       {
         lpSolveType = LPSolveType::LPSolver;
+        stats.lpIterations = 1;
         //useCuts = true;
         shouldTerminate = true;
       }
