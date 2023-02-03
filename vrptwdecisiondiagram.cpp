@@ -1627,7 +1627,7 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
           // get time of current route decomposing
           int currLocation = routeByLoc[routeByLoc.size()-1];
           int lastLocation = routeByLoc[routeByLoc.size()-2];
-          routeTime = routeTime + vrptw.serviceTimes[lastLocation] + vrptw.distances[currLocation][lastLocation];
+          routeTime = std::max(routeTime + vrptw.serviceTimes[lastLocation] + vrptw.distances[currLocation][lastLocation], vrptw.startTimes[currLocation]*1.0);
           if (decompositionReason == DecompositionReason::SEPARATE)
           {
             for (int lastLocationIndex=0; lastLocationIndex<lastLocationsVisited.size(); ++lastLocationIndex)

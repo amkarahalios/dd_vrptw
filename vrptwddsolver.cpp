@@ -416,8 +416,10 @@ bool VRPTWDDSolver::solve()
         {
           int load = 0;
           std::cout << "flow {" << routeFlows[index] << "}: ";
-          for (int loc : route)
+          for (int index=0; index<route.size()-1; ++index)
           {
+            int loc = route[index];
+            int nextLoc = route[index+1];
             load = load + vrptw.demands[loc];
             std::cout << loc << " ";
           }
