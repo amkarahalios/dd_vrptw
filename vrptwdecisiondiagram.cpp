@@ -241,10 +241,15 @@ int VRPTWDecisionDiagram::addReverseArc(int forwardArcIndex)
   return reverseArcIndex;
 }
 
-void VRPTWDecisionDiagram::moveArc(int arcIndex, int newToNodeIndex)
+bool VRPTWDecisionDiagram::moveArc(int arcIndex, int newToNodeIndex)
 {
   // update arc info
   VRPTWArc& arc = arcs[arcIndex];
+  if (arc.toNodeIndex == newToNodeIndex)
+  {
+    return false;
+  }
+
   nodes[arc.toNodeIndex].inArcs.erase(std::remove(nodes[arc.toNodeIndex].inArcs.begin(), nodes[arc.toNodeIndex].inArcs.end(), arcIndex), nodes[arc.toNodeIndex].inArcs.end());
   arc.toNodeIndex = newToNodeIndex;
   nodes[newToNodeIndex].inArcs.push_back(arcIndex);
@@ -269,6 +274,8 @@ void VRPTWDecisionDiagram::moveArc(int arcIndex, int newToNodeIndex)
       arcReverseArc.erase(reverseArcIndex);
     }
   }
+
+  return true;
 }
 
 // only allow up to s = 2
@@ -1178,7 +1185,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
 
   if (flowType == FlowType::LP)
   {
-    // RCC - rounded capacity cuts
+    // RCC - rounded capacity cuts, might even need to use for IPs
     for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
     {
       IloExpr cutSetSum(env);
@@ -1285,10 +1292,11 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       {
         capDuals[dualIndex] = lpCapDuals[dualIndex];
       }
+      DBG(
       for (int dualIndex=0; dualIndex<capCutSets.size(); ++dualIndex)
       {
         std::cout << "cap dual [" << dualIndex << "]: " << capDuals[dualIndex] << std::endl;
-      }
+      })
    
       IloNumArray lpCombDuals(env);
       solver.getDuals(lpCombDuals, combConstraints);
@@ -1608,6 +1616,7 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
     int currentNodeIndex = rootNodeIndex;
     double routeFlow = INF;
     double routeTime = 0;
+    int routeLoad = 0;
     while (continueRoute)
     {
       bool arcWithFlowFound = false;
@@ -1628,6 +1637,7 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
           int currLocation = routeByLoc[routeByLoc.size()-1];
           int lastLocation = routeByLoc[routeByLoc.size()-2];
           routeTime = std::max(routeTime + vrptw.serviceTimes[lastLocation] + vrptw.distances[currLocation][lastLocation], vrptw.startTimes[currLocation]*1.0);
+          routeLoad = routeLoad + vrptw.demands[currLocation];
           if (decompositionReason == DecompositionReason::SEPARATE)
           {
             for (int lastLocationIndex=0; lastLocationIndex<lastLocationsVisited.size(); ++lastLocationIndex)
@@ -1651,7 +1661,22 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
             // if we are past the time window, return the route of arcs causing this
             if (vrptw.endTimes[currLocation] < routeTime)
             {
-              //std::cout << "infeas time window, separate " << vrptw.endTimes[currLocation] << " " << routeTime << std::endl;
+              DBG(std::cout << "infeas time window, separate " << vrptw.endTimes[currLocation] << " " << routeTime << std::endl;)
+              for (int index=0; index<route.size(); ++index)
+              {
+                routeArcs.push_back(route[index]);
+              }
+              for (int routeArcIndex : route)
+              {
+                arcs[routeArcIndex].decompositionFlow = arcs[routeArcIndex].decompositionFlow - routeFlow;
+              }
+              return;
+            }
+
+            // if we are over capacity, return the route of arcs causing this
+            if ((vrptw.vrptwType == VRPTWType::RELAX_CAPACITY) && (routeLoad > vrptw.capacity))
+            {
+              DBG(std::cout << "infeas capacity, separate " << vrptw.capacity << " " << routeLoad << std::endl;)
               for (int index=0; index<route.size(); ++index)
               {
                 routeArcs.push_back(route[index]);
@@ -1742,6 +1767,7 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
   }
   std::cout << std::endl;)
 
+  bool haveMovedFirstArc = false;
   int currNodeIndex = arcs[routeArcs[0]].fromNodeIndex;
   for (int index=0; index<(routeArcs.size()-1); ++index)
   {
@@ -1778,10 +1804,10 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
     newState.timeTimesTen = std::max(newState.timeTimesTen, vrptw.startTimes[nextLocation] * 10);
     newState.lastVisited = nextLocation;
     newState.capacity = newState.capacity + vrptw.demands[nextLocation];
-    if (vrptw.vrptwType == VRPTWType::RELAX_CAPACITY)
-    {
-      newState.capacity = 0;
-    }
+    //if (vrptw.vrptwType == VRPTWType::RELAX_CAPACITY)
+    //{
+    //  newState.capacity = 0;
+    //}
     nextNodeIndex = addNode(newState);
     if (prevNumNodes < nodes.size())
     {
@@ -1804,9 +1830,10 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
         VRPTWArc& oldArc = arcs[oldArcIndex];
         if ((std::find(newState.visited.begin(), newState.visited.end(), oldArc.location) == newState.visited.end()) && (oldArc.location != arcs[routeArcs[index+1]].location))
         {
-          // make sure isnt past time window too
+          // make sure isnt past time window too, and capacity ok
           double newArcTime = (newState.timeTimesTen / 10.0) + vrptw.distances[oldArc.location][newState.lastVisited] + vrptw.serviceTimes[newState.lastVisited];
-          if (vrptw.endTimes[oldArc.location] >= newArcTime)
+          double newLoad = newState.capacity + vrptw.demands[oldArc.location];
+          if ((vrptw.endTimes[oldArc.location] >= newArcTime) && (newLoad <= vrptw.capacity))
           {
             int newArcIndex = addArc(nextNodeIndex, oldArc.toNodeIndex);
             arcsUsed[newArcIndex] = true;
@@ -1815,11 +1842,14 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
       }
     }
 
-    // move first arc
-    if (index == 0)
+    // move first arc that needs updating
+    if (!haveMovedFirstArc)
     {
       int arcToMoveIndex = routeArcs[index];
-      moveArc(arcToMoveIndex, nextNodeIndex);
+      if (moveArc(arcToMoveIndex, nextNodeIndex))
+      {
+        haveMovedFirstArc = true;
+      }
     }
     else
     {

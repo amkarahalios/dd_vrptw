@@ -193,7 +193,7 @@ class VRPTWDecisionDiagram
     int addNode(const VRPTWNodeState& state);
     int addArc(int fromNodeIndex, int toNodeIndex);
     int addReverseArc(int forwardArcIndex);
-    void moveArc(int arcIndex, int newToNodeIndex);
+    bool moveArc(int arcIndex, int newToNodeIndex);
  
     VRPTW vrptw;
     std::vector<VRPTWNode> nodes;
