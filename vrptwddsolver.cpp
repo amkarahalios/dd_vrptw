@@ -295,7 +295,7 @@ bool VRPTWDDSolver::solve()
   lambda.push_back(0);
   for (int location=1; location<vrptw.numLocations; ++location)
   {
-    lambda.push_back(2 * vrptw.distances[location][0] * vrptw.demands[location] / vrptw.capacity);
+    lambda.push_back(2 * vrptw.distances[0][location] * vrptw.demands[location] / vrptw.capacity);
   }
   // so arc fixing does not try to use IP achieved lb
   double bestLPValue = 0.0;
@@ -316,7 +316,10 @@ bool VRPTWDDSolver::solve()
         double percentArcsFixed = 0.0;
         if (!changedLagToLP)
         {
-          percentArcsFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, bestLPValue, lpSolveType);
+          if (vrptw.oneOrMorePaths != OneOrMorePaths::ONE_PATH)
+          {
+            percentArcsFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, bestLPValue, lpSolveType);
+          }
         }
         if ((percentArcsFixed < bestLambdaPercentFixed) || changedLagToLP)
         {
@@ -422,7 +425,7 @@ bool VRPTWDDSolver::solve()
           }
         }
         // RCC - rounded capacity cuts when dd relaxes capacity
-        if (useCuts && (vrptw.vrptwType == VRPTWType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
+        if (useCuts && (vrptw.vrptwType != VRPTWType::NO_RELAX_CAPACITY) && !allRoutesCapacityFeasible)
         {
           addRCCs(decomposedRoutes, cutAdded);
         }
@@ -463,7 +466,7 @@ bool VRPTWDDSolver::solve()
         std::cout << "no more separations possible" << std::endl;
 
         // RCC - rounded capacity cuts when dd relaxes capacity
-        if (useCuts && (vrptw.vrptwType == VRPTWType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
+        if (useCuts && (vrptw.vrptwType != VRPTWType::NO_RELAX_CAPACITY) && !allRoutesCapacityFeasible)
         {
           addRCCs(decomposedRoutes, cutAdded);
         }
@@ -880,28 +883,77 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
         stats.print(routeDD.size());
       }
 
+      // get primal solution
+      std::set<int> solutionArcs;
+      routeDD.getSolutionArcs(solutionArcs);
+      if ((stats.lpIterations >= 2) && useCuts)
+      {
+        xDecompositions.push_back(solutionArcs);
+      }
+
+      // need decomposition flow to work
+      updateMultipliers(lambda, mu, combDuals, srcDuals, stepSizes, solutionArcs, lagrangeanLowerBound, numLagIterations);
+
+      // check for cycles up to certain size and add to be separated
+      //if ((maxS > 1) && (stats.lpIterations >= 2) && isSeparationRound)
+      if (maxS > 1)
+      {
+        bool infeasibleRouteFound = true;
+        while (infeasibleRouteFound)
+        {
+          std::vector<int> infeasibleRoute;
+          std::vector<double> flows;
+          std::vector<std::vector<int>> routes;
+          routeDD.decomposeRoutes(infeasibleRoute, flows, routes, maxS, DecompositionReason::SEPARATE);
+          if (!infeasibleRoute.empty())
+          {
+            infeasibleRoutes.push_back(infeasibleRoute);
+          }
+          else
+          {
+            infeasibleRouteFound = false;
+          }
+        }
+      }
+
+      // termination criteria for this iteration
+      if ((numLagIterations - lastMuImprovedIteration) > kappaIterations)
+      {
+        shouldTerminate = true;
+      }
+
+      // overall termination criteria
+      if (stats.getNumSeconds() >= timeoutSeconds)
+      {
+        shouldTerminate = true;
+      }
+ 
+      // should fix after decomposing in case we fix an arc that is in the current solution?
       // see if we can fix arcs based on a feasible dual
       // some rounds let's force dual feasibility to find the bound and fix some arcs?
       double percentFixed = 0.0;
       if (isDualFeasible)
       {
-        percentFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, lagrangeanLowerBound, lpSolveType);
-        if (percentFixed > bestLambdaPercentFixed)
+        if (vrptw.oneOrMorePaths != OneOrMorePaths::ONE_PATH)
         {
-          bestLambdaPercentFixed = percentFixed;
-          bestLambdaLowerBound = lagrangeanLowerBound;
-          for (int index=0; index<lambda.size(); ++index)
+          percentFixed = routeDD.fixArcs(lambda, mu, combDuals, srcDuals, lagrangeanLowerBound, lpSolveType);
+          if (percentFixed > bestLambdaPercentFixed)
           {
-            bestLambdaArcFixing[index] = lambda[index];
+            bestLambdaPercentFixed = percentFixed;
+            bestLambdaLowerBound = lagrangeanLowerBound;
+            for (int index=0; index<lambda.size(); ++index)
+            {
+              bestLambdaArcFixing[index] = lambda[index];
+            }
           }
-        }
 
-        double checkLambdaLB = 0.0;
-        for (double dual : lambda)
-        {
-          checkLambdaLB += dual;
+          double checkLambdaLB = 0.0;
+          for (double dual : lambda)
+          {
+            checkLambdaLB += dual;
+          }
+          std::cout << "check lb sum lambda: " << checkLambdaLB << std::endl;
         }
-        std::cout << "check lb sum lambda: " << checkLambdaLB << std::endl;
       }
       else
       {
@@ -964,51 +1016,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, std::
         lpSolveType = LPSolveType::LPSolver;
         stats.lpIterations = 1;
         shouldTerminate = true;
-      }
-
-      // get primal solution
-      std::set<int> solutionArcs;
-      routeDD.getSolutionArcs(solutionArcs);
-      if ((stats.lpIterations >= 2) && useCuts)
-      {
-        xDecompositions.push_back(solutionArcs);
-      }
-
-      // need decomposition flow to work
-      updateMultipliers(lambda, mu, combDuals, srcDuals, stepSizes, solutionArcs, lagrangeanLowerBound, numLagIterations);
-
-      // check for cycles up to certain size and add to be separated
-      //if ((maxS > 1) && (stats.lpIterations >= 2) && isSeparationRound)
-      if (maxS > 1)
-      {
-        bool infeasibleRouteFound = true;
-        while (infeasibleRouteFound)
-        {
-          std::vector<int> infeasibleRoute;
-          std::vector<double> flows;
-          std::vector<std::vector<int>> routes;
-          routeDD.decomposeRoutes(infeasibleRoute, flows, routes, maxS, DecompositionReason::SEPARATE);
-          if (!infeasibleRoute.empty())
-          {
-            infeasibleRoutes.push_back(infeasibleRoute);
-          }
-          else
-          {
-            infeasibleRouteFound = false;
-          }
-        }
-      }
-
-      // termination criteria for this iteration
-      if ((numLagIterations - lastMuImprovedIteration) > kappaIterations)
-      {
-        shouldTerminate = true;
-      }
-
-      // overall termination criteria
-      if (stats.getNumSeconds() >= timeoutSeconds)
-      {
-        shouldTerminate = true;
+        routeDD.print();
       }
     }
 

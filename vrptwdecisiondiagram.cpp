@@ -141,7 +141,7 @@ int VRPTWDecisionDiagram::addNode(const VRPTWNodeState& state)
 
     nodes.push_back(newNode);
     stateToNodes.insert(std::make_pair(state, newNodeIndex));
-    timeNodeIndices[state.timeTimesTen].push_back(newNodeIndex);
+    timeCapNodeIndices[std::make_pair(state.timeTimesTen,state.capacity)].push_back(newNodeIndex);
     return newNodeIndex;
   }
 
@@ -316,7 +316,7 @@ void VRPTWDecisionDiagram::compileExactFukasawa(int s)
 
       // check time to begin isnt past endTime
       int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
-      double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[location][lastVisitedLocation] + vrptw.serviceTimes[lastVisitedLocation];
+      double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[lastVisitedLocation][location] + vrptw.serviceTimes[lastVisitedLocation];
       if (earliestStartTime > vrptw.endTimes[location])
       {
         continue;
@@ -350,6 +350,10 @@ void VRPTWDecisionDiagram::compileExactFukasawa(int s)
       // bucketing
       int timeQuotient = newTimeTimesTen / timeStepSize;
       newTimeTimesTen = timeStepSize * timeQuotient;
+      if (vrptw.vrptwType == VRPTWType::RELAX_TIME_WINDOWS)
+      {
+        newTimeTimesTen = 0;
+      }
  
       int loadQuotient = newCapacity / capacityStepSize;
       newCapacity = capacityStepSize * loadQuotient;
@@ -372,7 +376,7 @@ void VRPTWDecisionDiagram::compileExactFukasawa(int s)
   {
     // need to be able to make it back in time
     int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
-    double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[0][lastVisitedLocation] + vrptw.serviceTimes[lastVisitedLocation];
+    double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[lastVisitedLocation][0] + vrptw.serviceTimes[lastVisitedLocation];
     if (earliestStartTime > vrptw.endTimes[0])
     {
       continue;
@@ -422,7 +426,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   VRPTWNodeState rootNodeState(0,0,0,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
-  VRPTWNodeState terminalNodeState(vrptw.capacity,vrptw.endTimes[0]*10,0,initialDeque);
+  VRPTWNodeState terminalNodeState(vrptw.capacity*10,vrptw.endTimes[0]*10,0,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
 
@@ -444,7 +448,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
       }
  
       int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
-      double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[location][lastVisitedLocation] + vrptw.serviceTimes[lastVisitedLocation];
+      double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[lastVisitedLocation][location] + vrptw.serviceTimes[lastVisitedLocation];
       if (earliestStartTime > vrptw.endTimes[location])
       {
         continue;
@@ -466,6 +470,10 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
       // bucketing
       int timeQuotient = newTimeTimesTen / timeStepSize;
       newTimeTimesTen = timeStepSize * timeQuotient;
+      if (vrptw.vrptwType == VRPTWType::RELAX_TIME_WINDOWS)
+      {
+        newTimeTimesTen = 0;
+      }
  
       int loadQuotient = newCapacity / capacityStepSize;
       newCapacity = capacityStepSize * loadQuotient;
@@ -488,7 +496,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   {
     // need to be able to make it back in time
     int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
-    double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[0][lastVisitedLocation] + vrptw.serviceTimes[lastVisitedLocation];
+    double earliestStartTime = (nodes[nodeIndex].state.timeTimesTen / 10.0) + vrptw.distances[lastVisitedLocation][0] + vrptw.serviceTimes[lastVisitedLocation];
     if (earliestStartTime > vrptw.endTimes[0])
     {
       continue;
@@ -646,14 +654,14 @@ void VRPTWDecisionDiagram::addConnectedNodesToBlacklist(int nodeIndex, int deman
 {
   int load = nodes[nodeIndex].state.capacity;
   std::vector<bool> seenNode(nodes.size(), false);
-  for (auto capNodeIndices : timeNodeIndices)
+  for (auto capNodeIndices : timeCapNodeIndices)
   {
     // skip to load range
-    if (capNodeIndices.first < load)
+    if (capNodeIndices.first.second < load)
     {
       continue;
     }
-    else if (capNodeIndices.first > demandLimit)
+    else if (capNodeIndices.first.second > demandLimit)
     {
       return;
     }
@@ -687,14 +695,14 @@ bool VRPTWDecisionDiagram::areNodesConnected(int nodeIndex1, int nodeIndex2)
   if (load1 < load2)
   {
     seenNode[nodeIndex1] = true;
-    for (auto capNodeIndices : timeNodeIndices)
+    for (auto capNodeIndices : timeCapNodeIndices)
     {
       // skip to load range
-      if (capNodeIndices.first < load1)
+      if (capNodeIndices.first.second < load1)
       {
         continue;
       }
-      else if (capNodeIndices.first > load2)
+      else if (capNodeIndices.first.second > load2)
       {
         return false;
       }
@@ -724,14 +732,14 @@ bool VRPTWDecisionDiagram::areNodesConnected(int nodeIndex1, int nodeIndex2)
   else if (load1 > load2)
   {
     seenNode[nodeIndex2] = true;
-    for (auto capNodeIndices : timeNodeIndices)
+    for (auto capNodeIndices : timeCapNodeIndices)
     {
       // skip to load range
-      if (capNodeIndices.first < load2)
+      if (capNodeIndices.first.second < load2)
       {
         continue;
       }
-      else if (capNodeIndices.first > load1)
+      else if (capNodeIndices.first.second > load1)
       {
         return false;
       }
@@ -961,7 +969,7 @@ double VRPTWDecisionDiagram::computeShortestPathBFS(ShortestPathMode mode, std::
   priorArcIndexShortestPath.resize(nodes.size());
 
   // dp to find shortest path
-  for (auto capNodeIndices : timeNodeIndices)
+  for (auto capNodeIndices : timeCapNodeIndices)
   {
     for (int nodeIndex : capNodeIndices.second)
     {
@@ -1040,7 +1048,7 @@ double VRPTWDecisionDiagram::computeShortestPathBFSWang(std::vector<int>& treeBy
   priorLocationForShortestPath.resize(nodes.size());
 
   // dp to find shortest path
-  for (auto capNodeIndices : timeNodeIndices)
+  for (auto capNodeIndices : timeCapNodeIndices)
   {
     for (int nodeIndex : capNodeIndices.second)
     {
@@ -1176,6 +1184,17 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
     flowConservationConstraints.add(sumInMinusOutNode == 0);
   }
   flowModel.add(flowConservationConstraints);
+
+  // one path for TSPs
+  if (vrptw.oneOrMorePaths == ONE_PATH)
+  {
+    IloExpr onePath(env);
+    for (auto arcIndex : nodes[rootNodeIndex].outArcs)
+    {
+      onePath += x[arcIndex];
+    }
+    flowModel.add(onePath == 1);
+  }
 
   // fix arcs
   for (auto arcIndex : fixedArcs)
@@ -1345,7 +1364,7 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, const st
   shortestPathUp[terminalNodeIndex] = 0;
 
   // dp to find shortest path down
-  for (auto capNodeIndices : timeNodeIndices)
+  for (auto capNodeIndices : timeCapNodeIndices)
   {
     for (int nodeIndex : capNodeIndices.second)
     {
@@ -1363,7 +1382,7 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, const st
   }
 
   // dp to find shortest path up
-  for (auto it=timeNodeIndices.rbegin(); it!=timeNodeIndices.rend(); ++it)
+  for (auto it=timeCapNodeIndices.rbegin(); it!=timeCapNodeIndices.rend(); ++it)
   {
     for (int nodeIndex : it->second)
     {
@@ -1636,7 +1655,7 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
           // get time of current route decomposing
           int currLocation = routeByLoc[routeByLoc.size()-1];
           int lastLocation = routeByLoc[routeByLoc.size()-2];
-          routeTime = std::max(routeTime + vrptw.serviceTimes[lastLocation] + vrptw.distances[currLocation][lastLocation], vrptw.startTimes[currLocation]*1.0);
+          routeTime = std::max(routeTime + vrptw.serviceTimes[lastLocation] + vrptw.distances[lastLocation][currLocation], vrptw.startTimes[currLocation]*1.0);
           routeLoad = routeLoad + vrptw.demands[currLocation];
           if (decompositionReason == DecompositionReason::SEPARATE)
           {
@@ -1659,7 +1678,7 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
             }
 
             // if we are past the time window, return the route of arcs causing this
-            if (vrptw.endTimes[currLocation] < routeTime)
+            if ((vrptw.vrptwType != VRPTWType::RELAX_TIME_WINDOWS) && (vrptw.endTimes[currLocation] < routeTime))
             {
               DBG(std::cout << "infeas time window, separate " << vrptw.endTimes[currLocation] << " " << routeTime << std::endl;)
               for (int index=0; index<route.size(); ++index)
@@ -1721,7 +1740,8 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
     DBG(std::cout << "decomposed route: ";)
     for (int arcIndex : route)
     {
-      DBG(std::cout << arcIndex << " ";)
+      DBG(std::cout << arcs[arcIndex].location << " ";
+      std::cout << arcIndex << " ";)
       arcs[arcIndex].decompositionFlow = arcs[arcIndex].decompositionFlow - routeFlow;
     }
     DBG(std::cout << std::endl;)
@@ -1752,7 +1772,6 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
   }
   fixedArcs.clear();
 
-  DBG(
   std::cout << "separating route: ";
   for (int arcIndex : routeArcs)
   {
@@ -1765,7 +1784,7 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
   {
     std::cout << arcs[arcIndex].location << " ";
   }
-  std::cout << std::endl;)
+  std::cout << std::endl;
 
   bool haveMovedFirstArc = false;
   int currNodeIndex = arcs[routeArcs[0]].fromNodeIndex;
@@ -1831,7 +1850,7 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
         if ((std::find(newState.visited.begin(), newState.visited.end(), oldArc.location) == newState.visited.end()) && (oldArc.location != arcs[routeArcs[index+1]].location))
         {
           // make sure isnt past time window too, and capacity ok
-          double newArcTime = (newState.timeTimesTen / 10.0) + vrptw.distances[oldArc.location][newState.lastVisited] + vrptw.serviceTimes[newState.lastVisited];
+          double newArcTime = (newState.timeTimesTen / 10.0) + vrptw.distances[newState.lastVisited][oldArc.location] + vrptw.serviceTimes[newState.lastVisited];
           double newLoad = newState.capacity + vrptw.demands[oldArc.location];
           if ((vrptw.endTimes[oldArc.location] >= newArcTime) && (newLoad <= vrptw.capacity))
           {
@@ -2514,7 +2533,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>
 
     // find multi path
     int newPathArcIndex = findMultiPathNode(nodesToUpdate, currentNumPaths);
-    if ((newPathArcIndex != -1) && (nodesToUpdate.find(arcs[newPathArcIndex].fromNodeIndex) == nodesToUpdate.end()))
+    if ((newPathArcIndex != -1) && (nodesToUpdate.find(arcs[newPathArcIndex].fromNodeIndex) == nodesToUpdate.end()) && (vrptw.oneOrMorePaths != OneOrMorePaths::ONE_PATH))
     {
       DBG(std::cout << "find multi path" << std::endl;)
       findMultiPath(newPathArcIndex, treeByParentArcs, shortestPathByArc);
@@ -2561,6 +2580,12 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>
         clipPermanentArc(arcReverseArc[pathByArc.back()]);
         clippedArcs.insert(pathByArc.front());
         clippedArcs.insert(pathByArc.back());
+      }
+
+      // one path - stop trying for more
+      if (vrptw.oneOrMorePaths == OneOrMorePaths::ONE_PATH)
+      {
+        break;
       }
 
       // dijkstra with batch proc

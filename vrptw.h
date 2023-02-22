@@ -13,6 +13,12 @@
 
 const long INF = 1e10;
 
+enum OneOrMorePaths
+{
+  ONE_PATH = 0,
+  MORE_PATHS = 1
+};
+
 enum InitialStateSpace
 {
   NG = 0,
@@ -70,7 +76,8 @@ enum ShortestPathMode
 enum VRPTWType
 {
   RELAX_CAPACITY = 0,
-  NO_RELAX_CAPACITY = 1
+  NO_RELAX_CAPACITY = 1,
+  RELAX_TIME_WINDOWS = 2
 };
 
 struct VRPTWSolution
@@ -634,7 +641,531 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"X-n936-k151.vrp",132715},
 {"X-n957-k87.vrp",85465},
 {"X-n979-k58.vrp",118976},
-{"lou-n88-k2.vrp",41}
+{"lou-n88-k2.vrp",41},
+{"rc201.0.tw",628.62},
+{"rc201.1.tw",654.7},
+{"rc201.2.tw",707.65},
+{"rc201.3.tw",422.54},
+{"rc202.0.tw",496.22},
+{"rc202.1.tw",426.53},
+{"rc202.2.tw",611.77},
+{"rc202.3.tw",627.85},
+{"rc203.0.tw",727.45},
+{"rc203.1.tw",726.99},
+{"rc203.2.tw",617.46},
+{"rc204.0.tw",541.45},
+{"rc204.1.tw",485.37},
+{"rc204.2.tw",778.4},
+{"rc205.0.tw",511.65},
+{"rc205.1.tw",491.22},
+{"rc205.2.tw",714.69},
+{"rc205.3.tw",601.24},
+{"rc206.0.tw",835.23},
+{"rc206.1.tw",664.73},
+{"rc206.2.tw",655.37},
+{"rc207.0.tw",806.69},
+{"rc207.1.tw",726.36},
+{"rc207.2.tw",546.41},
+{"rc208.0.tw",820.56},
+{"rc208.1.tw",509.04},
+{"rc208.2.tw",503.92},
+{"rc_201.1.tw",444.54},
+{"rc_201.2.tw",711.54},
+{"rc_201.3.tw",790.61},
+{"rc_201.4.tw",793.64},
+{"rc_202.1.tw",771.78},
+{"rc_202.2.tw",304.14},
+{"rc_202.3.tw",837.72},
+{"rc_202.4.tw",793.03},
+{"rc_203.1.tw",453.48},
+{"rc_203.2.tw",784.16},
+{"rc_203.3.tw",817.53},
+{"rc_203.4.tw",314.29},
+{"rc_204.1.tw",878.64},
+{"rc_204.2.tw",662.16},
+{"rc_204.3.tw",455.03},
+{"rc_205.1.tw",343.21},
+{"rc_205.2.tw",755.93},
+{"rc_205.3.tw",825.06},
+{"rc_205.4.tw",760.47},
+{"rc_206.1.tw",117.85},
+{"rc_206.2.tw",828.06},
+{"rc_206.3.tw",574.42},
+{"rc_206.4.tw",831.67},
+{"rc_207.1.tw",732.68},
+{"rc_207.2.tw",701.25},
+{"rc_207.3.tw",682.4},
+{"rc_207.4.tw",119.64},
+{"rc_208.1.tw",789.25},
+{"rc_208.2.tw",533.78},
+{"rc_208.3.tw",634.44},
+{"rbg010a.tw",671},
+{"rbg016a.tw",938},
+{"rbg016b.tw",1304},
+{"rbg017.2.tw",852},
+{"rbg017.tw",893},
+{"rbg017a.tw",4296},
+{"rbg019a.tw",1262},
+{"rbg019b.tw",1866},
+{"rbg019c.tw",4536},
+{"rbg019d.tw",1356},
+{"rbg020a.tw",4689},
+{"rbg021.2.tw",4528},
+{"rbg021.3.tw",4528},
+{"rbg021.4.tw",4525},
+{"rbg021.5.tw",4515},
+{"rbg021.6.tw",4480},
+{"rbg021.7.tw",4479},
+{"rbg021.8.tw",4478},
+{"rbg021.9.tw",4478},
+{"rbg021.tw",4536},
+{"rbg027a.tw",5091},
+{"rbg031a.tw",1863},
+{"rbg033a.tw",2069},
+{"rbg034a.tw",2222},
+{"rbg035a.2.tw",2056},
+{"rbg035a.tw",2144},
+{"rbg038a.tw",2480},
+{"rbg040a.tw",2378},
+{"rbg041a.tw",2598},
+{"rbg042a.tw",2772},
+{"rbg048a.tw",9383},
+{"rbg049a.tw",10018},
+{"rbg050a.tw",2953},
+{"rbg050b.tw",9863},
+{"rbg050c.tw",10024},
+{"rbg055a.tw",3761},
+{"rbg067a.tw",4625},
+{"rbg086a.tw",8400},
+{"rbg092a.tw",7158},
+{"rbg125a.tw",7936},
+{"rbg132.2.tw",8192},
+{"rbg132.tw",8468},
+{"rbg152.3.tw",9788},
+{"rbg152.tw",10032},
+{"rbg172a.tw",10950},
+{"rbg193.2.tw",12142},
+{"rbg193.tw",12535},
+{"rbg201a.tw",12948},
+{"rbg233.2.tw",14495},
+{"rbg233.tw",14992},
+{"n100w20.001.tw",738},
+{"n100w20.002.tw",715},
+{"n100w20.003.tw",762},
+{"n100w20.004.tw",799},
+{"n100w20.005.tw",774},
+{"n100w40.001.tw",770},
+{"n100w40.002.tw",653},
+{"n100w40.003.tw",736},
+{"n100w40.004.tw",651},
+{"n100w40.005.tw",699},
+{"n100w60.001.tw",655},
+{"n100w60.002.tw",659},
+{"n100w60.003.tw",744},
+{"n100w60.004.tw",764},
+{"n100w60.005.tw",661},
+{"n150w20.001.tw",925},
+{"n150w20.002.tw",864},
+{"n150w20.003.tw",834},
+{"n150w20.004.tw",873},
+{"n150w20.005.tw",846},
+{"n150w40.001.tw",918},
+{"n150w40.002.tw",941},
+{"n150w40.003.tw",727},
+{"n150w40.004.tw",764},
+{"n150w40.005.tw",824},
+{"n150w60.001.tw",859},
+{"n150w60.002.tw",782},
+{"n150w60.003.tw",793},
+{"n150w60.004.tw",819},
+{"n150w60.005.tw",840},
+{"n200w20.001.tw",1019},
+{"n200w20.002.tw",972},
+{"n200w20.003.tw",1050},
+{"n200w20.004.tw",984},
+{"n200w20.005.tw",1020},
+{"n200w40.001.tw",1023},
+{"n200w40.002.tw",948},
+{"n200w40.003.tw",933},
+{"n200w40.004.tw",980},
+{"n200w40.005.tw",1037},
+{"n20w100.001.tw",237},
+{"n20w100.002.tw",222},
+{"n20w100.003.tw",310},
+{"n20w100.004.tw",349},
+{"n20w100.005.tw",258},
+{"n20w20.001.tw",378},
+{"n20w20.002.tw",286},
+{"n20w20.003.tw",394},
+{"n20w20.004.tw",396},
+{"n20w20.005.tw",352},
+{"n20w40.001.tw",254},
+{"n20w40.002.tw",333},
+{"n20w40.003.tw",317},
+{"n20w40.004.tw",388},
+{"n20w40.005.tw",288},
+{"n20w60.001.tw",335},
+{"n20w60.002.tw",244},
+{"n20w60.003.tw",352},
+{"n20w60.004.tw",280},
+{"n20w60.005.tw",338},
+{"n20w80.001.tw",329},
+{"n20w80.002.tw",338},
+{"n20w80.003.tw",320},
+{"n20w80.004.tw",304},
+{"n20w80.005.tw",264},
+{"n40w100.001.tw",429},
+{"n40w100.002.tw",358},
+{"n40w100.003.tw",364},
+{"n40w100.004.tw",357},
+{"n40w100.005.tw",377},
+{"n40w20.001.tw",500},
+{"n40w20.002.tw",552},
+{"n40w20.003.tw",478},
+{"n40w20.004.tw",404},
+{"n40w20.005.tw",499},
+{"n40w40.001.tw",465},
+{"n40w40.002.tw",461},
+{"n40w40.003.tw",474},
+{"n40w40.004.tw",452},
+{"n40w40.005.tw",453},
+{"n40w60.001.tw",494},
+{"n40w60.002.tw",470},
+{"n40w60.003.tw",408},
+{"n40w60.004.tw",382},
+{"n40w60.005.tw",328},
+{"n40w80.001.tw",395},
+{"n40w80.002.tw",431},
+{"n40w80.003.tw",412},
+{"n40w80.004.tw",417},
+{"n40w80.005.tw",344},
+{"n60w100.001.tw",515},
+{"n60w100.002.tw",538},
+{"n60w100.003.tw",560},
+{"n60w100.004.tw",510},
+{"n60w100.005.tw",451},
+{"n60w20.001.tw",551},
+{"n60w20.002.tw",605},
+{"n60w20.003.tw",533},
+{"n60w20.004.tw",616},
+{"n60w20.005.tw",603},
+{"n60w40.001.tw",591},
+{"n60w40.002.tw",621},
+{"n60w40.003.tw",603},
+{"n60w40.004.tw",597},
+{"n60w40.005.tw",539},
+{"n60w60.001.tw",609},
+{"n60w60.002.tw",566},
+{"n60w60.003.tw",485},
+{"n60w60.004.tw",571},
+{"n60w60.005.tw",569},
+{"n60w80.001.tw",458},
+{"n60w80.002.tw",498},
+{"n60w80.003.tw",550},
+{"n60w80.004.tw",566},
+{"n60w80.005.tw",468},
+{"n80w20.001.tw",616},
+{"n80w20.002.tw",737},
+{"n80w20.003.tw",667},
+{"n80w20.004.tw",615},
+{"n80w20.005.tw",748},
+{"n80w40.001.tw",606},
+{"n80w40.002.tw",618},
+{"n80w40.003.tw",674},
+{"n80w40.004.tw",557},
+{"n80w40.005.tw",695},
+{"n80w60.001.tw",554},
+{"n80w60.002.tw",633},
+{"n80w60.003.tw",651},
+{"n80w60.004.tw",619},
+{"n80w60.005.tw",575},
+{"n80w80.001.tw",624},
+{"n80w80.002.tw",592},
+{"n80w80.003.tw",589},
+{"n80w80.004.tw",594},
+{"n80w80.005.tw",570},
+{"n100w100.001.tw",643},
+{"n100w100.002.tw",619},
+{"n100w100.003.tw",685},
+{"n100w100.004.tw",684},
+{"n100w100.005.tw",572},
+{"n100w120.001.tw",629},
+{"n100w120.002.tw",540},
+{"n100w120.003.tw",617},
+{"n100w120.004.tw",663},
+{"n100w120.005.tw",537},
+{"n100w140.001.tw",604},
+{"n100w140.002.tw",615},
+{"n100w140.003.tw",481},
+{"n100w140.004.tw",533},
+{"n100w140.005.tw",509},
+{"n100w160.001.tw",582},
+{"n100w160.002.tw",532},
+{"n100w160.003.tw",495},
+{"n100w160.004.tw",580},
+{"n100w160.005.tw",586},
+{"n100w80.001.tw",670},
+{"n100w80.002.tw",668},
+{"n100w80.003.tw",691},
+{"n100w80.004.tw",700},
+{"n100w80.005.tw",603},
+{"n20w120.001.tw",267},
+{"n20w120.002.tw",218},
+{"n20w120.003.tw",303},
+{"n20w120.004.tw",300},
+{"n20w120.005.tw",240},
+{"n20w140.001.tw",176},
+{"n20w140.002.tw",272},
+{"n20w140.003.tw",236},
+{"n20w140.004.tw",255},
+{"n20w140.005.tw",225},
+{"n20w160.001.tw",241},
+{"n20w160.002.tw",201},
+{"n20w160.003.tw",201},
+{"n20w160.004.tw",203},
+{"n20w160.005.tw",245},
+{"n20w180.001.tw",253},
+{"n20w180.002.tw",265},
+{"n20w180.003.tw",271},
+{"n20w180.004.tw",201},
+{"n20w180.005.tw",193},
+{"n20w200.001.tw",233},
+{"n20w200.002.tw",203},
+{"n20w200.003.tw",249},
+{"n20w200.004.tw",293},
+{"n20w200.005.tw",227},
+{"n40w120.001.tw",434},
+{"n40w120.002.tw",445},
+{"n40w120.003.tw",357},
+{"n40w120.004.tw",303},
+{"n40w120.005.tw",350},
+{"n40w140.001.tw",328},
+{"n40w140.002.tw",383},
+{"n40w140.003.tw",398},
+{"n40w140.004.tw",342},
+{"n40w140.005.tw",371},
+{"n40w160.001.tw",348},
+{"n40w160.002.tw",337},
+{"n40w160.003.tw",346},
+{"n40w160.004.tw",288},
+{"n40w160.005.tw",315},
+{"n40w180.001.tw",337},
+{"n40w180.002.tw",347},
+{"n40w180.003.tw",279},
+{"n40w180.004.tw",354},
+{"n40w180.005.tw",335},
+{"n40w200.001.tw",330},
+{"n40w200.002.tw",303},
+{"n40w200.003.tw",339},
+{"n40w200.004.tw",301},
+{"n40w200.005.tw",296},
+{"n60w120.001.tw",384},
+{"n60w120.002.tw",427},
+{"n60w120.003.tw",407},
+{"n60w120.004.tw",490},
+{"n60w120.005.tw",547},
+{"n60w140.001.tw",423},
+{"n60w140.002.tw",462},
+{"n60w140.003.tw",427},
+{"n60w140.004.tw",488},
+{"n60w140.005.tw",460},
+{"n60w160.001.tw",560},
+{"n60w160.002.tw",423},
+{"n60w160.003.tw",434},
+{"n60w160.004.tw",401},
+{"n60w160.005.tw",502},
+{"n60w180.001.tw",411},
+{"n60w180.002.tw",399},
+{"n60w180.003.tw",445},
+{"n60w180.004.tw",456},
+{"n60w180.005.tw",395},
+{"n60w200.001.tw",410},
+{"n60w200.002.tw",414},
+{"n60w200.003.tw",455},
+{"n60w200.004.tw",431},
+{"n60w200.005.tw",427},
+{"n80w100.001.tw",565},
+{"n80w100.002.tw",567},
+{"n80w100.003.tw",580},
+{"n80w100.004.tw",649},
+{"n80w100.005.tw",532},
+{"n80w120.001.tw",498},
+{"n80w120.002.tw",577},
+{"n80w120.003.tw",540},
+{"n80w120.004.tw",501},
+{"n80w120.005.tw",591},
+{"n80w140.001.tw",512},
+{"n80w140.002.tw",470},
+{"n80w140.003.tw",580},
+{"n80w140.004.tw",423},
+{"n80w140.005.tw",545},
+{"n80w160.001.tw",506},
+{"n80w160.002.tw",549},
+{"n80w160.003.tw",521},
+{"n80w160.004.tw",509},
+{"n80w160.005.tw",439},
+{"n80w180.001.tw",551},
+{"n80w180.002.tw",479},
+{"n80w180.003.tw",524},
+{"n80w180.004.tw",479},
+{"n80w180.005.tw",470},
+{"n80w200.001.tw",490},
+{"n80w200.002.tw",488},
+{"n80w200.003.tw",464},
+{"n80w200.004.tw",526},
+{"n80w200.005.tw",439},
+{"N20ft301.tw",661.6},
+{"N20ft302.tw",684.2},
+{"N20ft303.tw",746.4},
+{"N20ft304.tw",817},
+{"N20ft305.tw",716.5},
+{"N20ft306.tw",727.8},
+{"N20ft307.tw",691.8},
+{"N20ft308.tw",788.2},
+{"N20ft309.tw",730.7},
+{"N20ft310.tw",683},
+{"N20ft401.tw",660.8},
+{"N20ft402.tw",684.2},
+{"N20ft403.tw",746.4},
+{"N20ft404.tw",817},
+{"N20ft405.tw",716.5},
+{"N20ft406.tw",727.8},
+{"N20ft407.tw",691.8},
+{"N20ft408.tw",757.3},
+{"N20ft409.tw",730.7},
+{"N20ft410.tw",683},
+{"N40ft201.tw",1100.6},
+{"N40ft202.tw",1010.4},
+{"N40ft203.tw",876.8},
+{"N40ft204.tw",885.8},
+{"N40ft205.tw",940.9},
+{"N40ft206.tw",1054.2},
+{"N40ft207.tw",867.5},
+{"N40ft208.tw",1050.7},
+{"N40ft209.tw",1013.9},
+{"N40ft210.tw",1026.3},
+{"N40ft401.tw",1085},
+{"N40ft402.tw",995.6},
+{"N40ft403.tw",845.8},
+{"N40ft404.tw",868},
+{"N40ft405.tw",936.5},
+{"N40ft406.tw",969.1},
+{"N40ft407.tw",831.2},
+{"N40ft408.tw",1002.7},
+{"N40ft409.tw",1000.5},
+{"N40ft410.tw",983.8},
+{"N60ft201.tw",1353.5},
+{"N60ft202.tw",1161.6},
+{"N60ft203.tw",1182.9},
+{"N60ft204.tw",1257.5},
+{"N60ft205.tw",1184.1},
+{"N60ft206.tw",1199.6},
+{"N60ft207.tw",1299},
+{"N60ft208.tw",1113},
+{"N60ft209.tw",1171.3},
+{"N60ft210.tw",1234.3},
+{"N60ft301.tw",1337},
+{"N60ft302.tw",1089.5},
+{"N60ft303.tw",1179},
+{"N60ft304.tw",1230},
+{"N60ft305.tw",1151.6},
+{"N60ft306.tw",1167.9},
+{"N60ft307.tw",1220.1},
+{"N60ft308.tw",1097.6},
+{"N60ft309.tw",1140.6},
+{"N60ft310.tw",1219.2},
+{"N60ft401.tw",1335},
+{"N60ft402.tw",1088.1},
+{"N60ft403.tw",1173.7},
+{"N60ft404.tw",1184.7},
+{"N60ft405.tw",1146.2},
+{"N60ft406.tw",1140.2},
+{"N60ft407.tw",1198.9},
+{"N60ft408.tw",1029.4},
+{"N60ft409.tw",1121.4},
+{"N60ft410.tw",1189.6},
+{"n150w120.001.tw",734},
+{"n150w120.002.tw",677},
+{"n150w120.003.tw",747},
+{"n150w120.004.tw",763},
+{"n150w120.005.tw",689},
+{"n150w140.001.tw",762},
+{"n150w140.002.tw",755},
+{"n150w140.003.tw",613},
+{"n150w140.004.tw",676},
+{"n150w140.005.tw",663},
+{"n150w160.001.tw",706},
+{"n150w160.002.tw",711},
+{"n150w160.003.tw",608},
+{"n150w160.004.tw",672},
+{"n150w160.005.tw",658},
+{"n200w120.001.tw",799},
+{"n200w120.002.tw",721},
+{"n200w120.003.tw",880},
+{"n200w120.004.tw",777},
+{"n200w120.005.tw",841},
+{"n200w140.001.tw",834},
+{"n200w140.002.tw",760},
+{"n200w140.003.tw",758},
+{"n200w140.004.tw",816},
+{"n200w140.005.tw",822},
+{"rc201.0.tw",628.62},
+{"rc201.1.tw",654.7},
+{"rc201.2.tw",707.65},
+{"rc201.3.tw",422.54},
+{"rc202.0.tw",496.22},
+{"rc202.1.tw",426.53},
+{"rc202.2.tw",611.77},
+{"rc202.3.tw",627.85},
+{"rc203.0.tw",727.45},
+{"rc203.1.tw",726.99},
+{"rc203.2.tw",617.46},
+{"rc204.0.tw",541.45},
+{"rc204.1.tw",485.37},
+{"rc204.2.tw",778.4},
+{"rc205.0.tw",511.65},
+{"rc205.1.tw",491.22},
+{"rc205.2.tw",714.69},
+{"rc205.3.tw",601.24},
+{"rc206.0.tw",835.23},
+{"rc206.1.tw",664.73},
+{"rc206.2.tw",655.37},
+{"rc207.0.tw",806.69},
+{"rc207.1.tw",726.36},
+{"rc207.2.tw",546.41},
+{"rc208.0.tw",820.56},
+{"rc208.1.tw",509.04},
+{"rc208.2.tw",503.92},
+{"rc_201.1.tw",444.54},
+{"rc_201.2.tw",711.54},
+{"rc_201.3.tw",790.61},
+{"rc_201.4.tw",793.64},
+{"rc_202.1.tw",771.78},
+{"rc_202.2.tw",304.14},
+{"rc_202.3.tw",837.72},
+{"rc_202.4.tw",793.03},
+{"rc_203.1.tw",453.48},
+{"rc_203.2.tw",784.16},
+{"rc_203.3.tw",817.53},
+{"rc_203.4.tw",314.29},
+{"rc_204.1.tw",878.64},
+{"rc_204.2.tw",662.16},
+{"rc_204.3.tw",455.03},
+{"rc_205.1.tw",343.21},
+{"rc_205.2.tw",755.93},
+{"rc_205.3.tw",825.06},
+{"rc_205.4.tw",760.47},
+{"rc_206.1.tw",117.85},
+{"rc_206.2.tw",828.06},
+{"rc_206.3.tw",574.42},
+{"rc_206.4.tw",831.67},
+{"rc_207.1.tw",732.68},
+{"rc_207.2.tw",701.25},
+{"rc_207.3.tw",682.4},
+{"rc_207.4.tw",119.64},
+{"rc_208.1.tw",789.25},
+{"rc_208.2.tw",533.78},
+{"rc_208.3.tw",634.44}
 };
 
 struct VRPTW
@@ -642,112 +1173,381 @@ struct VRPTW
   public:
     VRPTW(std::string fileName)
     {
-      std::vector<std::pair<double,double> > coordinates;
-
-      std::regex noCapacityRelaxRegex(".*HG.*C1|R1|RC1.*txt");
-      std::smatch noCapacityRelaxMatch;
-      vrptwType = VRPTWType::RELAX_CAPACITY;
-      if (std::regex_search(fileName, noCapacityRelaxMatch, noCapacityRelaxRegex))
+      // VRPTW instance format
+      std::regex vrptwInstanceRegex(".*txt");
+      std::smatch vrptwInstanceMatch;
+      if (std::regex_search(fileName, vrptwInstanceMatch, vrptwInstanceRegex))
       {
-        std::cout << "do not relax capacity constraint" << std::endl;
-        vrptwType = VRPTWType::NO_RELAX_CAPACITY;
+        oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
+        std::vector<std::pair<double,double> > coordinates;
+
+        std::regex noCapacityRelaxRegex(".*HG.*C1|R1|RC1.*txt");
+        std::smatch noCapacityRelaxMatch;
+        vrptwType = VRPTWType::RELAX_CAPACITY;
+        if (std::regex_search(fileName, noCapacityRelaxMatch, noCapacityRelaxRegex))
+        {
+          std::cout << "do not relax capacity constraint" << std::endl;
+          vrptwType = VRPTWType::NO_RELAX_CAPACITY;
+        }
+        else
+        {
+          std::cout << "relax capacity constraint" << std::endl;
+        }
+
+        bool vehicleCapacitySection = false;
+        bool customerSection = false;
+        std::ifstream infile(fileName);
+        std::string line;
+        while (std::getline(infile, line))
+        {
+          if (line.empty())
+          {
+            continue;
+          }
+
+          if (line.find("NUMBER") != std::string::npos)
+          {
+            vehicleCapacitySection = true;
+            customerSection = false;
+            continue;
+          }
+          else if (line.find("CUST NO.") != std::string::npos)
+          {
+            vehicleCapacitySection = false;
+            customerSection = true;
+            continue;
+          }
+   
+          if (vehicleCapacitySection)
+          {
+            std::istringstream iss(line);
+            int number, truckCapacity;
+            if (!(iss >> number >> truckCapacity))
+            {
+              continue;
+            }
+            else
+            {
+              capacity = truckCapacity;
+            }
+          }
+
+
+          if (customerSection)
+          {
+            std::istringstream iss(line);
+            int custNo, x, y, demand, startTime, endTime, serviceTime;
+            if (!(iss >> custNo >> x >> y >> demand >> startTime >> endTime >> serviceTime))
+            {
+              continue;
+            }
+            else
+            {
+              demands.push_back(demand);
+              demandsForSeparation.push_back(demand);
+              demandsForCombs.push_back(demand);
+
+              startTimes.push_back(startTime);
+              endTimes.push_back(endTime);
+              serviceTimes.push_back(serviceTime);
+              coordinates.push_back(std::make_pair(x, y));
+            }
+          }
+        }
+
+        distances.resize(demands.size());
+        for (int i=0; i < demands.size(); ++i)
+        {
+          distances[i].resize(demands.size());
+        }
+
+        for (int i=0; i < demands.size(); ++i)
+        {
+          for (int j=0; j < demands.size(); ++j)
+          {
+            double distance = std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2));
+            distance = (int)( 10 * distance ) / 10.0;
+            distances[i][j] = distance;
+            distances[j][i] = distance;
+          }
+        }
+
+        numLocations = demands.size();
+
+        // formally add if this works
+        std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
+        if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
+        {
+          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+        }
+        else
+        {
+          hgsUpperBound = INF;
+        }
+        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
       }
-      else
-      {
-        std::cout << "relax capacity constraint" << std::endl;
-      }
 
-      bool vehicleCapacitySection = false;
-      bool customerSection = false;
-      std::ifstream infile(fileName);
-      std::string line;
-      while (std::getline(infile, line))
+      // CVRP instance format, relax num trucks constraint
+      std::regex cvrpInstanceRegex(".*-k.*");
+      std::smatch cvrpInstanceMatch;
+      if (std::regex_search(fileName, cvrpInstanceMatch, cvrpInstanceRegex))
       {
-        if (line.empty())
-        {
-          continue;
-        }
+        oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
+        vrptwType = VRPTWType::RELAX_TIME_WINDOWS;
+        std::cout << "relax time window constraint" << std::endl;
+        std::vector<std::pair<double,double> > coordinates;
 
-        if (line.find("NUMBER") != std::string::npos)
+        bool nodeCoordSection = false;
+        bool demandSection = false;
+        bool depotSection = false;
+        std::ifstream infile(fileName);
+        std::string line;
+        while (std::getline(infile, line))
         {
-          vehicleCapacitySection = true;
-          customerSection = false;
-          continue;
-        }
-        else if (line.find("CUST NO.") != std::string::npos)
-        {
-          vehicleCapacitySection = false;
-          customerSection = true;
-          continue;
-        }
+          if (line.find("NODE_COORD_SECTION") != std::string::npos)
+          {
+            nodeCoordSection = true;
+            demandSection = false;
+            depotSection = false;
+            continue;
+          }
+          else if (line.find("DEMAND_SECTION") != std::string::npos)
+          {
+            nodeCoordSection = false;
+            demandSection = true;
+            depotSection = false;
+            continue;
+          }
+          else if (line.find("DEPOT_SECTION") != std::string::npos)
+          {
+            nodeCoordSection = false;
+            demandSection = false;
+            depotSection = true;
+            continue;
+          }
+          else if (line.find("CAPACITY : ") != std::string::npos)
+          {
+            std::regex capacityRegex("CAPACITY :[ \t]+([0-9]*)");
+            std::smatch match;
+            if (std::regex_search(line, match, capacityRegex))
+            {
+              std::cout << "obtain capacity: " << std::endl;
+              capacity = std::stoi(match[1]);
+              std::cout << "capacity: " << capacity << std::endl;
+            }
+          }
+
+          if (nodeCoordSection)
+          {
+            std::istringstream iss(line);
+            double a, b, c;
+            if (!(iss >> a >> b >> c))
+            {
+              break;
+            }
+            else
+            {
+              coordinates.push_back(std::make_pair(b, c));
+            }
+          }
+     
+          if (demandSection)
+          {
+            std::istringstream iss(line);
+            int a, b;
+            if (!(iss >> a >> b))
+            {
+              break;
+            }
+            else
+            {
+              demands.push_back(b);
+              demandsForSeparation.push_back(b);
+              demandsForCombs.push_back(b);
  
-        if (vehicleCapacitySection)
+              // cvrp no constraint
+              startTimes.push_back(0);
+              endTimes.push_back(100000);
+              serviceTimes.push_back(0);
+            }
+          }
+
+          if (depotSection)
+          {
+            std::istringstream iss(line);
+            int a;
+            if (!(iss >> a))
+            {
+              break;
+            }
+            else
+            {
+              depot = a - 1;
+              depotSection = false;
+            }
+          }
+        }
+
+        distances.resize(demands.size());
+        for (int i=0; i < demands.size(); ++i)
         {
-          std::istringstream iss(line);
-          int number, truckCapacity;
-          if (!(iss >> number >> truckCapacity))
+          distances[i].resize(demands.size());
+        }
+
+        for (int i=0; i < demands.size(); ++i)
+        {
+          for (int j=0; j < demands.size(); ++j)
+          {
+            double distance = (int)(std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2))+0.5);
+            distances[i][j] = distance;
+            distances[j][i] = distance;
+          }
+        }
+
+        numLocations = demands.size();
+
+        DBG(
+          std::cout << "distances: " << std::endl;
+          for (int loc1=0; loc1<numLocations; ++loc1)
+          {
+            for (int loc2=0; loc2<numLocations; ++loc2)
+            {
+              std::cout << "[" << loc1 << "][" << loc2 << "]: " << distances[loc1][loc2] << std::endl;
+            }
+          }
+
+          std::cout << "demands: " << std::endl;
+          for (int loc=0; loc<numLocations; ++loc)
+          {
+            std::cout << "[" << loc << "]: " << demands[loc] << std::endl;
+          }
+        )
+
+        // formally add if this works
+        std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
+        if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
+        {
+          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+        }
+        else
+        {
+          hgsUpperBound = INF;
+        }
+        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
+      }
+ 
+      // TSPTW instance format
+      std::regex tsptwInstanceRegex(".*tw");
+      std::smatch tsptwInstanceMatch;
+      if (std::regex_search(fileName, tsptwInstanceMatch, tsptwInstanceRegex))
+      {
+        oneOrMorePaths = OneOrMorePaths::ONE_PATH;
+        std::vector<std::pair<double,double> > coordinates;
+        vrptwType = VRPTWType::RELAX_CAPACITY;
+
+        bool numLocationsSection = true;
+        bool distanceMatrixSection = false;
+        int distanceMatrixRow = 0;
+        bool timeWindowSection = false;
+        int timeWindowRow = 0;
+        depot = 0;
+        capacity = 10000;
+        std::ifstream infile(fileName);
+        std::string line;
+        while (std::getline(infile, line))
+        {
+          if (line.empty())
           {
             continue;
           }
-          else
+ 
+          if (timeWindowSection)
           {
-            capacity = truckCapacity;
+            std::istringstream iss(line);
+            int startTime, endTime;
+            if (!(iss >> startTime >> endTime))
+            {
+              continue;
+            }
+            else
+            {
+              startTimes.push_back(startTime);
+              endTimes.push_back(endTime);
+            }
+            
+            timeWindowRow = timeWindowRow + 1;
+            if (timeWindowRow == numLocations)
+            {
+              timeWindowSection = false;
+            }
+          }
+
+          if (distanceMatrixSection)
+          {
+            std::istringstream iss(line);
+            int column = 0;
+            double distance;
+            while (iss >> distance)
+            {
+              distances[distanceMatrixRow][column] = distance;
+              if ((distanceMatrixRow != column) && (distance == 0.0) && (distanceMatrixRow != 0))
+              {
+                std::cout << "0 distance will be bad for input, row: " << distanceMatrixRow << " col: " << column << std::endl;
+                return;
+              }
+              column = column + 1;
+
+              demands.push_back(1);
+              demandsForSeparation.push_back(1);
+              demandsForCombs.push_back(1);
+              serviceTimes.push_back(0);
+            }
+
+            distanceMatrixRow = distanceMatrixRow + 1;
+            if (distanceMatrixRow == numLocations)
+            {
+              distanceMatrixSection = false;
+              timeWindowSection = true;
+            }
+          }
+ 
+          if (numLocationsSection)
+          {
+            std::istringstream iss(line);
+            int numLocationsInput;
+            if (!(iss >> numLocationsInput))
+            {
+              continue;
+            }
+            else
+            {
+              numLocations = numLocationsInput;
+              std::cout << "num loc: " << numLocations << std::endl;
+            }
+
+            numLocationsSection = false;
+            distanceMatrixSection = true;
+            distances.resize(numLocations);
+            for (int i=0; i < distances.size(); ++i)
+            {
+              distances[i].resize(distances.size());
+            }
           }
         }
 
-
-        if (customerSection)
+        // formally add if this works
+        std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
+        if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          std::istringstream iss(line);
-          int custNo, x, y, demand, startTime, endTime, serviceTime;
-          if (!(iss >> custNo >> x >> y >> demand >> startTime >> endTime >> serviceTime))
-          {
-            continue;
-          }
-          else
-          {
-            demands.push_back(demand);
-            demandsForSeparation.push_back(demand);
-            demandsForCombs.push_back(demand);
-
-            startTimes.push_back(startTime);
-            endTimes.push_back(endTime);
-            serviceTimes.push_back(serviceTime);
-            coordinates.push_back(std::make_pair(x, y));
-          }
+          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
         }
-      }
-
-      distances.resize(demands.size());
-      for (int i=0; i < demands.size(); ++i)
-      {
-        distances[i].resize(demands.size());
-      }
-
-      for (int i=0; i < demands.size(); ++i)
-      {
-        for (int j=0; j < demands.size(); ++j)
+        else
         {
-          double distance = std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2));
-          distance = (int)( 10 * distance ) / 10.0;
-          distances[i][j] = distance;
-          distances[j][i] = distance;
+          hgsUpperBound = INF;
         }
+        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
       }
 
-      numLocations = demands.size();
-
-      // formally add if this works
-      std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
-      if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
-      {
-        hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
-      }
-      else
-      {
-        hgsUpperBound = INF;
-      }
-      std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
     };
 
     double evaluateSolutionCost(const std::vector<std::vector<int>>& routesByLocation)
@@ -821,6 +1621,7 @@ struct VRPTW
     int numLocations;
 
     VRPTWType vrptwType;
+    OneOrMorePaths oneOrMorePaths;
     double hgsUpperBound;
 };
 
