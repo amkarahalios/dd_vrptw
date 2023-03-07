@@ -11,12 +11,12 @@
 
 struct VRPTWNodeState
 {
-  VRPTWNodeState(int _capacity, int _timeTimesTen, int _lastVisited, std::set<int> _visited) : capacity(_capacity), timeTimesTen(_timeTimesTen), lastVisited(_lastVisited), visited(_visited) {};
-  VRPTWNodeState(const VRPTWNodeState& state) : capacity(state.capacity), timeTimesTen(state.timeTimesTen), lastVisited(state.lastVisited), visited(state.visited) {};
+  VRPTWNodeState(int _counter, int _capacity, int _timeTimesTen, int _lastVisited, std::set<int> _visited) : counter(_counter), capacity(_capacity), timeTimesTen(_timeTimesTen), lastVisited(_lastVisited), visited(_visited) {};
+  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeTimesTen(state.timeTimesTen), lastVisited(state.lastVisited), visited(state.visited) {};
 
   bool operator==(const VRPTWNodeState & rhs) const
   {
-    if ((capacity == rhs.capacity) && (timeTimesTen == rhs.timeTimesTen) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
+    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeTimesTen == rhs.timeTimesTen) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
     {
       return true;
     }
@@ -26,6 +26,41 @@ struct VRPTWNodeState
     }
   }
 
+  bool operator<(const VRPTWNodeState & rhs) const
+  {
+    if (counter < rhs.counter)
+    {
+      return true;
+    }
+    else if (counter > rhs.counter)
+    {
+      return false;
+    }
+    else
+    {
+      if (capacity < rhs.capacity)
+      {
+        return true;
+      }
+      else if (capacity > rhs.capacity)
+      {
+        return false;
+      }
+      else
+      {
+        if (timeTimesTen < rhs.timeTimesTen)
+        {
+          return true;
+        }
+        else
+        {
+          return false;
+        }
+      }
+    }
+  }
+
+  int counter;
   int capacity;
   int timeTimesTen;
   int lastVisited;
@@ -36,15 +71,16 @@ struct hash_state
 {
   std::size_t operator()(const VRPTWNodeState& state) const
   {
-    std::size_t h1 = std::hash<int>()(state.capacity);
-    std::size_t h2 = std::hash<int>()(state.timeTimesTen);
-    std::size_t h3 = std::hash<int>()(state.lastVisited);
-    std::size_t h4 = 0;
+    std::size_t h1 = std::hash<int>()(state.counter);
+    std::size_t h2 = std::hash<int>()(state.capacity);
+    std::size_t h3 = std::hash<int>()(state.timeTimesTen);
+    std::size_t h4 = std::hash<int>()(state.lastVisited);
+    std::size_t h5 = 0;
     if (!state.visited.empty())
     {
-      h4 = std::hash<int>()(*state.visited.begin());
+      h5 = std::hash<int>()(*state.visited.begin());
     }
-    return (((h1 ^ h2) ^ h3) ^ h4);
+    return ((((h1 ^ h2) ^ h3) ^ h4) ^ h5);
   }
 };
 
@@ -137,8 +173,8 @@ class VRPTWDecisionDiagram
 
     // network flow for lp/ip
     void initializeColumnsByLPDecomp();
-    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
-    double fixArcs(const std::vector<double>& lambda, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double lowerBound, LPSolveType solveType);
+    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, double& singlePathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
+    double fixArcs(const std::vector<double>& lambda, double singlePathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double lowerBound, LPSolveType solveType);
 
     // primal heuristic and separation methods
     void primalHeuristic(std::vector<std::vector<int>>& routesByLocation);
@@ -174,6 +210,7 @@ class VRPTWDecisionDiagram
     const std::vector<VRPTWNode>& getNodes() const { return nodes; }
     const std::vector<VRPTWArc>& getArcs() const { return arcs; }
     bool checkC141SolutionPossible() const;
+    bool checkSinglePathPossible() const;
 
     // for cuts
     void addCapCutSet(const std::vector<int>& cutSet);
@@ -206,7 +243,7 @@ class VRPTWDecisionDiagram
     std::unordered_map<VRPTWNodeState,int,hash_state> stateToNodes;
     std::unordered_map<int,std::vector<int>> locationToArcs;
     std::unordered_map<int,int> arcReverseArc;
-    std::map<std::pair<int,int>,std::vector<int>> timeCapNodeIndices;
+    std::map<VRPTWNodeState,std::vector<int>> nodeOrdering;
 
     std::vector<bool> arcsUsed;
 
