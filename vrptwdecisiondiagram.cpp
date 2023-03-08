@@ -294,7 +294,7 @@ void VRPTWDecisionDiagram::compileExactFukasawa(int s)
   VRPTWNodeState rootNodeState(0,0,0,0,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+1, vrptw.capacity,vrptw.endTimes[0],0,initialDeque);
+  VRPTWNodeState terminalNodeState(vrptw.numLocations*1000,vrptw.capacity,vrptw.endTimes[0],0,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
 
@@ -436,7 +436,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   VRPTWNodeState rootNodeState(0,0,0,0,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+1,vrptw.capacity*10,vrptw.endTimes[0]*(vrptw.timeStateMultiplier),0,initialDeque);
+  VRPTWNodeState terminalNodeState(vrptw.numLocations*1000,vrptw.capacity*10,vrptw.endTimes[0]*(vrptw.timeStateMultiplier),0,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
 
