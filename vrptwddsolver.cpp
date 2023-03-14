@@ -1,7 +1,7 @@
 #include "vrptwddsolver.h"
 #include <math.h>
 
-VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, LPSolveType _lpSolveType, InitialStateSpace initialStateSpace, int _s, int _maxS, bool _useCuts, int _timeoutSeconds) : vrptw(_vrptw), routeDD(_vrptw, _vrptw.timeStateMultiplier * 10, 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()))), maxS(_maxS), useCuts(_useCuts), timeoutSeconds(_timeoutSeconds), lpSolveType(_lpSolveType)
+VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, LPSolveType _lpSolveType, InitialStateSpace initialStateSpace, int _s, int _maxS, bool _useCuts, int _timeoutSeconds) : vrptw(_vrptw), routeDD(_vrptw, _vrptw.timeStateMultiplier * _vrptw.timeStateDiscretization, 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()))), maxS(_maxS), useCuts(_useCuts), timeoutSeconds(_timeoutSeconds), lpSolveType(_lpSolveType)
 {
   for (int location=0; location<vrptw.numLocations; ++location)
   {
@@ -23,6 +23,12 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, LPSolveType _lpSolveType, InitialStat
   auto compileSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endCompileTime - startCompileTime).count();
   stats.millisecondsCompiling = stats.millisecondsCompiling + compileSolveTime;
   std::cout << "done compiling dd" << std::endl;
+
+  if ((lpSolveType == LPSolveType::LPSolver) && (routeDD.getArcs().size() >= 4000000))
+  {
+    std::cout << "changing solve type to LAG" << std::endl;
+    lpSolveType = LPSolveType::LAGSolver;
+  }
 
   CMGR_CreateCMgr(&MyCutsCMP,Dim);
   CMGR_CreateCMgr(&MyOldCutsCMP,Dim);
@@ -295,8 +301,17 @@ bool VRPTWDDSolver::solve()
   lambda.push_back(0);
   for (int location=1; location<vrptw.numLocations; ++location)
   {
-    lambda.push_back(2 * vrptw.distances[0][location] * vrptw.demands[location] / vrptw.capacity);
+    if (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY)
+    {
+      lambda.push_back(2 * vrptw.distances[0][location] * vrptw.demands[location] / vrptw.capacity);
+    }
+    else
+    {
+      //lambda.push_back(2 * vrptw.distances[0][location]);
+      lambda.push_back(vrptw.hgsUpperBound * 1.0 / vrptw.numLocations);
+    }
   }
+
   // so arc fixing does not try to use IP achieved lb
   double bestLPValue = 0.0;
   bestLambdaArcFixing.resize(lambda.size());
@@ -334,6 +349,7 @@ bool VRPTWDDSolver::solve()
 
       if (lpFlowType == FlowType::LP)
       {
+        //routeDD.print();
         solved = solveLP(lambda, singlePathDual, mu, combDuals, srcDuals);
         DBG(double best = 0.0;
         best = best + singlePathDual;
@@ -434,7 +450,7 @@ bool VRPTWDDSolver::solve()
           }
         }
         // RCC - rounded capacity cuts when dd relaxes capacity
-        if (useCuts && (vrptw.vrptwType != VRPTWType::NO_RELAX_CAPACITY) && !allRoutesCapacityFeasible)
+        if (useCuts && (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
         {
           addRCCs(decomposedRoutes, cutAdded);
         }
@@ -475,7 +491,7 @@ bool VRPTWDDSolver::solve()
         std::cout << "no more separations possible" << std::endl;
 
         // RCC - rounded capacity cuts when dd relaxes capacity
-        if (useCuts && (vrptw.vrptwType != VRPTWType::NO_RELAX_CAPACITY) && !allRoutesCapacityFeasible)
+        if (useCuts && (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
         {
           addRCCs(decomposedRoutes, cutAdded);
         }

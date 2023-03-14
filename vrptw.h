@@ -5,6 +5,7 @@
 
 #include <string>
 #include <cmath>
+#include <set>
 #include <regex>
 #include <vector>
 #include <iostream>
@@ -17,6 +18,12 @@ enum OneOrMorePaths
 {
   ONE_PATH = 0,
   MORE_PATHS = 1
+};
+
+enum CircuitOrPath
+{
+  CIRCUIT = 0,
+  PATH = 1
 };
 
 enum InitialStateSpace
@@ -73,11 +80,16 @@ enum ShortestPathMode
   SHORTEST_PATH = 1
 };
 
-enum VRPTWType
+enum VRPTWCapacityType
 {
   RELAX_CAPACITY = 0,
   NO_RELAX_CAPACITY = 1,
-  RELAX_TIME_WINDOWS = 2
+};
+
+enum VRPTWTimeWindowType
+{
+  TIME_WINDOWS = 0,
+  NO_TIME_WINDOWS = 1,
 };
 
 struct VRPTWSolution
@@ -1108,7 +1120,47 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"rc_207.4.tsptw",119.64},
 {"rc_208.1.tsptw",789.25},
 {"rc_208.2.tsptw",533.78},
-{"rc_208.3.tsptw",634.44}
+{"rc_208.3.tsptw",634.44},
+{"ESC07.sop",2125},
+{"ESC12.sop",1675},
+{"ESC25.sop",1681},
+{"ESC47.sop",1288},
+{"ESC63.sop",62},
+{"ESC78.sop",18230},
+{"br17.10.sop",55},
+{"br17.12.sop",55},
+{"ft53.1.sop",7531},
+{"ft53.2.sop",8026},
+{"ft53.3.sop",10262},
+{"ft53.4.sop",14425},
+{"ft70.1.sop",39313},
+{"ft70.2.sop",40419},
+{"ft70.3.sop",42535},
+{"ft70.4.sop",53530},
+{"kro124p.1.sop",39420},
+{"kro124p.2.sop",41336},
+{"kro124p.3.sop",49499},
+{"kro124p.4.sop",76103},
+{"p43.1.sop",28140},
+{"p43.2.sop",28480},
+{"p43.3.sop",28835},
+{"p43.4.sop",83005},
+{"prob.42.sop",243},
+{"prob.100.sop",1163},
+{"rbg048a.sop",351},
+{"rbg050c.sop",467},
+{"rbg109a.sop",1038},
+{"rbg150a.sop",1750},
+{"rbg174a.sop",2033},
+{"rbg253a.sop",2950},
+{"rbg323a.sop",3140},
+{"rbg341a.sop",2568},
+{"rbg358a.sop",2545},
+{"rbg378a.sop",2816},
+{"ry48p.1.sop",15805},
+{"ry48p.2.sop",16666},
+{"ry48p.3.sop",19894},
+{"ry48p.4.sop",31446}
 };
 
 struct VRPTW
@@ -1117,26 +1169,29 @@ struct VRPTW
     VRPTW(std::string fileName)
     {
       // VRPTW instance format
-      std::regex vrptwInstanceRegex(".*vrptw");
+      std::regex vrptwInstanceRegex("[^_]vrptw");
       std::smatch vrptwInstanceMatch;
       if (std::regex_search(fileName, vrptwInstanceMatch, vrptwInstanceRegex))
       {
         oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
+        circuitOrPath = CircuitOrPath::CIRCUIT;
         timeStateMultiplier = 10;
+        timeStateDiscretization = 10;
         std::vector<std::pair<double,double> > coordinates;
 
         std::regex noCapacityRelaxRegex(".*HG.*C1|R1|RC1.*txt");
         std::smatch noCapacityRelaxMatch;
-        vrptwType = VRPTWType::RELAX_CAPACITY;
+        vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
         if (std::regex_search(fileName, noCapacityRelaxMatch, noCapacityRelaxRegex))
         {
           std::cout << "do not relax capacity constraint" << std::endl;
-          vrptwType = VRPTWType::NO_RELAX_CAPACITY;
+          vrptwCapacityType = VRPTWCapacityType::NO_RELAX_CAPACITY;
         }
         else
         {
           std::cout << "relax capacity constraint" << std::endl;
         }
+        vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
 
         bool vehicleCapacitySection = false;
         bool customerSection = false;
@@ -1199,6 +1254,9 @@ struct VRPTW
           }
         }
 
+        int minServiceTime = *std::min_element(serviceTimes.begin()+1, serviceTimes.end());
+        timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
+
         distances.resize(demands.size());
         for (int i=0; i < demands.size(); ++i)
         {
@@ -1237,8 +1295,11 @@ struct VRPTW
       if (std::regex_search(fileName, cvrpInstanceMatch, cvrpInstanceRegex))
       {
         timeStateMultiplier = 1;
+        timeStateDiscretization = 10;
         oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
-        vrptwType = VRPTWType::RELAX_TIME_WINDOWS;
+        circuitOrPath = CircuitOrPath::CIRCUIT;
+        vrptwCapacityType = VRPTWCapacityType::NO_RELAX_CAPACITY;
+        vrptwTimeWindowType = VRPTWTimeWindowType::NO_TIME_WINDOWS;
         std::cout << "relax time window constraint" << std::endl;
         std::vector<std::pair<double,double> > coordinates;
 
@@ -1386,10 +1447,33 @@ struct VRPTW
       std::smatch tsptwInstanceMatch;
       if (std::regex_search(fileName, tsptwInstanceMatch, tsptwInstanceRegex))
       {
+        // afg, dumas, gendreau-dumas, ohlmann thomas, integer
+        timeStateMultiplier = 1;
+        timeStateDiscretization = 1;
+
+        // solomon potvin bengio, solomon pesant, 0.0000
+        std::regex solomonRegex(".*Solomon.*");
+        std::smatch solomonMatch;
+        if (std::regex_search(fileName, solomonMatch, solomonRegex))
+        {
+          timeStateMultiplier = 10000;
+          timeStateDiscretization = 100;
+        }
+
+        // langevin 0.1
+        std::regex langevinRegex(".*Langevin.*");
+        std::smatch langevinMatch;
+        if (std::regex_search(fileName, langevinMatch, langevinRegex))
+        {
+          timeStateMultiplier = 10;
+          timeStateDiscretization = 10;
+        }
+
         oneOrMorePaths = OneOrMorePaths::ONE_PATH;
-        timeStateMultiplier = 10000;
+        circuitOrPath = CircuitOrPath::CIRCUIT;
         std::vector<std::pair<double,double> > coordinates;
-        vrptwType = VRPTWType::RELAX_CAPACITY;
+        vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
+        vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
 
         bool numLocationsSection = true;
         bool distanceMatrixSection = false;
@@ -1499,6 +1583,207 @@ struct VRPTW
         std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
       }
 
+      // SOP instance format
+      std::regex sopInstanceRegex(".*sop");
+      std::smatch sopInstanceMatch;
+      if (std::regex_search(fileName, sopInstanceMatch, sopInstanceRegex))
+      {
+        timeStateMultiplier = 1;
+        timeStateDiscretization = 1;
+
+        oneOrMorePaths = OneOrMorePaths::ONE_PATH;
+        circuitOrPath = CircuitOrPath::PATH;
+        std::vector<std::pair<double,double> > coordinates;
+        vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
+        vrptwTimeWindowType = VRPTWTimeWindowType::NO_TIME_WINDOWS;
+
+        bool numLocationsSection = true;
+        bool distanceMatrixSection = false;
+        int distanceMatrixRow = 0;
+        depot = 0;
+        capacity = 10000;
+        std::ifstream infile(fileName);
+        std::string line;
+        while (std::getline(infile, line))
+        {
+          if (line.find("EDGE_WEIGHT_SECTION") != std::string::npos)
+          {
+            numLocationsSection = true;
+            continue;
+          }
+
+          if (distanceMatrixSection)
+          {
+            std::istringstream iss(line);
+            int column = 0;
+            double distance;
+            while (iss >> distance)
+            {
+              // -1 indicates that vertex j must precede vertex i
+              // so based on vertices seen we know which can come next?
+              // each vertex as a set that all needs to be in the state to be an arc
+              if ((column != 0) && (distance == -1))
+              {
+                precedences[distanceMatrixRow].insert(column);
+              }
+
+              distances[distanceMatrixRow][column] = distance;
+              column = column + 1;
+
+              demands.push_back(1);
+              demandsForSeparation.push_back(1);
+              demandsForCombs.push_back(1);
+              serviceTimes.push_back(0);
+              startTimes.push_back(0);
+              endTimes.push_back(0);
+            }
+
+            distanceMatrixRow = distanceMatrixRow + 1;
+            if (distanceMatrixRow == numLocations)
+            {
+              distanceMatrixSection = false;
+            }
+          }
+
+          if (numLocationsSection)
+          {
+            std::istringstream iss(line);
+            int numLocationsInput;
+            if (!(iss >> numLocationsInput))
+            {
+              continue;
+            }
+            else
+            {
+              numLocations = numLocationsInput;
+              std::cout << "num loc: " << numLocations << std::endl;
+            }
+
+            numLocationsSection = false;
+            distanceMatrixSection = true;
+            distances.resize(numLocations);
+            for (int i=0; i < distances.size(); ++i)
+            {
+              distances[i].resize(distances.size());
+            }
+            precedences.resize(numLocations);
+          }
+        }
+
+        // formally add if this works
+        std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
+        if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
+        {
+          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+        }
+        else
+        {
+          hgsUpperBound = INF;
+        }
+        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
+      }
+
+      // PDP instance format
+      std::regex pdpInstanceRegex(".*pdp");
+      std::smatch pdpInstanceMatch;
+      if (std::regex_search(fileName, pdpInstanceMatch, pdpInstanceRegex))
+      {
+        timeStateMultiplier = 100;
+        timeStateDiscretization = 10;
+
+        oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
+        circuitOrPath = CircuitOrPath::CIRCUIT;
+        std::vector<std::pair<double,double> > coordinates;
+        vrptwCapacityType = VRPTWCapacityType::NO_RELAX_CAPACITY;
+        vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
+
+        bool dataSection = true;
+        bool locationDataSection = false;
+        depot = 0;
+        precedences.resize(2000);
+        std::ifstream infile(fileName);
+        std::string line;
+        while (std::getline(infile, line))
+        {
+          if (line.empty())
+          {
+            continue;
+          }
+
+          if (dataSection)
+          {
+            std::istringstream iss(line);
+            int numVehicles, capacityInput, speed;
+            if (!(iss >> numVehicles >> capacityInput >> speed))
+            {
+              continue;
+            }
+            else
+            {
+              capacity = capacityInput;
+            }
+            dataSection = false;
+            locationDataSection = true;
+          }
+
+          if (locationDataSection)
+          {
+            std::istringstream iss(line);
+            int location, x, y, demand, tw1, tw2, serviceTime, pickup, delivery;
+            while (iss >> location >> x >> y >> demand >> tw1 >> tw2 >> serviceTime >> pickup >> delivery)
+            {
+              coordinates.push_back(std::make_pair(x, y));
+              demands.push_back(demand);
+              demandsForSeparation.push_back(demand);
+              demandsForCombs.push_back(demand);
+              startTimes.push_back(tw1);
+              endTimes.push_back(tw2);
+              serviceTimes.push_back(serviceTime);
+              if (pickup == 0)
+              {
+                precedences[delivery].insert(location);
+              }
+              if (delivery == 0)
+              {
+                precedences[location].insert(pickup);
+              }
+            }
+          }
+        }
+
+        numLocations = demands.size();
+        distances.resize(numLocations);
+        for (int i=0; i < distances.size(); ++i)
+        {
+          distances[i].resize(distances.size());
+        }
+        for (int i=0; i < demands.size(); ++i)
+        {
+          for (int j=0; j < demands.size(); ++j)
+          {
+            double distance = std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2));
+            distance = (int)( 100 * distance ) / 100.00;
+            distances[i][j] = distance;
+            distances[j][i] = distance;
+          }
+        }
+
+        // formally add if this works
+        std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
+        if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
+        {
+          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+
+          // rounding in TSPTW
+          hgsUpperBound += 0.01;
+        }
+        else
+        {
+          hgsUpperBound = INF;
+        }
+        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
+      }
+
     };
 
     double evaluateSolutionCost(const std::vector<std::vector<int>>& routesByLocation)
@@ -1560,6 +1845,7 @@ struct VRPTW
 
     int capacity;
     std::vector<std::vector<double> > distances;
+    std::vector<std::set<int> > precedences;
     std::vector<int> demands;
     std::vector<double> demandsForSeparation;
     std::vector<int> demandsForCombs;
@@ -1571,9 +1857,12 @@ struct VRPTW
     int depot;
     int numLocations;
 
-    VRPTWType vrptwType;
+    VRPTWCapacityType vrptwCapacityType;
+    VRPTWTimeWindowType vrptwTimeWindowType;
     OneOrMorePaths oneOrMorePaths;
+    CircuitOrPath circuitOrPath;
     int timeStateMultiplier;
+    int timeStateDiscretization;
     double hgsUpperBound;
 };
 
