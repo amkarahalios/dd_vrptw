@@ -9,6 +9,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, LPSolveType _lpSolveType, InitialStat
     stats.upperBound = vrptw.hgsUpperBound;
   }
 
+  std::cout << "compiling dd" << std::endl;
   auto startCompileTime = std::chrono::high_resolution_clock::now();
   if (initialStateSpace == InitialStateSpace::Q)
   {
@@ -17,6 +18,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, LPSolveType _lpSolveType, InitialStat
   else if (initialStateSpace == InitialStateSpace::NG)
   {
     routeDD.compileNgRoute(_s);
+    //routeDD.checkLRC121SolutionPossible();
   }
 
   auto endCompileTime = std::chrono::high_resolution_clock::now();
@@ -350,6 +352,8 @@ bool VRPTWDDSolver::solve()
       if (lpFlowType == FlowType::LP)
       {
         //routeDD.print();
+        //routeDD.checkLC121SolutionPossible();
+        //routeDD.checkLRC121SolutionPossible();
         solved = solveLP(lambda, singlePathDual, mu, combDuals, srcDuals);
         DBG(double best = 0.0;
         best = best + singlePathDual;
@@ -376,7 +380,10 @@ bool VRPTWDDSolver::solve()
       if (lpSolveType == LPSolveType::LPSolver)
       {
         changedLagToLP = true;
-        useCuts = true;
+        if ((vrptw.problemType == ProblemType::CVRP) || (vrptw.problemType == ProblemType::TW))
+        {
+          useCuts = true;
+        }
         continue;
       }
     }
@@ -461,6 +468,7 @@ bool VRPTWDDSolver::solve()
           {
             stats.numSeparations = stats.numSeparations + 1;
             routeDD.separateInfeasibleRoute(infeasibleRoute, maxS);
+            //routeDD.checkLRC121SolutionPossible();
           }
         }
       }
@@ -830,7 +838,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
   double currIterLowerBound = 0.0;
   int numLagIterations = 0;
   std::vector<std::vector<int>> infeasibleRoutes;
-  int infeasibleRoutesSizeLimit = 100;
+  int infeasibleRoutesSizeLimit = 1;
   std::vector<double> stepSizes;
   std::vector<std::set<int>> xDecompositions;
   stats.print(routeDD.size());
@@ -849,6 +857,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<double> repairedLambda(lambda);
       //double lagrangeanLowerBound = routeDD.solveMinCostFlowModel(lambda, shortestPaths);
       double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(lambda, mu, combDuals, srcDuals, shortestPaths, isDualFeasible, minReducedCost);
+      //routeDD.checkLC121SolutionPossible();
+      //routeDD.checkLRC121SolutionPossible();
       DBG(std::cout << "finish" << std::endl;)
       stats.numSSPIterations = stats.numSSPIterations + shortestPaths.size();
       auto endSSPTime = std::chrono::high_resolution_clock::now();
@@ -1075,6 +1085,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         {
           stats.numSeparations = stats.numSeparations + 1;
           routeDD.separateInfeasibleRoute(infeasibleRouteToSeparate, maxS);
+          //routeDD.checkLRC121SolutionPossible();
         }
       }
     }

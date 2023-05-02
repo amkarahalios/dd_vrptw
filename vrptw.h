@@ -14,6 +14,15 @@
 
 const long INF = 1e10;
 
+enum ProblemType
+{
+  CVRP = 0,
+  TW = 1,
+  TSPTW = 2,
+  SOP = 3,
+  PDP = 4
+};
+
 enum OneOrMorePaths
 {
   ONE_PATH = 0,
@@ -84,6 +93,12 @@ enum VRPTWCapacityType
 {
   RELAX_CAPACITY = 0,
   NO_RELAX_CAPACITY = 1,
+};
+
+enum VRPTWCounterType
+{
+  USE_COUNTER = 0,
+  NO_USE_COUNTER = 1
 };
 
 enum VRPTWTimeWindowType
@@ -1160,7 +1175,67 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"ry48p.1.sop",15805},
 {"ry48p.2.sop",16666},
 {"ry48p.3.sop",19894},
-{"ry48p.4.sop",31446}
+{"ry48p.4.sop",31446},
+{"LC1_2_1.pdp",2705},
+{"LC1_2_2.pdp",2765},
+{"LC1_2_3.pdp",3128},
+{"LC1_2_4.pdp",2694},
+{"LC1_2_5.pdp",2703},
+{"LC1_2_6.pdp",2702},
+{"LC1_2_7.pdp",2702},
+{"LC1_2_8.pdp",3355},
+{"LC1_2_9.pdp",2725},
+{"LC1_2_10.pdp",2943},
+{"LC2_2_1.pdp",1932},
+{"LC2_2_2.pdp",1882},
+{"LC2_2_3.pdp",1845},
+{"LC2_2_4.pdp",1768},
+{"LC2_2_5.pdp",1892},
+{"LC2_2_6.pdp",1858},
+{"LC2_2_7.pdp",1851},
+{"LC2_2_8.pdp",1825},
+{"LC2_2_9.pdp",1855},
+{"LC2_2_10.pdp",1818},
+{"LR1_2_1.pdp",4820},
+{"LR1_2_2.pdp",4622},
+{"LR1_2_3.pdp",4403},
+{"LR1_2_4.pdp",3028},
+{"LR1_2_5.pdp",4761},
+{"LR1_2_6.pdp",4801},
+{"LR1_2_7.pdp",3544},
+{"LR1_2_8.pdp",2760},
+{"LR1_2_9.pdp",5051},
+{"LR1_2_10.pdp",3665},
+{"LR2_2_1.pdp",4074},
+{"LR2_2_2.pdp",3796},
+{"LR2_2_3.pdp",3099},
+{"LR2_2_4.pdp",2486},
+{"LR2_2_5.pdp",3439},
+{"LR2_2_6.pdp",4458},
+{"LR2_2_7.pdp",3099},
+{"LR2_2_8.pdp",2450},
+{"LR2_2_9.pdp",3923},
+{"LR2_2_10.pdp",3255},
+{"LRC1_2_1.pdp",3607},
+{"LRC1_2_2.pdp",3672},
+{"LRC1_2_3.pdp",3155},
+{"LRC1_2_4.pdp",2632},
+{"LRC1_2_5.pdp",3716},
+{"LRC1_2_6.pdp",3573},
+{"LRC1_2_7.pdp",3667},
+{"LRC1_2_8.pdp",3146},
+{"LRC1_2_9.pdp",3158},
+{"LRC1_2_10.pdp",2929},
+{"LRC2_2_1.pdp",3596},
+{"LRC2_2_2.pdp",3159},
+{"LRC2_2_3.pdp",2882},
+{"LRC2_2_4.pdp",2836},
+{"LRC2_2_5.pdp",2777},
+{"LRC2_2_6.pdp",2708},
+{"LRC2_2_7.pdp",3011},
+{"LRC2_2_8.pdp",2400},
+{"LRC2_2_9.pdp",2209},
+{"LRC2_2_10.pdp",2438}
 };
 
 struct VRPTW
@@ -1175,23 +1250,27 @@ struct VRPTW
       {
         oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
         circuitOrPath = CircuitOrPath::CIRCUIT;
+        problemType = ProblemType::TW;
+        vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
         timeStateMultiplier = 10;
-        timeStateDiscretization = 10;
+        timeStateDiscretization = 1;
+        capacityDiscretization = 0;
         std::vector<std::pair<double,double> > coordinates;
 
         std::regex noCapacityRelaxRegex(".*HG.*C1|R1|RC1.*txt");
         std::smatch noCapacityRelaxMatch;
         vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
+        counterType = VRPTWCounterType::USE_COUNTER;
         if (std::regex_search(fileName, noCapacityRelaxMatch, noCapacityRelaxRegex))
         {
           std::cout << "do not relax capacity constraint" << std::endl;
           vrptwCapacityType = VRPTWCapacityType::NO_RELAX_CAPACITY;
+          counterType = VRPTWCounterType::NO_USE_COUNTER;
         }
         else
         {
           std::cout << "relax capacity constraint" << std::endl;
         }
-        vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
 
         bool vehicleCapacitySection = false;
         bool customerSection = false;
@@ -1254,9 +1333,6 @@ struct VRPTW
           }
         }
 
-        int minServiceTime = *std::min_element(serviceTimes.begin()+1, serviceTimes.end());
-        timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
-
         distances.resize(demands.size());
         for (int i=0; i < demands.size(); ++i)
         {
@@ -1273,6 +1349,10 @@ struct VRPTW
             distances[j][i] = distance;
           }
         }
+
+        int minServiceTime = *std::min_element(serviceTimes.begin()+1, serviceTimes.end());
+        int minDistanceDepot = (*std::min_element(distances[0].begin()+1, distances[0].end())) + 1;
+        timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
 
         numLocations = demands.size();
 
@@ -1296,9 +1376,12 @@ struct VRPTW
       {
         timeStateMultiplier = 1;
         timeStateDiscretization = 10;
+        capacityDiscretization = 0;
         oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
         circuitOrPath = CircuitOrPath::CIRCUIT;
+        problemType = ProblemType::CVRP;
         vrptwCapacityType = VRPTWCapacityType::NO_RELAX_CAPACITY;
+        counterType = VRPTWCounterType::NO_USE_COUNTER;
         vrptwTimeWindowType = VRPTWTimeWindowType::NO_TIME_WINDOWS;
         std::cout << "relax time window constraint" << std::endl;
         std::vector<std::pair<double,double> > coordinates;
@@ -1394,6 +1477,7 @@ struct VRPTW
           }
         }
 
+        precedences.resize(demands.size());
         distances.resize(demands.size());
         for (int i=0; i < demands.size(); ++i)
         {
@@ -1450,6 +1534,7 @@ struct VRPTW
         // afg, dumas, gendreau-dumas, ohlmann thomas, integer
         timeStateMultiplier = 1;
         timeStateDiscretization = 1;
+        capacityDiscretization = 0;
 
         // solomon potvin bengio, solomon pesant, 0.0000
         std::regex solomonRegex(".*Solomon.*");
@@ -1471,8 +1556,10 @@ struct VRPTW
 
         oneOrMorePaths = OneOrMorePaths::ONE_PATH;
         circuitOrPath = CircuitOrPath::CIRCUIT;
+        problemType = ProblemType::TSPTW;
         std::vector<std::pair<double,double> > coordinates;
         vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
+        counterType = VRPTWCounterType::USE_COUNTER;
         vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
 
         bool numLocationsSection = true;
@@ -1560,6 +1647,7 @@ struct VRPTW
             numLocationsSection = false;
             distanceMatrixSection = true;
             distances.resize(numLocations);
+            precedences.resize(numLocations);
             for (int i=0; i < distances.size(); ++i)
             {
               distances[i].resize(distances.size());
@@ -1590,11 +1678,14 @@ struct VRPTW
       {
         timeStateMultiplier = 1;
         timeStateDiscretization = 1;
+        capacityDiscretization = 0;
 
         oneOrMorePaths = OneOrMorePaths::ONE_PATH;
         circuitOrPath = CircuitOrPath::PATH;
+        problemType = ProblemType::SOP;
         std::vector<std::pair<double,double> > coordinates;
         vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
+        counterType = VRPTWCounterType::USE_COUNTER;
         vrptwTimeWindowType = VRPTWTimeWindowType::NO_TIME_WINDOWS;
 
         bool numLocationsSection = true;
@@ -1625,6 +1716,7 @@ struct VRPTW
               if ((column != 0) && (distance == -1))
               {
                 precedences[distanceMatrixRow].insert(column);
+                reliances[column].insert(distanceMatrixRow);
               }
 
               distances[distanceMatrixRow][column] = distance;
@@ -1667,6 +1759,7 @@ struct VRPTW
               distances[i].resize(distances.size());
             }
             precedences.resize(numLocations);
+            reliances.resize(numLocations);
           }
         }
 
@@ -1690,17 +1783,23 @@ struct VRPTW
       {
         timeStateMultiplier = 100;
         timeStateDiscretization = 10;
+        capacityDiscretization = 1;
 
         oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
         circuitOrPath = CircuitOrPath::CIRCUIT;
+        problemType = ProblemType::PDP;
         std::vector<std::pair<double,double> > coordinates;
-        vrptwCapacityType = VRPTWCapacityType::NO_RELAX_CAPACITY;
+        // maybe relax capacity here because of drop offs?
+        vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
+        // allow us to use LAG because capacity can go back in time...
+        counterType = VRPTWCounterType::USE_COUNTER;
         vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
 
         bool dataSection = true;
         bool locationDataSection = false;
         depot = 0;
         precedences.resize(2000);
+        reliances.resize(2000);
         std::ifstream infile(fileName);
         std::string line;
         while (std::getline(infile, line))
@@ -1739,13 +1838,18 @@ struct VRPTW
               startTimes.push_back(tw1);
               endTimes.push_back(tw2);
               serviceTimes.push_back(serviceTime);
-              if (pickup == 0)
+              if (location != 0)
               {
-                precedences[delivery].insert(location);
-              }
-              if (delivery == 0)
-              {
-                precedences[location].insert(pickup);
+                if (pickup == 0)
+                {
+                  precedences[delivery].insert(location);
+                  reliances[location].insert(delivery);
+                }
+                if (delivery == 0)
+                {
+                  precedences[location].insert(pickup);
+                  reliances[pickup].insert(location);
+                }
               }
             }
           }
@@ -1767,6 +1871,16 @@ struct VRPTW
             distances[j][i] = distance;
           }
         }
+
+        int minServiceTime = 1000000;
+        for (int loc=0; loc<numLocations; ++loc)
+        {
+          if (serviceTimes[loc] != 0)
+          {
+            minServiceTime = std::min(serviceTimes[loc], minServiceTime);
+          }
+        }
+        timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
 
         // formally add if this works
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
@@ -1846,6 +1960,7 @@ struct VRPTW
     int capacity;
     std::vector<std::vector<double> > distances;
     std::vector<std::set<int> > precedences;
+    std::vector<std::set<int> > reliances;
     std::vector<int> demands;
     std::vector<double> demandsForSeparation;
     std::vector<int> demandsForCombs;
@@ -1859,10 +1974,13 @@ struct VRPTW
 
     VRPTWCapacityType vrptwCapacityType;
     VRPTWTimeWindowType vrptwTimeWindowType;
+    VRPTWCounterType counterType;
     OneOrMorePaths oneOrMorePaths;
     CircuitOrPath circuitOrPath;
+    ProblemType problemType;
     int timeStateMultiplier;
     int timeStateDiscretization;
+    int capacityDiscretization;
     double hgsUpperBound;
 };
 

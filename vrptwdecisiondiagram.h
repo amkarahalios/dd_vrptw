@@ -11,12 +11,12 @@
 
 struct VRPTWNodeState
 {
-  VRPTWNodeState(int _counter, int _capacity, int _timeTimesTen, int _lastVisited, std::set<int> _visited) : counter(_counter), capacity(_capacity), timeTimesTen(_timeTimesTen), lastVisited(_lastVisited), visited(_visited) {};
-  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeTimesTen(state.timeTimesTen), lastVisited(state.lastVisited), visited(state.visited) {};
+  VRPTWNodeState(int _counter, int _capacity, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited, std::set<int> _carrying) : counter(_counter), capacity(_capacity), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited), carrying(_carrying) {};
+  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited), carrying(state.carrying) {};
 
   bool operator==(const VRPTWNodeState & rhs) const
   {
-    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeTimesTen == rhs.timeTimesTen) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
+    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited) && (carrying == rhs.carrying))
     {
       return true;
     }
@@ -48,7 +48,7 @@ struct VRPTWNodeState
       }
       else
       {
-        if (timeTimesTen < rhs.timeTimesTen)
+        if (timeWithMultiplier < rhs.timeWithMultiplier)
         {
           return true;
         }
@@ -62,9 +62,10 @@ struct VRPTWNodeState
 
   int counter;
   int capacity;
-  int timeTimesTen;
+  int timeWithMultiplier;
   int lastVisited;
   std::set<int> visited;
+  std::set<int> carrying;
 };
 
 struct hash_state
@@ -73,14 +74,19 @@ struct hash_state
   {
     std::size_t h1 = std::hash<int>()(state.counter);
     std::size_t h2 = std::hash<int>()(state.capacity);
-    std::size_t h3 = std::hash<int>()(state.timeTimesTen);
+    std::size_t h3 = std::hash<int>()(state.timeWithMultiplier);
     std::size_t h4 = std::hash<int>()(state.lastVisited);
     std::size_t h5 = 0;
     if (!state.visited.empty())
     {
       h5 = std::hash<int>()(*state.visited.begin());
     }
-    return ((((h1 ^ h2) ^ h3) ^ h4) ^ h5);
+    std::size_t h6 = 0;
+    if (!state.carrying.empty())
+    {
+      h6 = std::hash<int>()(*state.carrying.begin());
+    }
+    return (((((h1 ^ h2) ^ h3) ^ h4) ^ h5)^ h6);
   }
 };
 
@@ -135,7 +141,13 @@ struct VRPTWArc
 class VRPTWDecisionDiagram
 {
   public:
-    VRPTWDecisionDiagram(const VRPTW& _vrptw, int _timeStepSize, int _capacityStepSize) : vrptw(_vrptw), timeStepSize(_timeStepSize), capacityStepSize(_capacityStepSize) {};
+    VRPTWDecisionDiagram(const VRPTW& _vrptw, int _timeStepSize, int _capacityStepSize) : vrptw(_vrptw), timeStepSize(_timeStepSize), capacityStepSize(_capacityStepSize)
+    {
+      if (vrptw.capacityDiscretization != 0)
+      {
+        capacityStepSize = vrptw.capacityDiscretization;
+      }
+    };
 
     void print() const;
     double evaluateRouteCost(const std::vector<int>& routeByArc);
@@ -210,6 +222,8 @@ class VRPTWDecisionDiagram
     const std::vector<VRPTWNode>& getNodes() const { return nodes; }
     const std::vector<VRPTWArc>& getArcs() const { return arcs; }
     bool checkC141SolutionPossible() const;
+    bool checkLC121SolutionPossible() const;
+    bool checkLRC121SolutionPossible() const;
     bool checkSinglePathPossible() const;
 
     // for cuts
