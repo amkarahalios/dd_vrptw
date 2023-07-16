@@ -56,7 +56,7 @@ class VRPTWDDSolver
   public:
     VRPTWDDSolver(VRPTW vrptw, LPSolveType lpSolveType, InitialStateSpace initialStateSpace, int s, int maxS, bool useCuts, int timeoutSeconds);
 
-    bool solve();
+    bool solve(bool solveIP);
     DDStats getStats() { return stats; }
 
     // public for testing purpose only
@@ -95,6 +95,8 @@ class VRPTWDDSolver
     double bestSinglePathDualFixing;
     double bestLambdaPercentFixed;
     double bestLambdaLowerBound;
+ 
+    std::vector<double> bestLambda;
 
     int Dim = 100;
     double epsForIntegrality = 0.0001;

@@ -11,12 +11,12 @@
 
 struct VRPTWNodeState
 {
-  VRPTWNodeState(int _counter, int _capacity, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited, std::set<int> _carrying) : counter(_counter), capacity(_capacity), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited), carrying(_carrying) {};
-  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited), carrying(state.carrying) {};
+  VRPTWNodeState(int _counter, int _capacity, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited) : counter(_counter), capacity(_capacity), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited) {};
+  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited) {};
 
   bool operator==(const VRPTWNodeState & rhs) const
   {
-    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited) && (carrying == rhs.carrying))
+    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
     {
       return true;
     }
@@ -65,7 +65,6 @@ struct VRPTWNodeState
   int timeWithMultiplier;
   int lastVisited;
   std::set<int> visited;
-  std::set<int> carrying;
 };
 
 struct hash_state
@@ -81,12 +80,7 @@ struct hash_state
     {
       h5 = std::hash<int>()(*state.visited.begin());
     }
-    std::size_t h6 = 0;
-    if (!state.carrying.empty())
-    {
-      h6 = std::hash<int>()(*state.carrying.begin());
-    }
-    return (((((h1 ^ h2) ^ h3) ^ h4) ^ h5)^ h6);
+    return ((((h1 ^ h2) ^ h3) ^ h4) ^ h5);
   }
 };
 
@@ -155,11 +149,20 @@ class VRPTWDecisionDiagram
     {
       return fixedArcs.size() * 100.0 / arcs.size();
     }
+    int numArcsNotFixed() const
+    {
+      return arcs.size() - fixedArcs.size();
+    }
+    bool isArcAlive(int arcIndex) const
+    {
+      return (fixedArcs.find(arcIndex) == fixedArcs.end()) && (removedArcs.find(arcIndex) == removedArcs.end());
+    }
     std::pair<int,int> getFromAndToLocations(int arcIndex) { return std::make_pair(nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited,arcs[arcIndex].location); }
 
     // compilation
     void compileExactFukasawa(int s);
     void compileNgRoute(int s);
+    void compileNgL(int s);
 
     // set arc coeffs to different values
     void setCoeffsAsDistances();
@@ -173,7 +176,7 @@ class VRPTWDecisionDiagram
     void getCliqueCutValues(std::vector<double>& cliqueCutValues);
     void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
     bool areNodesConnected(int nodeIndex1, int nodeIndex2);
-    void findSRCThree(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
+    //void findSRCThree(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
                                    std::vector<double>& edgeFlow);
@@ -244,12 +247,15 @@ class VRPTWDecisionDiagram
     int addNode(const VRPTWNodeState& state);
     int addArc(int fromNodeIndex, int toNodeIndex);
     int addReverseArc(int forwardArcIndex);
+    bool generateNewStateFromExact(VRPTWNodeState& state, int action);
     bool moveArc(int arcIndex, int newToNodeIndex);
+    void removeArc(int arcIndex);
  
     VRPTW vrptw;
     std::vector<VRPTWNode> nodes;
     std::vector<VRPTWArc> arcs;
     std::set<int> fixedArcs;
+    std::set<int> removedArcs;
 
     int rootNodeIndex;
     int terminalNodeIndex;

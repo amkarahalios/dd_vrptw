@@ -3,7 +3,7 @@
 #include "vrptwcolgen.h"
 #include "cvrpsep/capsep.h"
 
-VRPTWColGen::VRPTWColGen(VRPTW _vrptw, PricingProblemType _pricingProblemType, InitialStateSpace initialStateSpace, int _s) : vrptw(_vrptw), routeDD(_vrptw, 1, 1), bestLpDistance(0.0), numTrucksDualVariable(0.0), pricingProblemType(_pricingProblemType), s(_s)
+VRPTWColGen::VRPTWColGen(VRPTW _vrptw, PricingProblemType _pricingProblemType, InitialStateSpace initialStateSpace, int _s) : vrptw(_vrptw), routeDD(_vrptw, _vrptw.timeStateMultiplier * _vrptw.timeStateDiscretization, 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()))), bestLpDistance(0.0), singlePathDual(0.0), pricingProblemType(_pricingProblemType), s(_s)
 {
   if (pricingProblemType == PricingProblemType::DD)
   {
@@ -14,7 +14,9 @@ VRPTWColGen::VRPTWColGen(VRPTW _vrptw, PricingProblemType _pricingProblemType, I
     }
     else if (initialStateSpace == InitialStateSpace::NG)
     {
+      std::cout << "begin compiling" << std::endl;
       routeDD.compileNgRoute(_s);
+      //routeDD.print();
     }
     std::cout << "DD size: " << routeDD.size() << std::endl;
     auto endCompileTime = std::chrono::high_resolution_clock::now();
@@ -58,71 +60,74 @@ void VRPTWColGen::initializeColumns()
   for (int location=1; location<vrptw.numLocations; ++location)
   {
     std::vector<int> route;
-    route.push_back(vrptw.depot);
+    route.push_back(0);
     route.push_back(location);
-    route.push_back(vrptw.depot);
+    route.push_back(0);
     addColumn(route);
   }
 
   // some full routes
-  std::set<int> locationsAdded;
-  while (locationsAdded.size() < (vrptw.numLocations-1))
+  if (vrptw.problemType = ProblemType::CVRP)
   {
-    std::vector<int> route;
-    route.push_back(0);
-    int currentDemand = 0;
-    for (int location=1; location<vrptw.numLocations; ++location)
+    std::set<int> locationsAdded;
+    while (locationsAdded.size() < (vrptw.numLocations-1))
     {
-      if (locationsAdded.find(location) != locationsAdded.end())
+      std::vector<int> route;
+      route.push_back(0);
+      int currentDemand = 0;
+      for (int location=1; location<vrptw.numLocations; ++location)
       {
-        continue;
-      }
+        if (locationsAdded.find(location) != locationsAdded.end())
+        {
+          continue;
+        }
 
-      if (currentDemand + vrptw.demands[location] <= vrptw.capacity)
-      {
-        route.push_back(location);
-        locationsAdded.insert(location);
-        currentDemand = currentDemand + vrptw.demands[location];
+        if (currentDemand + vrptw.demands[location] <= vrptw.capacity)
+        {
+          route.push_back(location);
+          locationsAdded.insert(location);
+          currentDemand = currentDemand + vrptw.demands[location];
+        }
       }
+      route.push_back(0);
+      std::cout << "adding initial route: ";
+      for (int loc : route)
+      {
+        std::cout << loc << ",";
+      }
+      std::cout << std::endl;
+      addColumn(route);
     }
-    route.push_back(0);
-    DBG(std::cout << "adding initial route: ";)
-    for (int loc : route)
-    {
-      std::cout << loc << ",";
-    }
-    std::cout << std::endl;
-    addColumn(route);
-  }
 
-  locationsAdded.clear();
-  while (locationsAdded.size() < (vrptw.numLocations-1))
-  {
-    std::vector<int> route;
-    route.push_back(0);
-    int currentDemand = 0;
-    for (int location=vrptw.numLocations-1; location>0; --location)
+    locationsAdded.clear();
+    while (locationsAdded.size() < (vrptw.numLocations-1))
     {
-      if (locationsAdded.find(location) != locationsAdded.end())
+      std::vector<int> route;
+      route.push_back(0);
+      int currentDemand = 0;
+      for (int location=vrptw.numLocations-1; location>0; --location)
       {
-        continue;
-      }
+        if (locationsAdded.find(location) != locationsAdded.end())
+        {
+          continue;
+        }
 
-      if (currentDemand + vrptw.demands[location] <= vrptw.capacity)
-      {
-        route.push_back(location);
-        locationsAdded.insert(location);
-        currentDemand = currentDemand + vrptw.demands[location];
+        if (currentDemand + vrptw.demands[location] <= vrptw.capacity)
+        {
+          route.push_back(location);
+          locationsAdded.insert(location);
+          currentDemand = currentDemand + vrptw.demands[location];
+        }
       }
+      route.push_back(0);
+      DBG(std::cout << "adding initial route: ";)
+      for (int loc : route)
+      {
+        std::cout << loc << ",";
+      }
+      std::cout << std::endl;
+      addColumn(route);
     }
-    route.push_back(0);
-    DBG(std::cout << "adding initial route: ";)
-    for (int loc : route)
-    {
-      std::cout << loc << ",";
-    }
-    std::cout << std::endl;
-    addColumn(route);
   }
 };
 
@@ -218,6 +223,7 @@ bool VRPTWColGen::setupAndSolveRMP()
   IloEnv env;
   IloModel setCoverModel(env);
   IloRangeArray coverConstraints(env);
+  IloRangeArray singlePathConstraint(env);
 
   // setup variables
   IloNumVarArray x(env, columns.size());
@@ -246,6 +252,18 @@ bool VRPTWColGen::setupAndSolveRMP()
     }
   }
   setCoverModel.add(coverConstraints);
+
+  // one path for TSPs
+  if (vrptw.oneOrMorePaths == ONE_PATH)
+  {
+    IloExpr onePath(env);
+    for (int columnIndex=0; columnIndex<columns.size(); ++columnIndex)
+    {
+      onePath += x[columnIndex];
+    }
+    singlePathConstraint.add(onePath == 1);
+    setCoverModel.add(singlePathConstraint);
+  }
 
   // setup objective
   IloExpr objective(env);
@@ -301,7 +319,15 @@ bool VRPTWColGen::setupAndSolveRMP()
     for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
     {
       setCoverDualVariables[dualIndex] = static_cast<double>(setCoverDuals[dualIndex]);
-      DBG(std::cout << "dual [" << dualIndex << "]: " << setCoverDualVariables[dualIndex] << std::endl;)
+      std::cout << "dual [" << dualIndex << "]: " << setCoverDualVariables[dualIndex] << std::endl;
+    }
+
+    if (vrptw.oneOrMorePaths == ONE_PATH)
+    {
+      IloNumArray singlePathDualFromLP(env);
+      solver.getDuals(singlePathDualFromLP, singlePathConstraint);
+      singlePathDual = singlePathDualFromLP[0];
+      std::cout << "single path dual: " << singlePathDual << std::endl;
     }
 
     env.end();
@@ -368,7 +394,7 @@ bool VRPTWColGen::solvePricingProblemFukasawa()
   // initialize with one location routes
   for (int location=1; location<vrptw.numLocations; ++location)
   {
-    double cost = vrptw.distances[0][location] - setCoverDualVariables[location] - numTrucksDualVariable;
+    double cost = vrptw.distances[0][location] - setCoverDualVariables[location];
     DPEntry dpEntry(cost, 0, 0, 0);
     M[vrptw.demands[location]][location] = dpEntry;
   }
@@ -458,7 +484,7 @@ bool VRPTWColGen::solvePricingProblemDD()
 
   std::vector<int> newRoute;
   double shortestPathLength = routeDD.computeShortestPathBFS(ShortestPathMode::SHORTEST_PATH, newRoute);
-  shortestPathLength = shortestPathLength - numTrucksDualVariable;
+  shortestPathLength = shortestPathLength - singlePathDual;
   DBG(
     std::cout << "spl: " << shortestPathLength << std::endl;
     std::cout << "adding route: ";
@@ -472,6 +498,7 @@ bool VRPTWColGen::solvePricingProblemDD()
   {
     addColumn(newRoute);
     // lower bound needs revamp without num trucks bound
+    //stats.lowerBound = std::max(stats.lowerBound, stats.solutionValue + (vrptw.
     stats.print();
     return true;
   }

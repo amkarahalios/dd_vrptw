@@ -290,7 +290,7 @@ void VRPTWDDSolver::addSRCCuts(std::vector<double>& srcDuals)
   }
 }
 
-bool VRPTWDDSolver::solve()
+bool VRPTWDDSolver::solve(bool shouldSolveIP)
 {
   // for Lagrangean method, the choice of initial labmda is important
   // choice 1: simple all 0
@@ -303,20 +303,22 @@ bool VRPTWDDSolver::solve()
   lambda.push_back(0);
   for (int location=1; location<vrptw.numLocations; ++location)
   {
-    if (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY)
+    if (vrptw.vrptwCapacityType != VRPTWCapacityType::RELAX_CAPACITY)
     {
       lambda.push_back(2 * vrptw.distances[0][location] * vrptw.demands[location] / vrptw.capacity);
     }
     else
     {
       //lambda.push_back(2 * vrptw.distances[0][location]);
-      lambda.push_back(vrptw.hgsUpperBound * 1.0 / vrptw.numLocations);
+      //lambda.push_back(vrptw.hgsUpperBound * 1.0 / vrptw.numLocations);
+      lambda.push_back(2 * vrptw.distances[0][location] * vrptw.demands[location] / vrptw.capacity);
     }
   }
 
   // so arc fixing does not try to use IP achieved lb
   double bestLPValue = 0.0;
   bestLambdaArcFixing.resize(lambda.size());
+  bestLambda.resize(lambda.size());
   double singlePathDual = 0.0;
   std::vector<double> mu;
   std::vector<double> combDuals;
@@ -335,18 +337,23 @@ bool VRPTWDDSolver::solve()
         if (!changedLagToLP)
         {
           percentArcsFixed = routeDD.fixArcs(lambda, singlePathDual, mu, combDuals, srcDuals, bestLPValue, lpSolveType);
+          //percentArcsFixed = 0;
+
+          // we don't currently, but we should still save as best
         }
-        if ((percentArcsFixed < bestLambdaPercentFixed) || changedLagToLP)
+        else
         {
-          if (changedLagToLP)
-          {
-            changedLagToLP = false;
-          }
-          std::vector<double> emptyMu;
-          std::vector<double> emptyComb;
-          std::vector<double> emptySrc;
-          routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, lpSolveType);
+          // TODO(akarahal) if using a counter to avoid loops for LAG solve...
+          // ...can now get rid of them by merging nodes!
+          // TODO(akarahal) may be helpful to save even more duals for fixing!
+          changedLagToLP = false;
         }
+
+        // also use best to fix arcs
+        std::vector<double> emptyMu;
+        std::vector<double> emptyComb;
+        std::vector<double> emptySrc;
+        routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, lpSolveType);
       }
 
       if (lpFlowType == FlowType::LP)
@@ -375,6 +382,7 @@ bool VRPTWDDSolver::solve()
     }
     else if (lpSolveType == LPSolveType::LAGSolver)
     {
+      // maybe restart Lag with the best lambda so far?
       solved = solveLagrangeanRelaxation(lambda, singlePathDual, mu, combDuals, srcDuals);
       // if switching to LP, go right to next iter and use cuts
       if (lpSolveType == LPSolveType::LPSolver)
@@ -468,6 +476,7 @@ bool VRPTWDDSolver::solve()
           {
             stats.numSeparations = stats.numSeparations + 1;
             routeDD.separateInfeasibleRoute(infeasibleRoute, maxS);
+            //break;
             //routeDD.checkLRC121SolutionPossible();
           }
         }
@@ -512,8 +521,15 @@ bool VRPTWDDSolver::solve()
         {
           if (lpFlowType == FlowType::LP)
           {
-            std::cout << "LP solved - switching to IP" << std::endl;
-            lpFlowType = FlowType::IP;
+            if (shouldSolveIP)
+            {
+              std::cout << "LP solved - switching to IP" << std::endl;
+              lpFlowType = FlowType::IP;
+            }
+            else
+            {
+              finishedSolving = true;
+            }
           }
           else
           {
@@ -565,14 +581,19 @@ bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, double& singlePathDual,
   routeDD.setCoeffsAsDistances();
   auto startLPTime = std::chrono::high_resolution_clock::now();
   bool MIPOn = false;
-  if ((routeDD.getPercentFixedArcs() >= 95) && MIPOn)
+  if ((routeDD.getPercentFixedArcs() >= 97.5) && MIPOn)
   {
     std::cout << "solving IP" << std::endl;
     stats.lowerBound = routeDD.setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, lambda, singlePathDual, mu, combDuals, srcDuals);
   }
   else
   {
+    double oldLb = stats.lowerBound;
     stats.lowerBound = routeDD.setupAndSolveFlowModel(FlowType::LP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, lambda, singlePathDual, mu, combDuals, srcDuals);
+    if (oldLb > stats.lowerBound + 0.01)
+    {
+      std::cout << "ERROR - lower bound not monotonically increasing!!!" << std::endl;
+    }
   }
   auto endLPTime = std::chrono::high_resolution_clock::now();
   auto lpSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endLPTime - startLPTime).count();
@@ -580,6 +601,7 @@ bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, double& singlePathDual,
 
   stats.lpIterations = stats.lpIterations + 1;
   stats.print(routeDD.size());
+  //routeDD.print();
   return true;
 };
 
@@ -758,10 +780,13 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
 
   // eta_(k) = 0.05 * 100 / (100 + k)
   //double eta = 0.05 * 100 / (100 + stats.numLagIterations);
+  // maybe num LP Iterations (which is equal to num restarts) should also be considered here
+  // and then restart from the best lambda found so far?
   double eta = 0.05 * 100 / (100 + k);
 
   // psi_(star) = psi_(best) * (1 + eta_(k))
   double psiStar = stats.lowerBound * (1 + eta);
+  //double psiStar = stats.upperBound;
 
   // alpha_(k) = (psi_(star) - psi(lambda(k))) / ||gamma_(k)||_(2)^2
   //double alpha = std::max(0.0001, (psiStar - lagrangeanLowerBound) / normGammaSquared);
@@ -769,6 +794,8 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   //std::cout << "lag iter: " << stats.numLagIterations << std::endl;
   //std::cout << "lag bound: " << lagrangeanLowerBound << std::endl;
   double alpha = (psiStar - lagrangeanLowerBound) / normGammaSquared;
+  // on restarts, make step size half the size?
+  //alpha = alpha / (1.0 + (stats.lpIterations / 100.0));
   stepSizes.push_back(alpha);
 
   DBG(
@@ -842,6 +869,16 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
   std::vector<double> stepSizes;
   std::vector<std::set<int>> xDecompositions;
   stats.print(routeDD.size());
+
+  // set to best so far if we did a restart
+  if (stats.lpIterations > 1)
+  {
+    for (int index=0; index<lambda.size(); ++index)
+    {
+      lambda[index] = bestLambda[index];
+    }
+  }
+
   while (!shouldTerminate)
   {
     while (!shouldTerminate && (infeasibleRoutes.size() < infeasibleRoutesSizeLimit))
@@ -859,6 +896,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(lambda, mu, combDuals, srcDuals, shortestPaths, isDualFeasible, minReducedCost);
       //routeDD.checkLC121SolutionPossible();
       //routeDD.checkLRC121SolutionPossible();
+      //routeDD.checkC141SolutionPossible();
       DBG(std::cout << "finish" << std::endl;)
       stats.numSSPIterations = stats.numSSPIterations + shortestPaths.size();
       auto endSSPTime = std::chrono::high_resolution_clock::now();
@@ -917,6 +955,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       {
         stats.lowerBound = lagrangeanLowerBound;
         stats.print(routeDD.size());
+        for (int index=0; index<lambda.size(); ++index)
+        {
+          bestLambda[index] = lambda[index];
+        }
       }
 
       // get primal solution
@@ -963,33 +1005,31 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       {
         shouldTerminate = true;
       }
- 
-      // should fix after decomposing in case we fix an arc that is in the current solution?
+
+      // use repaired lambda as a copy of lambda for now
+      // should fix after decomposing in case we fix an arc that is in the current solution
       // see if we can fix arcs based on a feasible dual
       // some rounds let's force dual feasibility to find the bound and fix some arcs?
       double percentFixed = 0.0;
-      if (isDualFeasible)
+      if (isDualFeasible & (vrptw.oneOrMorePaths != OneOrMorePaths::ONE_PATH))
       {
-        if (vrptw.oneOrMorePaths != OneOrMorePaths::ONE_PATH)
+        percentFixed = routeDD.fixArcs(repairedLambda, singlePathDual, mu, combDuals, srcDuals, lagrangeanLowerBound, lpSolveType);
+        if (percentFixed > bestLambdaPercentFixed)
         {
-          percentFixed = routeDD.fixArcs(repairedLambda, singlePathDual, mu, combDuals, srcDuals, lagrangeanLowerBound, lpSolveType);
-          if (percentFixed > bestLambdaPercentFixed)
+          bestLambdaPercentFixed = percentFixed;
+          bestLambdaLowerBound = lagrangeanLowerBound;
+          for (int index=0; index<lambda.size(); ++index)
           {
-            bestLambdaPercentFixed = percentFixed;
-            bestLambdaLowerBound = lagrangeanLowerBound;
-            for (int index=0; index<lambda.size(); ++index)
-            {
-              bestLambdaArcFixing[index] = lambda[index];
-            }
+            bestLambdaArcFixing[index] = repairedLambda[index];
           }
-
-          double checkLambdaLB = 0.0;
-          for (double dual : lambda)
-          {
-            checkLambdaLB += dual;
-          }
-          std::cout << "check lb sum lambda: " << checkLambdaLB << std::endl;
         }
+
+        double checkLambdaLB = 0.0;
+        for (double dual : repairedLambda)
+        {
+          checkLambdaLB += dual;
+        }
+        DBG(std::cout << "check lb sum lambda: " << checkLambdaLB << std::endl;)
       }
       else
       {
@@ -997,16 +1037,18 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         // with one path can repair with the onePathDual
         if (vrptw.oneOrMorePaths == OneOrMorePaths::ONE_PATH)
         {
-          double sumOfLambda = 0.0;
+          // "reducedCost" is without the single dual variable, dual feasible means c - uTA >= v
+          // minReducedCost gives min c - uTA
+          singlePathDual = minReducedCost;
+          double repairedBound = 0.0;
           for (auto l : repairedLambda)
           {
-            sumOfLambda += l;
+            repairedBound += l;
           }
-          singlePathDual = sumOfLambda - lagrangeanLowerBound;
+          repairedBound = repairedBound + singlePathDual;
 
-          double repairedBound = lagrangeanLowerBound;
-          std::cout << "single path dual: " << singlePathDual << std::endl;
-          std::cout << "repaired lb: " << repairedBound << std::endl;
+          DBG(std::cout << "single path dual: " << singlePathDual << std::endl;
+          std::cout << "repaired lb: " << repairedBound << std::endl;)
           percentFixed = routeDD.fixArcs(repairedLambda, singlePathDual, mu, combDuals, srcDuals, repairedBound, lpSolveType);
           if (percentFixed > bestLambdaPercentFixed)
           {
@@ -1052,7 +1094,14 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
           {
             repairedBound += repairedLambda[index];
           }
-          std::cout << "repaired lb: " << repairedBound << std::endl;
+          DBG(std::cout << "repaired lb: " << repairedBound << std::endl;)
+          // The repaired bound might be the best lb yet!
+          if (stats.lowerBound < repairedBound)
+          {
+            stats.lowerBound = repairedBound;
+            stats.print(routeDD.size());
+          }
+
           percentFixed = routeDD.fixArcs(repairedLambda, singlePathDual, mu, combDuals, srcDuals, repairedBound, lpSolveType);
           if (percentFixed > bestLambdaPercentFixed)
           {
@@ -1066,11 +1115,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         }
       }
 
-      if (percentFixed > 95)
+      if ((percentFixed > 97.5) || (routeDD.numArcsNotFixed() < 100000))
       {
         lpSolveType = LPSolveType::LPSolver;
         stats.lpIterations = 1;
         shouldTerminate = true;
+        std::cout << "switching from LAG to LP solver" << std::endl;
         //routeDD.print();
       }
     }
@@ -1109,10 +1159,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       // for Subset Row Cuts add right away during cut rounds
       // dont add for X was taking too long
       // TOOD: maybe only add for small instances?
+      /*
       routeDD.findSRCThree(xDecompositions, stepSizes, cutAdded);
       addSRCCuts(srcDuals);
       xDecompositions.clear();
       stepSizes.clear();
+      */
 
       // should we reset iteration count when we add more dual variables?
       numLagIterations = 0;

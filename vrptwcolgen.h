@@ -67,6 +67,7 @@ class VRPTWColGen
     double bestLpDistance;
     std::vector<double> lpSolution;
     std::vector<double> setCoverDualVariables;
+    double singlePathDual;
     double numTrucksDualVariable;
 
     //CnstrMgrPointer allCutsCMP;

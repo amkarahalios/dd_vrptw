@@ -114,7 +114,7 @@ int main(int argc, char** argv)
     int timeout = std::stoi(timeoutString);
 
     VRPTWDDSolver ddSolver(vrptw, solveType, initialStateSpace, s, maxS, useCuts, timeout);
-    bool solved = ddSolver.solve();
+    bool solved = ddSolver.solve(true);
   }
   else
   {

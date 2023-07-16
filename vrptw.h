@@ -254,14 +254,14 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"C2_4_9.vrptw",3842.1},
 {"C2_4_10.vrptw",3665.1},
 {"R1_4_1.vrptw",10305.8},
-{"R1_4_2.vrptw",8873.3},
-{"R1_4_3.vrptw",7784.3},
+{"R1_4_2.vrptw",8873.2},
+{"R1_4_3.vrptw",7781.6},
 {"R1_4_4.vrptw",7266.2},
 {"R1_4_5.vrptw",9184.6},
 {"R1_4_6.vrptw",8340.4},
 {"R1_4_7.vrptw",7599.8},
 {"R1_4_8.vrptw",7240.5},
-{"R1_4_9.vrptw",8677.5},
+{"R1_4_9.vrptw",8673.8},
 {"R1_4_10.vrptw",8077.8},
 {"R2_4_1.vrptw",7520.7},
 {"R2_4_2.vrptw",6482.8},
@@ -272,7 +272,7 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"R2_4_7.vrptw",4893.5},
 {"R2_4_8.vrptw",4000.1},
 {"R2_4_9.vrptw",6067.8},
-{"R2_4_10.vrptw",5645.9},
+{"R2_4_10.vrptw",5638.1},
 {"RC1_4_1.vrptw",8522.9},
 {"RC1_4_2.vrptw",7878.2},
 {"RC1_4_3.vrptw",7516.9},
@@ -314,7 +314,7 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"C2_6_9.vrptw",7303.2},
 {"C2_6_10.vrptw",7123.9},
 {"R1_6_1.vrptw",21274.2},
-{"R1_6_2.vrptw",18558.7},
+{"R1_6_2.vrptw",18519.8},
 {"R1_6_3.vrptw",16874.9},
 {"R1_6_4.vrptw",15721.4},
 {"R1_6_5.vrptw",19294.9},
@@ -326,14 +326,14 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"R2_6_1.vrptw",15145.3},
 {"R2_6_2.vrptw",12976.3},
 {"R2_6_3.vrptw",10455.3},
-{"R2_6_4.vrptw",7915.1},
+{"R2_6_4.vrptw",7914.5},
 {"R2_6_5.vrptw",13790.2},
 {"R2_6_6.vrptw",11847.8},
-{"R2_6_7.vrptw",9777.9},
+{"R2_6_7.vrptw",9770.3},
 {"R2_6_8.vrptw",7512.3},
 {"R2_6_9.vrptw",12736.8},
 {"R2_6_10.vrptw",11837},
-{"RC1_6_1.vrptw",16960.1},
+{"RC1_6_1.vrptw",16944.2},
 {"RC1_6_2.vrptw",15890.6},
 {"RC1_6_3.vrptw",15181.3},
 {"RC1_6_4.vrptw",14753.2},
@@ -366,7 +366,7 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"C2_8_1.vrptw",11631.9},
 {"C2_8_2.vrptw",11394.5},
 {"C2_8_3.vrptw",11138.1},
-{"C2_8_4.vrptw",10650},
+{"C2_8_4.vrptw",10639.6},
 {"C2_8_5.vrptw",11395.6},
 {"C2_8_6.vrptw",11316.3},
 {"C2_8_7.vrptw",11332.9},
@@ -383,39 +383,39 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"R1_8_8.vrptw",27609.4},
 {"R1_8_9.vrptw",32257.3},
 {"R1_8_10.vrptw",30918.4},
-{"R2_8_1.vrptw",24969.8},
+{"R2_8_1.vrptw",24968.8},
 {"R2_8_2.vrptw",21312.2},
-{"R2_8_3.vrptw",17234.8},
-{"R2_8_4.vrptw",13160.8},
-{"R2_8_5.vrptw",22801.6},
+{"R2_8_3.vrptw",17229.5},
+{"R2_8_4.vrptw",13152.8},
+{"R2_8_5.vrptw",22798.2},
 {"R2_8_6.vrptw",19740.5},
-{"R2_8_7.vrptw",16357.5},
+{"R2_8_7.vrptw",16351.2},
 {"R2_8_8.vrptw",12611.7},
 {"R2_8_9.vrptw",21282.7},
-{"R2_8_10.vrptw",19984.8},
-{"RC1_8_1.vrptw",29978.9},
+{"R2_8_10.vrptw",19964.2},
+{"RC1_8_1.vrptw",29952.8},
 {"RC1_8_2.vrptw",28290.1},
 {"RC1_8_3.vrptw",27447.7},
 {"RC1_8_4.vrptw",26557.2},
 {"RC1_8_5.vrptw",29219.9},
-{"RC1_8_6.vrptw",29194.2},
-{"RC1_8_7.vrptw",28788.6},
-{"RC1_8_8.vrptw",28418.1},
-{"RC1_8_9.vrptw",28347.1},
+{"RC1_8_6.vrptw",29148.7},
+{"RC1_8_7.vrptw",28734.0},
+{"RC1_8_8.vrptw",28390.0},
+{"RC1_8_9.vrptw",28331.6},
 {"RC1_8_10.vrptw",28168.5},
 {"RC2_8_1.vrptw",19201.3},
 {"RC2_8_2.vrptw",16709.5},
 {"RC2_8_3.vrptw",14013.6},
 {"RC2_8_4.vrptw",10969.4},
 {"RC2_8_5.vrptw",17466.1},
-{"RC2_8_6.vrptw",17195.1},
+{"RC2_8_6.vrptw",17190.6},
 {"RC2_8_7.vrptw",16362.2},
 {"RC2_8_8.vrptw",15528.8},
-{"RC2_8_9.vrptw",15183},
+{"RC2_8_9.vrptw",15177.2},
 {"RC2_8_10.vrptw",14370.9},
 {"C1_10_1.vrptw",42444.8},
 {"C1_10_2.vrptw",41337.8},
-{"C1_10_3.vrptw",40064.4},
+{"C1_10_3.vrptw",40060.0},
 {"C1_10_4.vrptw",39434.1},
 {"C1_10_5.vrptw",42434.8},
 {"C1_10_6.vrptw",42437},
@@ -469,8 +469,8 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"RC2_10_4.vrptw",15657},
 {"RC2_10_5.vrptw",25797.5},
 {"RC2_10_6.vrptw",25782.5},
-{"RC2_10_7.vrptw",24395.8},
-{"RC2_10_8.vrptw",23280.2},
+{"RC2_10_7.vrptw",24391.6},
+{"RC2_10_8.vrptw",23279.8},
 {"RC2_10_9.vrptw",22731.6},
 {"RC2_10_10.vrptw",21736.1},
 {"A-n32-k5.vrp",784},
@@ -1333,6 +1333,7 @@ struct VRPTW
           }
         }
 
+        precedences.resize(demands.size());
         distances.resize(demands.size());
         for (int i=0; i < demands.size(); ++i)
         {
@@ -1727,7 +1728,7 @@ struct VRPTW
               demandsForCombs.push_back(1);
               serviceTimes.push_back(0);
               startTimes.push_back(0);
-              endTimes.push_back(0);
+              endTimes.push_back(1000000);
             }
 
             distanceMatrixRow = distanceMatrixRow + 1;
@@ -1762,6 +1763,14 @@ struct VRPTW
             reliances.resize(numLocations);
           }
         }
+
+        DBG(for (int i=0; i<precedences.size(); ++i)
+        {
+          for (auto j : precedences[i])
+          {
+            std::cout << i << "," << j << std::endl;
+          }
+        })
 
         // formally add if this works
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
