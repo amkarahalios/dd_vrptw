@@ -1,0 +1,17 @@
+Welcome to the VRPTW Solver, powered by Column Elimination, written by Anthony Karahalios.
+Right now, you can use this solver for the three main problems: VRPTW, TSPTW, SOP.
+
+Below are some helpful tips to get you started:
+1. The Makefile. Check that your system and path to CPLEX are correct. We use CPLEX as the linear programming solver and g++ to compile our code, but it is possible to change these things. Typing the command "make" should output a binary file called "solver" that you will use to run instances.
+
+2. The solver file. Once created, you can run the solver by typing ./solver instance_location COL_ELIM LP NG # # N timeout where you have to fill in some of the arguments. Check the file solvevrptw.cpp to see different arguments and usage.
+
+3. The source files:
+a) vrptw.h/cpp holds static information about the problem that you would like to solve. The main class here is the VRPTW class that holds the distance matrix, demands, and other information about your problem type.
+b) vrptwdecisiondiagram.h/cpp defines a decision diagram and relevant classes like VRPTWNodeState, VRPTWNode, VRPTWArc that hold the information necessary to compile all feasible routes as r-t paths through the decision diagram, or compile a relaxation.
+c) vrptwddsolver.h/cpp is the solver driver. It contains the main algorithm loop for column elimination, calling the appropriate dd methods when we need to solve the LP, separate a conflict, etc.
+d) solvevrptw.cpp creates the solver file by reading in the arguments that you provide
+e) vrptwcolgen.h/cpp is a basic column generation method that we used for comparing results
+
+4. The instance files can be found in the "instances" folder.
+5. Our log files can be found in the "logs" folder.
