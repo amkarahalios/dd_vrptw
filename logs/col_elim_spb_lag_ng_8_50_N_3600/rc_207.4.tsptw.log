@@ -1,0 +1,29 @@
+num loc: 6
+hgs upper bound: 119.65
+compiling dd
+time step mult: 10000
+time step: 1000000
+cap step: 1
+start compiling DD
+add terminal node arcs
+done compiling dd
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[119.65] size: [82] time: [0]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[32.3744] ub[119.65] size: [82] time: [0]
+switching from LAG to LP solver
+num vars: 206
+STATS - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[119.639] ub[119.65] size: [82] time: [0]
+routes: 
+flow {1}: 0 5 3 2 4 1 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+solving IP
+num vars: 206
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[119.639] ub[119.65] size: [82] time: [0]
+routes: 
+flow {1}: 0 1 4 2 3 5 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[119.639] ub[119.639] size: [82] time: [0]
+finished solving - complete
+time elapsed: 0

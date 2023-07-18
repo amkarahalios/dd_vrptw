@@ -1,0 +1,37 @@
+num loc: 20
+hgs upper bound: 444.55
+compiling dd
+time step mult: 10000
+time step: 1000000
+cap step: 1
+start compiling DD
+add terminal node arcs
+done compiling dd
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[444.55] size: [3878] time: [0]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[32.5021] ub[444.55] size: [3878] time: [0]
+switching from LAG to LP solver
+num vars: 36278
+STATS - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[2] lb[438.938] ub[444.55] size: [3878] time: [2]
+num vars: 36329
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[1] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[5] lb[443.493] ub[444.55] size: [3884] time: [5]
+num vars: 183
+STATS - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[2] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[5] lb[443.926] ub[444.55] size: [3885] time: [5]
+num vars: 30672
+STATS - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[7] lb[444.481] ub[444.55] size: [3886] time: [7]
+num vars: 55
+STATS - lpIterations[6] lagIterations[1] sspIterations[1] numSeparations[4] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[7] lb[444.542] ub[444.55] size: [3890] time: [7]
+routes: 
+flow {1}: 0 14 18 13 9 5 4 6 8 7 16 19 11 17 1 10 3 12 2 15 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+solving IP
+num vars: 40
+STATS - lpIterations[7] lagIterations[1] sspIterations[1] numSeparations[4] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[7] lb[444.542] ub[444.55] size: [3890] time: [8]
+routes: 
+flow {1}: 0 14 18 13 9 5 4 6 8 7 16 19 11 17 1 10 3 12 2 15 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[7] lagIterations[1] sspIterations[1] numSeparations[4] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[7] lb[444.542] ub[444.542] size: [3890] time: [8]
+finished solving - complete
+time elapsed: 8
