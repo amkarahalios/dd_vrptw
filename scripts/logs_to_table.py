@@ -627,8 +627,8 @@ lb_pattern = re.compile("Current Bounds - LB: ([0-9]+) UB:.*")
 ub_pattern = re.compile("Current Bounds - LB:.*UB: ([0-9]+).*")
 finish_pattern = re.compile("Done solving.*time:\[([0-9]+).*\] LB:\[([0-9]+)\] UB:\[([0-9]+)\]")
 
-#logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
-logs_dir = "/Users/akarahal/Desktop/dd_graph_color/logs/"
+logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
+#logs_dir = "/Users/akarahal/Desktop/dd_graph_color/logs/"
 #test_set = ["col_elim_hg_lag_ng_4_20_N_3600","col_elim_hg-close_lag_ng_4_20_N-7200"]
 #test_set = ["col_elim_hg-close_lag_ng_4_20_N-7200"]
 test_set = ["col_elim_hg_lag_ng_2_50_N_3600",
@@ -656,15 +656,34 @@ test_set = ["col_elim_hg_lag_ng_2_50_N_3600",
             "col_elim_lp_5_3_MIP_3600"]
 
 instances = []
-#instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/ALL_sop/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/SolomonPotvinBengio/"
-instance_dir = "/Users/akarahal/Desktop/dd_graph_color/instances/"
+instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"
+#instance_dir = "/Users/akarahal/Desktop/dd_graph_color/instances/"
 
 for instance in os.listdir(instance_dir):
   if "COG" in instance:
     continue
-  instances.append(instance)
+  if "C1" in instance:
+    instances.append(instance)
+  if "C2" in instance:
+    instances.append(instance)
+
+# get n for sop instances
+pattern = re.compile("DIMENSION: ([0-9]+).*")
+instances_sizes = []
+if "sop" in instance_dir:
+  for instance in instances:
+    instance_file_name = instance_dir + '/' + instance
+    instance_file = open(instance_file_name, "r")
+    for line in instance_file:
+      match = pattern.match(line)
+      if match:
+        n = int(match.group(1))
+        instances_sizes.append((instance,n))
+  instances_sizes.sort(key=lambda x: x[1])
+  instances = [instance for (instance, size) in instances_sizes]
+  instances = instances[6:]
 
 time_results = []
 results = []
@@ -692,7 +711,7 @@ for test in test_set:
         lpSolveTime = colelim_match.group(7)
         lb = math.ceil(float(colelim_match.group(8)))
         ub = float(colelim_match.group(9))
-        size = colelim_match.group(10)
+        size = int(colelim_match.group(10))
         time = colelim_match.group(11)
         time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'size': size, 'time' : time}
         time_results.append(time_result)
@@ -840,17 +859,17 @@ if experiment1:
   plt.show()
 
 # experiment 2 - plot the lb versus time for each method
-experiment2 = False
+experiment2 = True
 if experiment2:
   # used these for paper exp2
   # using these to test X instances
-  #tests_to_compare = ["col_elim_hg_lag_ng_4_20_N_3600","col_elim_hg-close_lag_ng_4_20_N-7200"]
-  tests_to_compare = ["col_elim_sop_lag_ng_2_50_N_3600",
-                      "col_elim_sop_lag_ng_5_50_N_3600",
-                      "col_elim_sop_lag_ng_8_50_N_3600",
-                      "col_elim_sop_lp_ng_2_50_N_3600",
-                      "col_elim_sop_lp_ng_5_50_N_3600",
-                      "col_elim_sop_lp_ng_8_50_N_3600"]
+  tests_to_compare = ["col_elim_hg_lag_ng_4_50_N_3600"]
+  #tests_to_compare = ["col_elim_sop_lag_ng_2_50_N_3600",
+  #                    "col_elim_sop_lag_ng_5_50_N_3600",
+  #                    "col_elim_sop_lag_ng_8_50_N_3600",
+  #                    "col_elim_sop_lp_ng_2_50_N_3600",
+  #                    "col_elim_sop_lp_ng_5_50_N_3600",
+  #                    "col_elim_sop_lp_ng_8_50_N_3600"]
 
   #instances_to_consider = ["X-n327-k20.vrp","X-n344-k43.vrp","X-n359-k29.vrp","X-n367-k17.vrp","X-n480-k70.vrp","X-n502-k39.vrp","X-n561-k42.vrp","X-n573-k30.vrp","X-n801-k40.vrp","X-n957-k87.vrp"]
   instances_to_consider = instances
@@ -1078,7 +1097,7 @@ if experiment5:
 # Don't use best ub like experiment4 though
 # First showing how many instances are solved within d% at times 0-3600
 # Then showing how many instances are solved within x% of the optimal value
-experiment6 = True
+experiment6 = False
 if experiment6:
   #methodsToTests = {'CE_MIP' : ['all_col_elim_lp_ub_3600'],
   #                  'CE_BANDB' : ['all_col_elim_lp_bandb_ub_3600'],
@@ -1181,4 +1200,260 @@ if experiment6:
   plt.xticks(x_ticks, x_labels)
   plt.legend()
   plt.axvline(x=3600,color='k')
+  plt.show()
+
+# Plot LB at 3600 seconds vs. number of nodes in original DD
+# Make LAG dots one color and LP dots another color
+experiment7 = False
+if experiment7:
+  #methodsToTests = {'CE_MIP' : ['all_col_elim_lp_ub_3600'],
+  #                  'CE_BANDB' : ['all_col_elim_lp_bandb_ub_3600'],
+  #                  'CE_BDD' : ['all_col_elim_bdd_3600'],
+  #                  'Held' : ['held_3600']}
+  methodsToTests = {'LAG_NG2' : ['col_elim_sop_lag_ng_2_50_N_3600'],
+                    'LAG_NG5' : ['col_elim_sop_lag_ng_5_50_N_3600'],
+                    'LAG_NG8' : ['col_elim_sop_lag_ng_8_50_N_3600']}
+  #                  'LP_NG2' : ['col_elim_sop_lp_ng_2_50_N_3600'],
+  #                  'LP_NG5' : ['col_elim_sop_lp_ng_5_50_N_3600'],
+  #                  'LP_NG8' : ['col_elim_sop_lp_ng_8_50_N_3600']}
+  #methodsToTests = {'LAG_NG2' : ['col_elim_spb_lag_ng_2_50_N_3600'],
+  #                  'LAG_NG5' : ['col_elim_spb_lag_ng_5_50_N_3600'],
+  #                  'LAG_NG8' : ['col_elim_spb_lag_ng_8_50_N_3600'],
+  #                  'LP_NG2' : ['col_elim_spb_lp_ng_2_50_N_3600'],
+  #                  'LP_NG5' : ['col_elim_spb_lp_ng_5_50_N_3600'],
+  #                  'LP_NG8' : ['col_elim_spb_lp_ng_8_50_N_3600']}
+  #methodsToTests = {'LAG' : ['col_elim_spb_lag_ng_2_50_N_3600', 'col_elim_spb_lag_ng_5_50_N_3600', 'col_elim_spb_lag_ng_8_50_N_3600'],
+  #                  'LP' : ['col_elim_spb_lp_ng_2_50_N_3600', 'col_elim_spb_lp_ng_5_50_N_3600', 'col_elim_spb_lp_ng_8_50_N_3600']}
+  #methodsToTests = {'LP_NG2' : ['col_elim_hg_lp_ng_2_50_N_3600'],
+  #                  'LP_NG4' : ['col_elim_hg_lp_ng_4_50_N_3600'],
+  #                  'LP_NG6' : ['col_elim_hg_lp_ng_6_50_N_3600'],
+  #                  'LAG_NG2' : ['col_elim_hg_lag_ng_2_50_N_3600'],
+  #                  'LAG_NG4' : ['col_elim_hg_lag_ng_4_50_N_3600'],
+  #                  'LAG_NG6' : ['col_elim_hg_lag_ng_6_50_N_3600']}
+
+  # List of times
+  # List of percent gaps
+  # x_axis names?
+  d = 0
+  times_list = list(range(0,3700,100))
+  gap_list = list(range(d,21,1))
+  #line_styles = ['solid', 'dotted', 'dashed', 'dashdot', (0, (5, 1)), (5, (10, 3))]
+  line_colors = ['b', 'r', 'g', 'k', 'saddlebrown', 'm']
+  #line_colors = ['b', 'r']
+  #markers = ['.','.','.','x','x','x']
+  markers = ['.','x','s']
+
+  # For each method build:
+  # - num solved within d% at each time
+  # - num solved within each percent gaps
+  instance_sizes = {}
+  max_size = 0
+  method_num = 0
+  for method in methodsToTests:
+    print(method)
+    count = 0
+    method_x_dd_sizes = []
+    method_y_gaps = []
+    method_size_within_gap = [0] * 5
+    for test in methodsToTests[method]:
+      for instance in instances:
+        if instance in ['rc_203.3.tsptw', 'rc_204.1.tsptw', 'rc_204.2.tsptw', 'rc_208.1.tsptw', 'rc_208.3.tsptw']:
+          continue
+        optimal = instance_upper_bounds[instance]
+        test_instance_results = time_results_df[(time_results_df['instance'] == instance) & (time_results_df['test'] == test)]
+        if not test_instance_results.empty:
+          print(instance)
+          # time info
+          for t_iter in range(len(times_list)):
+            t = times_list[t_iter]
+            time_result = test_instance_results[test_instance_results['time'].astype(int) <= t]
+            if time_result.empty:
+              lb = 0
+              ub = 1000000
+              size = 0
+            else:
+              lb = max(time_result['lb'])
+              ub = min(time_result['ub'])
+              size = min(time_result['size'])
+              if size > max_size:
+                max_size = size
+
+          # gap info
+          best_lb = max(test_instance_results['lb'])
+          best_ub = min(test_instance_results['ub'])
+          gap = (best_ub-best_lb) * 100.0 / best_ub
+          print(size)
+          print(gap)
+
+          method_x_dd_sizes.append(size)
+          method_y_gaps.append(gap)
+          instance_sizes[(instance,test[-14:])] = size
+
+          #for test_size_index in range(len(sizes)):
+          #  if size <= sizes[test_size_index]:
+          #    if gap <= 5.0:
+          #      method_size_within_gap[test_size_index] = method_size_within_gap[test_size_index] + 1
+        else:
+          if (instance, test[-14:]) in instance_sizes:
+            method_x_dd_sizes.append(instance_sizes[(instance,test[-14:])])
+          else:
+            method_x_dd_sizes.append(1e7)
+          method_y_gaps.append(100)
+
+    # plot each of these time then reverse gaps?
+    plt.scatter(method_x_dd_sizes,method_y_gaps,label=method,color=line_colors[method_num],marker=markers[method_num])
+    method_num = method_num + 1
+    print("method count")
+    print(method)
+    print(method_size_within_gap)
+    #performance[method] = method_size_within_gap
+
+  # plot
+  #print(performance)
+  plt.xlabel('dp num nodes')
+  plt.ylabel('optimality gap')
+
+  # update x axis
+  #x_ticks = list(range(0,max_size,max_size/10))
+  #x_ticks_raw = times_list.copy()
+  #x_labels_raw = times_list.copy()
+
+  #for gap_iter in range(len(gap_list)):
+  #  if gap_iter % 2 == 0 and gap_iter > 0:
+  #    x_ticks.append(3600 + (3600 / len(gap_list) * (gap_iter+1)))
+  #    x_labels.append(str(gap_list[gap_iter]) + '%')
+
+  #plt.xticks(x_ticks)
+  plt.legend()
+  #plt.axvline(x=3600,color='k')
+  plt.show()
+
+# Plot LB at 3600 seconds vs. number of nodes in original DD
+# Make LAG dots one color and LP dots another color
+experiment8 = False
+if experiment8:
+  #methodsToTests = {'CE_MIP' : ['all_col_elim_lp_ub_3600'],
+  #                  'CE_BANDB' : ['all_col_elim_lp_bandb_ub_3600'],
+  #                  'CE_BDD' : ['all_col_elim_bdd_3600'],
+  #                  'Held' : ['held_3600']}
+  methodsToTests = {'LAG_NG2' : ['col_elim_sop_lag_ng_2_50_N_3600'],
+                    'LAG_NG5' : ['col_elim_sop_lag_ng_5_50_N_3600'],
+                    'LAG_NG8' : ['col_elim_sop_lag_ng_8_50_N_3600']}
+  #                  'LP_NG2' : ['col_elim_sop_lp_ng_2_50_N_3600'],
+  #                  'LP_NG5' : ['col_elim_sop_lp_ng_5_50_N_3600'],
+  #                  'LP_NG8' : ['col_elim_sop_lp_ng_8_50_N_3600']}
+  #methodsToTests = {'LAG_NG2' : ['col_elim_spb_lag_ng_2_50_N_3600'],
+  #                  'LAG_NG5' : ['col_elim_spb_lag_ng_5_50_N_3600'],
+  #                  'LAG_NG8' : ['col_elim_spb_lag_ng_8_50_N_3600'],
+  #                  'LP_NG2' : ['col_elim_spb_lp_ng_2_50_N_3600'],
+  #                  'LP_NG5' : ['col_elim_spb_lp_ng_5_50_N_3600'],
+  #                  'LP_NG8' : ['col_elim_spb_lp_ng_8_50_N_3600']}
+  #methodsToTests = {'LAG' : ['col_elim_spb_lag_ng_2_50_N_3600', 'col_elim_spb_lag_ng_5_50_N_3600', 'col_elim_spb_lag_ng_8_50_N_3600'],
+  #                  'LP' : ['col_elim_spb_lp_ng_2_50_N_3600', 'col_elim_spb_lp_ng_5_50_N_3600', 'col_elim_spb_lp_ng_8_50_N_3600']}
+  #methodsToTests = {'LP_NG2' : ['col_elim_hg_lp_ng_2_50_N_3600'],
+  #                  'LP_NG4' : ['col_elim_hg_lp_ng_4_50_N_3600'],
+  #                  'LP_NG6' : ['col_elim_hg_lp_ng_6_50_N_3600'],
+  #                  'LAG_NG2' : ['col_elim_hg_lag_ng_2_50_N_3600'],
+  #                  'LAG_NG4' : ['col_elim_hg_lag_ng_4_50_N_3600'],
+  #                  'LAG_NG6' : ['col_elim_hg_lag_ng_6_50_N_3600']}
+
+  # List of times
+  # List of percent gaps
+  # x_axis names?
+  d = 0
+  times_list = list(range(0,3700,100))
+  gap_list = list(range(d,21,1))
+  #line_styles = ['solid', 'dotted', 'dashed', 'dashdot', (0, (5, 1)), (5, (10, 3))]
+  line_colors = ['b', 'r', 'g', 'k', 'saddlebrown', 'm']
+  #line_colors = ['b', 'r']
+  #line_colors = ['k', 'k', 'k']
+  #markers = ['.','.','.','x','x','x']
+  #markers = ['.','x','s']
+  hatches = ['o','-','.']
+
+  # For each method build:
+  # - num solved within d% at each time
+  # - num solved within each percent gaps
+  x_ticks = []
+  x_labels = []
+  max_size = 0
+  method_num = 0
+  for method in methodsToTests:
+    print(method)
+    count = 0
+    method_x_instance_nums = []
+    method_y_gaps = []
+    method_size_within_gap = [0] * 5
+    for test in methodsToTests[method]:
+      instance_num = 0
+      for instance in instances:
+        optimal = instance_upper_bounds[instance]
+        test_instance_results = time_results_df[(time_results_df['instance'] == instance) & (time_results_df['test'] == test)]
+        if not test_instance_results.empty:
+          print(instance)
+          # time info
+          for t_iter in range(len(times_list)):
+            t = times_list[t_iter]
+            time_result = test_instance_results[test_instance_results['time'].astype(int) <= t]
+            if time_result.empty:
+              lb = 0
+              ub = 1000000
+              size = 0
+            else:
+              lb = max(time_result['lb'])
+              ub = min(time_result['ub'])
+              size = min(time_result['size'])
+              if size > max_size:
+                max_size = size
+
+          # gap info
+          best_lb = max(test_instance_results['lb'])
+          best_ub = min(test_instance_results['ub'])
+          gap = (best_ub-best_lb) * 100.0 / best_ub
+          print(size)
+          print(gap)
+
+          method_x_instance_nums.append(instance_num + method_num)
+          method_y_gaps.append(gap)
+
+          #for test_size_index in range(len(sizes)):
+          #  if size <= sizes[test_size_index]:
+          #    if gap <= 5.0:
+          #      method_size_within_gap[test_size_index] = method_size_within_gap[test_size_index] + 1
+        else:
+          method_x_instance_nums.append(instance_num + method_num)
+          method_y_gaps.append(100)
+ 
+        x_ticks.append(instance_num)
+        x_labels.append(instance[:-4])
+        instance_num = instance_num + 5
+
+    # plot each of these time then reverse gaps?
+    plt.bar(method_x_instance_nums,method_y_gaps,label=method,color=line_colors[method_num])
+    #plt.bar(method_x_instance_nums,method_y_gaps,label=method,color='none',edgecolor='k',hatch=hatches[method_num])
+    method_num = method_num + 1
+    print("method count")
+    print(method)
+    print(method_size_within_gap)
+    #performance[method] = method_size_within_gap
+
+  # plot
+  #print(performance)
+  plt.xlabel('instance name')
+  plt.ylabel('optimality gap')
+
+  # update x axis
+  #x_ticks = list(range(0,max_size,max_size/10))
+  #x_ticks_raw = times_list.copy()
+  #x_labels_raw = times_list.copy()
+
+  #for gap_iter in range(len(gap_list)):
+  #  if gap_iter % 2 == 0 and gap_iter > 0:
+  #    x_ticks.append(3600 + (3600 / len(gap_list) * (gap_iter+1)))
+  #    x_labels.append(str(gap_list[gap_iter]) + '%')
+
+  plt.xticks(x_ticks, x_labels, rotation=90, fontsize=8)
+  plt.legend(fontsize=8)
+  #plt.axvline(x=3600,color='k')
+  plt.xlim(min(x_ticks),max(x_ticks)+2)
   plt.show()
