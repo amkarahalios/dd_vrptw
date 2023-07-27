@@ -555,7 +555,6 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   terminalNodeIndex = 1;
 
   // create nodes except r/t
-  std::cout << "start compiling DD" << std::endl;
   int nodeIndex = 0;
   while (nodeIndex < nodes.size())
   {
@@ -662,7 +661,6 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   }
 
   DBG(print();)
-  std::cout << "add terminal node arcs" << std::endl;
   // add arcs to terminal node
   nodeIndex = 2;
   while (nodeIndex < nodes.size())
@@ -1624,7 +1622,7 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double s
   {
     const VRPTWArc& arcToCheck = arcs[arcIndex];
     double bestPossibleReducedCost = shortestPathDown[arcToCheck.fromNodeIndex] + shortestPathUp[arcToCheck.toNodeIndex] + arcToCheck.coeff - singlePathDual;
-    if ((lowerBound + bestPossibleReducedCost) > (vrptw.hgsUpperBound + 0.00001))
+    if ((lowerBound + bestPossibleReducedCost) > (vrptw.instanceUpperBound + 0.00001))
     {
       // remove from graph if there
       bool removed = false;
@@ -2373,7 +2371,7 @@ double VRPTWDecisionDiagram::createSolutionFromReverseArcsAndResetWang(const std
   return solutionValue;
 };
 
-double VRPTWDecisionDiagram::solveMinCostFlowModel(const std::vector<double>& duals, std::vector<std::vector<int>>& shortestPathsByArc)
+double VRPTWDecisionDiagram::solveMinCostFlowModel(const std::vector<double>& duals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& minReducedCost)
 {
   // start potentials and flows at 0
   for (VRPTWNode& node : nodes)
@@ -2398,9 +2396,20 @@ double VRPTWDecisionDiagram::solveMinCostFlowModel(const std::vector<double>& du
     {
       setCoeffsAsDistancesMinusLagrangean(duals);
       std::vector<int> empty;
-      computeShortestPathBFS(ShortestPathMode::UPDATE_POTENTIALS, empty);
+      minReducedCost = computeShortestPathBFS(ShortestPathMode::UPDATE_POTENTIALS, empty);
       DBG(std::cout << "computed shortest path bfs" << std::endl;)
       DBG(print();)
+
+      // shortest path tells us dual feasibility
+      if (minReducedCost < 0)
+      {
+        isDualFeasible = false;
+        DBG(std::cout << "dual not feasible: " << shortestPathLength << std::endl;)
+      }
+      else
+      {
+        isDualFeasible = true;
+      }
     }
     else
     {
@@ -2420,6 +2429,12 @@ double VRPTWDecisionDiagram::solveMinCostFlowModel(const std::vector<double>& du
     for (int arcIndex : shortestPathByArc)
     {
       shortestPathDistance = shortestPathDistance + arcs[arcIndex].coeff;
+    }
+
+    // terminate if shortest path distance is positive
+    if ((shortestPathDistance >= -0.000000001) && (numPaths != 0))
+    {
+      break;
     }
 
     // get residual graph and continue or decide to stop
@@ -2724,7 +2739,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>
     arc.heuristicFlow = 0.0;
   }
 
-  // setup some data structures (fllow Wang,Wang,Wang NeurIps paper)
+  // setup some data structures (follow Wang,Wang,Wang NeurIps paper)
   std::vector<int> treeByParentArcs;
   treeByParentArcs.resize(nodes.size());
   std::vector<int> shortestPathByArc;

@@ -19,7 +19,7 @@ struct DDStats
       startTime = std::chrono::high_resolution_clock::now();
     };
     
-    void print(int ddSize) const
+    void print(int ddNumArcs, int ddNumFixedArcs) const
     {
       std::cout << "STATS - lpIterations[" << lpIterations << "] lagIterations[";
       std::cout << numLagIterations << "] sspIterations[" << numSSPIterations;
@@ -28,7 +28,8 @@ struct DDStats
       std::cout << "] sspSolveTime[" << int(millisecondsSolvingSSP / 1000);
       std::cout << "] lpSolveTime[" << int(millisecondsSolvingLP / 1000);
       std::cout << "] lb[" << lowerBound << "] ub[" << upperBound << "]";
-      std::cout << " size: [" << ddSize << "]";
+      std::cout << " numArcs: [" << ddNumArcs << "]";
+      std::cout << " numFixed: [" << ddNumFixedArcs << "]";
       std::cout << " time: [" << getNumSeconds() << "]" << std::endl;
     }
 
@@ -54,7 +55,7 @@ struct DDStats
 class VRPTWDDSolver
 {
   public:
-    VRPTWDDSolver(VRPTW vrptw, LPSolveType lpSolveType, InitialStateSpace initialStateSpace, int s, int maxS, bool useCuts, int timeoutSeconds);
+    VRPTWDDSolver(VRPTW vrptw, VRPTWDDParameters);
 
     bool solve(bool solveIP);
     DDStats getStats() { return stats; }
@@ -85,17 +86,13 @@ class VRPTWDDSolver
 
     VRPTW vrptw;
     VRPTWDecisionDiagram routeDD;
-    int maxS;
-    bool useCuts;
-    int timeoutSeconds;
-    LPSolveType lpSolveType;
+    VRPTWDDParameters params;
     std::vector<std::vector<int>> bestSolution;
 
     std::vector<double> bestLambdaArcFixing;
     double bestSinglePathDualFixing;
     double bestLambdaPercentFixed;
     double bestLambdaLowerBound;
- 
     std::vector<double> bestLambda;
 
     int Dim = 100;

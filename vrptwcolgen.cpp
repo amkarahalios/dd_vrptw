@@ -18,7 +18,7 @@ VRPTWColGen::VRPTWColGen(VRPTW _vrptw, PricingProblemType _pricingProblemType, I
       routeDD.compileNgRoute(_s);
       //routeDD.print();
     }
-    std::cout << "DD size: " << routeDD.size() << std::endl;
+    std::cout << "DD size: " << routeDD.getNumArcsNotRemovedOrReverse() << std::endl;
     auto endCompileTime = std::chrono::high_resolution_clock::now();
     auto compileSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endCompileTime - startCompileTime).count();
     stats.millisecondsCompilingDD = stats.millisecondsCompilingDD + compileSolveTime;

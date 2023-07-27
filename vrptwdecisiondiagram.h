@@ -144,14 +144,23 @@ class VRPTWDecisionDiagram
     };
 
     void print() const;
+    int numNodes() const { return nodes.size(); }
     double evaluateRouteCost(const std::vector<int>& routeByArc);
     double getPercentFixedArcs() const
     {
       return fixedArcs.size() * 100.0 / arcs.size();
     }
-    int numArcsNotFixed() const
+    int getNumArcsNotRemovedOrReverse() const
     {
-      return arcs.size() - fixedArcs.size();
+      return arcs.size() - removedArcs.size() - arcReverseArc.size();
+    }
+    int getNumArcsNotRemovedOrReverseOrFixed() const
+    {
+      return arcs.size() - removedArcs.size() - arcReverseArc.size() - getNumFixedArcs();
+    }
+    int getNumFixedArcs() const
+    {
+      return fixedArcs.size();
     }
     bool isArcAlive(int arcIndex) const
     {
@@ -204,7 +213,7 @@ class VRPTWDecisionDiagram
     int reverseArc(int arcIndex);
     void updateResidualGraph(const std::vector<int>& shortestPathByArc);
     double createSolutionFromReverseArcsAndReset();
-    double solveMinCostFlowModel(const std::vector<double>& duals, std::vector<std::vector<int>>& shortestPathsByArc);
+    double solveMinCostFlowModel(const std::vector<double>& duals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& minReducedCost);
 
     // min cost flow Wang for lagrangean
     void getTreeByChildArcsFromTreeByParentArcs(const std::vector<int>& treeByParentArcs, std::vector<std::vector<int>>& treeByChildArcs);
@@ -218,8 +227,6 @@ class VRPTWDecisionDiagram
     double solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& shortestPathLength);
     bool checkFeasibleDual(const std::vector<double>& lambda, const std::vector<double>& rccDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
     void getLocationsOnArcPaths(const std::vector<std::vector<int>>& shortestPathsByArc, std::set<int>& locations);
-
-    int size() const { return nodes.size(); }
 
     // for testing
     const std::vector<VRPTWNode>& getNodes() const { return nodes; }

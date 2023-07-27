@@ -107,6 +107,25 @@ enum VRPTWTimeWindowType
   NO_TIME_WINDOWS = 1,
 };
 
+struct VRPTWDDParameters
+{
+  LPSolveType lpSolveType;
+  InitialStateSpace initialStateSpace;
+  int s;
+  int maxS;
+  bool useCuts;
+  bool useVariableFixing;
+  bool useMuSSP;
+  int timeoutSeconds;
+
+  int infeasibleRoutesBatchSize;
+  double lagIterationDelayToStartSeparating;
+  double lagOptimalityGapToStartRepairing;
+  double percentFixedToChangeToCPLEX;
+  int numArcsToChangeToCPLEX;
+  int numArcsToChangeToLAG;
+};
+
 struct VRPTWSolution
 {
   VRPTWSolution(std::vector<std::vector<int>> _routes, double _totalDistance) : routes(_routes), totalDistance(_totalDistance) {}
@@ -1361,13 +1380,13 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
         }
         else
         {
-          hgsUpperBound = INF;
+          instanceUpperBound = INF;
         }
-        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
+        std::cout << "instance upper bound: " << instanceUpperBound << std::endl;
       }
 
       // CVRP instance format, relax num trucks constraint
@@ -1421,7 +1440,6 @@ struct VRPTW
             std::smatch match;
             if (std::regex_search(line, match, capacityRegex))
             {
-              std::cout << "obtain capacity: " << std::endl;
               capacity = std::stoi(match[1]);
               std::cout << "capacity: " << capacity << std::endl;
             }
@@ -1518,13 +1536,13 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
         }
         else
         {
-          hgsUpperBound = INF;
+          instanceUpperBound = INF;
         }
-        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
+        std::cout << "instance upper bound: " << instanceUpperBound << std::endl;
       }
  
       // TSPTW instance format
@@ -1660,16 +1678,16 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
 
           // rounding in TSPTW
-          hgsUpperBound += 0.01;
+          instanceUpperBound += 0.01;
         }
         else
         {
-          hgsUpperBound = INF;
+          instanceUpperBound = INF;
         }
-        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
+        std::cout << "instance upper bound: " << instanceUpperBound << std::endl;
       }
 
       // SOP instance format
@@ -1776,13 +1794,13 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
         }
         else
         {
-          hgsUpperBound = INF;
+          instanceUpperBound = INF;
         }
-        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
+        std::cout << "instance upper bound: " << instanceUpperBound << std::endl;
       }
 
       // PDP instance format
@@ -1895,16 +1913,16 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          hgsUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
 
           // rounding in TSPTW
-          hgsUpperBound += 0.01;
+          instanceUpperBound += 0.01;
         }
         else
         {
-          hgsUpperBound = INF;
+          instanceUpperBound = INF;
         }
-        std::cout << "hgs upper bound: " << hgsUpperBound << std::endl;
+        std::cout << "instance upper bound: " << instanceUpperBound << std::endl;
       }
 
     };
@@ -1990,7 +2008,7 @@ struct VRPTW
     int timeStateMultiplier;
     int timeStateDiscretization;
     int capacityDiscretization;
-    double hgsUpperBound;
+    double instanceUpperBound;
 };
 
 #endif

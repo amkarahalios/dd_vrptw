@@ -57,16 +57,16 @@ solver: solvevrptw.o vrptwdecisiondiagram.o vrptwcolgen.o vrptwddsolver.o
 	$(CCC) $(CCFLAGS) $(CCLNDIRS) -o solver solvevrptw.o vrptwdecisiondiagram.o vrptwcolgen.o vrptwddsolver.o $(CCLNFLAGS)
 
 solvevrptw.o: solvevrptw.cpp vrptw.h
-	$(CCC) -c $(CCFLAGS) solvevrptw.cpp
+	$(CCC) -c $(CCFLAGS) solvevrptw.cpp -o solvevrptw.o
 
 vrptwdecisiondiagram.o: vrptwdecisiondiagram.cpp vrptwdecisiondiagram.h vrptw.h
-	$(CCC) -c $(CCFLAGS) vrptwdecisiondiagram.cpp
+	$(CCC) -c $(CCFLAGS) vrptwdecisiondiagram.cpp -o vrptwdecisiondiagram.o
 
 vrptwcolgen.o: vrptwcolgen.cpp vrptwcolgen.h vrptw.h vrptwdecisiondiagram.h
-	$(CCC) -c $(CCFLAGS) vrptwcolgen.cpp
+	$(CCC) -c $(CCFLAGS) vrptwcolgen.cpp -o vrptwcolgen.o
 
 vrptwddsolver.o: vrptwddsolver.cpp vrptwddsolver.h vrptw.h vrptwdecisiondiagram.h
-	$(CCC) -c $(CCFLAGS) vrptwddsolver.cpp
+	$(CCC) -c $(CCFLAGS) vrptwddsolver.cpp -o vrptwddsolver.o
 
 clean:
 	rm -f *.o solver
