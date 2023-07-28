@@ -4,7 +4,7 @@ instance upper bound: 329179
 compiling DD
 time step mult: 1
 time step: 10
-cap step: 5
+cap step: 1
 done compiling DD
 batch size for lag: 1
 iteration delay to start separating: 0
@@ -12,10 +12,17 @@ optimality gap to start repairing: 5
 percent fixed to change to CPLEX: 97.5
 num arcs to change to CPLEX: 100000
 num arcs to change to LAG: 999999999
-STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[74] sspSolveTime[0] lpSolveTime[0] lb[0] ub[329179] numArcs: [6546835] numFixed: [0] time: [74]
-STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[74] sspSolveTime[0] lpSolveTime[0] lb[0] ub[329179] numArcs: [6546835] numFixed: [0] time: [74]
-COMPARISON size[6538309] muSSP[472.664] SSP[177]
-ERROR, muSSP: -340237 vs. SSP: -341127
-ERROR, muSSP: -303323 vs. SSP: -304429
-ERROR, muSSP: -302734 vs. SSP: -303672
-ERROR, muSSP: -299809 vs. SSP: -300769
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[235] sspSolveTime[0] lpSolveTime[0] lb[0] ub[329179] numArcs: [19082900] numFixed: [0] time: [235]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[235] sspSolveTime[0] lpSolveTime[0] lb[0] ub[329179] numArcs: [19082900] numFixed: [0] time: [235]
+COMPARISON size[19082895] muSSP[1.095] SSP[1]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[235] sspSolveTime[2] lpSolveTime[0] lb[313643] ub[329179] numArcs: [19082895] numFixed: [0] time: [237]
+COMPARISON size[19078198] muSSP[42.32] SSP[474]
+COMPARISON size[19565154] muSSP[16.737] SSP[290]
+STATS - lpIterations[1] lagIterations[3] sspIterations[1118] numSeparations[304] numCuts[0] compileTime[235] sspSolveTime[825] lpSolveTime[0] lb[321565] ub[329179] numArcs: [19565154] numFixed: [0] time: [1062]
+STATS - lpIterations[1] lagIterations[3] sspIterations[1118] numSeparations[304] numCuts[0] compileTime[235] sspSolveTime[825] lpSolveTime[0] lb[324489] ub[329179] numArcs: [19565154] numFixed: [0] time: [1103]
+COMPARISON size[19769336] muSSP[6.196] SSP[92]
+COMPARISON size[19843338] muSSP[33.853] SSP[489]
+COMPARISON size[20187755] muSSP[2.938] SSP[42]
+COMPARISON size[20216162] muSSP[107.64] SSP[754]
+COMPARISON size[20647036] muSSP[23.319] SSP[438]
+COMPARISON size[20836375] muSSP[3.302] SSP[46]
