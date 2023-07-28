@@ -141,6 +141,11 @@ class VRPTWDecisionDiagram
       {
         capacityStepSize = vrptw.capacityDiscretization;
       }
+
+      if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
+      {
+        capacityStepSize = 1;
+      }
     };
 
     void print() const;

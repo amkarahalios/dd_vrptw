@@ -909,6 +909,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
 
       int notMuSSPSeconds = 0;
       double notMuSSPLowerBound = 0.0;
+      int notMuSSPNumPaths = 0;
       if (!params.useMuSSP)
       {
         notMuSSPLowerBound = routeDD.solveMinCostFlowModel(lambda, shortestPaths, isDualFeasible, minReducedCost);
@@ -916,6 +917,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         auto notMuSSPTime = std::chrono::duration_cast<std::chrono::milliseconds>(endNotMuSSPTime - startSSPTime).count();
         notMuSSPSeconds = notMuSSPTime / 1000.0;
         minReducedCost = 0.0;
+        notMuSSPNumPaths = shortestPaths.size();
         shortestPaths.clear();
         isDualFeasible = false;
       }
@@ -936,6 +938,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         if ((notMuSSPLowerBound - lagrangeanLowerBound > 0.00001) || (lagrangeanLowerBound - notMuSSPLowerBound > 0.00001))
         {
           std::cout << "ERROR, muSSP: " << lagrangeanLowerBound << " vs. SSP: " << notMuSSPLowerBound << std::endl;
+          std::cout << "ERROR, muSSP num paths: " << shortestPaths.size() << " vs. SSP: " << notMuSSPNumPaths << std::endl;
         }
         else
         {
