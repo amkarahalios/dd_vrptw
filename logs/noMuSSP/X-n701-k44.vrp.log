@@ -1,0 +1,27 @@
+relax time window constraint
+capacity: 87
+instance upper bound: 81923
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 5
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[859] sspSolveTime[0] lpSolveTime[0] lb[0] ub[81923] numArcs: [72886947] numFixed: [0] time: [859]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[859] sspSolveTime[0] lpSolveTime[0] lb[0] ub[81923] numArcs: [72886947] numFixed: [0] time: [859]
+COMPARISON size[72886936] muSSP[2.847] SSP[5]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[859] sspSolveTime[7] lpSolveTime[0] lb[71119.3] ub[81923] numArcs: [72886936] numFixed: [0] time: [867]
+COMPARISON size[72887377] muSSP[33.389] SSP[64]
+STATS - lpIterations[1] lagIterations[2] sspIterations[26] numSeparations[1] numCuts[0] compileTime[859] sspSolveTime[105] lpSolveTime[0] lb[73923.4] ub[81923] numArcs: [72887377] numFixed: [0] time: [968]
+COMPARISON size[72968720] muSSP[8.224] SSP[25]
+STATS - lpIterations[1] lagIterations[3] sspIterations[34] numSeparations[26] numCuts[0] compileTime[859] sspSolveTime[138] lpSolveTime[0] lb[74400.6] ub[81923] numArcs: [72968720] numFixed: [0] time: [1003]
+COMPARISON size[73001524] muSSP[18.024] SSP[74]
+STATS - lpIterations[1] lagIterations[4] sspIterations[61] numSeparations[34] numCuts[0] compileTime[859] sspSolveTime[230] lpSolveTime[0] lb[74879.4] ub[81923] numArcs: [73001524] numFixed: [0] time: [1096]
+COMPARISON size[73124729] muSSP[2.314] SSP[6]
+STATS - lpIterations[1] lagIterations[5] sspIterations[62] numSeparations[61] numCuts[0] compileTime[859] sspSolveTime[238] lpSolveTime[0] lb[75119.7] ub[81923] numArcs: [73124729] numFixed: [0] time: [1105]
+COMPARISON size[73118681] muSSP[960.546] SSP[1264]

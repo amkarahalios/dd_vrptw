@@ -1,0 +1,21 @@
+relax time window constraint
+capacity: 33
+instance upper bound: 329179
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 5
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 5
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[74] sspSolveTime[0] lpSolveTime[0] lb[0] ub[329179] numArcs: [6546835] numFixed: [0] time: [74]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[74] sspSolveTime[0] lpSolveTime[0] lb[0] ub[329179] numArcs: [6546835] numFixed: [0] time: [74]
+COMPARISON size[6538309] muSSP[472.664] SSP[177]
+ERROR, muSSP: -340237 vs. SSP: -341127
+ERROR, muSSP: -303323 vs. SSP: -304429
+ERROR, muSSP: -302734 vs. SSP: -303672
+ERROR, muSSP: -299809 vs. SSP: -300769
