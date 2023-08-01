@@ -349,7 +349,6 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           {
             percentArcsFixed = routeDD.fixArcs(lambda, singlePathDual, mu, combDuals, srcDuals, bestLPValue, params.lpSolveType);
           }
-          percentArcsFixed = 0;
 
           // we don't currently, but we should still save as best
         }
@@ -361,13 +360,16 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           changedLagToLP = false;
         }
 
-        // also use best to fix arcs
-        std::vector<double> emptyMu;
-        std::vector<double> emptyComb;
-        std::vector<double> emptySrc;
-        if (params.useVariableFixing)
+        // also use best to fix arcs, don't have it working yet for cuts though
+        if (!params.useCuts)
         {
-          routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, params.lpSolveType);
+          std::vector<double> emptyMu;
+          std::vector<double> emptyComb;
+          std::vector<double> emptySrc;
+          if (params.useVariableFixing)
+          {
+            routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, params.lpSolveType);
+          }
         }
       }
 
@@ -1143,6 +1145,17 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
             for (int index=1; index<repairedLambda.size(); ++index)
             {
               repairedBound += repairedLambda[index];
+            }
+            // - mu_T(-Cx + r) because capCuts are Cx <= r (not >=)
+            for (int index=0; index<mu.size(); ++index)
+            {
+              repairedBound += mu[index] * routeDD.getCapCutSetRHS(index) * -1;
+            }
+
+            // - combDual_T(Ax - RHS)
+            for (int index=0; index<combDuals.size(); ++index)
+            {
+              repairedBound += (combDuals[index] * routeDD.getCombCutRHS(index));
             }
             DBG(std::cout << "repaired lb: " << repairedBound << std::endl;)
             // The repaired bound might be the best lb yet!
