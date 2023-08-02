@@ -312,14 +312,12 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
   lambda.push_back(0);
   for (int location=1; location<vrptw.numLocations; ++location)
   {
-    if (vrptw.vrptwCapacityType != VRPTWCapacityType::RELAX_CAPACITY)
+    if (vrptw.problemType == ProblemType::SOP)
     {
-      lambda.push_back(2 * vrptw.distances[0][location] * vrptw.demands[location] / vrptw.capacity);
+      lambda.push_back((vrptw.distances[0][location] + vrptw.distances[location][0]) / 2.0);
     }
     else
     {
-      //lambda.push_back(2 * vrptw.distances[0][location]);
-      //lambda.push_back(vrptw.hgsUpperBound * 1.0 / vrptw.numLocations);
       lambda.push_back(2 * vrptw.distances[0][location] * vrptw.demands[location] / vrptw.capacity);
     }
   }
