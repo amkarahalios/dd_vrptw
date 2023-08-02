@@ -41,6 +41,9 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   }
   stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
 
+  // set best lambda lower bound to 0
+  bestLambdaLowerBound = 0.0;
+
   CMGR_CreateCMgr(&MyCutsCMP,Dim);
   CMGR_CreateCMgr(&MyOldCutsCMP,Dim);
 };
@@ -605,6 +608,12 @@ bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, double& singlePathDual,
   {
     double oldLb = stats.lowerBound;
     stats.lowerBound = routeDD.setupAndSolveFlowModel(FlowType::LP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, lambda, singlePathDual, mu, combDuals, srcDuals);
+    std::cout << "DUALS " << stats.getNumSeconds() << "," << stats.lowerBound << "," << routeDD.getNumArcsNotRemovedOrReverse() << "," << routeDD.getNumFixedArcs() << ",";
+    for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
+    {
+      std::cout << lambda[dualIndex] << ",";
+    }
+    std::cout << std::endl;
     if (oldLb > stats.lowerBound + 0.01)
     {
       std::cout << "ERROR - lower bound not monotonically increasing!!!" << std::endl;
@@ -906,6 +915,14 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       bool isDualFeasible = false;
       double minReducedCost = 0.0;
       std::vector<double> repairedLambda(lambda);
+      double percentFixed = 0.0;
+      if (params.useVariableFixing && (bestLambdaLowerBound > 0.001))
+      {
+        std::vector<double> emptyMu;
+        std::vector<double> emptyComb;
+        std::vector<double> emptySrc;
+        routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, params.lpSolveType);
+      }
 
       int notMuSSPSeconds = 0;
       double notMuSSPLowerBound = 0.0;
@@ -984,6 +1001,13 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::cout << "curr lb: " << lagrangeanLowerBound << std::endl;
       )
 
+      std::cout << "DUALS " << stats.getNumSeconds() << "," << stats.lowerBound << "," << routeDD.getNumArcsNotRemovedOrReverse() << "," << routeDD.getNumFixedArcs() << ",";
+      for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
+      {
+        std::cout << lambda[dualIndex] << ",";
+      }
+      std::cout << std::endl;
+
       // keep track of this iteration and overall
       if (currIterLowerBound < lagrangeanLowerBound)
       {
@@ -1053,7 +1077,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       // should fix after decomposing in case we fix an arc that is in the current solution
       // see if we can fix arcs based on a feasible dual
       // some rounds let's force dual feasibility to find the bound and fix some arcs?
-      double percentFixed = 0.0;
       if (isDualFeasible & (vrptw.oneOrMorePaths != OneOrMorePaths::ONE_PATH))
       {
         if (params.useVariableFixing)

@@ -1505,11 +1505,13 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
         {
           duals[dualIndex] = lpDuals[dualIndex];
         }
-        DBG(
+        DBG(std::cout << "DUALS: ";
         for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
         {
-          std::cout << "cover dual [" << dualIndex << "]: " << lpDuals[dualIndex] << std::endl;
-        })
+          //std::cout << "cover dual [" << dualIndex << "]: " << lpDuals[dualIndex] << std::endl;
+          std::cout << lpDuals[dualIndex] << ",";
+        }
+        std::cout << std::endl;)
       }
 
       if (vrptw.oneOrMorePaths == ONE_PATH)
