@@ -361,16 +361,13 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           changedLagToLP = false;
         }
 
-        // also use best to fix arcs, don't have it working yet for cuts though
-        if (!params.useCuts)
+        // right now best is only kept for LAG, without cuts
+        std::vector<double> emptyMu;
+        std::vector<double> emptyComb;
+        std::vector<double> emptySrc;
+        if (params.useVariableFixing)
         {
-          std::vector<double> emptyMu;
-          std::vector<double> emptyComb;
-          std::vector<double> emptySrc;
-          if (params.useVariableFixing)
-          {
-            routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, params.lpSolveType);
-          }
+          routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, params.lpSolveType);
         }
       }
 
