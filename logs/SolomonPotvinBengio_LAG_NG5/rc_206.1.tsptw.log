@@ -1,0 +1,34 @@
+num loc: 4
+instance upper bound: 117.86
+compiling DD
+time step mult: 10000
+time step: 1000000
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[117.86] numArcs: [27] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[117.86] numArcs: [27] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[117.848] ub[117.86] numArcs: [23] numFixed: [0] time: [0]
+switching from LAG to LP solver
+num vars: 8
+STATS - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[117.848] ub[117.86] numArcs: [23] numFixed: [19] time: [0]
+routes: 
+flow {1}: 0 3 1 2 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+solving IP
+num vars: 8
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[117.848] ub[117.86] numArcs: [23] numFixed: [19] time: [0]
+routes: 
+flow {1}: 0 2 1 3 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[117.848] ub[117.848] numArcs: [23] numFixed: [19] time: [0]
+finished solving - complete
+time elapsed: 0

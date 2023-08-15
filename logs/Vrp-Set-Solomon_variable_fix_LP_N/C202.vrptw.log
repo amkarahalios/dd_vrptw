@@ -1,0 +1,25 @@
+relax capacity constraint
+instance upper bound: 589.1
+compiling DD
+time step mult: 10
+time step: 900
+cap step: 10
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[589.1] numArcs: [1332213] numFixed: [0] time: [0]
+num vars: 1332213
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[140] lb[589.1] ub[589.1] numArcs: [1332213] numFixed: [0] time: [141]
+routes: 
+flow {1}: 0 20 22 24 27 30 29 6 32 33 31 35 37 38 39 36 34 28 26 23 18 19 16 14 12 15 17 13 25 9 11 10 8 21 
+flow {1}: 0 67 63 62 74 72 61 64 66 69 68 65 49 55 54 53 56 58 60 59 57 40 44 46 45 51 50 52 47 43 42 41 48 
+flow {1}: 0 93 5 75 2 1 99 100 97 92 94 95 98 7 3 4 89 91 88 84 86 83 82 85 76 71 70 73 80 79 81 78 77 96 87 90 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[140] lb[589.1] ub[589.1] numArcs: [1332213] numFixed: [0] time: [141]
+finished solving - complete
+time elapsed: 141
