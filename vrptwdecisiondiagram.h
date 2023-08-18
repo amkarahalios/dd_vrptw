@@ -118,6 +118,8 @@ struct VRPTWArc
       }
     }
 
+    void print() const;
+
     int fromNodeIndex;
     int toNodeIndex;
 

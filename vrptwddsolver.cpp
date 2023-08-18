@@ -315,9 +315,17 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
   lambda.push_back(0);
   for (int location=1; location<vrptw.numLocations; ++location)
   {
-    if (vrptw.problemType == ProblemType::SOP)
+    if (vrptw.oneOrMorePaths == OneOrMorePaths::ONE_PATH)
     {
-      lambda.push_back((vrptw.distances[0][location] + vrptw.distances[location][0]) / 2.0);
+      //lambda.push_back((vrptw.distances[0][location] + vrptw.distances[location][0]) / 2.0);
+      if (vrptw.instanceUpperBound < INF)
+      {
+        lambda.push_back(vrptw.instanceUpperBound / vrptw.numLocations);
+      }
+      else
+      {
+        lambda.push_back(0);
+      }
     }
     else
     {
@@ -373,7 +381,6 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
 
       if (lpFlowType == FlowType::LP)
       {
-        //routeDD.print();
         //routeDD.checkLC121SolutionPossible();
         //routeDD.checkLRC121SolutionPossible();
         solved = solveLP(lambda, singlePathDual, mu, combDuals, srcDuals);
@@ -491,7 +498,6 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           {
             stats.numSeparations = stats.numSeparations + 1;
             routeDD.separateInfeasibleRoute(infeasibleRoute, params.maxS);
-            //break;
             //routeDD.checkLRC121SolutionPossible();
           }
         }
@@ -563,6 +569,12 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       finishedSolving = true;
     }
 
+    // allow lag to finish if close enough
+    if ((params.lpSolveType == LPSolveType::LAGSolver) && (stats.lowerBound + 0.01 > stats.upperBound))
+    {
+      finishedSolving = true;
+    }
+
     if (stats.lowerBound == stats.upperBound)
     {
       finishedSolving = true;
@@ -605,15 +617,15 @@ bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, double& singlePathDual,
   {
     double oldLb = stats.lowerBound;
     stats.lowerBound = routeDD.setupAndSolveFlowModel(FlowType::LP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, lambda, singlePathDual, mu, combDuals, srcDuals);
-    std::cout << "DUALS " << stats.getNumSeconds() << "," << stats.lowerBound << "," << routeDD.getNumArcsNotRemovedOrReverse() << "," << routeDD.getNumFixedArcs() << ",";
+    DBG(std::cout << "DUALS " << stats.getNumSeconds() << "," << stats.lowerBound << "," << routeDD.getNumArcsNotRemovedOrReverse() << "," << routeDD.getNumFixedArcs() << ",";
     for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
     {
       std::cout << lambda[dualIndex] << ",";
     }
-    std::cout << std::endl;
+    std::cout << std::endl;)
     if (oldLb > stats.lowerBound + 0.01)
     {
-      std::cout << "ERROR - lower bound not monotonically increasing!!!" << std::endl;
+      std::cout << "ERROR possible - lower bound not monotonically increasing, but this can happen!" << std::endl;
     }
   }
   auto endLPTime = std::chrono::high_resolution_clock::now();
@@ -622,7 +634,6 @@ bool VRPTWDDSolver::solveLP(std::vector<double>& lambda, double& singlePathDual,
 
   stats.lpIterations = stats.lpIterations + 1;
   stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-  //routeDD.print();
   return true;
 };
 
@@ -801,22 +812,13 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
 
   // eta_(k) = 0.05 * 100 / (100 + k)
   //double eta = 0.05 * 100 / (100 + stats.numLagIterations);
-  // maybe num LP Iterations (which is equal to num restarts) should also be considered here
-  // and then restart from the best lambda found so far?
   double eta = 0.05 * 100 / (100 + k);
 
   // psi_(star) = psi_(best) * (1 + eta_(k))
   double psiStar = stats.lowerBound * (1 + eta);
-  //double psiStar = stats.upperBound;
 
   // alpha_(k) = (psi_(star) - psi(lambda(k))) / ||gamma_(k)||_(2)^2
-  //double alpha = std::max(0.0001, (psiStar - lagrangeanLowerBound) / normGammaSquared);
-  //std::cout << "lag iter: " << k << std::endl;
-  //std::cout << "lag iter: " << stats.numLagIterations << std::endl;
-  //std::cout << "lag bound: " << lagrangeanLowerBound << std::endl;
   double alpha = (psiStar - lagrangeanLowerBound) / normGammaSquared;
-  // on restarts, make step size half the size?
-  //alpha = alpha / (1.0 + (stats.lpIterations / 100.0));
   stepSizes.push_back(alpha);
 
   DBG(
@@ -885,19 +887,16 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
   double muLowerBound = 0.0;
   double currIterLowerBound = 0.0;
   int numLagIterations = 0;
+
+  // Need to decide when step size has gotten too small and need to 'restart'
+  // When there is little progress, this method terminates and gets called again.
+  // So, then we can increase the 'psiStar' estimation with a smaller iteration value to increase the 'alpha' step size
+  stats.numLagIterationsWithResets = std::ceil(stats.numLagIterationsWithResets / stats.lpIterations);
+
   std::vector<std::vector<int>> infeasibleRoutes;
   std::vector<double> stepSizes;
   std::vector<std::set<int>> xDecompositions;
   stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-
-  // set to best so far if we did a restart
-  if (stats.lpIterations > 1)
-  {
-    for (int index=0; index<lambda.size(); ++index)
-    {
-      lambda[index] = bestLambda[index];
-    }
-  }
 
   while (!shouldTerminate)
   {
@@ -905,6 +904,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
     {
       ++stats.numLagIterations;
       ++numLagIterations;
+      ++stats.numLagIterationsWithResets;
 
       std::vector<std::vector<int>> shortestPaths;
       auto startSSPTime = std::chrono::high_resolution_clock::now();
@@ -998,12 +998,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::cout << "curr lb: " << lagrangeanLowerBound << std::endl;
       )
 
-      std::cout << "DUALS " << stats.getNumSeconds() << "," << stats.lowerBound << "," << routeDD.getNumArcsNotRemovedOrReverse() << "," << routeDD.getNumFixedArcs() << ",";
+      DBG(std::cout << "DUALS " << stats.getNumSeconds() << "," << stats.lowerBound << "," << routeDD.getNumArcsNotRemovedOrReverse() << "," << routeDD.getNumFixedArcs() << ",";
       for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
       {
         std::cout << lambda[dualIndex] << ",";
       }
-      std::cout << std::endl;
+      std::cout << std::endl;)
 
       // keep track of this iteration and overall
       if (currIterLowerBound < lagrangeanLowerBound)
@@ -1033,8 +1033,17 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         xDecompositions.push_back(solutionArcs);
       }
 
-      // need decomposition flow to work
-      updateMultipliers(lambda, mu, combDuals, srcDuals, stepSizes, solutionArcs, lagrangeanLowerBound, numLagIterations);
+      // one path can only separate one at a time and likely needs many more iterations
+      // so reset when progress slows down too much, because likely step size is too small
+      // uses solution arcs
+      if (vrptw.oneOrMorePaths == OneOrMorePaths::ONE_PATH)
+      {
+        updateMultipliers(lambda, mu, combDuals, srcDuals, stepSizes, solutionArcs, lagrangeanLowerBound, numLagIterations);
+      }
+      else
+      {
+        updateMultipliers(lambda, mu, combDuals, srcDuals, stepSizes, solutionArcs, lagrangeanLowerBound, stats.numLagIterations);
+      }
 
       // check for cycles up to certain size and add to be separated
       //if ((params.maxS > 1) && (stats.lpIterations >= 2) && isSeparationRound)
@@ -1065,7 +1074,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       }
 
       // overall termination criteria
-      if (stats.getNumSeconds() >= params.timeoutSeconds)
+      if ((stats.getNumSeconds() >= params.timeoutSeconds) || (stats.lowerBound + 0.01 > stats.upperBound))
       {
         shouldTerminate = true;
       }
@@ -1203,7 +1212,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         stats.lpIterations = 1;
         shouldTerminate = true;
         std::cout << "switching from LAG to LP solver" << std::endl;
-        //routeDD.print();
       }
     }
 

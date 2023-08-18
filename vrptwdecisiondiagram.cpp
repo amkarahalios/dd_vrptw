@@ -100,6 +100,16 @@ void VRPTWNode::print() const
   std::cout << std::endl;
 }
 
+void VRPTWArc::print() const
+{
+  std::cout << "fromNodeIndex: " << fromNodeIndex << " ";
+  std::cout << "toNodeIndex: " << toNodeIndex << " ";
+  std::cout << "location: " << location << " ";
+  std::cout << "distance: " << distance << " ";
+  std::cout << "isReverseArc: " << isReverseArc << " ";
+  std::cout << std::endl;
+}
+
 void VRPTWDecisionDiagram::print() const
 {
   std::cout << std::endl << "digraph D {" << std::endl;
@@ -255,6 +265,11 @@ bool VRPTWDecisionDiagram::generateNewStateFromExact(VRPTWNodeState& newState, i
   {
     newState.counter = newState.counter - 1;
   }
+  if (newState.counter > vrptw.numLocations + 1)
+  {
+    return false;
+  }
+
   auto inserted = newState.visited.insert(location);
   if (!inserted.second)
   {
@@ -336,7 +351,7 @@ bool VRPTWDecisionDiagram::moveArc(int arcIndex, int newToNodeIndex)
 
 void VRPTWDecisionDiagram::removeArc(int arcIndex)
 {
-  VRPTWArc& arc = arcs[arcIndex];
+  const VRPTWArc& arc = arcs[arcIndex];
   auto fromNodeOutArcIt = std::find(nodes[arc.fromNodeIndex].outArcs.begin(), nodes[arc.fromNodeIndex].outArcs.end(), arcIndex);
   if (fromNodeOutArcIt != std::end(nodes[arc.fromNodeIndex].outArcs))
   {
@@ -559,9 +574,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   while (nodeIndex < nodes.size())
   {
     const VRPTWNode& nodeToCheck = nodes[nodeIndex];
-    //node.print();
-    //std::cout << nodeIndex << std::endl;
-    if (nodeToCheck.state.counter > vrptw.numLocations-1)
+    if (nodeToCheck.state.counter >= vrptw.numLocations)
     {
       nodeIndex = nodeIndex + 1;
       continue;
@@ -1278,6 +1291,7 @@ void VRPTWDecisionDiagram::initializeColumnsByLPDecomp()
 
 // can we merge nodes to reduce problem size?
 // can we warm start with a solution? dual solution?
+// can we reduce memory?
 double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, double& singlePathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals)
 {
   // setup model
@@ -1317,7 +1331,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
         else
         {
           ++numNonZeroVars;
-          x[arcIndex] = IloNumVar(env, 0, 100);
+          x[arcIndex] = IloNumVar(env, 0, 1);
           objective += x[arcIndex] * arcs[arcIndex].coeff;
           //if ((arcs[arcIndex].fromNodeIndex == rootNodeIndex) && (vrptw.problemType == ProblemType::PDP))
           //{
@@ -1534,7 +1548,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       {
         std::cout << "cap dual [" << dualIndex << "]: " << capDuals[dualIndex] << std::endl;
       })
-   
+ 
       IloNumArray lpCombDuals(env);
       solver.getDuals(lpCombDuals, combConstraints);
       combDuals.resize(teeths.size());
@@ -1542,10 +1556,11 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       {
         combDuals[dualIndex] = lpCombDuals[dualIndex];
       }
+      DBG(
       for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
       {
         std::cout << "comb dual [" << dualIndex << "]: " << combDuals[dualIndex] << std::endl;
-      }
+      })
 
       IloNumArray lpSrcDuals(env);
       solver.getDuals(lpSrcDuals, srcConstraints);
@@ -1553,7 +1568,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       for (int dualIndex=0; dualIndex<cliqueCuts.size(); ++dualIndex)
       {
         srcDuals[dualIndex] = lpSrcDuals[dualIndex];
-        std::cout << "src dual [" << dualIndex << "]: " << srcDuals[dualIndex] << std::endl;
+        DBG(std::cout << "src dual [" << dualIndex << "]: " << srcDuals[dualIndex] << std::endl;)
       }
     }
 
@@ -1618,7 +1633,6 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double s
     }
   }
 
-  // TODO: try saving some of these, or using multiple duals
   // fix arcs based on lb + rc > ub
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
   {
@@ -2016,10 +2030,10 @@ void VRPTWDecisionDiagram::getSolutionArcs(std::set<int>& solutionArcs)
 
 void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& routeArcs, int maxS)
 {
-  // clear when dd changes
+  // clear fixed arcs when dd changes
   for (int arcIndex : fixedArcs)
   {
-    VRPTWArc& arc = arcs[arcIndex];
+    const VRPTWArc& arc = arcs[arcIndex];
     nodes[arc.fromNodeIndex].outArcs.push_back(arcIndex);
     nodes[arc.toNodeIndex].inArcs.push_back(arcIndex);
   }
@@ -2068,12 +2082,14 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
         DBG(std::cout << "new node created: " << nodes.size() - 1 << std::endl;)
         for (int oldArcIndex : nodes[arcs[routeArcs[index]].toNodeIndex].outArcs)
         {
-          VRPTWArc& oldArc = arcs[oldArcIndex];
+          int oldArcLocation = arcs[oldArcIndex].location;
+          int oldArcToNodeIndex = arcs[oldArcIndex].toNodeIndex;
           VRPTWNodeState copyArcState(newState);
-          bool copyArcFeasible = generateNewStateFromExact(copyArcState, oldArc.location);
+          bool copyArcFeasible = generateNewStateFromExact(copyArcState, oldArcLocation);
           if (copyArcFeasible)
           {
-            int newArcIndex = addArc(nextNodeIndex, oldArc.toNodeIndex);
+            int newArcIndex = addArc(nextNodeIndex, oldArcToNodeIndex);
+            DBG(std::cout << "copy arc by adding arc index: " << newArcIndex << std::endl;)
             arcsUsed[newArcIndex] = true;
           }
         }
@@ -2083,11 +2099,12 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
         // if node existed, remove arcs if possible, because we now know it's exact
         for (int existingNodeArcIndex : nodes[nextNodeIndex].outArcs)
         {
-          VRPTWArc& existingNodeArc = arcs[existingNodeArcIndex];
+          int existingNodeArcLocation = arcs[existingNodeArcIndex].location;
           VRPTWNodeState copyArcState(newState);
-          bool existingArcFeasible = generateNewStateFromExact(copyArcState, existingNodeArc.location);
+          bool existingArcFeasible = generateNewStateFromExact(copyArcState, existingNodeArcLocation);
           if (!existingArcFeasible)
           {
+            DBG(std::cout << "remove arc " << existingNodeArcIndex << std::endl;)
             removeArc(existingNodeArcIndex);
           }
         }
@@ -2131,6 +2148,7 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
           }
         }
       }
+      return;
     }
   }
  

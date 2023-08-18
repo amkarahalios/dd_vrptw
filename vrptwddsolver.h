@@ -14,7 +14,7 @@
 struct DDStats
 {
   public:
-    DDStats() : lpIterations(0), numLagIterations(0), numSSPIterations(0), numSeparations(0), millisecondsCompiling(0), millisecondsSolvingSSP(0), millisecondsSolvingLP(0), lowerBound(0), upperBound(INF), numCuts(0)
+    DDStats() : lpIterations(0), numLagIterations(0), numLagIterationsWithResets(0), numSSPIterations(0), numSeparations(0), millisecondsCompiling(0), millisecondsSolvingSSP(0), millisecondsSolvingLP(0), lowerBound(0), upperBound(INF), numCuts(0)
     {
       startTime = std::chrono::high_resolution_clock::now();
     };
@@ -41,6 +41,7 @@ struct DDStats
 
     int lpIterations;
     int numLagIterations;
+    int numLagIterationsWithResets;
     int numSSPIterations;
     int numSeparations;
     float millisecondsCompiling;
