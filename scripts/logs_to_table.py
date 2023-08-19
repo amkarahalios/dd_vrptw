@@ -598,7 +598,50 @@ instance_upper_bounds = {
 "will199GPIA.col":7,
 "zeroin.i.1.col":49,
 "zeroin.i.2.col":30,
-"zeroin.i.3.col":30
+"zeroin.i.3.col":30,
+"X-n101-k25.vrp":27591,
+"X-n106-k14.vrp":26362,
+"X-n110-k13.vrp":14971,
+"X-n115-k10.vrp":12747,
+"X-n120-k6.vrp":13332,
+"X-n125-k30.vrp":55539,
+"X-n129-k18.vrp":28940,
+"X-n134-k13.vrp":10916,
+"X-n139-k10.vrp":13590,
+"X-n143-k7.vrp":15700,
+"X-n148-k46.vrp":43448,
+"X-n153-k22.vrp":21220,
+"X-n157-k13.vrp":16876,
+"X-n162-k11.vrp":14138,
+"X-n167-k10.vrp":20557,
+"X-n172-k51.vrp":45607,
+"X-n176-k26.vrp":47812,
+"X-n181-k23.vrp":25569,
+"X-n186-k15.vrp":24145,
+"X-n190-k8.vrp":16980,
+"X-n195-k51.vrp":44225,
+"X-n200-k36.vrp":58578,
+"X-n204-k19.vrp":19565,
+"X-n209-k16.vrp":30656,
+"X-n214-k11.vrp":10856,
+"X-n219-k73.vrp":117595,
+"X-n223-k34.vrp":40437,
+"X-n228-k23.vrp":25742,
+"X-n233-k16.vrp":19230,
+"X-n237-k14.vrp":27042,
+"X-n242-k48.vrp":82751,
+"X-n247-k50.vrp":37274,
+"X-n251-k28.vrp":38684,
+"X-n256-k16.vrp":18839,
+"X-n261-k13.vrp":26558,
+"X-n266-k58.vrp":75478,
+"X-n270-k35.vrp":35291,
+"X-n275-k28.vrp":21245,
+"X-n280-k17.vrp":33503,
+"X-n284-k15.vrp":20215,
+"X-n289-k60.vrp":95151,
+"X-n294-k50.vrp":47161,
+"X-n298-k31.vrp":34231
 }
 
 soa_bounds = {
@@ -610,7 +653,7 @@ soa_bounds = {
 # Log lines for ColGenSolver
 #STATS - iterations[402] ddTime[50] pricingTime[112] masterTime[97] lb[1581.24] time: [260]
 
-colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] size: \[([0-9]+)\] time: \[([0-9]+)\]")
+colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] time: \[([0-9]+)\]")
 colgen_pattern = re.compile("STATS - iterations\[([0-9]+)\] ddTime\[([0-9]+)\] pricingTime\[([0-9]+)\] masterTime\[([0-9]+)\] lb\[([0-9]+.*)\] time: \[([0-9]+)\]")
 colgen_pattern1 = re.compile("STATS - iterations\[([0-9]+)\] ddTime\[([0-9]+)\] pricingTime\[([0-9]+)\] masterTime\[([0-9]+)\] lb\[([0-9]+.*)\] sol\[([0-9]+.*)\] time: \[([0-9]+)\]")
 colgen_complete_pattern = re.compile("no negative reduced cost paths")
@@ -634,9 +677,14 @@ logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
 test_set = ["col_elim_hg_lag_ng_2_50_N_3600",
             "col_elim_hg_lag_ng_4_50_N_3600",
             "col_elim_hg_lag_ng_6_50_N_3600",
+            "col_elim_hg_lag_ng_2_50_N_batch50_3600",
+            "col_elim_hg_lag_ng_2_50_N_batch100_3600",
             "col_elim_hg_lp_ng_2_50_N_3600",
             "col_elim_hg_lp_ng_4_50_N_3600",
             "col_elim_hg_lp_ng_6_50_N_3600",
+            "col_elim_X100200_lag_ng_2_50_N_3600",
+            "col_elim_X100200_lag_ng_2_50_N_nomussp_3600",
+            "col_elim_X100200_lag_ng_2_50_N_novarfix_3600",
             "col_elim_sop_lag_ng_2_50_N_3600",
             "col_elim_sop_lag_ng_5_50_N_3600",
             "col_elim_sop_lag_ng_8_50_N_3600",
@@ -653,21 +701,55 @@ test_set = ["col_elim_hg_lag_ng_2_50_N_3600",
             "col_elim_lp_5_0_BANDB_3600",
             "col_elim_lp_0_0_MIP_3600",
             "col_elim_lp_5_0_MIP_3600",
-            "col_elim_lp_5_3_MIP_3600"]
+            "col_elim_lp_5_3_MIP_3600",
+            "batch1_0",
+            "batch1_50",
+            "batch1_100",
+            "batch50_0",
+            "batch50_50",
+            "batch50_100",
+            "batch100_0",
+            "batch100_50",
+            "batch100_100",
+            "variable_fix_LAG_N",
+            "variable_fix_LAG_Y_5",
+            "variable_fix_LAG_Y_10",
+            "variable_fix_LAG_Y_100",
+            "variable_fix_LP_N",
+            "variable_fix_LP_Y",
+            "cuts_LP_Y",
+            "cuts_LP_N",
+            "cuts_LAG_N",
+            "cuts_LAG_Y",
+            "Vrp-Set-HG-C12-124_batch1_0",
+            "Vrp-Set-HG-C12-124_batch1_50",
+            "Vrp-Set-HG-C12-124_batch1_100",
+            "Vrp-Set-HG-C12-124_batch50_0",
+            "Vrp-Set-HG-C12-124_batch50_50",
+            "Vrp-Set-HG-C12-124_batch50_100",
+            "Vrp-Set-HG-C12-124_batch100_0",
+            "Vrp-Set-HG-C12-124_batch100_50",
+            "Vrp-Set-HG-C12-124_batch100_100",
+            "Vrp-Set-HG-C12-124_variable_fix_LAG_N",
+            "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5",
+            "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100",
+            "Vrp-Set-HG_LAG_NG2",
+            "Vrp-Long-Run_LAG_NG2_20000",
+            "Vrp-Long-Long-Run_LAG_NG2_86400",
+            "Vrp-Long-Long-Run_LAG_NG2_172800"]
 
 instances = []
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/ALL_sop/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/SolomonPotvinBengio/"
-instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"
+#instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"
+#instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Run/"
+instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Long-Run/"
+#instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/X100200/"
+#instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG-C12-124/"
 #instance_dir = "/Users/akarahal/Desktop/dd_graph_color/instances/"
 
 for instance in os.listdir(instance_dir):
-  if "COG" in instance:
-    continue
-  if "C1" in instance:
-    instances.append(instance)
-  if "C2" in instance:
-    instances.append(instance)
+  instances.append(instance)
 
 # get n for sop instances
 pattern = re.compile("DIMENSION: ([0-9]+).*")
@@ -711,9 +793,10 @@ for test in test_set:
         lpSolveTime = colelim_match.group(7)
         lb = math.ceil(float(colelim_match.group(8)))
         ub = float(colelim_match.group(9))
-        size = int(colelim_match.group(10))
-        time = colelim_match.group(11)
-        time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'size': size, 'time' : time}
+        numArcs = int(colelim_match.group(10))
+        numFixed = int(colelim_match.group(11))
+        time = colelim_match.group(12)
+        time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
         time_results.append(time_result)
  
       colgen_match = colgen_pattern.match(line)
@@ -791,7 +874,7 @@ for test in test_set:
       results.append(result)
       time_results.append(result)
     elif col_elim:
-      result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'numSep' : numSeparations, 'lb' : lb, 'size': size, 'time' : time}
+      result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'numSep' : numSeparations, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
       results.append(result)
     elif held:
       result = {'instance': instance, 'test': test, 'lb' : lb, 'time' : time}
@@ -863,20 +946,30 @@ experiment2 = True
 if experiment2:
   # used these for paper exp2
   # using these to test X instances
-  tests_to_compare = ["col_elim_hg_lag_ng_4_50_N_3600"]
+  #tests_to_compare = ["col_elim_hg_lag_ng_2_50_N_3600",
+  #                    "col_elim_hg_lag_ng_2_50_N_batch50_3600",
+  #                    "col_elim_hg_lag_ng_2_50_N_batch100_3600"]
+  #tests_to_compare = ['col_elim_X100200_lag_ng_2_50_N_3600',
+  #                    'col_elim_X100200_lag_ng_2_50_N_nomussp_3600',
+  #                    'col_elim_X100200_lag_ng_2_50_N_novarfix_3600']
   #tests_to_compare = ["col_elim_sop_lag_ng_2_50_N_3600",
   #                    "col_elim_sop_lag_ng_5_50_N_3600",
   #                    "col_elim_sop_lag_ng_8_50_N_3600",
   #                    "col_elim_sop_lp_ng_2_50_N_3600",
   #                    "col_elim_sop_lp_ng_5_50_N_3600",
   #                    "col_elim_sop_lp_ng_8_50_N_3600"]
+  tests_to_compare = ['Vrp-Set-HG_LAG_NG2']
+  #tests_to_compare = ['Vrp-Long-Run_LAG_NG2_20000']
+  tests_to_compare = ['Vrp-Long-Long-Run_LAG_NG2_86400','Vrp-Long-Long-Run_LAG_NG2_172800']
 
   #instances_to_consider = ["X-n327-k20.vrp","X-n344-k43.vrp","X-n359-k29.vrp","X-n367-k17.vrp","X-n480-k70.vrp","X-n502-k39.vrp","X-n561-k42.vrp","X-n573-k30.vrp","X-n801-k40.vrp","X-n957-k87.vrp"]
   instances_to_consider = instances
   #instances_to_consider = instances['X']
   for instance in instances_to_consider:
     #time = list(range(0,3600,100))
-    time = list(range(0,7200,100))
+    #time = list(range(0,7200,100))
+    time = list(range(0,20000,100))
+    time = list(range(0,86400,100))
     lbs = []
     labels = []
     instance_results = time_results_df[time_results_df['instance'] == instance]
@@ -968,14 +1061,43 @@ if experiment3:
 # Then showing how many instances are solved within x% of the optimal value
 experiment4 = False
 if experiment4:
-  methodsToTests = {'CE_MIP' : ['all_col_elim_lp_ub_3600'],
-                    'CE_BANDB' : ['all_col_elim_lp_bandb_3600'],
-                    'Held' : ['held_3600']}
+  #methodsToTests = {'CE_MIP' : ['all_col_elim_lp_ub_3600'],
+  #                  'CE_BANDB' : ['all_col_elim_lp_bandb_3600'],
+  #                  'Held' : ['held_3600']}
+  #methodsToTests = {'LAG' : ['col_elim_X100200_lag_ng_2_50_N_3600'],
+  #                  'LAG-muSSP' : ['col_elim_X100200_lag_ng_2_50_N_nomussp_3600'],
+  #                  'LAG-varFix' : ['col_elim_X100200_lag_ng_2_50_N_novarfix_3600']}
+  #methodsToTests = {'batch1_0' : ['batch1_0'],
+  #                  'batch1_50' : ['batch1_50'],
+  #                  'batch1_100' : ['batch1_100'],
+  #                  'batch50_0' : ['batch50_0'],
+  #                  'batch50_50' : ['batch50_50'],
+  #                  'batch50_100' : ['batch50_100'],
+  #                  'batch100_0' : ['batch100_0'],
+  #                  'batch100_50' : ['batch100_50'],
+  #                  'batch100_100' : ['batch100_100']}
+  #methodsToTests = {'variable_fix_LAG_N' : ['variable_fix_LAG_N'],
+  #                  'variable_fix_LAG_Y_5' : ['variable_fix_LAG_Y_5'],
+  #                  'variable_fix_LAG_Y_10' : ['variable_fix_LAG_Y_10'],
+  #                  'variable_fix_LAG_Y_100' : ['variable_fix_LAG_Y_100'],
+  #                  'variable_fix_LP_N' : ['variable_fix_LP_N'],
+  #                  'variable_fix_LP_Y' : ['variable_fix_LP_Y']}
+  methodsToTests = {'cuts_LP_Y' : ['cuts_LP_Y'],
+                    'cuts_LP_N' : ['cuts_LP_N'],
+                    'cuts_LAG_Y' : ['cuts_LAG_Y'],
+                    'cuts_LAG_N' : ['cuts_LAG_N']}
+  methodsToTests = {"Vrp-Set-HG-C12-124_batch1_0": ["Vrp-Set-HG-C12-124_batch1_0"],
+                    "Vrp-Set-HG-C12-124_batch50_0": ["Vrp-Set-HG-C12-124_batch50_0"],
+                    "Vrp-Set-HG-C12-124_batch100_0": ["Vrp-Set-HG-C12-124_batch100_0"]}
+  methodsToTests = {"Vrp-Set-HG-C12-124_variable_fix_LAG_N" : ["Vrp-Set-HG-C12-124_variable_fix_LAG_N"],
+                    "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100" : ["Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100"],
+                    "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5" : ["Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5"]}
+
   # d% gap
   # List of times
   # List of percent gaps
   # x_axis names?
-  d = 5
+  d = 2
   times_list = list(range(0,3700,100))
   gap_list = list(range(d+1,21,1))
   line_styles = ['solid', 'dotted', 'dashed', 'dashdot']
@@ -1019,7 +1141,8 @@ if experiment4:
     for gap_iter in range(len(gap_list)):
         x_plot.append(3600 + (3600 / len(gap_list) * (gap_iter+1)))
     y_plot = method_time_list + method_gap_list
-    plt.plot(x_plot,y_plot,label=method,linestyle=line_styles[method_num],color=line_colors[method_num])
+    #plt.plot(x_plot,y_plot,label=method,linestyle=line_styles[method_num],color=line_colors[method_num])
+    plt.plot(x_plot,y_plot,label=method)
     method_num = method_num + 1
     print("method count")
     print(count)
@@ -1121,11 +1244,42 @@ if experiment6:
   #                  'LAG_NG2' : ['col_elim_hg_lag_ng_2_50_N_3600'],
   #                  'LAG_NG4' : ['col_elim_hg_lag_ng_4_50_N_3600'],
   #                  'LAG_NG6' : ['col_elim_hg_lag_ng_6_50_N_3600']}
-  methodsToTests = {'MIP_0_0' : ['col_elim_lp_0_0_MIP_3600'],
-                    'MIP_5_0' : ['col_elim_lp_5_0_MIP_3600'],
-                    'MIP_5_3' : ['col_elim_lp_5_3_MIP_3600'],
-                    'BANDB_0_0' : ['col_elim_lp_0_0_BANDB_3600'],
-                    'BANDB_5_0' : ['col_elim_lp_5_0_BANDB_3600']}
+  #methodsToTests = {'MIP_0_0' : ['col_elim_lp_0_0_MIP_3600'],
+  #                  'MIP_5_0' : ['col_elim_lp_5_0_MIP_3600'],
+  #                  'MIP_5_3' : ['col_elim_lp_5_3_MIP_3600'],
+  #                  'BANDB_0_0' : ['col_elim_lp_0_0_BANDB_3600'],
+  #                  'BANDB_5_0' : ['col_elim_lp_5_0_BANDB_3600']}
+  #methodsToTests = {'Batch_1' : ['col_elim_hg_lag_ng_2_50_N_3600'],
+  #                  'Batch_50' : ['col_elim_hg_lag_ng_2_50_N_batch50_3600'],
+  #                  'Batch_100' : ['col_elim_hg_lag_ng_2_50_N_batch100_3600']}
+  #methodsToTests = {'LAG' : ['col_elim_X100200_lag_ng_2_50_N_3600'],
+  #                  'LAG-muSSP' : ['col_elim_X100200_lag_ng_2_50_N_nomussp_3600'],
+  #                  'LAG-varFix' : ['col_elim_X100200_lag_ng_2_50_N_novarfix_3600']}
+  #methodsToTests = {'batch1_0' : ['batch1_0'],
+  #                  'batch1_50' : ['batch1_50'],
+  #                  'batch1_100' : ['batch1_100'],
+  #                  'batch50_0' : ['batch50_0'],
+  #                  'batch50_50' : ['batch50_50'],
+  #                  'batch50_100' : ['batch50_100'],
+  #                  'batch100_0' : ['batch100_0'],
+  #                  'batch100_50' : ['batch100_50'],
+  #                  'batch100_100' : ['batch100_100']}
+  methodsToTests = {'variable_fix_LAG_N' : ['variable_fix_LAG_N'],
+                    'variable_fix_LAG_Y_5' : ['variable_fix_LAG_Y_5'],
+                    'variable_fix_LAG_Y_10' : ['variable_fix_LAG_Y_10'],
+                    'variable_fix_LAG_Y_100' : ['variable_fix_LAG_Y_100'],
+                    'variable_fix_LP_N' : ['variable_fix_LP_N'],
+                    'variable_fix_LP_Y' : ['variable_fix_LP_Y']}
+  methodsToTests = {'cuts_LP_Y' : ['cuts_LP_Y'],
+                    'cuts_LP_N' : ['cuts_LP_N'],
+                    'cuts_LAG_Y' : ['cuts_LAG_Y'],
+                    'cuts_LAG_N' : ['cuts_LAG_N']}
+  methodsToTests = {"Vrp-Set-HG-C12-124_batch1_0": ["Vrp-Set-HG-C12-124_batch1_0"],
+                    "Vrp-Set-HG-C12-124_batch50_0": ["Vrp-Set-HG-C12-124_batch50_0"],
+                    "Vrp-Set-HG-C12-124_batch100_0": ["Vrp-Set-HG-C12-124_batch100_0"]}
+  methodsToTests = {"Vrp-Set-HG-C12-124_variable_fix_LAG_N" : ["Vrp-Set-HG-C12-124_variable_fix_LAG_N"],
+                    "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100" : ["Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100"],
+                    "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5" : ["Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5"]}
 
   # List of times
   # List of percent gaps
@@ -1150,8 +1304,6 @@ if experiment6:
         optimal = instance_upper_bounds[instance]
         test_instance_results = time_results_df[(time_results_df['instance'] == instance) & (time_results_df['test'] == test)]
         if not test_instance_results.empty:
-          print(method)
-          print(test)
           # time info
           for t_iter in range(len(times_list)):
             t = times_list[t_iter]
@@ -1177,10 +1329,9 @@ if experiment6:
     for gap_iter in range(len(gap_list)):
         x_plot.append(3600 + (3600 / len(gap_list) * (gap_iter+1)))
     y_plot = method_time_list + method_gap_list
-    plt.plot(x_plot,y_plot,label=method,linestyle=line_styles[method_num],color=line_colors[method_num])
+    #plt.plot(x_plot,y_plot,label=method,linestyle=line_styles[method_num],color=line_colors[method_num])
+    plt.plot(x_plot,y_plot,label=method)
     method_num = method_num + 1
-    print("method count")
-    print(count)
 
   # plot
   plt.xlabel('time (s) | optimality gap (%)')
@@ -1274,7 +1425,7 @@ if experiment7:
             else:
               lb = max(time_result['lb'])
               ub = min(time_result['ub'])
-              size = min(time_result['size'])
+              size = min(time_result['numArcs'])
               if size > max_size:
                 max_size = size
 
@@ -1310,7 +1461,7 @@ if experiment7:
 
   # plot
   #print(performance)
-  plt.xlabel('dp num nodes')
+  plt.xlabel('num variables')
   plt.ylabel('optimality gap')
 
   # update x axis
@@ -1328,17 +1479,17 @@ if experiment7:
   #plt.axvline(x=3600,color='k')
   plt.show()
 
-# Plot LB at 3600 seconds vs. number of nodes in original DD
-# Make LAG dots one color and LP dots another color
+# Plot LB at 3600 seconds vs. optimality gap
+# Per instance...
 experiment8 = False
 if experiment8:
   #methodsToTests = {'CE_MIP' : ['all_col_elim_lp_ub_3600'],
   #                  'CE_BANDB' : ['all_col_elim_lp_bandb_ub_3600'],
   #                  'CE_BDD' : ['all_col_elim_bdd_3600'],
   #                  'Held' : ['held_3600']}
-  methodsToTests = {'LAG_NG2' : ['col_elim_sop_lag_ng_2_50_N_3600'],
-                    'LAG_NG5' : ['col_elim_sop_lag_ng_5_50_N_3600'],
-                    'LAG_NG8' : ['col_elim_sop_lag_ng_8_50_N_3600']}
+  #methodsToTests = {'LAG_NG2' : ['col_elim_sop_lag_ng_2_50_N_3600'],
+  #                  'LAG_NG5' : ['col_elim_sop_lag_ng_5_50_N_3600'],
+  #                  'LAG_NG8' : ['col_elim_sop_lag_ng_8_50_N_3600']}
   #                  'LP_NG2' : ['col_elim_sop_lp_ng_2_50_N_3600'],
   #                  'LP_NG5' : ['col_elim_sop_lp_ng_5_50_N_3600'],
   #                  'LP_NG8' : ['col_elim_sop_lp_ng_8_50_N_3600']}
@@ -1356,6 +1507,40 @@ if experiment8:
   #                  'LAG_NG2' : ['col_elim_hg_lag_ng_2_50_N_3600'],
   #                  'LAG_NG4' : ['col_elim_hg_lag_ng_4_50_N_3600'],
   #                  'LAG_NG6' : ['col_elim_hg_lag_ng_6_50_N_3600']}
+  #methodsToTests = {'cuts_LP_Y' : ['cuts_LP_Y'],
+  #                  'cuts_LP_N' : ['cuts_LP_N'],
+  #                  'cuts_LAG_Y' : ['cuts_LAG_Y'],
+  #                  'cuts_LAG_N' : ['cuts_LAG_N']}
+  #methodsToTests = {'variable_fix_LAG_N' : ['variable_fix_LAG_N'],
+  #                  'variable_fix_LAG_Y_5' : ['variable_fix_LAG_Y_5'],
+  #                  'variable_fix_LAG_Y_10' : ['variable_fix_LAG_Y_10'],
+  #                  'variable_fix_LAG_Y_100' : ['variable_fix_LAG_Y_100']}
+  #                  'variable_fix_LP_N' : ['variable_fix_LP_N'],
+  #                  'variable_fix_LP_Y' : ['variable_fix_LP_Y']}
+  #methodsToTests = {'batch1_0' : ['batch1_0'],
+  #                  'batch1_50' : ['batch1_50'],
+  #                  'batch1_100' : ['batch1_100']}
+                    #'batch50_0' : ['batch50_0'],
+                    #'batch50_50' : ['batch50_50'],
+                    #'batch50_100' : ['batch50_100'],
+                    #'batch100_0' : ['batch100_0'],
+                    #'batch100_50' : ['batch100_50'],
+                    #'batch100_100' : ['batch100_100']}
+  methodsToTests = {"Vrp-Set-HG-C12-124_batch1_0": ["Vrp-Set-HG-C12-124_batch1_0"],
+                    #"Vrp-Set-HG-C12-124_batch1_50": ["Vrp-Set-HG-C12-124_batch1_50"],
+                    #"Vrp-Set-HG-C12-124_batch1_100": ["Vrp-Set-HG-C12-124_batch1_100"],
+                    "Vrp-Set-HG-C12-124_batch50_0": ["Vrp-Set-HG-C12-124_batch50_0"],
+                    #"Vrp-Set-HG-C12-124_batch50_50": ["Vrp-Set-HG-C12-124_batch50_50"],
+                    #"Vrp-Set-HG-C12-124_batch50_100": ["Vrp-Set-HG-C12-124_batch50_100"],
+                    "Vrp-Set-HG-C12-124_batch100_0": ["Vrp-Set-HG-C12-124_batch100_0"]}
+                    #"Vrp-Set-HG-C12-124_batch100_50": ["Vrp-Set-HG-C12-124_batch100_50"],
+                    #"Vrp-Set-HG-C12-124_batch100_100": ["Vrp-Set-HG-C12-124_batch100_100"]}
+                    #"Vrp-Set-HG-C12-124_variable_fix_LAG_N": ["Vrp-Set-HG-C12-124_variable_fix_LAG_N"],
+                    #"Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5": ["Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5"],
+                    #"Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100": ["Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100"]}
+  methodsToTests = {"Vrp-Set-HG-C12-124_variable_fix_LAG_N" : ["Vrp-Set-HG-C12-124_variable_fix_LAG_N"],
+                    "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100" : ["Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100"],
+                    "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5" : ["Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5"]}
 
   # List of times
   # List of percent gaps
@@ -1386,11 +1571,10 @@ if experiment8:
     method_size_within_gap = [0] * 5
     for test in methodsToTests[method]:
       instance_num = 0
-      for instance in instances:
+      for instance in sorted(instances):
         optimal = instance_upper_bounds[instance]
         test_instance_results = time_results_df[(time_results_df['instance'] == instance) & (time_results_df['test'] == test)]
         if not test_instance_results.empty:
-          print(instance)
           # time info
           for t_iter in range(len(times_list)):
             t = times_list[t_iter]
@@ -1402,7 +1586,7 @@ if experiment8:
             else:
               lb = max(time_result['lb'])
               ub = min(time_result['ub'])
-              size = min(time_result['size'])
+              size = min(time_result['numArcs'])
               if size > max_size:
                 max_size = size
 
@@ -1410,8 +1594,6 @@ if experiment8:
           best_lb = max(test_instance_results['lb'])
           best_ub = min(test_instance_results['ub'])
           gap = (best_ub-best_lb) * 100.0 / best_ub
-          print(size)
-          print(gap)
 
           method_x_instance_nums.append(instance_num + method_num)
           method_y_gaps.append(gap)
@@ -1429,12 +1611,10 @@ if experiment8:
         instance_num = instance_num + 5
 
     # plot each of these time then reverse gaps?
-    plt.bar(method_x_instance_nums,method_y_gaps,label=method,color=line_colors[method_num])
+    #plt.bar(method_x_instance_nums,method_y_gaps,label=method,color=line_colors[method_num])
+    plt.bar(method_x_instance_nums,method_y_gaps,label=method)
     #plt.bar(method_x_instance_nums,method_y_gaps,label=method,color='none',edgecolor='k',hatch=hatches[method_num])
     method_num = method_num + 1
-    print("method count")
-    print(method)
-    print(method_size_within_gap)
     #performance[method] = method_size_within_gap
 
   # plot
@@ -1452,7 +1632,7 @@ if experiment8:
   #    x_ticks.append(3600 + (3600 / len(gap_list) * (gap_iter+1)))
   #    x_labels.append(str(gap_list[gap_iter]) + '%')
 
-  plt.xticks(x_ticks, x_labels, rotation=90, fontsize=8)
+  plt.xticks(x_ticks, x_labels, rotation=70, fontsize=8)
   plt.legend(fontsize=8)
   #plt.axvline(x=3600,color='k')
   plt.xlim(min(x_ticks),max(x_ticks)+2)
