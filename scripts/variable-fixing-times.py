@@ -743,14 +743,20 @@ for method_pair in method_pairs:
 
   # plot time to solve on each axis
   if 'LAG' in method_pair[0]:
+    diffs = [fix - no_fix for (fix,no_fix) in zip(fix_times,no_fix_times)]
+    avg_diff = sum(diffs) / len(diffs)
+    print(f'lag avg diff: {avg_diff}')
     plt.scatter(fix_times, no_fix_times, marker='x', label='LAG', color='b')
   else:
+    diffs = [fix - no_fix for (fix,no_fix) in zip(fix_times,no_fix_times)]
+    avg_diff = sum(diffs) / len(diffs)
+    print(f'lp avg diff: {avg_diff}')
     plt.scatter(fix_times, no_fix_times, marker='o', label='LP', color='g')
 
-plt.xlabel('variable fixing (s)')
+plt.xlabel('time to solve with variable fixing (s)')
 plt.xscale('log')
 
-plt.ylabel('no variable fixing (s)')
+plt.ylabel('time to solve without variable fixing (s)')
 plt.yscale('log')
 
 plt.plot([0,10000],[0,10000])

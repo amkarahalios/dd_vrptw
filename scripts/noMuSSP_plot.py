@@ -6,6 +6,7 @@ import numpy
 import matplotlib.pyplot as plt
 import re
 import collections
+import statistics
 
 logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
 instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/X123456789/"
@@ -31,6 +32,8 @@ for instance in instances:
       muSSP_runtimes.append(float(colelim_match.group(2)))
       SSP_runtimes.append(float(colelim_match.group(3)))
 
+diffs = [ssp / muSSP for (ssp,muSSP) in zip(SSP_runtimes, muSSP_runtimes)]
+print(statistics.mean(diffs))
 plt.scatter(SSP_runtimes, muSSP_runtimes)
  
 plt.xlabel('SSP runtime (s)')
