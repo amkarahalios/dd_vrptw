@@ -17,3 +17,38 @@ STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numC
 max violation: 0.625
 new capacity cutset: 31 35 <= 1
 num vars: 953422
+STATS - lpIterations[2] lagIterations[0] sspIterations[0] numSeparations[2] numCuts[1] compileTime[0] sspSolveTime[0] lpSolveTime[1196] lb[583.457] ub[585.8] numArcs: [953422] numFixed: [0] time: [1197]
+no rcc cuts found
+num vars: 7313
+STATS - lpIterations[3] lagIterations[0] sspIterations[0] numSeparations[8] numCuts[1] compileTime[0] sspSolveTime[0] lpSolveTime[1199] lb[583.859] ub[585.8] numArcs: [955193] numFixed: [947880] time: [1200]
+no rcc cuts found
+num vars: 31776
+STATS - lpIterations[4] lagIterations[0] sspIterations[0] numSeparations[20] numCuts[1] compileTime[0] sspSolveTime[0] lpSolveTime[1208] lb[583.977] ub[585.8] numArcs: [959022] numFixed: [927246] time: [1209]
+max violation: 0.5
+new capacity cutset: 47 50 51 52 <= 3
+new capacity cutset: 53 54 56 58 59 60 <= 5
+new capacity cutset: 12 13 14 15 16 17 18 19 <= 7
+new capacity cutset: 12 14 15 16 19 <= 4
+new capacity cutset: 12 14 15 16 <= 3
+num vars: 10071
+STATS - lpIterations[5] lagIterations[0] sspIterations[0] numSeparations[30] numCuts[6] compileTime[0] sspSolveTime[0] lpSolveTime[1211] lb[585.8] ub[585.8] numArcs: [960938] numFixed: [950867] time: [1213]
+integral solution
+routes: 
+flow {1}: 0 20 22 24 27 30 29 6 32 33 31 35 37 38 39 36 34 28 26 23 18 17 19 16 14 12 15 13 25 9 11 10 8 21 
+flow {1}: 0 67 63 62 74 72 61 64 66 69 68 65 49 55 54 53 56 58 60 59 57 40 44 46 45 51 50 52 47 42 41 43 48 
+flow {1}: 0 93 5 75 2 1 99 100 97 92 94 95 98 7 3 4 89 91 88 86 84 83 82 85 76 71 70 73 80 79 81 78 77 96 87 90 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+solving IP
+num vars: 731
+STATS - lpIterations[6] lagIterations[0] sspIterations[0] numSeparations[30] numCuts[6] compileTime[0] sspSolveTime[0] lpSolveTime[1213] lb[585.8] ub[585.8] numArcs: [960938] numFixed: [960207] time: [1215]
+routes: 
+flow {1}: 0 20 22 24 27 30 29 6 32 33 31 35 37 38 39 36 34 28 26 23 18 17 19 16 14 12 15 13 25 9 11 10 8 21 
+flow {1}: 0 67 63 62 74 72 61 64 66 69 68 65 49 55 54 53 56 58 60 59 57 40 44 46 45 51 50 52 47 42 41 43 48 
+flow {1}: 0 93 5 75 2 1 99 100 97 92 94 95 98 7 3 4 89 91 88 86 84 83 82 85 76 71 70 73 80 79 81 78 77 96 87 90 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[6] lagIterations[0] sspIterations[0] numSeparations[30] numCuts[6] compileTime[0] sspSolveTime[0] lpSolveTime[1213] lb[585.8] ub[585.8] numArcs: [960938] numFixed: [960207] time: [1215]
+finished solving - complete
+time elapsed: 1215
