@@ -1,0 +1,161 @@
+relax capacity constraint
+instance upper bound: 1372.7
+compiling DD
+time step mult: 10
+time step: 100
+cap step: 2
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1372.7] numArcs: [197466] numFixed: [0] time: [0]
+num vars: 197466
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[34] lb[1109.99] ub[1372.7] numArcs: [197466] numFixed: [0] time: [34]
+max violation: 0.49599
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 91 92 93 94 95 96 97 98 99 100 <= 90
+num vars: 200411
+STATS - lpIterations[2] lagIterations[0] sspIterations[0] numSeparations[13] numCuts[1] compileTime[0] sspSolveTime[0] lpSolveTime[71] lb[1114.31] ub[1372.7] numArcs: [200411] numFixed: [0] time: [71]
+max violation: 0.804598
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 35 36 37 38 39 40 41 42 43 44 45 46 47 53 55 60 69 70 73 78 79 88 98 100 <= 37
+new capacity cutset: 1 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 35 36 37 38 39 40 41 42 43 44 45 46 47 55 60 70 73 78 79 100 <= 32
+new capacity cutset: 5 35 36 37 38 39 40 41 42 43 44 45 <= 10
+new capacity cutset: 2 5 6 7 9 10 11 12 13 14 15 16 17 35 36 37 38 39 40 41 42 43 44 45 47 53 60 69 73 78 79 88 98 <= 29
+new capacity cutset: 9 10 11 12 13 14 15 16 17 35 36 37 38 39 40 41 42 43 44 47 82 <= 18
+new capacity cutset: 18 19 20 21 22 23 24 25 48 49 52 57 58 59 64 65 74 75 77 83 86 87 97 99 <= 21
+num vars: 196483
+STATS - lpIterations[3] lagIterations[0] sspIterations[0] numSeparations[43] numCuts[7] compileTime[0] sspSolveTime[0] lpSolveTime[127] lb[1124.16] ub[1372.7] numArcs: [204409] numFixed: [7926] time: [128]
+max violation: 0.778237
+new capacity cutset: 1 2 3 4 5 6 7 8 35 36 37 38 39 40 41 42 43 44 45 46 54 <= 18
+new capacity cutset: 1 3 4 5 6 7 8 35 36 37 38 39 40 41 42 43 44 45 46 73 78 79 <= 19
+new capacity cutset: 7 35 36 37 38 39 40 41 42 43 44 <= 9
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 35 36 37 38 39 40 41 42 43 44 45 46 47 53 55 59 60 68 70 73 75 78 79 87 88 97 98 100 <= 40
+new capacity cutset: 10 35 36 37 38 39 40 41 42 43 44 <= 9
+new capacity cutset: 1 2 3 4 5 6 7 8 35 36 37 38 39 40 41 42 43 44 45 46 70 73 78 79 100 <= 22
+num vars: 199223
+STATS - lpIterations[4] lagIterations[0] sspIterations[0] numSeparations[86] numCuts[13] compileTime[0] sspSolveTime[0] lpSolveTime[191] lb[1134.81] ub[1372.7] numArcs: [208348] numFixed: [9125] time: [192]
+max violation: 0.358894
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 53 55 60 69 70 73 78 79 88 98 100 <= 28
+new capacity cutset: 1 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 55 60 70 73 78 79 100 <= 23
+new capacity cutset: 5 45 <= 1
+new capacity cutset: 1 3 4 5 7 8 9 10 11 12 13 14 15 16 17 45 46 47 60 73 78 79 <= 19
+new capacity cutset: 1 2 3 4 5 6 7 8 45 46 68 70 100 <= 11
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 53 55 60 68 69 70 73 78 79 82 88 98 100 <= 29
+num vars: 201635
+STATS - lpIterations[5] lagIterations[0] sspIterations[0] numSeparations[139] numCuts[19] compileTime[0] sspSolveTime[0] lpSolveTime[259] lb[1141.53] ub[1372.7] numArcs: [213002] numFixed: [11367] time: [260]
+max violation: 0.526253
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 53 55 60 70 73 78 79 88 100 <= 26
+new capacity cutset: 9 10 11 12 13 14 15 16 17 47 60 <= 9
+new capacity cutset: 9 10 13 17 <= 3
+new capacity cutset: 35 36 37 38 39 40 41 42 43 44 72 <= 9
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 21 23 25 45 46 47 48 52 53 55 57 58 59 60 69 70 73 74 75 77 78 79 82 86 87 88 97 98 99 100 <= 43
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 45 46 47 48 49 52 53 55 57 58 59 60 63 69 70 73 74 75 76 77 78 79 82 86 87 88 89 97 98 99 100 <= 50
+num vars: 205576
+STATS - lpIterations[6] lagIterations[0] sspIterations[0] numSeparations[202] numCuts[25] compileTime[0] sspSolveTime[0] lpSolveTime[340] lb[1150.22] ub[1372.7] numArcs: [217498] numFixed: [11922] time: [340]
+max violation: 0.380157
+new capacity cutset: 1 2 3 4 5 6 7 8 45 46 73 78 79 <= 11
+new capacity cutset: 18 19 20 21 22 23 24 25 48 49 64 <= 9
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 25 45 46 47 52 53 55 57 58 59 60 65 69 70 73 74 75 77 78 79 82 86 87 88 97 98 99 100 <= 40
+new capacity cutset: 35 36 37 38 39 40 41 42 43 44 61 <= 9
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 35 36 37 38 39 40 41 42 43 44 45 46 47 52 53 55 57 58 59 60 65 68 69 70 73 74 75 77 78 79 82 86 87 88 97 98 99 100 <= 49
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 53 55 59 60 69 70 73 75 78 79 87 88 97 98 100 <= 31
+num vars: 209196
+STATS - lpIterations[7] lagIterations[0] sspIterations[0] numSeparations[268] numCuts[31] compileTime[0] sspSolveTime[0] lpSolveTime[440] lb[1156.73] ub[1372.7] numArcs: [221815] numFixed: [12619] time: [441]
+max violation: 0.560999
+new capacity cutset: 1 2 3 4 5 6 7 8 35 36 37 38 39 40 41 42 43 44 45 46 70 100 <= 19
+new capacity cutset: 15 16 47 <= 2
+new capacity cutset: 35 36 37 38 39 40 41 42 43 44 54 <= 9
+new capacity cutset: 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 47 48 49 52 57 58 59 64 65 74 75 77 82 83 86 87 97 99 <= 31
+new capacity cutset: 26 27 28 29 30 31 32 34 50 93 94 96 <= 10
+new capacity cutset: 26 27 28 29 30 31 32 33 34 50 93 94 96 <= 11
+num vars: 212496
+STATS - lpIterations[8] lagIterations[0] sspIterations[0] numSeparations[338] numCuts[37] compileTime[0] sspSolveTime[0] lpSolveTime[550] lb[1165.62] ub[1372.7] numArcs: [225907] numFixed: [13411] time: [551]
+max violation: 0.37983
+new capacity cutset: 1 2 3 4 5 6 7 8 45 46 70 <= 9
+new capacity cutset: 35 36 37 38 39 40 41 42 43 44 61 81 <= 10
+new capacity cutset: 57 86 <= 1
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 53 55 59 60 70 73 75 78 79 87 88 97 100 <= 29
+new capacity cutset: 1 2 3 4 5 6 7 8 45 46 70 100 <= 10
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 45 46 47 48 49 52 53 55 57 58 59 60 64 65 69 70 73 74 75 77 78 79 82 83 86 87 88 97 98 99 100 <= 50
+num vars: 216555
+STATS - lpIterations[9] lagIterations[0] sspIterations[0] numSeparations[414] numCuts[43] compileTime[0] sspSolveTime[0] lpSolveTime[668] lb[1170.91] ub[1372.7] numArcs: [230543] numFixed: [13988] time: [669]
+max violation: 0.224729
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 53 60 73 78 79 88 98 <= 24
+new capacity cutset: 18 19 20 21 22 23 24 25 48 49 89 <= 9
+new capacity cutset: 22 49 <= 1
+new capacity cutset: 25 48 <= 1
+new capacity cutset: 35 36 37 38 39 40 41 42 43 44 81 <= 9
+num vars: 220717
+STATS - lpIterations[10] lagIterations[0] sspIterations[0] numSeparations[490] numCuts[48] compileTime[0] sspSolveTime[0] lpSolveTime[800] lb[1174.29] ub[1372.7] numArcs: [234846] numFixed: [14129] time: [800]
+max violation: 0.2906
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 35 36 37 38 40 43 45 46 47 53 55 60 70 73 78 79 88 100 <= 31
+new capacity cutset: 9 10 11 12 13 14 15 16 17 47 82 <= 9
+new capacity cutset: 36 38 <= 1
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 40 43 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 62 63 64 65 66 67 69 70 73 74 75 76 77 78 79 80 82 83 84 85 86 87 88 89 91 92 93 94 95 96 97 98 99 100 <= 81
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 53 60 73 78 79 88 <= 23
+num vars: 223917
+STATS - lpIterations[11] lagIterations[0] sspIterations[0] numSeparations[555] numCuts[53] compileTime[0] sspSolveTime[0] lpSolveTime[952] lb[1177.33] ub[1372.7] numArcs: [238638] numFixed: [14721] time: [953]
+max violation: 0.334314
+new capacity cutset: 1 2 3 4 5 6 7 8 45 46 73 79 <= 10
+new capacity cutset: 35 36 37 38 39 40 41 42 43 44 71 72 <= 10
+new capacity cutset: 26 27 28 29 30 31 32 33 34 50 80 91 <= 10
+num vars: 227702
+STATS - lpIterations[12] lagIterations[0] sspIterations[0] numSeparations[623] numCuts[56] compileTime[0] sspSolveTime[0] lpSolveTime[1092] lb[1180.8] ub[1372.7] numArcs: [242761] numFixed: [15059] time: [1093]
+max violation: 0.209565
+new capacity cutset: 1 3 4 5 6 7 8 45 46 73 78 79 <= 10
+new capacity cutset: 1 2 3 4 5 6 7 8 45 46 88 <= 9
+new capacity cutset: 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 47 48 49 50 51 52 56 57 58 59 62 63 64 65 66 67 74 75 76 77 82 83 84 85 86 87 89 91 92 95 97 99 <= 52
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 52 53 55 57 58 59 60 68 69 70 73 74 75 77 78 79 82 83 86 87 88 97 98 99 100 <= 58
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 45 46 47 48 49 52 53 55 57 58 59 60 68 69 70 73 74 75 77 78 79 82 83 86 87 88 97 98 99 100 <= 49
+new capacity cutset: 1 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 60 73 78 79 <= 20
+num vars: 231847
+STATS - lpIterations[13] lagIterations[0] sspIterations[0] numSeparations[701] numCuts[62] compileTime[0] sspSolveTime[0] lpSolveTime[1282] lb[1183.82] ub[1372.7] numArcs: [247129] numFixed: [15282] time: [1283]
+max violation: 0.186913
+new capacity cutset: 26 27 <= 1
+num vars: 235562
+STATS - lpIterations[14] lagIterations[0] sspIterations[0] numSeparations[783] numCuts[63] compileTime[0] sspSolveTime[0] lpSolveTime[1459] lb[1186.71] ub[1372.7] numArcs: [251216] numFixed: [15654] time: [1460]
+max violation: 0.180339
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 52 53 55 57 58 59 60 64 68 69 70 73 74 75 77 78 79 82 83 86 87 88 97 98 99 100 <= 59
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 45 46 47 48 49 52 53 55 57 58 59 60 64 68 69 70 73 74 75 77 78 79 82 83 86 87 88 97 98 99 100 <= 50
+num vars: 239997
+STATS - lpIterations[15] lagIterations[0] sspIterations[0] numSeparations[873] numCuts[65] compileTime[0] sspSolveTime[0] lpSolveTime[1638] lb[1189.08] ub[1372.7] numArcs: [255716] numFixed: [15719] time: [1639]
+max violation: 0.14622
+new capacity cutset: 1 2 3 4 5 6 7 8 45 46 79 <= 9
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 60 73 78 79 <= 21
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 40 43 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 62 63 64 65 66 67 68 69 70 73 74 75 76 77 78 79 80 82 83 84 85 86 87 88 89 91 93 94 95 96 97 98 99 100 <= 81
+num vars: 243739
+STATS - lpIterations[16] lagIterations[0] sspIterations[0] numSeparations[952] numCuts[68] compileTime[0] sspSolveTime[0] lpSolveTime[1842] lb[1191.55] ub[1372.7] numArcs: [259855] numFixed: [16116] time: [1843]
+no rcc cuts found
+num vars: 247781
+STATS - lpIterations[17] lagIterations[0] sspIterations[0] numSeparations[1036] numCuts[68] compileTime[0] sspSolveTime[0] lpSolveTime[2058] lb[1193.98] ub[1372.7] numArcs: [264147] numFixed: [16366] time: [2059]
+no rcc cuts found
+num vars: 252136
+STATS - lpIterations[18] lagIterations[0] sspIterations[0] numSeparations[1122] numCuts[68] compileTime[0] sspSolveTime[0] lpSolveTime[2279] lb[1195.94] ub[1372.7] numArcs: [268735] numFixed: [16599] time: [2281]
+max violation: 0.129016
+new capacity cutset: 35 37 40 43 <= 3
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 55 56 57 58 59 60 62 63 64 65 66 67 68 69 70 73 74 75 76 77 78 79 80 82 83 84 85 86 87 88 89 91 92 95 97 98 99 100 <= 82
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 45 46 47 48 49 50 51 52 53 55 56 57 58 59 60 62 63 64 65 66 67 68 69 70 73 74 75 76 77 78 79 80 82 83 84 85 86 87 88 89 91 92 95 97 98 99 100 <= 73
+num vars: 255859
+STATS - lpIterations[19] lagIterations[0] sspIterations[0] numSeparations[1202] numCuts[71] compileTime[0] sspSolveTime[0] lpSolveTime[2524] lb[1197.53] ub[1372.7] numArcs: [272758] numFixed: [16899] time: [2526]
+max violation: 0.239484
+new capacity cutset: 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 47 48 49 52 57 58 59 74 75 77 83 86 87 97 99 <= 28
+new capacity cutset: 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 47 48 49 52 57 58 59 64 74 75 77 83 86 87 97 99 <= 29
+new capacity cutset: 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 47 48 49 52 57 58 59 66 74 75 77 86 87 97 99 <= 28
+num vars: 259369
+STATS - lpIterations[20] lagIterations[0] sspIterations[0] numSeparations[1278] numCuts[74] compileTime[0] sspSolveTime[0] lpSolveTime[2778] lb[1199.44] ub[1372.7] numArcs: [276762] numFixed: [17393] time: [2780]
+no rcc cuts found
+num vars: 263363
+STATS - lpIterations[21] lagIterations[0] sspIterations[0] numSeparations[1367] numCuts[74] compileTime[0] sspSolveTime[0] lpSolveTime[3040] lb[1201.2] ub[1372.7] numArcs: [280839] numFixed: [17476] time: [3042]
+max violation: 0.254508
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 45 46 47 48 49 52 53 55 57 58 59 60 65 68 69 70 73 74 75 77 78 79 82 86 87 88 97 98 99 100 <= 49
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 52 53 55 57 58 59 60 65 68 69 70 73 74 75 77 78 79 82 86 87 88 97 98 99 100 <= 58
+num vars: 266384
+STATS - lpIterations[22] lagIterations[0] sspIterations[0] numSeparations[1445] numCuts[76] compileTime[0] sspSolveTime[0] lpSolveTime[3307] lb[1202.62] ub[1372.7] numArcs: [284062] numFixed: [17678] time: [3309]
+max violation: 0.129643
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 35 36 37 38 39 40 41 42 43 44 45 46 47 53 55 60 68 69 70 73 78 79 82 88 98 100 <= 38
+num vars: 269847
+STATS - lpIterations[23] lagIterations[0] sspIterations[0] numSeparations[1528] numCuts[77] compileTime[0] sspSolveTime[0] lpSolveTime[3596] lb[1203.92] ub[1372.7] numArcs: [287833] numFixed: [17986] time: [3598]
+no rcc cuts found
+num vars: 273553

@@ -1,0 +1,237 @@
+relax capacity constraint
+instance upper bound: 1513.7
+compiling DD
+time step mult: 10
+time step: 100
+cap step: 2
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1513.7] numArcs: [172318] numFixed: [0] time: [0]
+num vars: 172318
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[15] lb[1261.69] ub[1513.7] numArcs: [172318] numFixed: [0] time: [15]
+max violation: 1
+new capacity cutset: 1 2 3 4 5 6 7 8 45 46 70 100 <= 10
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 45 46 47 70 100 <= 19
+new capacity cutset: 1 2 3 4 5 6 7 8 18 19 20 21 22 23 24 25 45 46 48 49 70 83 100 <= 20
+new capacity cutset: 1 2 3 4 5 6 7 8 26 27 28 29 30 31 32 33 34 45 46 50 70 94 100 <= 20
+new capacity cutset: 1 2 3 4 5 6 7 8 35 36 37 38 39 40 41 42 43 44 45 46 70 100 <= 19
+new capacity cutset: 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 50 54 80 91 93 94 96 <= 23
+new capacity cutset: 26 27 28 29 30 31 32 34 50 80 91 93 94 96 <= 12
+new capacity cutset: 26 27 28 29 30 31 32 33 34 50 80 91 93 94 96 <= 13
+num vars: 175809
+STATS - lpIterations[2] lagIterations[0] sspIterations[0] numSeparations[18] numCuts[8] compileTime[0] sspSolveTime[0] lpSolveTime[35] lb[1282.39] ub[1513.7] numArcs: [175809] numFixed: [0] time: [35]
+max violation: 0.5
+new capacity cutset: 61 81 <= 1
+num vars: 176427
+STATS - lpIterations[3] lagIterations[0] sspIterations[0] numSeparations[50] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[59] lb[1295.51] ub[1513.7] numArcs: [180184] numFixed: [3757] time: [59]
+max violation: 0.666667
+new capacity cutset: 9 10 11 12 13 14 15 16 17 47 82 <= 9
+new capacity cutset: 20 22 49 <= 2
+new capacity cutset: 26 27 28 29 30 31 32 33 34 50 94 <= 9
+new capacity cutset: 35 36 37 38 39 40 41 42 43 44 54 <= 9
+new capacity cutset: 35 36 37 38 39 40 41 42 43 44 54 72 <= 10
+new capacity cutset: 26 27 28 29 30 31 32 33 34 50 91 92 <= 10
+new capacity cutset: 26 27 28 29 30 31 32 34 50 80 91 94 <= 10
+new capacity cutset: 26 27 28 29 30 31 32 33 34 50 80 91 94 <= 11
+new capacity cutset: 1 2 3 4 5 6 7 8 45 46 88 <= 9
+num vars: 177894
+STATS - lpIterations[4] lagIterations[0] sspIterations[0] numSeparations[81] numCuts[18] compileTime[0] sspSolveTime[0] lpSolveTime[87] lb[1309.04] ub[1513.7] numArcs: [182755] numFixed: [4861] time: [87]
+max violation: 0.409091
+new capacity cutset: 26 27 28 29 30 31 32 33 34 50 80 91 <= 10
+num vars: 180844
+STATS - lpIterations[5] lagIterations[0] sspIterations[0] numSeparations[115] numCuts[19] compileTime[0] sspSolveTime[0] lpSolveTime[113] lb[1317.48] ub[1513.7] numArcs: [186273] numFixed: [5429] time: [113]
+max violation: 0.219512
+new capacity cutset: 26 27 28 29 30 31 32 33 34 50 89 <= 9
+num vars: 183816
+STATS - lpIterations[6] lagIterations[0] sspIterations[0] numSeparations[157] numCuts[20] compileTime[0] sspSolveTime[0] lpSolveTime[151] lb[1325.72] ub[1513.7] numArcs: [189915] numFixed: [6099] time: [151]
+max violation: 0.279134
+new capacity cutset: 9 10 11 12 13 14 15 16 17 47 98 <= 9
+new capacity cutset: 18 19 20 21 22 23 24 25 48 49 83 <= 9
+new capacity cutset: 18 19 20 21 22 23 25 48 49 83 <= 8
+new capacity cutset: 35 36 37 38 39 40 41 42 43 44 72 <= 9
+new capacity cutset: 31 32 34 <= 2
+num vars: 186500
+STATS - lpIterations[7] lagIterations[0] sspIterations[0] numSeparations[206] numCuts[25] compileTime[0] sspSolveTime[0] lpSolveTime[189] lb[1333.07] ub[1513.7] numArcs: [193234] numFixed: [6734] time: [189]
+no rcc cuts found
+num vars: 188752
+STATS - lpIterations[8] lagIterations[0] sspIterations[0] numSeparations[243] numCuts[25] compileTime[0] sspSolveTime[0] lpSolveTime[225] lb[1337.39] ub[1513.7] numArcs: [195589] numFixed: [6837] time: [225]
+no rcc cuts found
+num vars: 192110
+STATS - lpIterations[9] lagIterations[0] sspIterations[0] numSeparations[296] numCuts[25] compileTime[0] sspSolveTime[0] lpSolveTime[256] lb[1341.52] ub[1513.7] numArcs: [199310] numFixed: [7200] time: [257]
+no rcc cuts found
+num vars: 191774
+STATS - lpIterations[10] lagIterations[0] sspIterations[0] numSeparations[337] numCuts[25] compileTime[0] sspSolveTime[0] lpSolveTime[299] lb[1346.08] ub[1513.7] numArcs: [202259] numFixed: [10485] time: [300]
+max violation: 0.119535
+new capacity cutset: 26 32 <= 1
+num vars: 193928
+STATS - lpIterations[11] lagIterations[0] sspIterations[0] numSeparations[377] numCuts[26] compileTime[0] sspSolveTime[0] lpSolveTime[336] lb[1349.61] ub[1513.7] numArcs: [204728] numFixed: [10800] time: [336]
+max violation: 0.111111
+new capacity cutset: 26 27 28 29 30 31 32 34 <= 7
+num vars: 195615
+STATS - lpIterations[12] lagIterations[0] sspIterations[0] numSeparations[423] numCuts[27] compileTime[0] sspSolveTime[0] lpSolveTime[381] lb[1353.1] ub[1513.7] numArcs: [207469] numFixed: [11854] time: [381]
+no rcc cuts found
+num vars: 197970
+STATS - lpIterations[13] lagIterations[0] sspIterations[0] numSeparations[469] numCuts[27] compileTime[0] sspSolveTime[0] lpSolveTime[423] lb[1356.81] ub[1513.7] numArcs: [210281] numFixed: [12311] time: [424]
+no rcc cuts found
+num vars: 200027
+STATS - lpIterations[14] lagIterations[0] sspIterations[0] numSeparations[510] numCuts[27] compileTime[0] sspSolveTime[0] lpSolveTime[462] lb[1359.36] ub[1513.7] numArcs: [212615] numFixed: [12588] time: [463]
+max violation: 0.578947
+new capacity cutset: 26 27 28 29 30 31 32 33 34 50 93 96 <= 10
+num vars: 201740
+STATS - lpIterations[15] lagIterations[0] sspIterations[0] numSeparations[546] numCuts[28] compileTime[0] sspSolveTime[0] lpSolveTime[503] lb[1362.59] ub[1513.7] numArcs: [214442] numFixed: [12702] time: [503]
+no rcc cuts found
+num vars: 204185
+STATS - lpIterations[16] lagIterations[0] sspIterations[0] numSeparations[597] numCuts[28] compileTime[0] sspSolveTime[0] lpSolveTime[553] lb[1365.13] ub[1513.7] numArcs: [217277] numFixed: [13092] time: [553]
+no rcc cuts found
+num vars: 206912
+STATS - lpIterations[17] lagIterations[0] sspIterations[0] numSeparations[648] numCuts[28] compileTime[0] sspSolveTime[0] lpSolveTime[600] lb[1368.24] ub[1513.7] numArcs: [220248] numFixed: [13336] time: [601]
+no rcc cuts found
+num vars: 208722
+STATS - lpIterations[18] lagIterations[0] sspIterations[0] numSeparations[690] numCuts[28] compileTime[0] sspSolveTime[0] lpSolveTime[651] lb[1370.14] ub[1513.7] numArcs: [222264] numFixed: [13542] time: [652]
+no rcc cuts found
+num vars: 210323
+STATS - lpIterations[19] lagIterations[0] sspIterations[0] numSeparations[734] numCuts[28] compileTime[0] sspSolveTime[0] lpSolveTime[698] lb[1371.87] ub[1513.7] numArcs: [224147] numFixed: [13824] time: [699]
+no rcc cuts found
+num vars: 212313
+STATS - lpIterations[20] lagIterations[0] sspIterations[0] numSeparations[783] numCuts[28] compileTime[0] sspSolveTime[0] lpSolveTime[748] lb[1373.69] ub[1513.7] numArcs: [226480] numFixed: [14167] time: [749]
+no rcc cuts found
+num vars: 213953
+STATS - lpIterations[21] lagIterations[0] sspIterations[0] numSeparations[827] numCuts[28] compileTime[0] sspSolveTime[0] lpSolveTime[795] lb[1375.47] ub[1513.7] numArcs: [228530] numFixed: [14577] time: [796]
+max violation: 0.148148
+new capacity cutset: 35 36 37 38 40 41 43 44 70 <= 7
+new capacity cutset: 35 36 37 38 40 41 43 44 54 72 <= 8
+num vars: 215994
+STATS - lpIterations[22] lagIterations[0] sspIterations[0] numSeparations[871] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[847] lb[1377.06] ub[1513.7] numArcs: [230646] numFixed: [14652] time: [848]
+no rcc cuts found
+num vars: 217181
+STATS - lpIterations[23] lagIterations[0] sspIterations[0] numSeparations[911] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[894] lb[1378.55] ub[1513.7] numArcs: [232442] numFixed: [15261] time: [895]
+no rcc cuts found
+num vars: 218986
+STATS - lpIterations[24] lagIterations[0] sspIterations[0] numSeparations[954] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[941] lb[1379.89] ub[1513.7] numArcs: [234651] numFixed: [15665] time: [942]
+no rcc cuts found
+num vars: 220135
+STATS - lpIterations[25] lagIterations[0] sspIterations[0] numSeparations[996] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[990] lb[1381.34] ub[1513.7] numArcs: [236470] numFixed: [16335] time: [991]
+no rcc cuts found
+num vars: 221542
+STATS - lpIterations[26] lagIterations[0] sspIterations[0] numSeparations[1039] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1036] lb[1382.31] ub[1513.7] numArcs: [238339] numFixed: [16797] time: [1037]
+no rcc cuts found
+num vars: 223415
+STATS - lpIterations[27] lagIterations[0] sspIterations[0] numSeparations[1078] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1088] lb[1383.43] ub[1513.7] numArcs: [240228] numFixed: [16813] time: [1090]
+no rcc cuts found
+num vars: 224322
+STATS - lpIterations[28] lagIterations[0] sspIterations[0] numSeparations[1117] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1143] lb[1384.24] ub[1513.7] numArcs: [241872] numFixed: [17550] time: [1144]
+no rcc cuts found
+num vars: 225699
+STATS - lpIterations[29] lagIterations[0] sspIterations[0] numSeparations[1156] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1201] lb[1385.62] ub[1513.7] numArcs: [243494] numFixed: [17795] time: [1203]
+no rcc cuts found
+num vars: 226670
+STATS - lpIterations[30] lagIterations[0] sspIterations[0] numSeparations[1195] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1252] lb[1386.47] ub[1513.7] numArcs: [245175] numFixed: [18505] time: [1254]
+no rcc cuts found
+num vars: 227478
+STATS - lpIterations[31] lagIterations[0] sspIterations[0] numSeparations[1236] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1313] lb[1387.43] ub[1513.7] numArcs: [246848] numFixed: [19370] time: [1314]
+no rcc cuts found
+num vars: 229032
+STATS - lpIterations[32] lagIterations[0] sspIterations[0] numSeparations[1272] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1370] lb[1388.37] ub[1513.7] numArcs: [248505] numFixed: [19473] time: [1371]
+no rcc cuts found
+num vars: 230370
+STATS - lpIterations[33] lagIterations[0] sspIterations[0] numSeparations[1311] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1432] lb[1389.36] ub[1513.7] numArcs: [250166] numFixed: [19796] time: [1434]
+no rcc cuts found
+num vars: 231974
+STATS - lpIterations[34] lagIterations[0] sspIterations[0] numSeparations[1352] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1492] lb[1390.32] ub[1513.7] numArcs: [252146] numFixed: [20172] time: [1494]
+no rcc cuts found
+num vars: 233007
+STATS - lpIterations[35] lagIterations[0] sspIterations[0] numSeparations[1387] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1552] lb[1391.28] ub[1513.7] numArcs: [253686] numFixed: [20679] time: [1554]
+no rcc cuts found
+num vars: 234270
+STATS - lpIterations[36] lagIterations[0] sspIterations[0] numSeparations[1425] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1613] lb[1392.48] ub[1513.7] numArcs: [255289] numFixed: [21019] time: [1615]
+no rcc cuts found
+num vars: 235461
+STATS - lpIterations[37] lagIterations[0] sspIterations[0] numSeparations[1467] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1677] lb[1393.34] ub[1513.7] numArcs: [256914] numFixed: [21453] time: [1678]
+no rcc cuts found
+num vars: 236344
+STATS - lpIterations[38] lagIterations[0] sspIterations[0] numSeparations[1503] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1735] lb[1394.38] ub[1513.7] numArcs: [258269] numFixed: [21925] time: [1737]
+no rcc cuts found
+num vars: 236729
+STATS - lpIterations[39] lagIterations[0] sspIterations[0] numSeparations[1536] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1800] lb[1395.32] ub[1513.7] numArcs: [259647] numFixed: [22918] time: [1802]
+no rcc cuts found
+num vars: 238277
+STATS - lpIterations[40] lagIterations[0] sspIterations[0] numSeparations[1574] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1865] lb[1396.45] ub[1513.7] numArcs: [261079] numFixed: [22802] time: [1867]
+no rcc cuts found
+num vars: 238687
+STATS - lpIterations[41] lagIterations[0] sspIterations[0] numSeparations[1611] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[1932] lb[1397.1] ub[1513.7] numArcs: [262715] numFixed: [24028] time: [1934]
+no rcc cuts found
+num vars: 238948
+STATS - lpIterations[42] lagIterations[0] sspIterations[0] numSeparations[1647] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2001] lb[1397.96] ub[1513.7] numArcs: [264224] numFixed: [25276] time: [2003]
+no rcc cuts found
+num vars: 239605
+STATS - lpIterations[43] lagIterations[0] sspIterations[0] numSeparations[1675] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2072] lb[1398.63] ub[1513.7] numArcs: [265242] numFixed: [25637] time: [2074]
+no rcc cuts found
+num vars: 240524
+STATS - lpIterations[44] lagIterations[0] sspIterations[0] numSeparations[1716] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2137] lb[1399.48] ub[1513.7] numArcs: [267115] numFixed: [26591] time: [2140]
+no rcc cuts found
+num vars: 240991
+STATS - lpIterations[45] lagIterations[0] sspIterations[0] numSeparations[1748] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2200] lb[1400.05] ub[1513.7] numArcs: [268488] numFixed: [27497] time: [2202]
+no rcc cuts found
+num vars: 242042
+STATS - lpIterations[46] lagIterations[0] sspIterations[0] numSeparations[1782] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2262] lb[1400.72] ub[1513.7] numArcs: [269946] numFixed: [27904] time: [2264]
+no rcc cuts found
+num vars: 243079
+STATS - lpIterations[47] lagIterations[0] sspIterations[0] numSeparations[1817] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2329] lb[1401.24] ub[1513.7] numArcs: [271427] numFixed: [28348] time: [2331]
+no rcc cuts found
+num vars: 243576
+STATS - lpIterations[48] lagIterations[0] sspIterations[0] numSeparations[1851] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2398] lb[1401.82] ub[1513.7] numArcs: [273044] numFixed: [29468] time: [2400]
+no rcc cuts found
+num vars: 244768
+STATS - lpIterations[49] lagIterations[0] sspIterations[0] numSeparations[1887] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2466] lb[1402.58] ub[1513.7] numArcs: [274322] numFixed: [29554] time: [2469]
+no rcc cuts found
+num vars: 244783
+STATS - lpIterations[50] lagIterations[0] sspIterations[0] numSeparations[1918] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2534] lb[1402.95] ub[1513.7] numArcs: [275445] numFixed: [30662] time: [2537]
+no rcc cuts found
+num vars: 246303
+STATS - lpIterations[51] lagIterations[0] sspIterations[0] numSeparations[1950] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2604] lb[1403.56] ub[1513.7] numArcs: [276804] numFixed: [30501] time: [2607]
+no rcc cuts found
+num vars: 246888
+STATS - lpIterations[52] lagIterations[0] sspIterations[0] numSeparations[1983] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2680] lb[1404.13] ub[1513.7] numArcs: [278230] numFixed: [31342] time: [2682]
+no rcc cuts found
+num vars: 247823
+STATS - lpIterations[53] lagIterations[0] sspIterations[0] numSeparations[2017] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2752] lb[1404.57] ub[1513.7] numArcs: [279735] numFixed: [31912] time: [2755]
+no rcc cuts found
+num vars: 248426
+STATS - lpIterations[54] lagIterations[0] sspIterations[0] numSeparations[2043] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2833] lb[1405.05] ub[1513.7] numArcs: [280683] numFixed: [32257] time: [2836]
+no rcc cuts found
+num vars: 248490
+STATS - lpIterations[55] lagIterations[0] sspIterations[0] numSeparations[2073] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2902] lb[1405.58] ub[1513.7] numArcs: [282064] numFixed: [33574] time: [2905]
+no rcc cuts found
+num vars: 249525
+STATS - lpIterations[56] lagIterations[0] sspIterations[0] numSeparations[2103] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[2972] lb[1405.95] ub[1513.7] numArcs: [283156] numFixed: [33631] time: [2975]
+no rcc cuts found
+num vars: 250439
+STATS - lpIterations[57] lagIterations[0] sspIterations[0] numSeparations[2134] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[3051] lb[1406.51] ub[1513.7] numArcs: [284348] numFixed: [33909] time: [3054]
+no rcc cuts found
+num vars: 250562
+STATS - lpIterations[58] lagIterations[0] sspIterations[0] numSeparations[2163] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[3131] lb[1407.02] ub[1513.7] numArcs: [285671] numFixed: [35109] time: [3134]
+no rcc cuts found
+num vars: 251515
+STATS - lpIterations[59] lagIterations[0] sspIterations[0] numSeparations[2193] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[3201] lb[1407.42] ub[1513.7] numArcs: [287081] numFixed: [35566] time: [3205]
+no rcc cuts found
+num vars: 251335
+STATS - lpIterations[60] lagIterations[0] sspIterations[0] numSeparations[2220] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[3277] lb[1407.96] ub[1513.7] numArcs: [288282] numFixed: [36947] time: [3280]
+no rcc cuts found
+num vars: 251819
+STATS - lpIterations[61] lagIterations[0] sspIterations[0] numSeparations[2248] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[3347] lb[1408.53] ub[1513.7] numArcs: [289296] numFixed: [37477] time: [3350]
+no rcc cuts found
+num vars: 252682
+STATS - lpIterations[62] lagIterations[0] sspIterations[0] numSeparations[2281] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[3423] lb[1409.01] ub[1513.7] numArcs: [290515] numFixed: [37833] time: [3427]
+no rcc cuts found
+num vars: 252855
+STATS - lpIterations[63] lagIterations[0] sspIterations[0] numSeparations[2309] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[3510] lb[1409.31] ub[1513.7] numArcs: [291869] numFixed: [39014] time: [3513]
+no rcc cuts found
+num vars: 254317
+STATS - lpIterations[64] lagIterations[0] sspIterations[0] numSeparations[2340] numCuts[30] compileTime[0] sspSolveTime[0] lpSolveTime[3595] lb[1409.61] ub[1513.7] numArcs: [293236] numFixed: [38919] time: [3599]
+no rcc cuts found
+num vars: 254984
