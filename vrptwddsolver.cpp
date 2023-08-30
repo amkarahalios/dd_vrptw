@@ -108,7 +108,7 @@ void VRPTWDDSolver::addRCCs(const std::vector<std::vector<int>>& routes, bool& c
       }
       if (load > vrptw.capacity)
       {
-        std::cout << "new capacity cutset: ";
+        std::cout << "new capacity cutset for relaxation: ";
         std::vector<int> cutSet;
         for (int loc : locations)
         {
@@ -317,10 +317,10 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
   {
     if (vrptw.oneOrMorePaths == OneOrMorePaths::ONE_PATH)
     {
-      //lambda.push_back((vrptw.distances[0][location] + vrptw.distances[location][0]) / 2.0);
       if (vrptw.instanceUpperBound < INF)
       {
-        lambda.push_back(vrptw.instanceUpperBound / vrptw.numLocations);
+        double splitUpperBound = vrptw.instanceUpperBound * 1.0 / vrptw.numLocations;
+        lambda.push_back(splitUpperBound);
       }
       else
       {
@@ -1036,14 +1036,14 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       // one path can only separate one at a time and likely needs many more iterations
       // so reset when progress slows down too much, because likely step size is too small
       // uses solution arcs
-      if (vrptw.oneOrMorePaths == OneOrMorePaths::ONE_PATH)
-      {
-        updateMultipliers(lambda, mu, combDuals, srcDuals, stepSizes, solutionArcs, lagrangeanLowerBound, numLagIterations);
-      }
-      else
-      {
-        updateMultipliers(lambda, mu, combDuals, srcDuals, stepSizes, solutionArcs, lagrangeanLowerBound, stats.numLagIterations);
-      }
+      //if (vrptw.oneOrMorePaths == OneOrMorePaths::ONE_PATH)
+      //{
+      //  updateMultipliers(lambda, mu, combDuals, srcDuals, stepSizes, solutionArcs, lagrangeanLowerBound, numLagIterations);
+      //}
+      //else
+      //{
+      updateMultipliers(lambda, mu, combDuals, srcDuals, stepSizes, solutionArcs, lagrangeanLowerBound, stats.numLagIterations);
+      //}
 
       // check for cycles up to certain size and add to be separated
       //if ((params.maxS > 1) && (stats.lpIterations >= 2) && isSeparationRound)
