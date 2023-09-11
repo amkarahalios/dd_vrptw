@@ -135,13 +135,12 @@ void VRPTWDDSolver::addRCCs(const std::vector<std::vector<int>>& routes, bool& c
   }
 }
 
-void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, bool& cutAdded)
+void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, int maxNumCuts, bool& cutAdded)
 {
   // Rounded Capacity Cuts
   char integerAndFeas = '0';
   double epsForViolation = 0.1;
   double maxViolation = 0.0;
-  int maxNoCuts = 10;
   CAPSEP_SeparateCapCuts(vrptw.numLocations-1,
                          &(vrptw.demandsForSeparation[0]),
                          vrptw.capacity,
@@ -150,7 +149,7 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
                          &(edgeHead[0]), // heads of edges
                          &(edgeFlow[0]), // flow value of edges
                          MyOldCutsCMP,
-                         maxNoCuts, // max cuts to be returned
+                         maxNumCuts, // max cuts to be returned
                          epsForIntegrality,
                          epsForViolation,
                          &integerAndFeas, // returned by method, 1 means int sol
@@ -158,7 +157,7 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
                          MyCutsCMP); // contains cut
   if (integerAndFeas)
   {
-    std::cout << "integral solution" << std::endl;
+    std::cout << "integral solution - no cut added" << std::endl;
 
     // may still need to add cut if we relaxed capacity constraint
     // want to check each route that it's under capacity
@@ -168,7 +167,7 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
   int numCuts = MyCutsCMP->Size;
   if (numCuts > 0)
   {
-    std::cout << "max violation: " << maxViolation << std::endl;
+    std::cout << "checking cuts, max violation: " << maxViolation << ", num cuts: " << numCuts << std::endl;
     cutAdded = true;
     for (int cutIndex=0; cutIndex<numCuts; ++cutIndex)
     {
@@ -375,7 +374,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         std::vector<double> emptySrc;
         if (params.useVariableFixing)
         {
-          routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, params.lpSolveType);
+          routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, bestMuArcFixing, emptyComb, emptySrc, bestLambdaLowerBound, params.lpSolveType);
         }
       }
 
@@ -447,7 +446,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         std::vector<int> edgeHead;
         std::vector<double> edgeFlow;
         routeDD.convertSolutionForVRPTWSep(edgeTail, edgeHead, edgeFlow);
-        addRCCs(edgeTail, edgeHead, edgeFlow, cutAdded);
+        addRCCs(edgeTail, edgeHead, edgeFlow, 100, cutAdded);
       }
 
       bool stopFindingInfeasibilities = false;
@@ -915,10 +914,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       double percentFixed = 0.0;
       if (params.useVariableFixing && (bestLambdaLowerBound > 0.001))
       {
-        std::vector<double> emptyMu;
         std::vector<double> emptyComb;
         std::vector<double> emptySrc;
-        routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, emptyMu, emptyComb, emptySrc, bestLambdaLowerBound, params.lpSolveType);
+        routeDD.fixArcs(bestLambdaArcFixing, bestSinglePathDualFixing, bestMuArcFixing, emptyComb, emptySrc, bestLambdaLowerBound, params.lpSolveType);
       }
 
       int notMuSSPSeconds = 0;
@@ -1028,7 +1026,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       // get primal solution
       std::set<int> solutionArcs;
       routeDD.getSolutionArcs(solutionArcs);
-      if ((stats.lpIterations >= 2) && params.useCuts)
+      if (params.useCuts)
       {
         xDecompositions.push_back(solutionArcs);
       }
@@ -1097,6 +1095,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
           {
             bestLambdaArcFixing[index] = repairedLambda[index];
           }
+          for (int index=0; index<mu.size(); ++index)
+          {
+            bestMuArcFixing[index] = mu[index];
+          }
         }
 
         double checkLambdaLB = 0.0;
@@ -1136,6 +1138,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
               for (int index=0; index<lambda.size(); ++index)
               {
                 bestLambdaArcFixing[index] = repairedLambda[index];
+              }
+              for (int index=0; index<mu.size(); ++index)
+              {
+                bestMuArcFixing[index] = mu[index];
               }
             }
           }
@@ -1201,6 +1207,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
               {
                 bestLambdaArcFixing[index] = repairedLambda[index];
               }
+              for (int index=0; index<mu.size(); ++index)
+              {
+                bestMuArcFixing[index] = mu[index];
+              }
             }
           }
         }
@@ -1236,8 +1246,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       }
     }
 
-    // add cutting planes at the end of 2
-    if (shouldTerminate && params.useCuts && (stats.lpIterations >= 2))
+    if (shouldTerminate && params.useCuts)
     {
       // for Rounded Capacity Cuts
       bool cutAdded = false;
@@ -1245,8 +1254,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<int> edgeHead;
       std::vector<double> edgeFlow;
       convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow);
-      addRCCs(edgeTail, edgeHead, edgeFlow, cutAdded);
+      addRCCs(edgeTail, edgeHead, edgeFlow, 5, cutAdded);
       mu.resize(routeDD.getNumCapCuts());
+      bestMuArcFixing.resize(mu.size());
 
       // Strengthened Combs
       addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
@@ -1261,9 +1271,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       xDecompositions.clear();
       stepSizes.clear();
       */
-
-      // should we reset iteration count when we add more dual variables?
-      numLagIterations = 0;
     }
     infeasibleRoutes.clear();
   }
