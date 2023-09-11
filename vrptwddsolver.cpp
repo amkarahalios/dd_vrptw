@@ -1259,8 +1259,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       bestMuArcFixing.resize(mu.size());
 
       // Strengthened Combs
-      addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
-      combDuals.resize(routeDD.getNumCombCuts());
+      //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
+      //combDuals.resize(routeDD.getNumCombCuts());
 
       // for Subset Row Cuts add right away during cut rounds
       // dont add for X was taking too long
