@@ -1268,9 +1268,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       /*
       routeDD.findSRCThree(xDecompositions, stepSizes, cutAdded);
       addSRCCuts(srcDuals);
+      */
       xDecompositions.clear();
       stepSizes.clear();
-      */
     }
     infeasibleRoutes.clear();
   }
