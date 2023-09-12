@@ -84,6 +84,7 @@ class VRPTWDDSolver
     bool solveLagrangeanRelaxation(std::vector<double>& lambda, double& singlePathDual, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& muSRC);
 
     void updateMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<double>& stepSizes, const std::set<int>& solutionArcs, double lagrangeanLowerBound, int iteration);
+    void printMultipliers(std::vector<double>& lambda, std::vector<double>& mu);
 
     VRPTW vrptw;
     VRPTWDecisionDiagram routeDD;

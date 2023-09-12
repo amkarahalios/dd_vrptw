@@ -733,6 +733,21 @@ bool VRPTWDDSolver::solveLPCG(std::vector<double>& lambda, double& singlePathDua
   return true;
 };
 
+void VRPTWDDSolver::printMultipliers(std::vector<double>& lambda, std::vector<double>& mu)
+{
+  for (double l : lambda)
+  {
+    std::cout << l << ",";
+  }
+  std::cout << std::endl;
+
+  for (double m : mu)
+  {
+    std::cout << m << ",";
+  }
+  std::cout << std::endl;
+}
+
 void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<double>& stepSizes, const std::set<int>& solutionArcs, double lagrangeanLowerBound, int k)
 {
   // get values of LHS for all dualized inequalities
@@ -770,7 +785,7 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   {
     int gammaIndex = i + vrptw.numLocations;
     gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
-    if ((mu[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
+    if ((mu[i] <= 0.000001) && (gamma[gammaIndex] <= 0.000001))
     {
       continue;
     }
@@ -819,37 +834,9 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   // alpha_(k) = (psi_(star) - psi(lambda(k))) / ||gamma_(k)||_(2)^2
   double alpha = (psiStar - lagrangeanLowerBound) / normGammaSquared;
   stepSizes.push_back(alpha);
-
-  DBG(
   std::cout << "alpha: " << alpha << std::endl;
-  for (double g : gamma)
-  {
-    std::cout << g << ",";
-  }
-  std::cout << std::endl;
 
-  for (double l : lambda)
-  {
-    std::cout << l << ",";
-  }
-  std::cout << std::endl;
-
-  for (double m : mu)
-  {
-    std::cout << m << ",";
-  }
-  std::cout << std::endl;
-
-  for (double s : srcDuals)
-  {
-    std::cout << s << ",";
-  }
-  std::cout << std::endl;
-  for (double c : combDuals)
-  {
-    std::cout << c << ",";
-  }
-  std::cout << std::endl;)
+  DBG(printMultipliers(lambda, mu);)
 
   // lambda_(k+1) = lambda_(k) + alpha_(k) * gamma_(k)
   for (int i=1; i<vrptw.numLocations; ++i)
@@ -1021,6 +1008,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         {
           bestLambda[index] = lambda[index];
         }
+        printMultipliers(lambda, mu);
       }
 
       // get primal solution
