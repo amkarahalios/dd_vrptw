@@ -33,6 +33,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "percent fixed to change to CPLEX: " << params.percentFixedToChangeToCPLEX << std::endl;
   std::cout << "num arcs to change to CPLEX: " << params.numArcsToChangeToCPLEX << std::endl;
   std::cout << "num arcs to change to LAG: " << params.numArcsToChangeToLAG << std::endl;
+  std::cout << "num lag iters to cut: " << params.numLagItersForCuts << std::endl;
 
   if ((params.lpSolveType == LPSolveType::LPSolver) && (routeDD.getArcs().size() >= params.numArcsToChangeToLAG))
   {
@@ -1187,6 +1188,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
             {
               stats.lowerBound = repairedBound;
               stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
+              printMultipliers(lambda, mu);
             }
 
             percentFixed = routeDD.fixArcs(repairedLambda, singlePathDual, mu, combDuals, srcDuals, repairedBound, params.lpSolveType);
@@ -1235,6 +1237,24 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
           //routeDD.checkLRC121SolutionPossible();
         }
       }
+    }
+
+    // add cuts if specified
+    if (!shouldTerminate && (params.numLagItersForCuts != 0) && (stats.numLagIterations % params.numLagItersForCuts == 0))
+    {
+      // for Rounded Capacity Cuts
+      bool cutAdded = false;
+      std::vector<int> edgeTail;
+      std::vector<int> edgeHead;
+      std::vector<double> edgeFlow;
+      convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow);
+      addRCCs(edgeTail, edgeHead, edgeFlow, 1, cutAdded);
+
+      mu.resize(routeDD.getNumCapCuts());
+      bestMuArcFixing.resize(mu.size());
+
+      xDecompositions.clear();
+      stepSizes.clear();
     }
 
     if (shouldTerminate && params.useCuts)

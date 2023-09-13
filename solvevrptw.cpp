@@ -174,6 +174,10 @@ int main(int argc, char** argv)
           {
             params.numArcsToChangeToLAG = std::stoi(paramValueString);
           }
+          else if (lineIndex == 14)
+          {
+            params.numLagItersForCuts = std::stoi(paramValueString);
+          }
         }
         wordIndex = wordIndex + 1;
       }
