@@ -206,9 +206,9 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
         cutSets.push_back(cutSetAsSet);
         routeDD.addCapCutSet(cutSet);
         routeDD.addCapCutSetRHS(RHS);
+        stats.numCuts = stats.numCuts + 1;
       }
     }
-    stats.numCuts = stats.numCuts + numCuts;
 
     for (int cutIndex=0; cutIndex<numCuts; ++cutIndex)
     {
