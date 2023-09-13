@@ -170,6 +170,7 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
   {
     std::cout << "checking cuts, max violation: " << maxViolation << ", num cuts: " << numCuts << std::endl;
     cutAdded = true;
+    std::vector<std::set<int>> cutSets;
     for (int cutIndex=0; cutIndex<numCuts; ++cutIndex)
     {
       std::cout << "new capacity cutset: ";
@@ -184,8 +185,28 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
       double RHS = MyCutsCMP->CPL[cutIndex]->RHS;
       std::cout << "<= " << RHS << std::endl;
 
-      routeDD.addCapCutSet(cutSet);
-      routeDD.addCapCutSetRHS(RHS);
+      // ensure we don't add families all together, as this negatively affects subgradient descent
+      bool inFamily = false;
+      for (int index=0; index<cutSets.size(); ++index)
+      {
+        auto referenceCutSet = cutSets[index];
+        if (std::includes(cutSet.begin(), cutSet.end(), referenceCutSet.begin(), referenceCutSet.end()))
+        {
+          inFamily = true;
+        }
+      }
+
+      if (inFamily)
+      {
+        std::cout << "nested set, do not add" << std::endl;
+      }
+      else
+      {
+        std::set<int> cutSetAsSet(cutSet.begin(), cutSet.end());
+        cutSets.push_back(cutSetAsSet);
+        routeDD.addCapCutSet(cutSet);
+        routeDD.addCapCutSetRHS(RHS);
+      }
     }
     stats.numCuts = stats.numCuts + numCuts;
 
@@ -1248,7 +1269,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<int> edgeHead;
       std::vector<double> edgeFlow;
       convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow);
-      addRCCs(edgeTail, edgeHead, edgeFlow, 1, cutAdded);
+      addRCCs(edgeTail, edgeHead, edgeFlow, 100, cutAdded);
 
       mu.resize(routeDD.getNumCapCuts());
       bestMuArcFixing.resize(mu.size());
@@ -1265,7 +1286,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<int> edgeHead;
       std::vector<double> edgeFlow;
       convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow);
-      addRCCs(edgeTail, edgeHead, edgeFlow, 5, cutAdded);
+      addRCCs(edgeTail, edgeHead, edgeFlow, 100, cutAdded);
       mu.resize(routeDD.getNumCapCuts());
       bestMuArcFixing.resize(mu.size());
 
