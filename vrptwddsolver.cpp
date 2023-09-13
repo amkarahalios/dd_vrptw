@@ -735,12 +735,14 @@ bool VRPTWDDSolver::solveLPCG(std::vector<double>& lambda, double& singlePathDua
 
 void VRPTWDDSolver::printMultipliers(std::vector<double>& lambda, std::vector<double>& mu)
 {
+  std::cout << "lambda: ";
   for (double l : lambda)
   {
     std::cout << l << ",";
   }
   std::cout << std::endl;
 
+  std::cout << "mu: ";
   for (double m : mu)
   {
     std::cout << m << ",";
@@ -785,6 +787,7 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   {
     int gammaIndex = i + vrptw.numLocations;
     gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
+    std::cout << "rhs: " << routeDD.getCapCutSetRHS(i) << " cuts: " << cutValues[i] << std::endl;
     if ((mu[i] <= 0.000001) && (gamma[gammaIndex] <= 0.000001))
     {
       continue;
