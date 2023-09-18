@@ -125,6 +125,7 @@ struct VRPTWDDParameters
   int numArcsToChangeToCPLEX;
   int numArcsToChangeToLAG;
   int numLagItersForCuts;
+  int numLagCuts;
 };
 
 struct VRPTWSolution

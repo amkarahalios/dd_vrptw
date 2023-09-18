@@ -103,6 +103,9 @@ class VRPTWDDSolver
     CnstrMgrPointer MyCutsCMP;
     CnstrMgrPointer MyOldCutsCMP;
 
+    std::vector<int> cutTooSmallCounters;
+    std::set<int> deactivatedCuts;
+
     DDStats stats;
 };
 

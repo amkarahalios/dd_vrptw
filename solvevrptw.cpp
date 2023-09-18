@@ -178,6 +178,10 @@ int main(int argc, char** argv)
           {
             params.numLagItersForCuts = std::stoi(paramValueString);
           }
+          else if (lineIndex == 15)
+          {
+            params.numLagCuts = std::stoi(paramValueString);
+          }
         }
         wordIndex = wordIndex + 1;
       }

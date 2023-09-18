@@ -34,6 +34,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "num arcs to change to CPLEX: " << params.numArcsToChangeToCPLEX << std::endl;
   std::cout << "num arcs to change to LAG: " << params.numArcsToChangeToLAG << std::endl;
   std::cout << "num lag iters to cut: " << params.numLagItersForCuts << std::endl;
+  std::cout << "num cuts lag: " << params.numLagCuts << std::endl;
 
   if ((params.lpSolveType == LPSolveType::LPSolver) && (routeDD.getArcs().size() >= params.numArcsToChangeToLAG))
   {
@@ -794,7 +795,7 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   for (int i=1; i<vrptw.numLocations; ++i)
   {
     gamma[i] = 1 - locationsCovered[i];
-    if ((lambda[i] <= 0.000001) && (gamma[i] <= 0.000001))
+    if ((lambda[i] <= 0.000001) && (gamma[i] <= 0))
     {
       continue;
     }
@@ -808,15 +809,23 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   for (int i=0; i<mu.size(); ++i)
   {
     int gammaIndex = i + vrptw.numLocations;
-    gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
-    std::cout << "rhs: " << routeDD.getCapCutSetRHS(i) << " cuts: " << cutValues[i] << std::endl;
-    if ((mu[i] <= 0.000001) && (gamma[gammaIndex] <= 0.000001))
+    if (deactivatedCuts.find(i) == deactivatedCuts.end())
     {
-      continue;
+      gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
+      std::cout << "rhs: " << routeDD.getCapCutSetRHS(i) << " cuts: " << cutValues[i] << std::endl;
+      if ((mu[i] <= 0.1) && (gamma[gammaIndex] <= 0))
+      {
+        continue;
+      }
+      else
+      {
+        normGammaSquared += std::pow(gamma[gammaIndex], 2);
+      }
     }
     else
     {
-      normGammaSquared += std::pow(gamma[gammaIndex], 2);
+      mu[i] = 0;
+      gamma[gammaIndex] = 0;
     }
   }
 
@@ -885,6 +894,24 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   for (int i=0; i<combDuals.size(); ++i)
   {
     combDuals[i] = std::max(0.0, combDuals[i] + alpha * gamma[i+vrptw.numLocations+mu.size()+srcDuals.size()]);
+  }
+
+  // remove if too small for too long
+  for (int muIndex=0; muIndex<mu.size(); ++muIndex)
+  {
+    if (mu[muIndex] < 0.5)
+    {
+      cutTooSmallCounters[muIndex] = cutTooSmallCounters[muIndex] + 1;
+      if (cutTooSmallCounters[muIndex] > 20)
+      {
+        std::cout << "deactivated cut at index: " << muIndex << std::endl;
+        deactivatedCuts.insert(muIndex);
+      }
+    }
+    else
+    {
+      cutTooSmallCounters[muIndex] = 0;
+    }
   }
 };
 
@@ -1269,10 +1296,11 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<int> edgeHead;
       std::vector<double> edgeFlow;
       convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow);
-      addRCCs(edgeTail, edgeHead, edgeFlow, 100, cutAdded);
+      addRCCs(edgeTail, edgeHead, edgeFlow, params.numLagCuts, cutAdded);
 
       mu.resize(routeDD.getNumCapCuts());
       bestMuArcFixing.resize(mu.size());
+      cutTooSmallCounters.resize(mu.size());
 
       xDecompositions.clear();
       stepSizes.clear();
@@ -1286,9 +1314,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<int> edgeHead;
       std::vector<double> edgeFlow;
       convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow);
-      addRCCs(edgeTail, edgeHead, edgeFlow, 100, cutAdded);
+      addRCCs(edgeTail, edgeHead, edgeFlow, params.numLagCuts, cutAdded);
       mu.resize(routeDD.getNumCapCuts());
       bestMuArcFixing.resize(mu.size());
+      cutTooSmallCounters.resize(mu.size());
 
       // Strengthened Combs
       //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
