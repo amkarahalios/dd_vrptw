@@ -814,17 +814,18 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
       // problem: even with one cut introduced, the RHS - cutValues can be huge
       // problem cont: so the mu goes up a bunch, then back to 0, then up a bunch, etc.
       // idea: cap the gradient size
+      double gammaCap = 2.0;
       gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
       std::cout << "rhs: " << routeDD.getCapCutSetRHS(i) << " cuts: " << cutValues[i] << std::endl;
       if (gamma[gammaIndex] > 0)
       {
-        gamma[gammaIndex] = std::min(gamma[gammaIndex],5.0);
-        std::cout << "gamma for index " << i << "capped to 5" << std::endl;
+        gamma[gammaIndex] = std::min(gamma[gammaIndex], gammaCap);
+        std::cout << "gamma for index " << i << " capped to " << gammaCap << std::endl;
       }
       else
       {
-        gamma[gammaIndex] = std::max(gamma[gammaIndex],-5.0);
-        std::cout << "gamma for index " << i << "capped to -5" << std::endl;
+        gamma[gammaIndex] = std::max(gamma[gammaIndex], -1 * gammaCap);
+        std::cout << "gamma for index " << i << " capped to -" << gammaCap << std::endl;
       }
 
       if ((mu[i] <= 0.1) && (gamma[gammaIndex] <= 0))
