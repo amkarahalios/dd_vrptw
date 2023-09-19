@@ -914,18 +914,21 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   // remove if too small for too long
   for (int muIndex=0; muIndex<mu.size(); ++muIndex)
   {
-    if (mu[muIndex] < 0.5)
+    if (deactivatedCuts.find(muIndex) == deactivatedCuts.end())
     {
-      cutTooSmallCounters[muIndex] = cutTooSmallCounters[muIndex] + 1;
-      if (cutTooSmallCounters[muIndex] > 20)
+      if (mu[muIndex] < 0.5)
       {
-        std::cout << "deactivated cut at index: " << muIndex << std::endl;
-        deactivatedCuts.insert(muIndex);
+        cutTooSmallCounters[muIndex] = cutTooSmallCounters[muIndex] + 1;
+        if (cutTooSmallCounters[muIndex] > 20)
+        {
+          std::cout << "deactivated cut at index: " << muIndex << std::endl;
+          deactivatedCuts.insert(muIndex);
+        }
       }
-    }
-    else
-    {
-      cutTooSmallCounters[muIndex] = 0;
+      else
+      {
+        cutTooSmallCounters[muIndex] = 0;
+      }
     }
   }
 };
