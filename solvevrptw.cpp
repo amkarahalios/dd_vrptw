@@ -190,6 +190,14 @@ int main(int argc, char** argv)
               params.cutPhase = true;
             }
           }
+          else if (lineIndex == 17)
+          {
+            params.deactivateCutValueThreshold = std::stoi(paramValueString);
+          }
+          else if (lineIndex == 18)
+          {
+            params.deactivateCutIterThreshold = std::stoi(paramValueString);
+          }
         }
         wordIndex = wordIndex + 1;
       }

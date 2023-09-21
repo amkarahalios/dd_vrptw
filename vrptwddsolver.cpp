@@ -36,6 +36,8 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "num lag iters to cut: " << params.numLagItersForCuts << std::endl;
   std::cout << "num cuts lag: " << params.numLagCuts << std::endl;
   std::cout << "cut phase: " << params.cutPhase << std::endl;
+  std::cout << "deactivate cut value threshold: " << params.deactivateCutValueThreshold << std::endl;
+  std::cout << "deactivate cut iter threshold: " << params.deactivateCutIterThreshold << std::endl;
 
   if ((params.lpSolveType == LPSolveType::LPSolver) && (routeDD.getArcs().size() >= params.numArcsToChangeToLAG))
   {
@@ -917,10 +919,10 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   {
     if (deactivatedCuts.find(muIndex) == deactivatedCuts.end())
     {
-      if (mu[muIndex] < 0.5)
+      if (mu[muIndex] < params.deactivateCutValueThreshold)
       {
         cutTooSmallCounters[muIndex] = cutTooSmallCounters[muIndex] + 1;
-        if (cutTooSmallCounters[muIndex] > 20)
+        if (cutTooSmallCounters[muIndex] > params.deactivateCutIterThreshold)
         {
           std::cout << "deactivated cut at index: " << muIndex << std::endl;
           deactivatedCuts.insert(muIndex);
