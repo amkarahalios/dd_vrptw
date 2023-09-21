@@ -126,6 +126,7 @@ struct VRPTWDDParameters
   int numArcsToChangeToLAG;
   int numLagItersForCuts;
   int numLagCuts;
+  bool cutPhase;
 };
 
 struct VRPTWSolution

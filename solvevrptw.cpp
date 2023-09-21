@@ -182,6 +182,14 @@ int main(int argc, char** argv)
           {
             params.numLagCuts = std::stoi(paramValueString);
           }
+          else if (lineIndex == 16)
+          {
+            params.cutPhase = false;
+            if (paramValueString == "Y")
+            {
+              params.cutPhase = true;
+            }
+          }
         }
         wordIndex = wordIndex + 1;
       }

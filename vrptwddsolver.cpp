@@ -35,6 +35,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "num arcs to change to LAG: " << params.numArcsToChangeToLAG << std::endl;
   std::cout << "num lag iters to cut: " << params.numLagItersForCuts << std::endl;
   std::cout << "num cuts lag: " << params.numLagCuts << std::endl;
+  std::cout << "cut phase: " << params.cutPhase << std::endl;
 
   if ((params.lpSolveType == LPSolveType::LPSolver) && (routeDD.getArcs().size() >= params.numArcsToChangeToLAG))
   {
@@ -1294,6 +1295,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         infeasibleRoutes.clear();
       }
 
+      // stop separating after first lag termination
+      if (params.cutPhase && (stats.lpIterations > 1))
+      {
+        infeasibleRoutes.clear();
+      }
+
       for (auto infeasibleRouteToSeparate : infeasibleRoutes)
       {
         if (routeDD.doesRouteExistByArcs(infeasibleRouteToSeparate))
@@ -1324,7 +1331,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       stepSizes.clear();
     }
 
-    if (shouldTerminate && params.useCuts)
+    if (shouldTerminate && params.useCuts && (!params.cutPhase || (stats.lpIterations > 1)))
     {
       // for Rounded Capacity Cuts
       bool cutAdded = false;
