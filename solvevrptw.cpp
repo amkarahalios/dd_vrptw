@@ -192,7 +192,7 @@ int main(int argc, char** argv)
           }
           else if (lineIndex == 17)
           {
-            params.deactivateCutValueThreshold = std::stoi(paramValueString);
+            params.deactivateCutValueThreshold = std::stod(paramValueString);
           }
           else if (lineIndex == 18)
           {
