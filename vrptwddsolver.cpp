@@ -48,6 +48,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
 
   // set best lambda lower bound to 0
   bestLambdaLowerBound = 0.0;
+  bestLambdaPercentFixed = 0.0;
 
   CMGR_CreateCMgr(&MyCutsCMP,Dim);
   CMGR_CreateCMgr(&MyOldCutsCMP,Dim);
@@ -1150,6 +1151,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         }
         if (percentFixed > bestLambdaPercentFixed)
         {
+          std::cout << "updating best lambda" << std::endl;
           bestLambdaPercentFixed = percentFixed;
           bestLambdaLowerBound = lagrangeanLowerBound;
           for (int index=0; index<lambda.size(); ++index)
@@ -1193,6 +1195,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
             percentFixed = routeDD.fixArcs(repairedLambda, singlePathDual, mu, combDuals, srcDuals, repairedBound, params.lpSolveType);
             if (percentFixed > bestLambdaPercentFixed)
             {
+              std::cout << "updating best lambda" << std::endl;
               bestLambdaPercentFixed = percentFixed;
               bestLambdaLowerBound = repairedBound;
               bestSinglePathDualFixing = singlePathDual;
@@ -1263,6 +1266,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
             percentFixed = routeDD.fixArcs(repairedLambda, singlePathDual, mu, combDuals, srcDuals, repairedBound, params.lpSolveType);
             if (percentFixed > bestLambdaPercentFixed)
             {
+              std::cout << "updating best lambda" << std::endl;
               bestLambdaPercentFixed = percentFixed;
               bestLambdaLowerBound = repairedBound;
               for (int index=0; index<lambda.size(); ++index)
