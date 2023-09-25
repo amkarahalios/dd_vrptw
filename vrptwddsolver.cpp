@@ -38,6 +38,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "cut phase: " << params.cutPhase << std::endl;
   std::cout << "deactivate cut value threshold: " << params.deactivateCutValueThreshold << std::endl;
   std::cout << "deactivate cut iter threshold: " << params.deactivateCutIterThreshold << std::endl;
+  std::cout << "momentum beta: " << params.momentumBeta << std::endl;
 
   if ((params.lpSolveType == LPSolveType::LPSolver) && (routeDD.getArcs().size() >= params.numArcsToChangeToLAG))
   {
@@ -363,6 +364,8 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
   double bestLPValue = 0.0;
   bestLambdaArcFixing.resize(lambda.size());
   bestLambda.resize(lambda.size());
+  previousLambdaMomentum = lambda;
+
   double singlePathDual = 0.0;
   std::vector<double> mu;
   std::vector<double> combDuals;
@@ -894,7 +897,14 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   // lambda_(k+1) = lambda_(k) + alpha_(k) * gamma_(k)
   for (int i=1; i<vrptw.numLocations; ++i)
   {
+    previousLambdaMomentum[i] = lambda[i];
     lambda[i] = std::max(0.0, lambda[i] + alpha * gamma[i]);
+
+    // beta for momentum / heavy ball method
+    if (params.cutPhase && (stats.lpIterations > 1))
+    {
+      lambda[i] = std::max(0.0, lambda[i] + params.momentumBeta * (lambda[i] - previousLambdaMomentum[i]));
+    }
   }
 
   // same for mu

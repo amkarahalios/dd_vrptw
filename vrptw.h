@@ -129,6 +129,7 @@ struct VRPTWDDParameters
   bool cutPhase;
   double deactivateCutValueThreshold;
   int deactivateCutIterThreshold;
+  double momentumBeta;
 };
 
 struct VRPTWSolution

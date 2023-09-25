@@ -198,6 +198,10 @@ int main(int argc, char** argv)
           {
             params.deactivateCutIterThreshold = std::stoi(paramValueString);
           }
+          else if (lineIndex == 19)
+          {
+            params.momentumBeta = std::stod(paramValueString);
+          }
         }
         wordIndex = wordIndex + 1;
       }

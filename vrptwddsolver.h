@@ -98,6 +98,8 @@ class VRPTWDDSolver
     double bestLambdaLowerBound;
     std::vector<double> bestLambda;
 
+    std::vector<double> previousLambdaMomentum;
+
     int Dim = 100;
     double epsForIntegrality = 0.0001;
     CnstrMgrPointer MyCutsCMP;
