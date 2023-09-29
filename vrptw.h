@@ -127,9 +127,11 @@ struct VRPTWDDParameters
   int numLagItersForCuts;
   int numLagCuts;
   bool cutPhase;
+
   double deactivateCutValueThreshold;
   int deactivateCutIterThreshold;
   double momentumBeta;
+  double stallAlphaFactor;
 };
 
 struct VRPTWSolution

@@ -202,6 +202,10 @@ int main(int argc, char** argv)
           {
             params.momentumBeta = std::stod(paramValueString);
           }
+          else if (lineIndex == 20)
+          {
+            params.stallAlphaFactor = std::stod(paramValueString);
+          }
         }
         wordIndex = wordIndex + 1;
       }
