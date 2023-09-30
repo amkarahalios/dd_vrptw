@@ -39,6 +39,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "deactivate cut value threshold: " << params.deactivateCutValueThreshold << std::endl;
   std::cout << "deactivate cut iter threshold: " << params.deactivateCutIterThreshold << std::endl;
   std::cout << "momentum beta: " << params.momentumBeta << std::endl;
+  std::cout << "stall alpha factor: " << params.stallAlphaFactor << std::endl;
 
   if ((params.lpSolveType == LPSolveType::LPSolver) && (routeDD.getArcs().size() >= params.numArcsToChangeToLAG))
   {
@@ -51,6 +52,10 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   bestLambdaLowerBound = 0.0;
   bestLambdaPercentFixed = 0.0;
   bestSinglePathDualFixing = 0.0;
+  alphaFactor = 1.0;
+  lambdaStore.resize(lambdaStoreSize);
+  singlePathStore.resize(lambdaStoreSize);
+  lambdaLowerBoundStore.resize(lambdaStoreSize);
 
   CMGR_CreateCMgr(&MyCutsCMP,Dim);
   CMGR_CreateCMgr(&MyOldCutsCMP,Dim);
@@ -890,6 +895,9 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
 
   // alpha_(k) = (psi_(star) - psi(lambda(k))) / ||gamma_(k)||_(2)^2
   double alpha = (psiStar - lagrangeanLowerBound) / normGammaSquared;
+
+  // half step size when no progress
+  alpha = alpha * alphaFactor;
   stepSizes.push_back(alpha);
   std::cout << "alpha: " << alpha << std::endl;
 
@@ -958,6 +966,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
   double muLowerBound = 0.0;
   double currIterLowerBound = 0.0;
   int numLagIterations = 0;
+
+  double startingLowerBound = stats.lowerBound;
 
   // Need to decide when step size has gotten too small and need to 'restart'
   // When there is little progress, this method terminates and gets called again.
@@ -1159,6 +1169,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         if (params.useVariableFixing)
         {
           percentFixed = routeDD.fixArcs(repairedLambda, singlePathDual, mu, combDuals, srcDuals, lagrangeanLowerBound, params.lpSolveType);
+          //int indexToStore = stats.lagIterations % lambdaStoreSize;
+          //lambdaStore[] = repairedLambda;
+          //singlePathStore[] = singlePathDual;
+          //lambdaLowerBoundStore[] = lagrangeanLowerBound;
         }
         if (percentFixed > bestLambdaPercentFixed)
         {
@@ -1376,6 +1390,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       stepSizes.clear();
     }
     infeasibleRoutes.clear();
+  }
+
+  if (stats.lowerBound < startingLowerBound + 0.01)
+  {
+    alphaFactor = alphaFactor / 2;
+    std::cout << "halving alphaFactor: " << alphaFactor << std::endl;
   }
 
   return true;

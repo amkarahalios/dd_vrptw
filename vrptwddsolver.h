@@ -99,9 +99,14 @@ class VRPTWDDSolver
     std::vector<double> bestLambda;
 
     std::vector<double> previousLambdaMomentum;
+    double alphaFactor;
+    std::vector<std::vector<double>> lambdaStore;
+    std::vector<double> singlePathStore;
+    std::vector<double> lambdaLowerBoundStore;
 
     int Dim = 100;
     double epsForIntegrality = 0.0001;
+    int lambdaStoreSize = 10;
     CnstrMgrPointer MyCutsCMP;
     CnstrMgrPointer MyOldCutsCMP;
 
