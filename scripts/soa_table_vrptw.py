@@ -696,6 +696,35 @@ for test in test_set:
       result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'lagIterations': numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'numArcs': numpy.nan, 'numFixed': numpy.nan, 'time' : numpy.nan}
       results.append(result)
 
+# add VrpSolver to results and time_results
+#statistics_cols: instance & :Optimal & cutoff & :bcRecRootDb & :bcTimeRootEval & :bcCountNodeProc & :bcRecBestDb & :bcRecBestInc & :bcTimeMain \\
+#statistics: C2_2_1 & 1 & 1922.2 & 1922.10 & 228.49 & 1 & 1922.10 & 1922.10 & 228.50 \\
+vrpsolver_pattern = re.compile('statistics: ([A-Z]+.*[0-9]) & [0-9] & [0-9]+.* & [0-9]+.* & [0-9]+.* & ([0-9]+) & ([0-9]+.*) & ([0-9]+.*) & ([0-9]+.*) \\.*')
+
+vrpsolver_results = {}
+logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/VrpSolver/"
+log_names = ['results200', 'results400', 'results600', 'results800', 'results1000']
+for test in test_set:
+  for log_name in log_names:
+    log_file_name = logs_dir + '/' + log_name + '.log'
+    if not os.path.exists(log_file_name):
+      continue
+
+    log_file = open(log_file_name, "r")
+    for line in log_file:
+      match = vrpsolver_pattern.match(line)
+      if match:
+        # might need to update some names
+        instance = match.group(1)
+        instance = instance + '.vrptw'
+        instance = instance.replace('210','2_10')
+        instance = instance.replace('410','4_10')
+        num_nodes = int(match.group(2))
+        lb = float(match.group(3))
+        ub = float(match.group(4))
+        time = float(match.group(5))
+        vrpsolver_results[instance] = (num_nodes, lb, ub, time)
+
 # give table of results
 results_df = pandas.DataFrame(results)
 results_df.sort_values(by=['instance','lb'],inplace=True)
@@ -714,6 +743,8 @@ for instance in instances:
       num_locations = split_line[0]
   instance_num_locations[instance] = num_locations
 
+print(vrpsolver_results)
+
 # create output table for SOA comparison
 for i, row in table_results_df.iterrows():
   instance = row['instance']
@@ -722,6 +753,8 @@ for i, row in table_results_df.iterrows():
   lb_value = row['lb']
   if not math.isnan(lb_value):
     lb_value = float(lb_value)
+  else:
+    lb_value = 0
 
   numArcs = row['numArcs']
   if not math.isnan(numArcs):
@@ -731,18 +764,40 @@ for i, row in table_results_df.iterrows():
   if not math.isnan(time):
     time = int(time)
 
+  if lb_value < instance_upper_bounds[instance]:
+    time = 3600
+
   numLpIterations = row['iterations']
   if not math.isnan(numLpIterations):
     numLpIterations = int(numLpIterations)
+  else:
+    numLpIterations = '-'
  
   numLagIterations = row['lagIterations']
   if not math.isnan(numLagIterations):
     numLagIterations = int(numLagIterations)
+  else:
+    numLagIterations = '-'
 
   numSeparations = row['numSep']
   if not math.isnan(numSeparations):
     numSeparations = int(numSeparations)
+  else:
+    numSeparations = '-'
 
-  gap = round((instance_upper_bounds[instance] - lb_value) * 100.0 / instance_upper_bounds[instance], 1)
+  #gap = round((instance_upper_bounds[instance] - lb_value) * 100.0 / instance_upper_bounds[instance], 1)
+  if instance in vrpsolver_results.keys():
+    vrpsolver_result = vrpsolver_results[instance]
+    vrpsolver_num_nodes = vrpsolver_result[0]
+    vrpsolver_lb = vrpsolver_result[1]
+    #vrpsolver_ub = vrpsolver_result[2]
+    vrpsolver_time = int(vrpsolver_result[3])
+  else:
+    vrpsolver_num_nodes = '-'
+    vrpsolver_lb = '-'
+    #vrpsolver_ub = vrpsolver_result[1]
 
-  print(f"{instance_name} & {instance_num_locations[instance]} & {instance_upper_bounds[instance]} & {lb_value} & {gap} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+  if (vrpsolver_lb == '-') or (vrpsolver_lb < instance_upper_bounds[instance]):
+    vrpsolver_time = 3600
+
+  print(f"{instance_name} & {instance_upper_bounds[instance]} & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")

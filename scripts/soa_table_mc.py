@@ -15,7 +15,7 @@ instance_upper_bounds = {
 "COG-atlanta-ip.mcol":15,
 "COG-cap6000.mcol":14,
 "COG-ds.mcol":500,
-"COG-gesa2-o.mcol":12,
+"COG-gesa2-o.mcol":13,
 "COG-misc07.mcol":39,
 "COG-mkc.mcol":169,
 "COG-mod011.mcol":13,

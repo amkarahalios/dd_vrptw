@@ -736,14 +736,17 @@ test_set = ["col_elim_hg_lag_ng_2_50_N_3600",
             "Vrp-Set-HG_LAG_NG2",
             "Vrp-Long-Run_LAG_NG2_20000",
             "Vrp-Long-Long-Run_LAG_NG2_86400",
-            "Vrp-Long-Long-Run_LAG_NG2_172800"]
+            "Vrp-Long-Long-Run_LAG_NG2_172800",
+            "Vrp-Long-Long-Run_LAG_NG2_cuts_phase_172800",
+            "Vrp-Long-Long-Long-Run_LAG_NG2_alpha_factor_345600"]
 
 instances = []
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/ALL_sop/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/SolomonPotvinBengio/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Run/"
-instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Long-Run/"
+#instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Long-Run/"
+instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Long-Long-Run/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/X100200/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG-C12-124/"
 #instance_dir = "/Users/akarahal/Desktop/dd_graph_color/instances/"
@@ -960,7 +963,7 @@ if experiment2:
   #                    "col_elim_sop_lp_ng_8_50_N_3600"]
   tests_to_compare = ['Vrp-Set-HG_LAG_NG2']
   #tests_to_compare = ['Vrp-Long-Run_LAG_NG2_20000']
-  tests_to_compare = ['Vrp-Long-Long-Run_LAG_NG2_86400','Vrp-Long-Long-Run_LAG_NG2_172800']
+  tests_to_compare = ['Vrp-Long-Long-Run_LAG_NG2_86400','Vrp-Long-Long-Run_LAG_NG2_172800','Vrp-Long-Long-Run_LAG_NG2_cuts_phase_172800', "Vrp-Long-Long-Long-Run_LAG_NG2_alpha_factor_345600"]
 
   #instances_to_consider = ["X-n327-k20.vrp","X-n344-k43.vrp","X-n359-k29.vrp","X-n367-k17.vrp","X-n480-k70.vrp","X-n502-k39.vrp","X-n561-k42.vrp","X-n573-k30.vrp","X-n801-k40.vrp","X-n957-k87.vrp"]
   instances_to_consider = instances
@@ -970,6 +973,8 @@ if experiment2:
     #time = list(range(0,7200,100))
     time = list(range(0,20000,100))
     time = list(range(0,86400,100))
+    time = list(range(0,172800,100))
+    time = list(range(0,345600,100))
     lbs = []
     labels = []
     instance_results = time_results_df[time_results_df['instance'] == instance]
