@@ -308,4 +308,15 @@ instance_upper_bounds = {
 "LRC2_10_10.pdp":29086
 }
 
-for key, val in instance_upper_bounds:
+num_dict = {200:2, 400:4, 600:6, 800:8, 1000:10}
+for num in num_dict:
+  substring = f"_{num_dict[num]}_"
+  file_name = f"lilim{num}.batch"
+  f = open(file_name, "w")
+  for instance in instance_upper_bounds:
+    if substring in instance:
+      upper_bound = instance_upper_bounds[instance]
+      string = f"/PDPTW/data/LiLim/{instance}.pdp --lilim -u {upper_bound} -o /PDPTW/sol/{instance}.sol -t /PDPTW/tex/{instance}./PDPTW/tex"
+
+      f.write(string)
+      f.write('\n')
