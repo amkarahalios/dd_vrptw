@@ -39,7 +39,7 @@ struct ColGenStats
 class VRPTWColGen
 {
   public:
-    VRPTWColGen(VRPTW vrptw, PricingProblemType pricingProblemType, InitialStateSpace initialStateSpace, int s);
+    VRPTWColGen(VRPTW vrptw, VRPTWDDParameters params, PricingProblemType pricingProblemType, InitialStateSpace initialStateSpace, int s);
 
     bool solve();
     ColGenStats getStats() { return stats; }

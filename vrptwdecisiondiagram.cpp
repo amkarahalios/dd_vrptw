@@ -110,6 +110,42 @@ void VRPTWArc::print() const
   std::cout << std::endl;
 }
 
+VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDParameters _params) : vrptw(_vrptw), params(_params)
+{
+  // default time and capacity step sizes
+  if (params.bucketsPerVertex <= 0)
+  {
+    timeStepSize = _vrptw.timeStateMultiplier * _vrptw.timeStateDiscretization;
+    capacityStepSize = 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()));
+    if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
+    {
+      capacityStepSize = 1;
+    }
+
+    if (vrptw.capacityDiscretization != 0)
+    {
+      capacityStepSize = vrptw.capacityDiscretization;
+    }
+  }
+  else
+  {
+    if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
+    {
+      double bucketStepSize = (vrptw.endTimes[0] - vrptw.startTimes[0]) * 1.0 / params.bucketsPerVertex;
+      timeStepSize = vrptw.timeStateMultiplier * bucketStepSize;
+      capacityStepSize = 1;
+    }
+    else
+    {
+      double bucketStepSize = (vrptw.endTimes[0] - vrptw.startTimes[0]) * 1.0 / std::sqrt(params.bucketsPerVertex);
+      timeStepSize = vrptw.timeStateMultiplier * bucketStepSize;
+
+      double bucketStepSize1 = vrptw.capacity * 1.0 / std::sqrt(params.bucketsPerVertex);
+      capacityStepSize = bucketStepSize1;
+    }
+  }
+};
+
 void VRPTWDecisionDiagram::print() const
 {
   std::cout << std::endl << "digraph D {" << std::endl;

@@ -132,6 +132,8 @@ struct VRPTWDDParameters
   int deactivateCutIterThreshold;
   double momentumBeta;
   double stallAlphaFactor;
+
+  int bucketsPerVertex;
 };
 
 struct VRPTWSolution

@@ -65,7 +65,8 @@ int main(int argc, char** argv)
     std::string sValue = argv[5];
     int s = std::stoi(sValue);
 
-    VRPTWColGen colGenModel(vrptw, pricingProblemType, initialStateSpace, s);
+    VRPTWDDParameters params;
+    VRPTWColGen colGenModel(vrptw, params, pricingProblemType, initialStateSpace, s);
     bool solved = colGenModel.solve();
   }
   else if (solverName == "COL_ELIM")
@@ -205,6 +206,10 @@ int main(int argc, char** argv)
           else if (lineIndex == 20)
           {
             params.stallAlphaFactor = std::stod(paramValueString);
+          }
+          else if (lineIndex == 21)
+          {
+            params.bucketsPerVertex = std::stoi(paramValueString);
           }
         }
         wordIndex = wordIndex + 1;

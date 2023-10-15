@@ -137,18 +137,7 @@ struct VRPTWArc
 class VRPTWDecisionDiagram
 {
   public:
-    VRPTWDecisionDiagram(const VRPTW& _vrptw, int _timeStepSize, int _capacityStepSize) : vrptw(_vrptw), timeStepSize(_timeStepSize), capacityStepSize(_capacityStepSize)
-    {
-      if (vrptw.capacityDiscretization != 0)
-      {
-        capacityStepSize = vrptw.capacityDiscretization;
-      }
-
-      if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
-      {
-        capacityStepSize = 1;
-      }
-    };
+    VRPTWDecisionDiagram(const VRPTW& _vrptw, VRPTWDDParameters _params);
 
     void print() const;
     int numNodes() const { return nodes.size(); }
@@ -266,6 +255,7 @@ class VRPTWDecisionDiagram
     void removeArc(int arcIndex);
  
     VRPTW vrptw;
+    VRPTWDDParameters params;
     std::vector<VRPTWNode> nodes;
     std::vector<VRPTWArc> arcs;
     std::set<int> fixedArcs;

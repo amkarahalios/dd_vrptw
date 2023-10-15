@@ -1,7 +1,7 @@
 #include "vrptwddsolver.h"
 #include <math.h>
 
-VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _vrptw.timeStateMultiplier * _vrptw.timeStateDiscretization, 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()))), params(_params)
+VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _params), params(_params)
 {
   for (int location=0; location<vrptw.numLocations; ++location)
   {
