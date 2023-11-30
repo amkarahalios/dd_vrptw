@@ -144,6 +144,13 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
       capacityStepSize = bucketStepSize1;
     }
   }
+
+  //if (vrptw.counterType == VRPTWCounterType::COUNTER)
+  //{
+    // compile DD to set max counter value as longest path
+    // use default step sizes
+  //  compileNg(8);
+  //}
 };
 
 void VRPTWDecisionDiagram::print() const
