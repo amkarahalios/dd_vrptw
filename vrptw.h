@@ -2104,8 +2104,10 @@ struct VRPTW
       std::smatch pdpInstanceMatch;
       if (std::regex_search(fileName, pdpInstanceMatch, pdpInstanceRegex))
       {
-        timeStateMultiplier = 100;
-        timeStateDiscretization = 10;
+        //timeStateMultiplier = 100;
+        //timeStateDiscretization = 10;
+        timeStateMultiplier = 10000;
+        timeStateDiscretization = 1000;
         capacityDiscretization = 1;
 
         oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
@@ -2189,7 +2191,7 @@ struct VRPTW
           for (int j=0; j < demands.size(); ++j)
           {
             double distance = std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2));
-            distance = (int)( 100 * distance ) / 100.00;
+            distance = (int)( 10000 * distance ) / 10000.00;
             distances[i][j] = distance;
             distances[j][i] = distance;
           }
