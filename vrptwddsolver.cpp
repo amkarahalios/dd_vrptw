@@ -589,7 +589,20 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           }
           else
           {
-            stats.upperBound = stats.lowerBound;
+            // right now, update precision for pdptw only
+            if (vrptw.timeStateMultiplier == vrptw.finalTimeStateMultiplier)
+	    {
+              stats.upperBound = stats.lowerBound;
+	    }
+	    else if (vrptw.problemType == ProblemType::PDP)
+	    {
+              std::cout << "updating precision using multiplier" << std::endl;
+              vrptw.timeStateMultiplier = vrptw.timeStateMultiplier * 10;
+              vrptw.recomputeDistancesPDPTW();
+              std::cout << "new timeStateMultiplier: " << vrptw.timeStateMultiplier << std::endl;
+              routeDD.updateVRPTW(vrptw);
+              routeDD.updateTimeStateMultiplierByTen();
+	    }
           }
         }
         else

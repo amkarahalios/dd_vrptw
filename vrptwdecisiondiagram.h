@@ -139,6 +139,13 @@ class VRPTWDecisionDiagram
   public:
     VRPTWDecisionDiagram(const VRPTW& _vrptw, VRPTWDDParameters _params);
 
+    void setTimeStepSize();
+    void updateVRPTW(const VRPTW& _vrptw)
+    {
+      vrptw = _vrptw;
+    }
+    void updateTimeStateMultiplierByTen();
+
     void print() const;
     int numNodes() const { return nodes.size(); }
     double evaluateRouteCost(const std::vector<int>& routeByArc);

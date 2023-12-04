@@ -1556,8 +1556,10 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 struct VRPTW
 {
   public:
-    VRPTW(std::string fileName)
+    VRPTW(std::string _fileName)
     {
+      fileName = _fileName;
+
       // VRPTW instance format
       std::regex vrptwInstanceRegex("[^_]vrptw");
       std::smatch vrptwInstanceMatch;
@@ -1568,6 +1570,7 @@ struct VRPTW
         problemType = ProblemType::TW;
         vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
         timeStateMultiplier = 10;
+        finalTimeStateMultiplier = timeStateMultiplier;
         timeStateDiscretization = 1;
         capacityDiscretization = 0;
         std::vector<std::pair<double,double> > coordinates;
@@ -1660,7 +1663,7 @@ struct VRPTW
           for (int j=0; j < demands.size(); ++j)
           {
             double distance = std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2));
-            distance = (int)( 10 * distance ) / 10.0;
+            distance = (int)( timeStateMultiplier * distance ) / (timeStateMultiplier * 1.0);
             distances[i][j] = distance;
             distances[j][i] = distance;
           }
@@ -1691,6 +1694,7 @@ struct VRPTW
       if (std::regex_search(fileName, cvrpInstanceMatch, cvrpInstanceRegex))
       {
         timeStateMultiplier = 1;
+        finalTimeStateMultiplier = timeStateMultiplier;
         timeStateDiscretization = 10;
         capacityDiscretization = 0;
         oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
@@ -1848,6 +1852,7 @@ struct VRPTW
       {
         // afg, dumas, gendreau-dumas, ohlmann thomas, integer
         timeStateMultiplier = 1;
+        finalTimeStateMultiplier = timeStateMultiplier;
         timeStateDiscretization = 1;
         capacityDiscretization = 0;
 
@@ -1857,6 +1862,7 @@ struct VRPTW
         if (std::regex_search(fileName, solomonMatch, solomonRegex))
         {
           timeStateMultiplier = 10000;
+          finalTimeStateMultiplier = timeStateMultiplier;
           timeStateDiscretization = 100;
         }
 
@@ -1866,6 +1872,7 @@ struct VRPTW
         if (std::regex_search(fileName, langevinMatch, langevinRegex))
         {
           timeStateMultiplier = 10;
+          finalTimeStateMultiplier = timeStateMultiplier;
           timeStateDiscretization = 10;
         }
 
@@ -1992,6 +1999,7 @@ struct VRPTW
       if (std::regex_search(fileName, sopInstanceMatch, sopInstanceRegex))
       {
         timeStateMultiplier = 1;
+        finalTimeStateMultiplier = timeStateMultiplier;
         timeStateDiscretization = 1;
         capacityDiscretization = 0;
 
@@ -2104,10 +2112,17 @@ struct VRPTW
       std::smatch pdpInstanceMatch;
       if (std::regex_search(fileName, pdpInstanceMatch, pdpInstanceRegex))
       {
-        //timeStateMultiplier = 100;
+        //timeStateMultiplier = 1;
         //timeStateDiscretization = 10;
-        timeStateMultiplier = 10000;
-        timeStateDiscretization = 1000;
+        //timeStateMultiplier = 10;
+        //timeStateDiscretization = 1;
+        timeStateMultiplier = 100;
+        timeStateDiscretization = 10;
+        //timeStateMultiplier = 1000;
+        //timeStateDiscretization = 100;
+        //timeStateMultiplier = 10000;
+        //timeStateDiscretization = 1000;
+        finalTimeStateMultiplier = 1000;
         capacityDiscretization = 1;
 
         oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
@@ -2191,7 +2206,7 @@ struct VRPTW
           for (int j=0; j < demands.size(); ++j)
           {
             double distance = std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2));
-            distance = (int)( 10000 * distance ) / 10000.00;
+            distance = (int)( timeStateMultiplier * distance ) / (timeStateMultiplier * 1.00);
             distances[i][j] = distance;
             distances[j][i] = distance;
           }
@@ -2221,8 +2236,8 @@ struct VRPTW
           instanceUpperBound = INF;
         }
         std::cout << "instance upper bound: " << instanceUpperBound << std::endl;
+        infile.close();
       }
-
     };
 
     double evaluateSolutionCost(const std::vector<std::vector<int>>& routesByLocation)
@@ -2280,7 +2295,68 @@ struct VRPTW
       }
 
       return -1;
-    }
+    };
+
+    void recomputeDistancesPDPTW()
+    {
+      bool dataSection = true;
+      bool locationDataSection = false;
+      std::vector<std::pair<double,double> > coordinates;
+      std::ifstream infile(fileName);
+      std::string line;
+      while (std::getline(infile, line))
+      {
+        if (line.empty())
+        {
+          continue;
+        }
+
+        if (dataSection)
+        {
+          std::istringstream iss(line);
+          int numVehicles, capacityInput, speed;
+          if (!(iss >> numVehicles >> capacityInput >> speed))
+          {
+            continue;
+          }
+          else
+          {
+            capacity = capacityInput;
+          }
+          dataSection = false;
+          locationDataSection = true;
+        }
+
+        if (locationDataSection)
+        {
+          std::istringstream iss(line);
+          int location, x, y, demand, tw1, tw2, serviceTime, pickup, delivery;
+          while (iss >> location >> x >> y >> demand >> tw1 >> tw2 >> serviceTime >> pickup >> delivery)
+          {
+            coordinates.push_back(std::make_pair(x, y));
+          }
+        }
+      }
+
+      distances.clear();
+      distances.resize(numLocations);
+      for (int i=0; i < distances.size(); ++i)
+      {
+        distances[i].resize(distances.size());
+      }
+      for (int i=0; i < demands.size(); ++i)
+      {
+        for (int j=0; j < demands.size(); ++j)
+        {
+          double distance = std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2));
+          distance = (int)( timeStateMultiplier * distance ) / (timeStateMultiplier * 1.00);
+          distances[i][j] = distance;
+          distances[j][i] = distance;
+        }
+      }
+    };
+
+    std::string fileName;
 
     int capacity;
     std::vector<std::vector<double> > distances;
@@ -2305,6 +2381,7 @@ struct VRPTW
     ProblemType problemType;
     int timeStateMultiplier;
     int timeStateDiscretization;
+    int finalTimeStateMultiplier;
     int capacityDiscretization;
     double instanceUpperBound;
 };

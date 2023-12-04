@@ -115,7 +115,6 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
   // default time and capacity step sizes
   if (params.bucketsPerVertex <= 0)
   {
-    timeStepSize = _vrptw.timeStateMultiplier * _vrptw.timeStateDiscretization;
     capacityStepSize = 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()));
     if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
     {
@@ -131,26 +130,66 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
   {
     if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
     {
+      capacityStepSize = 1;
+    }
+    else
+    {
+      double bucketStepSize1 = vrptw.capacity * 1.0 / std::sqrt(params.bucketsPerVertex);
+      capacityStepSize = bucketStepSize1;
+    }
+  }
+
+  setTimeStepSize();
+
+  //TODO(akarahal) compute better bound on number of locations in longest route
+  //if (vrptw.counterType == VRPTWCounterType::COUNTER)
+  //{
+    // compile DD to set max counter value as longest path
+    // use default step sizes
+    //  compileNg(8);
+  //}
+};
+
+void VRPTWDecisionDiagram::setTimeStepSize()
+{
+  // default time and capacity step sizes
+  if (params.bucketsPerVertex <= 0)
+  {
+    timeStepSize = vrptw.timeStateMultiplier * vrptw.timeStateDiscretization;
+  }
+  else
+  {
+    if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
+    {
       double bucketStepSize = (vrptw.endTimes[0] - vrptw.startTimes[0]) * 1.0 / params.bucketsPerVertex;
       timeStepSize = vrptw.timeStateMultiplier * bucketStepSize;
-      capacityStepSize = 1;
     }
     else
     {
       double bucketStepSize = (vrptw.endTimes[0] - vrptw.startTimes[0]) * 1.0 / std::sqrt(params.bucketsPerVertex);
       timeStepSize = vrptw.timeStateMultiplier * bucketStepSize;
 
-      double bucketStepSize1 = vrptw.capacity * 1.0 / std::sqrt(params.bucketsPerVertex);
-      capacityStepSize = bucketStepSize1;
     }
   }
+};
 
-  //if (vrptw.counterType == VRPTWCounterType::COUNTER)
-  //{
-    // compile DD to set max counter value as longest path
-    // use default step sizes
-  //  compileNg(8);
-  //}
+void VRPTWDecisionDiagram::updateTimeStateMultiplierByTen()
+{
+  // update time step
+  setTimeStepSize();
+
+  // update node states and arc distances
+  for (int nodeIndex=0; nodeIndex<nodes.size(); ++nodeIndex)
+  {
+    nodes[nodeIndex].state.timeWithMultiplier = nodes[nodeIndex].state.timeWithMultiplier * 10;
+  }
+
+  for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
+  {
+    int fromLocation = nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited;
+    int toLocation = nodes[arcs[arcIndex].toNodeIndex].state.lastVisited;
+    arcs[arcIndex].distance = vrptw.distances[fromLocation][toLocation];
+  }
 };
 
 void VRPTWDecisionDiagram::print() const
