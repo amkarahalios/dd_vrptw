@@ -146,7 +146,7 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
   //{
     // compile DD to set max counter value as longest path
     // use default step sizes
-    //  compileNg(8);
+    //  compileNgRoute(8);
   //}
 };
 
@@ -370,7 +370,9 @@ bool VRPTWDecisionDiagram::generateNewStateFromExact(VRPTWNodeState& newState, i
   }
 
   newState.lastVisited = location;
-  newState.capacity = newState.capacity + vrptw.demands[location];
+
+  // pdptw can go below 0.
+  newState.capacity = std::max(0,newState.capacity + vrptw.demands[location]);
   if (vrptw.oneOrMorePaths == OneOrMorePaths::ONE_PATH)
   {
     newState.capacity = 0;
