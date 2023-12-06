@@ -362,7 +362,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
     }
     else
     {
-      lambda.push_back(2 * vrptw.distances[0][location] * vrptw.demands[location] / vrptw.capacity);
+      lambda.push_back(2 * (vrptw.distances[0][location] + vrptw.serviceTimes[location]) * std::abs(vrptw.demands[location]) / vrptw.capacity);
     }
   }
 

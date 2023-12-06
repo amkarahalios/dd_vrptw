@@ -1674,6 +1674,7 @@ struct VRPTW
         timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
 
         numLocations = demands.size();
+        routeLengthUpperBound = numLocations;
 
         // formally add if this works
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
@@ -1814,6 +1815,7 @@ struct VRPTW
         }
 
         numLocations = demands.size();
+        routeLengthUpperBound = numLocations;
 
         DBG(
           std::cout << "distances: " << std::endl;
@@ -1963,6 +1965,7 @@ struct VRPTW
             else
             {
               numLocations = numLocationsInput;
+              routeLengthUpperBound = numLocations;
               std::cout << "num loc: " << numLocations << std::endl;
             }
 
@@ -2071,6 +2074,7 @@ struct VRPTW
             else
             {
               numLocations = numLocationsInput;
+              routeLengthUpperBound = numLocations;
               std::cout << "num loc: " << numLocations << std::endl;
             }
 
@@ -2116,7 +2120,7 @@ struct VRPTW
         //timeStateDiscretization = 10;
         //timeStateMultiplier = 10;
         //timeStateDiscretization = 1;
-        timeStateMultiplier = 100;
+        timeStateMultiplier = 10;
         timeStateDiscretization = 10;
         //timeStateMultiplier = 1000;
         //timeStateDiscretization = 100;
@@ -2152,7 +2156,7 @@ struct VRPTW
           if (dataSection)
           {
             std::istringstream iss(line);
-            int numVehicles, capacityInput, speed;
+            int capacityInput, speed;
             if (!(iss >> numVehicles >> capacityInput >> speed))
             {
               continue;
@@ -2196,6 +2200,7 @@ struct VRPTW
         }
 
         numLocations = demands.size();
+        routeLengthUpperBound = numLocations;
         distances.resize(numLocations);
         for (int i=0; i < distances.size(); ++i)
         {
@@ -2213,13 +2218,14 @@ struct VRPTW
         }
 
         int minServiceTime = 1000000;
-        for (int loc=0; loc<numLocations; ++loc)
+        for (int loc1=0; loc1<numLocations; ++loc1)
         {
-          if (serviceTimes[loc] != 0)
+          if (serviceTimes[loc1] != 0)
           {
-            minServiceTime = std::min(serviceTimes[loc], minServiceTime);
+            minServiceTime = std::min(serviceTimes[loc1], minServiceTime);
           }
         }
+        std::cout << "min service time: " << minServiceTime << std::endl;
         timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
 
         // formally add if this works
@@ -2238,6 +2244,9 @@ struct VRPTW
         std::cout << "instance upper bound: " << instanceUpperBound << std::endl;
         infile.close();
       }
+
+      calculateRouteLengthUpperBound();
+      std::cout << "route length upper bound: " << routeLengthUpperBound << std::endl;
     };
 
     double evaluateSolutionCost(const std::vector<std::vector<int>>& routesByLocation)
@@ -2314,7 +2323,7 @@ struct VRPTW
         if (dataSection)
         {
           std::istringstream iss(line);
-          int numVehicles, capacityInput, speed;
+          int capacityInput, speed;
           if (!(iss >> numVehicles >> capacityInput >> speed))
           {
             continue;
@@ -2356,6 +2365,61 @@ struct VRPTW
       }
     };
 
+    void calculateRouteLengthUpperBound()
+    {
+      // capacity
+      if ((problemType == ProblemType::TW) || (problemType == ProblemType::CVRP))
+      {
+        std::vector<int> sortedDemands = demands;
+        std::sort(sortedDemands.begin(), sortedDemands.end());
+        int greedyLocations = 0;
+        int greedyLoad = 0;
+        while (greedyLoad < capacity)
+        {
+          for (int index=0; index<sortedDemands.size(); ++index)
+          {
+            greedyLocations = greedyLocations + 1;
+            greedyLoad = greedyLoad + sortedDemands[index];
+          }
+        }
+
+        routeLengthUpperBound = std::min(routeLengthUpperBound, greedyLocations);
+      }
+
+      // distances
+      if ((problemType == ProblemType::PDP) || (problemType == ProblemType::TW) || (problemType == ProblemType::CVRP))
+      {
+        std::set<int> greedyLocations;
+        int greedyTime = 0;
+        while (greedyTime < endTimes[0])
+        {
+          double minDistance = 1e9;
+          int minLoc = 0;
+          for (int index1=0; index1<numLocations; ++index1)
+          {
+            if (greedyLocations.find(index1) != greedyLocations.end())
+            {
+              continue;
+            }
+            for (int index2=0; index2<numLocations; ++index2)
+            {
+              double distance = distances[index1][index2] + serviceTimes[index1];
+              if (distance < minDistance)
+              {
+                minDistance = distance;
+                minLoc = index2;
+              }
+            }
+          }
+
+          greedyLocations.insert(minLoc);
+          greedyTime = greedyTime + minDistance;
+        }
+
+        routeLengthUpperBound = std::min(routeLengthUpperBound, (int)greedyLocations.size());
+      }
+    }
+
     std::string fileName;
 
     int capacity;
@@ -2372,6 +2436,7 @@ struct VRPTW
 
     int depot;
     int numLocations;
+    int numVehicles;
 
     VRPTWCapacityType vrptwCapacityType;
     VRPTWTimeWindowType vrptwTimeWindowType;
@@ -2384,6 +2449,7 @@ struct VRPTW
     int finalTimeStateMultiplier;
     int capacityDiscretization;
     double instanceUpperBound;
+    int routeLengthUpperBound;
 };
 
 #endif

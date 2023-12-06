@@ -338,7 +338,6 @@ int VRPTWDecisionDiagram::addReverseArc(int forwardArcIndex)
   return reverseArcIndex;
 }
 
-// TODO(akarahal) figure out PDP, need to update capacities, can decrease when drop off.
 // state should be exact for true/false return to be true
 bool VRPTWDecisionDiagram::generateNewStateFromExact(VRPTWNodeState& newState, int location)
 {
@@ -347,7 +346,7 @@ bool VRPTWDecisionDiagram::generateNewStateFromExact(VRPTWNodeState& newState, i
   {
     newState.counter = newState.counter - 1;
   }
-  if (newState.counter > vrptw.numLocations + 1)
+  if (newState.counter > vrptw.routeLengthUpperBound + 1)
   {
     return false;
   }
@@ -611,6 +610,20 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
       ngSet.insert(indexDistances[index].first);
     }
 
+    // add locations with 0 service time, as they cause discretization problems
+    /*
+    if (vrptw.serviceTimes[location] == 0)
+    {
+      for (int tryLoc=0; tryLoc<vrptw.numLocations; ++tryLoc)
+      {
+        if (vrptw.serviceTimes[tryLoc] == 0)
+        {
+          ngSet.insert(tryLoc);
+        }
+      }
+    }
+    */
+
     ngSets.push_back(ngSet);
   }
 
@@ -653,12 +666,18 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
 
+  // compile stats - freq NG size, times, loads, c
+  std::map<int,int> freqNgSize;
+  std::map<int,int> freqTime;
+  std::map<int,int> freqLoad;
+  std::map<int,int> freqCount;
+
   // create nodes except r/t
   int nodeIndex = 0;
   while (nodeIndex < nodes.size())
   {
     const VRPTWNode& nodeToCheck = nodes[nodeIndex];
-    if (nodeToCheck.state.counter >= vrptw.numLocations)
+    if (nodeToCheck.state.counter >= vrptw.routeLengthUpperBound)
     {
       nodeIndex = nodeIndex + 1;
       continue;
@@ -724,12 +743,22 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
       int newCounter = node.state.counter + counterBinary;
 
       int newTimeWithMultiplier = (int)(earliestStartTime * vrptw.timeStateMultiplier);
-      newTimeWithMultiplier = std::max(newTimeWithMultiplier, vrptw.startTimes[location] * vrptw.timeStateMultiplier);
 
-      // bucketing
+      // testing: do not discretize if the distance + service time is under the step size
       // use more dynamic bucketing if otherwise it'll make a bad loop
+      // bucketing
       int timeQuotient = newTimeWithMultiplier / timeStepSize;
       int newTimeWithMultiplierDiscretized = timeStepSize * timeQuotient * timeWindowBinary;
+      newTimeWithMultiplierDiscretized = std::max(newTimeWithMultiplierDiscretized, vrptw.startTimes[location] * vrptw.timeStateMultiplier) * timeWindowBinary;
+      if (newTimeWithMultiplierDiscretized == node.state.timeWithMultiplier)
+      {
+        newTimeWithMultiplierDiscretized = newTimeWithMultiplier;
+      }
+      //if (newCounter > 50)
+      //{
+      //  std::cout << node.state.lastVisited << " --> " << location << " " << node.state.timeWithMultiplier << " --> " << newTimeWithMultiplierDiscretized << std::endl;
+      //}
+
       /*
       if ((vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS) && (newTimeWithMultiplierDiscretized <= node.state.timeWithMultiplier))
       {
@@ -749,6 +778,47 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
         }
       }
 
+      // update counts
+      /*
+      if (freqNgSize.find(newVisited.size()) == freqNgSize.end())
+      {
+        freqNgSize[newVisited.size()] = 1;
+      }
+      ++freqNgSize[newVisited.size()];
+
+      if (freqTime.find(newTimeWithMultiplierDiscretized) == freqTime.end())
+      {
+        freqTime[newTimeWithMultiplierDiscretized] = 1;
+      }
+      else
+      {
+        ++freqTime[newTimeWithMultiplierDiscretized];
+      }
+
+      if (freqLoad.find(newCapacityDiscretized) == freqLoad.end())
+      {
+        freqLoad[newCapacityDiscretized] = 1;
+      }
+      else
+      {
+        ++freqLoad[newCapacityDiscretized];
+      }
+
+      if (freqCount.find(newCounter) == freqCount.end())
+      {
+        freqCount[newCounter] = 1;
+      }
+      else
+      {
+        ++freqCount[newCounter];
+      }
+      */
+
+      //if (newCounter == 100)
+      //{
+      //  std::cout << node.state.lastVisited << " --> " << location << " " << newCounter << " " << newCapacityDiscretized << " " << newTimeWithMultiplierDiscretized << " " << location << std::endl;
+      //}
+
       VRPTWNodeState newState(newCounter, newCapacityDiscretized, newTimeWithMultiplierDiscretized, location, newVisited);
       int newNodeIndex = addNode(newState);
       addArc(nodeIndex, newNodeIndex);
@@ -757,7 +827,31 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
     nodeIndex = nodeIndex + 1;
   }
 
+  // print info
+  /*
   DBG(print();)
+  std::cout << "freqNgSize: " << std::endl;
+  for (auto& it : freqNgSize)
+  {
+    std::cout << it.first << " " << it.second << std::endl;
+  }
+  std::cout << "freqTime: " << std::endl;
+  for (auto& it : freqTime)
+  {
+    std::cout << it.first << " " << it.second << std::endl;
+  }
+  std::cout << "freqLoad: " << std::endl;
+  for (auto& it : freqLoad)
+  {
+    std::cout << it.first << " " << it.second << std::endl;
+  }
+  std::cout << "freqCount: " << std::endl;
+  for (auto& it : freqCount)
+  {
+    std::cout << it.first << " " << it.second << std::endl;
+  }
+  */
+
   // add arcs to terminal node
   nodeIndex = 2;
   while (nodeIndex < nodes.size())
