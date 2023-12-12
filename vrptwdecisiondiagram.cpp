@@ -677,7 +677,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   while (nodeIndex < nodes.size())
   {
     const VRPTWNode& nodeToCheck = nodes[nodeIndex];
-    if (nodeToCheck.state.counter >= vrptw.routeLengthUpperBound)
+    if (nodeToCheck.state.counter > vrptw.routeLengthUpperBound)
     {
       nodeIndex = nodeIndex + 1;
       continue;
