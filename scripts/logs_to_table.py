@@ -1052,6 +1052,8 @@ instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Long-Long-Ru
 for instance in os.listdir(instance_dir):
   instances.append(instance)
 
+instances.sort()
+
 # get n for sop instances
 pattern = re.compile("DIMENSION: ([0-9]+).*")
 instances_sizes = []

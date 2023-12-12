@@ -698,8 +698,9 @@ for test in test_set:
 
 # add VrpSolver to results and time_results
 #statistics_cols: instance & :Optimal & cutoff & :bcRecRootDb & :bcTimeRootEval & :bcCountNodeProc & :bcRecBestDb & :bcRecBestInc & :bcTimeMain \\
+#statistics: C1_4_10 & 0 & 6825.5 & 6820.19 & 3420.03 & 1 & 6820.19 & -- & 3600.35 \\
 #statistics: C2_2_1 & 1 & 1922.2 & 1922.10 & 228.49 & 1 & 1922.10 & 1922.10 & 228.50 \\
-vrpsolver_pattern = re.compile('statistics: ([A-Z]+.*[0-9]) & [0-9] & [0-9]+.* & [0-9]+.* & [0-9]+.* & ([0-9]+) & ([0-9]+.*) & ([0-9]+.*) & ([0-9]+.*) \\.*')
+vrpsolver_pattern = re.compile('statistics: ([A-Z]+.*[0-9]) & [0-9] & [0-9]+.* & [0-9]+.* & [0-9]+.* & ([0-9]+) & ([0-9]+.*) & ([0-9\--]+.*) & ([0-9]+.*) \\.*')
 
 vrpsolver_results = {}
 logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/VrpSolver/"
@@ -721,7 +722,9 @@ for test in test_set:
         instance = instance.replace('410','4_10')
         num_nodes = int(match.group(2))
         lb = float(match.group(3))
-        ub = float(match.group(4))
+        ub = match.group(4)
+        if ub != "--":
+          ub = float(match.group(4))
         time = float(match.group(5))
         vrpsolver_results[instance] = (num_nodes, lb, ub, time)
 
@@ -800,4 +803,7 @@ for i, row in table_results_df.iterrows():
   if (vrpsolver_lb == '-') or (vrpsolver_lb < instance_upper_bounds[instance]):
     vrpsolver_time = 3600
 
-  print(f"{instance_name} & {instance_upper_bounds[instance]} & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+  if (lb_value != '-') and (vrpsolver_lb != '-') and (lb_value > vrpsolver_lb):
+    print(f"{instance_name} & {instance_upper_bounds[instance]} & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & \\textbf\u007b{lb_value}\u007d & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+  else:
+    print(f"{instance_name} & {instance_upper_bounds[instance]} & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")

@@ -50,6 +50,27 @@ instance_lower_bounds = {
 "COG-swath.mcol":0
 }
 
+instance_times = {
+"COG-10teams.mcol":3600,
+"COG-air04.mcol":1.8,
+"COG-air05.mcol":3600,
+"COG-atlanta-ip.mcol":1844,
+"COG-cap6000.mcol":304,
+"COG-ds.mcol":6.5,
+"COG-gesa2-o.mcol":3600,
+"COG-misc07.mcol":3600,
+"COG-mkc.mcol":0.1,
+"COG-mod011.mcol":3600,
+"COG-mzzv11.mcol":0.1,
+"COG-mzzv42z.mcol":0.1,
+"COG-net12.mcol":1301,
+"COG-nsrand-ipx.mcol":3600,
+"COG-opt1217.mcol":3600,
+"COG-rd-rplusc-21.mcol":0.0,
+"COG-rout.mcol":3600,
+"COG-swath.mcol":3600
+}
+
 max_weight_cliques = {
 "COG-10teams.mcol":73,
 "COG-air04.mcol":377,
@@ -167,10 +188,14 @@ for i, row in table_results_df.iterrows():
   lb_value = row['lb']
   if not math.isnan(lb_value):
     lb_value = int(lb_value)
+  else:
+    lb_value = '-'
 
   ub_value = row['ub']
   if not math.isnan(ub_value):
     ub_value = int(ub_value)
+  else:
+    ub_value = '-'
 
   numArcs = row['numArcs']
   if numArcs > 100000:
@@ -179,25 +204,46 @@ for i, row in table_results_df.iterrows():
   time = row['time']
   if not math.isnan(time):
     time = int(time)
+  else:
+    time = 3600
 
   numLpIterations = row['iterations']
   if not math.isnan(numLpIterations):
     numLpIterations = int(numLpIterations)
+  else:
+    numLpIterations = '-'
  
   numLagIterations = row['lagIterations']
   if not math.isnan(numLagIterations):
     numLagIterations = int(numLagIterations)
+  else:
+    numLagIterations = '-'
 
   numSeparations = row['numSep']
   if not math.isnan(numSeparations):
     numSeparations = int(numSeparations)
+  else:
+    numSeparations = '-'
 
   instance_lower_bound = instance_lower_bounds[instance]
   if instance_lower_bound == 0:
-    instance_lower_bound = 'nan'
+    instance_lower_bound = '-'
  
   instance_upper_bound = instance_upper_bounds[instance]
   if instance_upper_bound == 0:
-    instance_upper_bound = 'nan'
+    instance_upper_bound = '-'
 
-  print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & {instance_lower_bound} & {instance_upper_bound} & {lb_value} & {ub_value} & {numLpIterations} & {numSeparations} & {time} \\\\")
+  instance_upper_bound = instance_upper_bounds[instance]
+  if instance_upper_bound == 0:
+    instance_upper_bound = '-'
+ 
+  instance_time = instance_times[instance]
+  if instance_time == 0:
+    instance_time = '-'
+
+  if instance_upper_bound != '-' and ub_value != '-' and instance_upper_bound > ub_value:
+    print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & {instance_lower_bound} & {instance_upper_bound} & {instance_time} & {lb_value} & \\textbf\u007b{ub_value}\u007d & {numLpIterations} & {numSeparations} & {time} \\\\")
+  elif ub_value == lb_value and instance_upper_bound == '-':
+    print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & {instance_lower_bound} & {instance_upper_bound} & {instance_time} & {lb_value} & \\textbf\u007b{ub_value}\u007d & {numLpIterations} & {numSeparations} & {time} \\\\")
+  else:
+    print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & {instance_lower_bound} & {instance_upper_bound} & {instance_time} & {lb_value} & {ub_value} & {numLpIterations} & {numSeparations} & {time} \\\\")
