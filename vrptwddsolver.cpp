@@ -475,7 +475,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       bool cutAdded = false;
 
       // do cuts first in case separations mess up dd structure
-      if (params.useCuts && (lpFlowType == FlowType::LP))
+      if (params.useCuts && (vrptw.problemType != ProblemType::PDP) && (lpFlowType == FlowType::LP))
       {
         // RCC - rounded capacity cuts
         std::vector<int> edgeTail;
@@ -522,7 +522,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           }
         }
         // RCC - rounded capacity cuts when dd relaxes capacity
-        if (params.useCuts && (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
+        if (params.useCuts && (vrptw.problemType != ProblemType::PDP) && (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
         {
           addRCCs(decomposedRoutes, cutAdded);
         }
@@ -564,7 +564,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         std::cout << "no more separations possible" << std::endl;
 
         // RCC - rounded capacity cuts when dd relaxes capacity
-        if (params.useCuts && (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
+        if (params.useCuts && (vrptw.problemType != ProblemType::PDP) && (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
         {
           addRCCs(decomposedRoutes, cutAdded);
         }
@@ -1122,7 +1122,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       // get primal solution
       std::set<int> solutionArcs;
       routeDD.getSolutionArcs(solutionArcs);
-      if (params.useCuts)
+      if (params.useCuts && (vrptw.problemType != ProblemType::PDP))
       {
         xDecompositions.push_back(solutionArcs);
       }
@@ -1375,7 +1375,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       stepSizes.clear();
     }
 
-    if (shouldTerminate && params.useCuts && (!params.cutPhase || (stats.lpIterations > 1)))
+    if (shouldTerminate && params.useCuts && (vrptw.problemType != ProblemType::PDP) && (!params.cutPhase || (stats.lpIterations > 1)))
     {
       // for Rounded Capacity Cuts
       bool cutAdded = false;
