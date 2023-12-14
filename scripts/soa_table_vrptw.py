@@ -648,11 +648,12 @@ instance_upper_bounds = {
 # Log lines for DDSolver
 #STATS - lpIterations[1] lagIterations[32] sspIterations[186] numSeparations[0] compileTime[240] sspSolveTime[349] lpSolveTime[0] lb[794.025] ub[1e+10] numArcs: [87254] numFixed: [0] time: [590]
 
-colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] time: \[([0-9]+)\]")
+colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\] numCuts\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] time: \[([0-9]+)\]")
 #colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] size: \[([0-9]+)\] time: \[([0-9]+)\]")
 
 logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
-test_set = ["Vrp-Set-HG_LAG_NG2"]
+test_set = ["Vrp-Set-HG_LAG_NG2_upper_bound_counter"]
+#test_set = ["Vrp-Long-Run_LAG_NG2_upper_bound_counter_long"]
 
 instances = []
 instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"
@@ -678,22 +679,23 @@ for test in test_set:
         lagIterations = int(colelim_match.group(2))
         sspIterations = colelim_match.group(3)
         numSeparations = int(colelim_match.group(4))
-        compileTime = colelim_match.group(5)
-        sspSolveTime = colelim_match.group(6)
-        lpSolveTime = colelim_match.group(7)
-        lb = float(colelim_match.group(8))
-        ub = float(colelim_match.group(9))
-        numArcs = int(colelim_match.group(10))
-        numFixed = int(colelim_match.group(11))
-        time = float(colelim_match.group(12))
-        time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+        numCuts= int(colelim_match.group(5))
+        compileTime = colelim_match.group(6)
+        sspSolveTime = colelim_match.group(7)
+        lpSolveTime = colelim_match.group(8)
+        lb = float(colelim_match.group(9))
+        ub = float(colelim_match.group(10))
+        numArcs = int(colelim_match.group(11))
+        numFixed = int(colelim_match.group(12))
+        time = float(colelim_match.group(13))
+        time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'numCut': numCuts, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
         time_results.append(time_result)
  
     if col_elim:
-      result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+      result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'numCut' : numCuts, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
       results.append(result)
     else:
-      result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'lagIterations': numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'numArcs': numpy.nan, 'numFixed': numpy.nan, 'time' : numpy.nan}
+      result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'lagIterations': numpy.nan, 'numSep' : numpy.nan, 'numCut': numpy.nan, 'lb' : numpy.nan, 'numArcs': numpy.nan, 'numFixed': numpy.nan, 'time' : numpy.nan}
       results.append(result)
 
 # add VrpSolver to results and time_results
@@ -732,7 +734,7 @@ for test in test_set:
 results_df = pandas.DataFrame(results)
 results_df.sort_values(by=['instance','lb'],inplace=True)
 results_df.reset_index(drop=True,inplace=True)
-table_results_df = results_df[['instance','test','lb','time','iterations','numSep','lagIterations','numArcs']]
+table_results_df = results_df[['instance','test','lb','time','iterations','numSep','numCut','lagIterations','numArcs']]
 print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
 
 # get instance attributes: number locations
@@ -749,6 +751,7 @@ for instance in instances:
 print(vrpsolver_results)
 
 # create output table for SOA comparison
+num_printed = 0
 for i, row in table_results_df.iterrows():
   instance = row['instance']
   instance_name = instance.split('.')[0]
@@ -787,6 +790,12 @@ for i, row in table_results_df.iterrows():
     numSeparations = int(numSeparations)
   else:
     numSeparations = '-'
+ 
+  numCuts = row['numCut']
+  if not math.isnan(numCuts):
+    numCuts = int(numCuts)
+  else:
+    numCuts = '-'
 
   #gap = round((instance_upper_bounds[instance] - lb_value) * 100.0 / instance_upper_bounds[instance], 1)
   if instance in vrpsolver_results.keys():
@@ -803,7 +812,111 @@ for i, row in table_results_df.iterrows():
   if (vrpsolver_lb == '-') or (vrpsolver_lb < instance_upper_bounds[instance]):
     vrpsolver_time = 3600
 
-  if (lb_value != '-') and (vrpsolver_lb != '-') and (lb_value > vrpsolver_lb):
-    print(f"{instance_name} & {instance_upper_bounds[instance]} & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & \\textbf\u007b{lb_value}\u007d & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+  if (lb_value == 0) or (lb_value == '-'):
+    lb_value = '-'
+    numLpIterations = '-'
+    numLagIterations = '-'
+    numSeparations = '-'
+    numCuts = '-'
+
+  if (lb_value == '-') and (vrpsolver_lb == '-'):
+    continue
   else:
-    print(f"{instance_name} & {instance_upper_bounds[instance]} & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+    num_printed = num_printed + 1
+
+  if (num_printed == 25) or ((num_printed > 27) and ((num_printed - 25) % 27 == 0)):
+    print("")
+
+  if (lb_value != '-') and (vrpsolver_lb != '-') and (lb_value > vrpsolver_lb):
+    print(f"{instance_name} & {instance_upper_bounds[instance]} & & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & & \\textbf\u007b{lb_value}\u007d & {numLpIterations} & {numLagIterations} & {numSeparations} & {numCuts} & {time} \\\\")
+  else:
+    print(f"{instance_name} & {instance_upper_bounds[instance]} & & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {numCuts} & {time} \\\\")
+
+# get aggregate statistics. By class, avg gap and num missing lower bounds
+ce_avg_gaps = {}
+ce_missing_lbs = {}
+vrpsolver_avg_gaps = {}
+vrpsolver_missing_lbs = {}
+diff_avg_gaps = {}
+instance_classes = set()
+for i, row in table_results_df.iterrows():
+  instance = row['instance']
+  instance_class = instance[0:3]
+  instance_class = instance_class.replace("_","")
+  instance_classes.add(instance_class)
+
+  ce_missing = False
+  lb_value = row['lb']
+  if not math.isnan(lb_value) and float(lb_value) != 0:
+    lb_value = float(lb_value)
+  else:
+    lb_value = 0
+    ce_missing = True
+    if instance_class in ce_missing_lbs:
+      ce_missing_lbs[instance_class] = ce_missing_lbs[instance_class] + 1
+    else:
+      ce_missing_lbs[instance_class] = 1
+
+  vrpsolver_missing = False
+  if instance in vrpsolver_results.keys():
+    vrpsolver_result = vrpsolver_results[instance]
+    vrpsolver_num_nodes = vrpsolver_result[0]
+    vrpsolver_lb = vrpsolver_result[1]
+    #vrpsolver_ub = vrpsolver_result[2]
+    vrpsolver_time = int(vrpsolver_result[3])
+  else:
+    vrpsolver_missing = True
+    vrpsolver_num_nodes = '-'
+    vrpsolver_lb = '-'
+    #vrpsolver_ub = vrpsolver_result[1]
+    if instance_class in vrpsolver_missing_lbs:
+      vrpsolver_missing_lbs[instance_class] = vrpsolver_missing_lbs[instance_class] + 1
+    else:
+      vrpsolver_missing_lbs[instance_class] = 1
+
+  use_missing = False
+  if not ce_missing:
+    ce_gap = round((instance_upper_bounds[instance] - lb_value) * 100.0 / instance_upper_bounds[instance], 1)
+    if instance_class in ce_avg_gaps:
+      ce_avg_gaps[instance_class].append(ce_gap)
+    else:
+      ce_avg_gaps[instance_class] = []
+      ce_avg_gaps[instance_class].append(ce_gap)
+  elif use_missing:
+    ce_gap = 100
+    if instance_class in ce_avg_gaps:
+      ce_avg_gaps[instance_class].append(ce_gap)
+    else:
+      ce_avg_gaps[instance_class] = []
+      ce_avg_gaps[instance_class].append(ce_gap)
+
+  if not vrpsolver_missing:
+    vrpsolver_gap = round((instance_upper_bounds[instance] - vrpsolver_lb) * 100.0 / instance_upper_bounds[instance], 1)
+    if instance_class in vrpsolver_avg_gaps:
+      vrpsolver_avg_gaps[instance_class].append(vrpsolver_gap)
+    else:
+      vrpsolver_avg_gaps[instance_class] = []
+      vrpsolver_avg_gaps[instance_class].append(vrpsolver_gap)
+  elif use_missing:
+    vrpsolver_gap = 100
+    if instance_class in vrpsolver_avg_gaps:
+      vrpsolver_avg_gaps[instance_class].append(vrpsolver_gap)
+    else:
+      vrpsolver_avg_gaps[instance_class] = []
+      vrpsolver_avg_gaps[instance_class].append(vrpsolver_gap)
+
+instance_classes = sorted(instance_classes)
+for instance_class in instance_classes:
+  vrpsolver_avg_gap = round(numpy.average(vrpsolver_avg_gaps[instance_class]),1)
+  ce_avg_gap = round(numpy.average(ce_avg_gaps[instance_class]),1)
+
+  vrpsolver_total_gaps = [100] * ce_missing_lbs[instance_class]
+  vrpsolver_total_gaps = vrpsolver_total_gaps + vrpsolver_avg_gaps[instance_class]
+  vrpsolver_total_gap = round(numpy.average(vrpsolver_total_gaps),1)
+
+  ce_total_gaps = [100] * ce_missing_lbs[instance_class]
+  ce_total_gaps = ce_total_gaps + ce_avg_gaps[instance_class]
+  ce_total_gap = round(numpy.average(ce_total_gaps),1)
+
+  print(f"{instance_class} & 50 & & {vrpsolver_avg_gap} & {vrpsolver_missing_lbs[instance_class]} & & {ce_avg_gap} & {ce_missing_lbs[instance_class]} \\\\")
+  #print(f"{instance_class} & 50 & & {vrpsolver_avg_gap} & {vrpsolver_total_gap} & {vrpsolver_missing_lbs[instance_class]} & & {ce_avg_gap} & {ce_total_gap} & {ce_missing_lbs[instance_class]} \\\\")

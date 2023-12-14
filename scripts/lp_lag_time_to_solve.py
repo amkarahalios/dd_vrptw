@@ -721,7 +721,7 @@ time_results_df.reset_index(drop=True,inplace=True)
 # gather times to solve, only for solved problems
 markers = ['x', 'o', 'o']
 colors = ['b', 'g', 'g']
-labels = ['GC', 'VRPTW', 'VRPTW']
+labels = ['VC', 'VRPTW', 'VRPTW']
 index = -1
 for test_set in test_sets:
   index = index + 1
@@ -781,10 +781,10 @@ for test_set in test_sets:
     print(f'lag only solve count {lag_only_solve_count}')
     plt.scatter(lp_times, lag_times, marker=markers[index], color=colors[index], label=labels[index])
 
-plt.xlabel('LP time to solve (s)')
+plt.xlabel('CE Solve Time (s)')
 plt.xscale('log')
 
-plt.ylabel('LAG time to solve (s)')
+plt.ylabel('CESGD Solve Time (s)')
 plt.yscale('log')
 
 plt.plot([0,3600],[0,3600])

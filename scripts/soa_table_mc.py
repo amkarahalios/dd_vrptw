@@ -237,13 +237,12 @@ for i, row in table_results_df.iterrows():
   if instance_upper_bound == 0:
     instance_upper_bound = '-'
  
-  instance_time = instance_times[instance]
-  if instance_time == 0:
+  if instance_time == 0 and instance_upper_bound == '-' and instance_lower_bound == '-':
     instance_time = '-'
-
+ 
   if instance_upper_bound != '-' and ub_value != '-' and instance_upper_bound > ub_value:
-    print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & {instance_lower_bound} & {instance_upper_bound} & {instance_time} & {lb_value} & \\textbf\u007b{ub_value}\u007d & {numLpIterations} & {numSeparations} & {time} \\\\")
-  elif ub_value == lb_value and instance_upper_bound == '-':
-    print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & {instance_lower_bound} & {instance_upper_bound} & {instance_time} & {lb_value} & \\textbf\u007b{ub_value}\u007d & {numLpIterations} & {numSeparations} & {time} \\\\")
+    print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & & {instance_lower_bound} & {instance_upper_bound} & {instance_time} & & {lb_value} & \\textbf\u007b{ub_value}\u007d & {numLpIterations} & {numSeparations} & {time} \\\\")
+  elif ub_value == lb_value and instance_upper_bound == '-' and lb_value != '-':
+    print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & & {instance_lower_bound} & {instance_upper_bound} & {instance_time} & & {lb_value} & \\textbf\u007b{ub_value}\u007d & {numLpIterations} & {numSeparations} & {time} \\\\")
   else:
-    print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & {instance_lower_bound} & {instance_upper_bound} & {instance_time} & {lb_value} & {ub_value} & {numLpIterations} & {numSeparations} & {time} \\\\")
+    print(f"{instance_name} & {instance_num_vertices[instance]} & {instance_num_edges[instance]} & {max_weight_cliques[instance]} & & {instance_lower_bound} & {instance_upper_bound} & {instance_time} & & {lb_value} & {ub_value} & {numLpIterations} & {numSeparations} & {time} \\\\")

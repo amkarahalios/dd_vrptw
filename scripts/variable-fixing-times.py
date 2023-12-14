@@ -746,17 +746,17 @@ for method_pair in method_pairs:
     diffs = [fix - no_fix for (fix,no_fix) in zip(fix_times,no_fix_times)]
     avg_diff = sum(diffs) / len(diffs)
     print(f'lag avg diff: {avg_diff}')
-    plt.scatter(no_fix_times, fix_times, marker='x', label='LAG', color='b')
+    plt.scatter(no_fix_times, fix_times, marker='x', label='CESGD', color='b')
   else:
     diffs = [fix - no_fix for (fix,no_fix) in zip(fix_times,no_fix_times)]
     avg_diff = sum(diffs) / len(diffs)
     print(f'lp avg diff: {avg_diff}')
-    plt.scatter(no_fix_times, fix_times, marker='o', label='LP', color='g')
+    plt.scatter(no_fix_times, fix_times, marker='o', label='CE', color='g')
 
-plt.xlabel('time to solve without variable fixing (s)')
+plt.xlabel('CE Solve Time (s)')
 plt.xscale('log')
 
-plt.ylabel('time to solve with variable fixing (s)')
+plt.ylabel('CE+VF Solve Time (s)')
 plt.yscale('log')
 
 plt.plot([0,10000],[0,10000])

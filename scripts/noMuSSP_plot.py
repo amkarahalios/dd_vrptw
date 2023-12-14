@@ -36,11 +36,11 @@ diffs = [ssp / muSSP for (ssp,muSSP) in zip(SSP_runtimes, muSSP_runtimes)]
 print(statistics.mean(diffs))
 plt.scatter(SSP_runtimes, muSSP_runtimes, marker = 'x')
  
-plt.xlabel('SSP runtime (s)')
+plt.xlabel('SSP Runtime (s)')
 plt.xscale('log')
 plt.xlim([1,max(max(SSP_runtimes),max(muSSP_runtimes))])
 
-plt.ylabel('muSSP runtime (s)')
+plt.ylabel('muSSP Runtime (s)')
 plt.yscale('log')
 plt.ylim([1,max(max(SSP_runtimes),max(muSSP_runtimes))])
 

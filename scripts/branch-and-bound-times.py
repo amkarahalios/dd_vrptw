@@ -116,12 +116,12 @@ for method_pair in method_pairs:
   mults = [no_bandb / bandb for (bandb,no_bandb) in zip(bandb_times,no_bandb_times) if bandb != 0]
   avg_mult = sum(mults) / len(mults)
   print(f'bandb avg mult: {avg_mult}')
-  plt.scatter(bandb_times, no_bandb_times, marker='x', color='b')
+  plt.scatter(no_bandb_times, bandb_times, marker='x', color='b')
 
-plt.xlabel('time to solve with branch-and-bound (s)')
+plt.xlabel('CE Solve Time (s)')
 plt.xscale('log')
 
-plt.ylabel('time to solve without branch-and-bound (s)')
+plt.ylabel('Branch-and-Refine Solve Time (s)')
 plt.yscale('log')
 
 plt.plot([0,10000],[0,10000])

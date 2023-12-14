@@ -772,29 +772,46 @@ for i, row in table_results_df.iterrows():
   lb_value = row['lb']
   if not math.isnan(lb_value):
     lb_value = round(float(lb_value),1)
+  else:
+    lb_value = '-'
 
   numArcs = row['numArcs']
   if not math.isnan(numArcs):
     numArcs = int(numArcs)
+  else:
+    numArcs = '-'
 
   time = row['time']
   if not math.isnan(time):
     time = int(time)
+  else:
+    time = '-'
 
   numLpIterations = row['iterations']
   if not math.isnan(numLpIterations):
     numLpIterations = int(numLpIterations)
+  else:
+    numLpIterations = '-'
  
   numLagIterations = row['lagIterations']
   if not math.isnan(numLagIterations):
     numLagIterations = int(numLagIterations)
+  else:
+    numLagIterations = '-'
 
   numSeparations = row['numSep']
   if not math.isnan(numSeparations):
     numSeparations = int(numSeparations)
+  else:
+    numSeparations = '-'
 
-  gap = round((instance_upper_bounds[instance] - lb_value) * 100.0 / instance_upper_bounds[instance], 1)
+  #gap = round((instance_upper_bounds[instance] - lb_value) * 100.0 / instance_upper_bounds[instance], 1)
+  if (lb_value == 0) or (lb_value == '-'):
+    lb_value = '-'
+    numLpIterations = '-'
+    numLagIterations = '-'
+    numSeparations = '-'
 
   percent_precedence = round(instance_percent_precedence[instance],1)
 
-  print(f"{instance_name} & {instance_sizes[instance]} & {percent_precedence} & {instance_lower_bounds[instance]} & {instance_upper_bounds[instance]} & {lb_value} & {gap} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+  print(f"{instance_name} & {instance_sizes[instance]} & {percent_precedence} & & {instance_lower_bounds[instance]} & {instance_upper_bounds[instance]} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
