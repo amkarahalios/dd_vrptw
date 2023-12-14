@@ -2166,7 +2166,7 @@ struct VRPTW
         //timeStateDiscretization = 100;
         //timeStateMultiplier = 10000;
         //timeStateDiscretization = 1000;
-        finalTimeStateMultiplier = 1000;
+        finalTimeStateMultiplier = 1000000;
         capacityDiscretization = 1;
 
         oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
