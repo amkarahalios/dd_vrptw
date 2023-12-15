@@ -1,0 +1,49 @@
+relax time window constraint
+capacity: 6000
+instance upper bound: 375
+route length upper bound: 22
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 100
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 0
+cut phase: 0
+deactivate cut value threshold: 0
+deactivate cut iter threshold: 0
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[375] numArcs: [28860] numFixed: [0] time: [0]
+num vars: 28860
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[370.22] ub[375] numArcs: [28860] numFixed: [0] time: [0]
+num vars: 29208
+STATS - lpIterations[2] lagIterations[0] sspIterations[0] numSeparations[9] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[1] lb[370.714] ub[375] numArcs: [29208] numFixed: [0] time: [1]
+num vars: 626
+STATS - lpIterations[3] lagIterations[0] sspIterations[0] numSeparations[14] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[1] lb[371.25] ub[375] numArcs: [29402] numFixed: [28776] time: [1]
+num vars: 577
+STATS - lpIterations[4] lagIterations[0] sspIterations[0] numSeparations[23] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[1] lb[372.733] ub[375] numArcs: [29756] numFixed: [29179] time: [1]
+num vars: 7178
+STATS - lpIterations[5] lagIterations[0] sspIterations[0] numSeparations[24] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[1] lb[372.733] ub[375] numArcs: [29775] numFixed: [22597] time: [1]
+num vars: 396
+STATS - lpIterations[6] lagIterations[0] sspIterations[0] numSeparations[25] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[1] lb[372.733] ub[375] numArcs: [29795] numFixed: [29399] time: [1]
+num vars: 18547
+STATS - lpIterations[7] lagIterations[0] sspIterations[0] numSeparations[26] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[1] lb[372.733] ub[375] numArcs: [29795] numFixed: [11248] time: [1]
+num vars: 336
+STATS - lpIterations[8] lagIterations[0] sspIterations[0] numSeparations[27] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[1] lb[375] ub[375] numArcs: [29795] numFixed: [29459] time: [1]
+routes: 
+flow {1}: 0 6 1 2 5 7 9 
+flow {1}: 0 12 15 18 20 17 
+flow {1}: 0 13 11 4 3 8 10 
+flow {1}: 0 14 21 19 16 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[8] lagIterations[0] sspIterations[0] numSeparations[27] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[1] lb[375] ub[375] numArcs: [29795] numFixed: [29459] time: [1]
+finished solving - complete
+time elapsed: 1

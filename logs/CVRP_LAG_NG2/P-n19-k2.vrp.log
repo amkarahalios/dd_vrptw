@@ -1,0 +1,296 @@
+relax time window constraint
+capacity: 160
+instance upper bound: 212
+route length upper bound: 19
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 0
+cut phase: 0
+deactivate cut value threshold: 0
+deactivate cut iter threshold: 0
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[212] numArcs: [69318] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[212] numArcs: [69318] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[117.737] ub[212] numArcs: [69316] numFixed: [0] time: [0]
+lambda: 0,3.325,7.125,6.6,6.325,3.1625,4.65,4.125,11.2,5.6,2.1,2.45,5.25,7.3625,4.125,10.4,8.2875,3.3,3,
+mu: 
+alpha: 0.342858
+updating best lambda
+switching from LAG to LP solver
+num vars: 63635
+STATS - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[5] lb[200.75] ub[212] numArcs: [69316] numFixed: [5683] time: [5]
+checking cuts, max violation: 0.96875, num cuts: 1
+new capacity cutset: 2 5 6 7 9 13 15 18 <= 6
+num vars: 63753
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[5] numCuts[1] compileTime[0] sspSolveTime[0] lpSolveTime[12] lb[207.631] ub[212] numArcs: [69504] numFixed: [5753] time: [12]
+checking cuts, max violation: 0.371571, num cuts: 5
+new capacity cutset: 1 3 4 6 8 10 11 12 14 16 17 <= 9
+new capacity cutset: 4 11 14 <= 2
+nested set, do not add
+new capacity cutset: 2 3 5 7 8 9 13 15 16 17 18 <= 9
+new capacity cutset: 3 5 7 8 9 13 15 16 17 18 <= 8
+nested set, do not add
+new capacity cutset: 2 3 5 7 8 9 13 15 16 17 <= 8
+nested set, do not add
+num vars: 1719
+STATS - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[14] numCuts[3] compileTime[0] sspSolveTime[0] lpSolveTime[12] lb[210.714] ub[212] numArcs: [69965] numFixed: [68248] time: [12]
+checking cuts, max violation: 0.333333, num cuts: 1
+new capacity cutset: 1 2 3 4 8 10 11 12 14 16 17 <= 9
+num vars: 3010
+ERROR possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[17] numCuts[4] compileTime[0] sspSolveTime[0] lpSolveTime[12] lb[210.582] ub[212] numArcs: [70137] numFixed: [67129] time: [12]
+checking cuts, max violation: 0.195846, num cuts: 3
+new capacity cutset: 1 3 4 8 9 10 11 12 14 16 17 <= 9
+new capacity cutset: 4 11 14 <= 2
+nested set, do not add
+new capacity cutset: 3 5 7 8 9 13 15 16 17 18 <= 8
+num vars: 2248
+STATS - lpIterations[6] lagIterations[1] sspIterations[1] numSeparations[24] numCuts[6] compileTime[0] sspSolveTime[0] lpSolveTime[13] lb[210.831] ub[212] numArcs: [70398] numFixed: [68152] time: [13]
+checking cuts, max violation: 0.101167, num cuts: 1
+new capacity cutset: 2 5 7 8 9 13 15 16 17 <= 7
+num vars: 61777
+STATS - lpIterations[7] lagIterations[1] sspIterations[1] numSeparations[31] numCuts[7] compileTime[0] sspSolveTime[0] lpSolveTime[29] lb[211.037] ub[212] numArcs: [70626] numFixed: [8851] time: [29]
+checking cuts, max violation: 0.254098, num cuts: 2
+new capacity cutset: 1 3 4 7 8 10 11 12 14 16 17 <= 9
+new capacity cutset: 4 11 14 <= 2
+nested set, do not add
+num vars: 513
+STATS - lpIterations[8] lagIterations[1] sspIterations[1] numSeparations[36] numCuts[8] compileTime[0] sspSolveTime[0] lpSolveTime[29] lb[211.292] ub[212] numArcs: [70863] numFixed: [70352] time: [29]
+no rcc cuts found
+num vars: 14483
+STATS - lpIterations[9] lagIterations[1] sspIterations[1] numSeparations[39] numCuts[8] compileTime[0] sspSolveTime[0] lpSolveTime[34] lb[211.333] ub[212] numArcs: [70969] numFixed: [56488] time: [34]
+no rcc cuts found
+num vars: 495
+STATS - lpIterations[10] lagIterations[1] sspIterations[1] numSeparations[43] numCuts[8] compileTime[0] sspSolveTime[0] lpSolveTime[34] lb[211.471] ub[212] numArcs: [71144] numFixed: [70651] time: [34]
+no rcc cuts found
+num vars: 60734
+STATS - lpIterations[11] lagIterations[1] sspIterations[1] numSeparations[47] numCuts[8] compileTime[0] sspSolveTime[0] lpSolveTime[48] lb[211.517] ub[212] numArcs: [71301] numFixed: [10569] time: [48]
+no rcc cuts found
+num vars: 449
+STATS - lpIterations[12] lagIterations[1] sspIterations[1] numSeparations[53] numCuts[8] compileTime[0] sspSolveTime[0] lpSolveTime[48] lb[211.577] ub[212] numArcs: [71550] numFixed: [71103] time: [48]
+no rcc cuts found
+num vars: 511
+STATS - lpIterations[13] lagIterations[1] sspIterations[1] numSeparations[58] numCuts[8] compileTime[0] sspSolveTime[0] lpSolveTime[48] lb[211.585] ub[212] numArcs: [71798] numFixed: [71289] time: [48]
+no rcc cuts found
+num vars: 597
+STATS - lpIterations[14] lagIterations[1] sspIterations[1] numSeparations[61] numCuts[8] compileTime[0] sspSolveTime[0] lpSolveTime[48] lb[211.593] ub[212] numArcs: [71961] numFixed: [71366] time: [48]
+no rcc cuts found
+num vars: 38831
+STATS - lpIterations[15] lagIterations[1] sspIterations[1] numSeparations[65] numCuts[8] compileTime[0] sspSolveTime[0] lpSolveTime[58] lb[211.617] ub[212] numArcs: [72104] numFixed: [33275] time: [58]
+checking cuts, max violation: 0.133333, num cuts: 1
+new capacity cutset: 4 11 14 <= 2
+num vars: 424
+STATS - lpIterations[16] lagIterations[1] sspIterations[1] numSeparations[71] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[58] lb[211.667] ub[212] numArcs: [72289] numFixed: [71867] time: [58]
+no rcc cuts found
+num vars: 63169
+STATS - lpIterations[17] lagIterations[1] sspIterations[1] numSeparations[72] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[80] lb[211.684] ub[212] numArcs: [72301] numFixed: [9134] time: [80]
+no rcc cuts found
+num vars: 444
+STATS - lpIterations[18] lagIterations[1] sspIterations[1] numSeparations[74] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[80] lb[211.684] ub[212] numArcs: [72359] numFixed: [71917] time: [80]
+no rcc cuts found
+num vars: 62764
+STATS - lpIterations[19] lagIterations[1] sspIterations[1] numSeparations[77] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[100] lb[211.7] ub[212] numArcs: [72415] numFixed: [9653] time: [101]
+no rcc cuts found
+num vars: 482
+STATS - lpIterations[20] lagIterations[1] sspIterations[1] numSeparations[81] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[100] lb[211.7] ub[212] numArcs: [72454] numFixed: [71974] time: [101]
+no rcc cuts found
+num vars: 1566
+STATS - lpIterations[21] lagIterations[1] sspIterations[1] numSeparations[85] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[101] lb[211.75] ub[212] numArcs: [72612] numFixed: [71048] time: [101]
+no rcc cuts found
+num vars: 60020
+STATS - lpIterations[22] lagIterations[1] sspIterations[1] numSeparations[87] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[120] lb[211.744] ub[212] numArcs: [72626] numFixed: [12608] time: [121]
+no rcc cuts found
+num vars: 376
+STATS - lpIterations[23] lagIterations[1] sspIterations[1] numSeparations[92] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[120] lb[211.842] ub[212] numArcs: [72737] numFixed: [72363] time: [121]
+no rcc cuts found
+num vars: 65393
+ERROR possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[24] lagIterations[1] sspIterations[1] numSeparations[93] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[140] lb[211.76] ub[212] numArcs: [72791] numFixed: [7400] time: [141]
+no rcc cuts found
+num vars: 346
+STATS - lpIterations[25] lagIterations[1] sspIterations[1] numSeparations[96] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[140] lb[211.813] ub[212] numArcs: [72848] numFixed: [72504] time: [141]
+no rcc cuts found
+num vars: 66100
+ERROR possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[26] lagIterations[1] sspIterations[1] numSeparations[100] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[160] lb[211.793] ub[212] numArcs: [72918] numFixed: [6820] time: [161]
+no rcc cuts found
+num vars: 410
+STATS - lpIterations[27] lagIterations[1] sspIterations[1] numSeparations[104] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[160] lb[211.795] ub[212] numArcs: [73023] numFixed: [72615] time: [161]
+no rcc cuts found
+num vars: 13568
+STATS - lpIterations[28] lagIterations[1] sspIterations[1] numSeparations[106] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[164] lb[211.795] ub[212] numArcs: [73065] numFixed: [59499] time: [165]
+no rcc cuts found
+num vars: 449
+STATS - lpIterations[29] lagIterations[1] sspIterations[1] numSeparations[108] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[165] lb[211.795] ub[212] numArcs: [73094] numFixed: [72647] time: [165]
+no rcc cuts found
+num vars: 42991
+STATS - lpIterations[30] lagIterations[1] sspIterations[1] numSeparations[110] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[178] lb[211.8] ub[212] numArcs: [73138] numFixed: [30149] time: [178]
+no rcc cuts found
+num vars: 354
+STATS - lpIterations[31] lagIterations[1] sspIterations[1] numSeparations[111] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[178] lb[211.838] ub[212] numArcs: [73152] numFixed: [72800] time: [179]
+no rcc cuts found
+num vars: 56923
+ERROR possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[32] lagIterations[1] sspIterations[1] numSeparations[113] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[195] lb[211.821] ub[212] numArcs: [73179] numFixed: [16258] time: [195]
+no rcc cuts found
+num vars: 452
+STATS - lpIterations[33] lagIterations[1] sspIterations[1] numSeparations[116] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[195] lb[211.821] ub[212] numArcs: [73309] numFixed: [72859] time: [195]
+no rcc cuts found
+num vars: 969
+STATS - lpIterations[34] lagIterations[1] sspIterations[1] numSeparations[119] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[195] lb[211.821] ub[212] numArcs: [73404] numFixed: [72437] time: [196]
+no rcc cuts found
+num vars: 41367
+STATS - lpIterations[35] lagIterations[1] sspIterations[1] numSeparations[123] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[208] lb[211.828] ub[212] numArcs: [73488] numFixed: [32123] time: [209]
+no rcc cuts found
+num vars: 411
+STATS - lpIterations[36] lagIterations[1] sspIterations[1] numSeparations[128] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[208] lb[211.833] ub[212] numArcs: [73550] numFixed: [73141] time: [209]
+no rcc cuts found
+num vars: 54158
+STATS - lpIterations[37] lagIterations[1] sspIterations[1] numSeparations[129] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[225] lb[211.833] ub[212] numArcs: [73577] numFixed: [19421] time: [225]
+no rcc cuts found
+num vars: 401
+STATS - lpIterations[38] lagIterations[1] sspIterations[1] numSeparations[130] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[225] lb[211.833] ub[212] numArcs: [73664] numFixed: [73265] time: [226]
+no rcc cuts found
+num vars: 60867
+STATS - lpIterations[39] lagIterations[1] sspIterations[1] numSeparations[131] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[242] lb[211.833] ub[212] numArcs: [73718] numFixed: [12853] time: [243]
+no rcc cuts found
+num vars: 434
+STATS - lpIterations[40] lagIterations[1] sspIterations[1] numSeparations[132] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[242] lb[211.838] ub[212] numArcs: [73718] numFixed: [73286] time: [243]
+no rcc cuts found
+num vars: 17984
+STATS - lpIterations[41] lagIterations[1] sspIterations[1] numSeparations[134] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[247] lb[211.838] ub[212] numArcs: [73732] numFixed: [55750] time: [248]
+no rcc cuts found
+num vars: 527
+STATS - lpIterations[42] lagIterations[1] sspIterations[1] numSeparations[136] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[248] lb[211.842] ub[212] numArcs: [73732] numFixed: [73207] time: [248]
+no rcc cuts found
+num vars: 11380
+STATS - lpIterations[43] lagIterations[1] sspIterations[1] numSeparations[138] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[251] lb[211.842] ub[212] numArcs: [73806] numFixed: [62428] time: [252]
+no rcc cuts found
+num vars: 478
+STATS - lpIterations[44] lagIterations[1] sspIterations[1] numSeparations[140] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[251] lb[211.842] ub[212] numArcs: [73864] numFixed: [73388] time: [252]
+no rcc cuts found
+num vars: 20463
+STATS - lpIterations[45] lagIterations[1] sspIterations[1] numSeparations[141] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[257] lb[211.842] ub[212] numArcs: [73864] numFixed: [53403] time: [258]
+no rcc cuts found
+num vars: 485
+STATS - lpIterations[46] lagIterations[1] sspIterations[1] numSeparations[142] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[258] lb[211.842] ub[212] numArcs: [73864] numFixed: [73381] time: [259]
+no rcc cuts found
+num vars: 12221
+STATS - lpIterations[47] lagIterations[1] sspIterations[1] numSeparations[145] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[261] lb[211.842] ub[212] numArcs: [73893] numFixed: [61674] time: [262]
+no rcc cuts found
+num vars: 532
+STATS - lpIterations[48] lagIterations[1] sspIterations[1] numSeparations[146] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[261] lb[211.842] ub[212] numArcs: [73974] numFixed: [73444] time: [262]
+no rcc cuts found
+num vars: 66655
+STATS - lpIterations[49] lagIterations[1] sspIterations[1] numSeparations[147] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[280] lb[211.856] ub[212] numArcs: [74024] numFixed: [7371] time: [281]
+no rcc cuts found
+num vars: 324
+STATS - lpIterations[50] lagIterations[1] sspIterations[1] numSeparations[151] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[280] lb[211.857] ub[212] numArcs: [74132] numFixed: [73810] time: [281]
+no rcc cuts found
+num vars: 13795
+STATS - lpIterations[51] lagIterations[1] sspIterations[1] numSeparations[154] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[283] lb[211.906] ub[212] numArcs: [74163] numFixed: [60370] time: [284]
+no rcc cuts found
+num vars: 831
+ERROR possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[52] lagIterations[1] sspIterations[1] numSeparations[158] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[283] lb[211.885] ub[212] numArcs: [74252] numFixed: [73423] time: [285]
+no rcc cuts found
+num vars: 15449
+STATS - lpIterations[53] lagIterations[1] sspIterations[1] numSeparations[163] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[287] lb[211.892] ub[212] numArcs: [74411] numFixed: [58964] time: [288]
+no rcc cuts found
+num vars: 604
+STATS - lpIterations[54] lagIterations[1] sspIterations[1] numSeparations[165] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[287] lb[211.895] ub[212] numArcs: [74425] numFixed: [73823] time: [289]
+no rcc cuts found
+num vars: 39206
+STATS - lpIterations[55] lagIterations[1] sspIterations[1] numSeparations[167] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[299] lb[211.895] ub[212] numArcs: [74463] numFixed: [35259] time: [300]
+no rcc cuts found
+num vars: 502
+STATS - lpIterations[56] lagIterations[1] sspIterations[1] numSeparations[169] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[299] lb[211.895] ub[212] numArcs: [74492] numFixed: [73992] time: [301]
+no rcc cuts found
+num vars: 59625
+STATS - lpIterations[57] lagIterations[1] sspIterations[1] numSeparations[171] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[315] lb[211.895] ub[212] numArcs: [74604] numFixed: [14981] time: [317]
+no rcc cuts found
+num vars: 382
+STATS - lpIterations[58] lagIterations[1] sspIterations[1] numSeparations[172] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[315] lb[211.896] ub[212] numArcs: [74604] numFixed: [74224] time: [317]
+no rcc cuts found
+num vars: 61903
+STATS - lpIterations[59] lagIterations[1] sspIterations[1] numSeparations[176] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[335] lb[211.896] ub[212] numArcs: [74652] numFixed: [12751] time: [336]
+no rcc cuts found
+num vars: 334
+STATS - lpIterations[60] lagIterations[1] sspIterations[1] numSeparations[180] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[335] lb[211.897] ub[212] numArcs: [74714] numFixed: [74382] time: [336]
+no rcc cuts found
+num vars: 39314
+STATS - lpIterations[61] lagIterations[1] sspIterations[1] numSeparations[185] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[347] lb[211.9] ub[212] numArcs: [74757] numFixed: [35445] time: [349]
+no rcc cuts found
+num vars: 376
+STATS - lpIterations[62] lagIterations[1] sspIterations[1] numSeparations[186] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[347] lb[211.9] ub[212] numArcs: [74838] numFixed: [74464] time: [349]
+no rcc cuts found
+num vars: 54445
+STATS - lpIterations[63] lagIterations[1] sspIterations[1] numSeparations[187] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[364] lb[211.914] ub[212] numArcs: [74903] numFixed: [20460] time: [366]
+no rcc cuts found
+num vars: 311
+STATS - lpIterations[64] lagIterations[1] sspIterations[1] numSeparations[190] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[365] lb[211.921] ub[212] numArcs: [74965] numFixed: [74656] time: [366]
+no rcc cuts found
+num vars: 65374
+STATS - lpIterations[65] lagIterations[1] sspIterations[1] numSeparations[193] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[383] lb[211.921] ub[212] numArcs: [74990] numFixed: [9618] time: [384]
+no rcc cuts found
+num vars: 367
+STATS - lpIterations[66] lagIterations[1] sspIterations[1] numSeparations[195] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[383] lb[211.921] ub[212] numArcs: [75021] numFixed: [74656] time: [384]
+no rcc cuts found
+num vars: 47897
+STATS - lpIterations[67] lagIterations[1] sspIterations[1] numSeparations[197] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[399] lb[211.921] ub[212] numArcs: [75036] numFixed: [27141] time: [400]
+no rcc cuts found
+num vars: 348
+STATS - lpIterations[68] lagIterations[1] sspIterations[1] numSeparations[199] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[399] lb[211.961] ub[212] numArcs: [75095] numFixed: [74749] time: [400]
+no rcc cuts found
+num vars: 48650
+ERROR possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[69] lagIterations[1] sspIterations[1] numSeparations[203] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[416] lb[211.937] ub[212] numArcs: [75172] numFixed: [26524] time: [417]
+no rcc cuts found
+num vars: 365
+STATS - lpIterations[70] lagIterations[1] sspIterations[1] numSeparations[206] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[416] lb[211.938] ub[212] numArcs: [75188] numFixed: [74825] time: [417]
+no rcc cuts found
+num vars: 20242
+STATS - lpIterations[71] lagIterations[1] sspIterations[1] numSeparations[209] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[423] lb[211.944] ub[212] numArcs: [75203] numFixed: [54963] time: [424]
+no rcc cuts found
+num vars: 340
+STATS - lpIterations[72] lagIterations[1] sspIterations[1] numSeparations[212] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[423] lb[211.947] ub[212] numArcs: [75242] numFixed: [74904] time: [424]
+no rcc cuts found
+num vars: 6542
+STATS - lpIterations[73] lagIterations[1] sspIterations[1] numSeparations[213] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[425] lb[211.947] ub[212] numArcs: [75242] numFixed: [68702] time: [426]
+no rcc cuts found
+routes: 
+flow {0.473684}: 0 1 10 8 16 17 3 12 14 11 4 
+flow {0.210526}: 0 4 11 14 12 3 17 16 8 2 
+flow {0.263158}: 0 7 9 8 16 17 3 12 14 11 4 
+flow {0.263158}: 0 18 5 13 15 9 2 6 
+flow {0.105263}: 0 18 5 13 15 9 7 2 10 1 
+flow {0.315789}: 0 18 5 13 15 9 7 10 1 6 
+flow {0.0526316}: 0 18 2 10 12 14 11 4 1 6 
+flow {0.0526316}: 0 6 1 10 3 17 16 8 2 
+flow {0.0526316}: 0 6 2 7 9 15 13 5 
+flow {0.263158}: 0 6 2 7 15 13 5 18 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+solving IP
+num vars: 360
+STATS - lpIterations[74] lagIterations[1] sspIterations[1] numSeparations[213] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[425] lb[212] ub[212] numArcs: [75242] numFixed: [74884] time: [426]
+routes: 
+flow {1}: 0 1 10 2 7 9 15 13 5 18 
+flow {1}: 0 4 11 14 12 3 17 16 8 6 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[74] lagIterations[1] sspIterations[1] numSeparations[213] numCuts[9] compileTime[0] sspSolveTime[0] lpSolveTime[425] lb[212] ub[212] numArcs: [75242] numFixed: [74884] time: [426]
+finished solving - complete
+time elapsed: 426

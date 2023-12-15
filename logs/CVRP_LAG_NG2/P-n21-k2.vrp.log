@@ -1,0 +1,129 @@
+relax time window constraint
+capacity: 160
+instance upper bound: 211
+route length upper bound: 21
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 0
+cut phase: 0
+deactivate cut value threshold: 0
+deactivate cut iter threshold: 0
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[211] numArcs: [92460] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[211] numArcs: [92460] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[115.013] ub[211] numArcs: [92460] numFixed: [0] time: [0]
+lambda: 0,1.225,7.875,6.6,6.325,3.1625,2.85,4.125,11.2,3.2,2.1,2.45,5.25,2.175,7.3625,4.125,1.5,10.4,8.2875,3.3,3,
+mu: 
+alpha: 0.299668
+updating best lambda
+switching from LAG to LP solver
+num vars: 88911
+STATS - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[10] lb[207.471] ub[211] numArcs: [92460] numFixed: [3549] time: [10]
+checking cuts, max violation: 0.452247, num cuts: 12
+new capacity cutset: 4 11 15 <= 2
+new capacity cutset: 1 2 3 4 8 10 11 12 13 15 18 19 <= 10
+nested set, do not add
+new capacity cutset: 1 2 3 4 8 10 11 12 15 18 19 <= 9
+nested set, do not add
+new capacity cutset: 3 8 18 19 <= 3
+new capacity cutset: 2 3 5 7 8 9 13 14 17 18 19 20 <= 10
+nested set, do not add
+new capacity cutset: 2 3 5 6 7 8 9 13 14 17 18 19 20 <= 11
+nested set, do not add
+new capacity cutset: 2 3 5 8 9 13 14 17 18 19 <= 8
+nested set, do not add
+new capacity cutset: 2 3 5 7 8 9 13 14 17 18 19 <= 9
+nested set, do not add
+new capacity cutset: 2 3 5 6 7 8 9 13 14 17 18 19 <= 10
+nested set, do not add
+new capacity cutset: 1 3 4 8 9 10 11 12 13 15 17 18 19 <= 11
+nested set, do not add
+new capacity cutset: 1 3 4 5 8 9 10 11 12 13 14 15 17 18 19 <= 13
+nested set, do not add
+new capacity cutset: 2 5 6 7 9 13 14 16 17 20 <= 8
+num vars: 89381
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[8] numCuts[3] compileTime[0] sspSolveTime[0] lpSolveTime[25] lb[208.79] ub[211] numArcs: [92982] numFixed: [3601] time: [25]
+checking cuts, max violation: 0.145161, num cuts: 6
+new capacity cutset: 5 9 14 17 <= 3
+new capacity cutset: 9 17 <= 1
+nested set, do not add
+new capacity cutset: 5 14 <= 1
+nested set, do not add
+new capacity cutset: 2 3 5 7 8 9 13 14 17 18 19 20 <= 10
+nested set, do not add
+new capacity cutset: 2 3 5 6 7 8 9 13 14 17 18 19 20 <= 11
+nested set, do not add
+new capacity cutset: 2 3 5 7 8 9 13 14 17 18 19 <= 9
+nested set, do not add
+num vars: 1358
+STATS - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[16] numCuts[4] compileTime[0] sspSolveTime[0] lpSolveTime[25] lb[209.21] ub[211] numArcs: [93624] numFixed: [92266] time: [25]
+checking cuts, max violation: 0.246575, num cuts: 12
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 <= 18
+new capacity cutset: 2 3 4 5 6 7 8 9 10 11 12 13 14 15 17 18 19 20 <= 16
+nested set, do not add
+new capacity cutset: 2 3 4 5 7 8 9 10 11 12 13 14 15 17 18 19 20 <= 15
+nested set, do not add
+new capacity cutset: 2 3 4 5 7 8 9 10 11 12 13 14 15 17 18 19 <= 14
+nested set, do not add
+new capacity cutset: 3 5 7 8 9 13 14 17 18 19 20 <= 9
+nested set, do not add
+new capacity cutset: 2 3 5 7 8 9 13 14 17 18 19 20 <= 10
+nested set, do not add
+new capacity cutset: 2 3 5 6 7 8 9 13 14 17 18 19 20 <= 11
+nested set, do not add
+new capacity cutset: 2 3 5 7 8 9 13 14 17 18 19 <= 9
+nested set, do not add
+new capacity cutset: 1 2 3 4 8 10 11 12 15 18 19 <= 9
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 7 8 9 10 11 12 13 14 15 17 18 19 <= 15
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 7 8 9 10 11 12 13 14 15 17 18 19 20 <= 16
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 17 18 19 20 <= 17
+nested set, do not add
+num vars: 63497
+STATS - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[24] numCuts[5] compileTime[0] sspSolveTime[0] lpSolveTime[42] lb[210.882] ub[211] numArcs: [94033] numFixed: [30536] time: [42]
+checking cuts, max violation: 0.215686, num cuts: 7
+new capacity cutset: 1 2 3 4 8 10 11 12 13 15 16 18 19 <= 11
+new capacity cutset: 1 2 3 4 8 10 11 12 15 16 18 19 <= 10
+nested set, do not add
+new capacity cutset: 2 3 5 7 8 9 13 14 17 18 19 20 <= 10
+new capacity cutset: 2 3 5 6 7 8 9 13 14 17 18 19 20 <= 11
+nested set, do not add
+new capacity cutset: 2 3 5 7 8 9 13 14 17 18 19 <= 9
+nested set, do not add
+new capacity cutset: 1 2 3 4 8 10 11 12 15 18 19 <= 9
+nested set, do not add
+new capacity cutset: 1 2 3 4 8 10 11 12 13 15 18 19 <= 10
+nested set, do not add
+num vars: 283
+STATS - lpIterations[6] lagIterations[1] sspIterations[1] numSeparations[31] numCuts[7] compileTime[0] sspSolveTime[0] lpSolveTime[43] lb[211] ub[211] numArcs: [94346] numFixed: [94063] time: [43]
+integral solution - no cut added
+routes: 
+flow {1}: 0 4 11 15 12 3 19 18 8 10 1 16 
+flow {1}: 0 6 7 2 13 9 17 14 5 20 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+solving IP
+num vars: 166
+STATS - lpIterations[7] lagIterations[1] sspIterations[1] numSeparations[31] numCuts[7] compileTime[0] sspSolveTime[0] lpSolveTime[43] lb[211] ub[211] numArcs: [94346] numFixed: [94180] time: [43]
+routes: 
+flow {1}: 0 4 11 15 12 3 19 18 8 10 1 16 
+flow {1}: 0 20 5 14 17 9 13 2 7 6 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[7] lagIterations[1] sspIterations[1] numSeparations[31] numCuts[7] compileTime[0] sspSolveTime[0] lpSolveTime[43] lb[211] ub[211] numArcs: [94346] numFixed: [94180] time: [43]
+finished solving - complete
+time elapsed: 43

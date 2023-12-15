@@ -1,0 +1,78 @@
+relax time window constraint
+capacity: 3000
+instance upper bound: 603
+route length upper bound: 22
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 0
+cut phase: 0
+deactivate cut value threshold: 0
+deactivate cut iter threshold: 0
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[603] numArcs: [5662] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[603] numArcs: [5662] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[425.2] ub[603] numArcs: [5662] numFixed: [0] time: [0]
+lambda: 0,35.9333,22.4,22.4,38.2667,51.8,8.26667,16.5333,1.6,9.33333,6.8,18.4,9.53333,13.8667,1.4,12,14,14.6667,17.4,51.6667,38.4,15.8667,
+mu: 
+alpha: 1.10787
+switching from LAG to LP solver
+num vars: 5662
+STATS - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[582.5] ub[603] numArcs: [5662] numFixed: [0] time: [0]
+checking cuts, max violation: 0.5, num cuts: 3
+new capacity cutset: 14 17 20 21 <= 2
+new capacity cutset: 15 18 20 <= 1
+new capacity cutset: 17 20 21 <= 1
+nested set, do not add
+num vars: 5690
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[2] numCuts[2] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[584.333] ub[603] numArcs: [5690] numFixed: [0] time: [0]
+checking cuts, max violation: 0.333333, num cuts: 1
+new capacity cutset: 14 17 19 21 <= 2
+num vars: 864
+STATS - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[4] numCuts[3] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[587.5] ub[603] numArcs: [5731] numFixed: [4867] time: [0]
+checking cuts, max violation: 0.25, num cuts: 1
+new capacity cutset: 12 14 15 17 18 19 20 21 <= 4
+num vars: 681
+STATS - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[5] numCuts[4] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[590] ub[603] numArcs: [5758] numFixed: [5077] time: [0]
+integral solution - no cut added
+routes: 
+flow {1}: 0 4 3 8 10 
+flow {1}: 0 5 9 
+flow {1}: 0 6 1 2 7 
+flow {1}: 0 12 
+flow {1}: 0 13 11 
+flow {1}: 0 16 
+flow {1}: 0 17 18 15 
+flow {1}: 0 19 
+flow {1}: 0 20 21 14 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+solving IP
+num vars: 547
+STATS - lpIterations[6] lagIterations[1] sspIterations[1] numSeparations[5] numCuts[4] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[590] ub[603] numArcs: [5758] numFixed: [5211] time: [0]
+routes: 
+flow {1}: 0 5 7 
+flow {1}: 0 6 1 2 9 
+flow {1}: 0 10 8 3 4 
+flow {1}: 0 12 
+flow {1}: 0 13 11 
+flow {1}: 0 14 21 20 
+flow {1}: 0 15 18 17 
+flow {1}: 0 16 
+flow {1}: 0 19 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[6] lagIterations[1] sspIterations[1] numSeparations[5] numCuts[4] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[590] ub[590] numArcs: [5758] numFixed: [5211] time: [0]
+finished solving - complete
+time elapsed: 0
