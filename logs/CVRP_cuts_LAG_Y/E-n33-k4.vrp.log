@@ -1,0 +1,805 @@
+relax time window constraint
+capacity: 8000
+instance upper bound: 835
+route length upper bound: 33
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 0
+cut phase: 0
+deactivate cut value threshold: 0
+deactivate cut iter threshold: 0
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[835] numArcs: [1151002] numFixed: [0] time: [1]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[835] numArcs: [1151002] numFixed: [0] time: [1]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[591.013] ub[835] numArcs: [1150993] numFixed: [0] time: [1]
+lambda: 0,11.9,5.3,3.4,14.4,0.63,1.3,32.5,15.525,10.5,13.6875,24,2.1,4.3125,29.6,8.6625,20.125,11.6875,14.7875,4.6,10.8,7.575,33.475,20.825,21.375,32.55,89,14.55,24,10.75,36.25,25.925,18.7,
+mu: 
+alpha: 0.860531
+updating best lambda
+STATS - lpIterations[1] lagIterations[2] sspIterations[2] numSeparations[1] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[609.909] ub[835] numArcs: [1151085] numFixed: [2218] time: [1]
+lambda: 0,12.7605,6.16053,4.26053,15.2605,0.63,0.439469,30.7789,14.6645,11.3605,14.548,24.8605,2.96053,5.17303,30.4605,9.52303,20.9855,12.548,15.648,5.46053,11.6605,8.43553,34.3355,21.6855,22.2355,33.4105,89.8605,15.4105,24.8605,11.6105,37.1105,26.7855,19.5605,
+mu: 
+alpha: 1.10731
+updating best lambda
+STATS - lpIterations[1] lagIterations[3] sspIterations[3] numSeparations[2] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[634.904] ub[835] numArcs: [1151228] numFixed: [3025] time: [1]
+lambda: 0,13.8678,6.16053,5.36785,16.3678,1.73731,1.54678,31.8863,14.6645,11.3605,14.548,23.7532,2.96053,6.28035,31.5678,10.6303,22.0928,13.6553,16.7553,6.56785,12.7678,9.54285,35.4428,22.7928,23.3428,34.5178,90.9678,16.5178,25.9678,12.7178,38.2178,27.8928,18.4532,
+mu: 
+alpha: 1.02735
+updating best lambda
+STATS - lpIterations[1] lagIterations[4] sspIterations[4] numSeparations[3] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[650.985] ub[835] numArcs: [1151392] numFixed: [5190] time: [1]
+lambda: 0,14.8952,7.18788,4.34049,17.3952,0.709963,0.519432,30.8589,14.6645,10.3332,14.548,24.7806,3.98788,7.3077,32.5952,11.6577,23.1202,14.6827,17.7827,7.5952,13.7952,10.5702,36.4702,23.8202,24.3702,35.5452,91.9952,17.5452,26.9952,13.7452,39.2452,28.9202,19.4806,
+mu: 
+alpha: 1.15916
+updating best lambda
+STATS - lpIterations[1] lagIterations[5] sspIterations[5] numSeparations[3] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[673.788] ub[835] numArcs: [1151392] numFixed: [9291] time: [2]
+lambda: 0,16.0544,8.34704,5.49965,18.5544,1.86912,1.67859,32.0181,15.8236,11.4923,15.7072,25.9397,5.14704,8.46686,32.5952,11.6577,24.2794,14.6827,18.9419,8.75436,14.9544,11.7294,37.6294,24.9794,25.5294,35.5452,91.9952,18.7044,28.1544,14.9044,40.4044,30.0794,20.6397,
+mu: 
+alpha: 1.035
+updating best lambda
+STATS - lpIterations[1] lagIterations[6] sspIterations[9] numSeparations[4] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] lb[689.951] ub[835] numArcs: [1151480] numFixed: [14464] time: [2]
+lambda: 0,17.0894,7.31204,4.46465,19.5894,2.90413,2.7136,33.0531,15.8236,12.5273,16.7422,24.9047,4.11204,9.50186,33.6302,12.6927,25.3144,15.7177,19.9769,9.78936,15.9894,12.7644,38.6644,26.0144,26.5644,36.5802,93.0302,19.7394,29.1894,15.9394,41.4394,31.1144,19.6047,
+mu: 
+alpha: 0.0689509
+STATS - lpIterations[1] lagIterations[6] sspIterations[9] numSeparations[4] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] lb[693.719] ub[835] numArcs: [1151480] numFixed: [14464] time: [2]
+lambda: 0,17.0204,7.38099,4.5336,19.6583,2.97308,2.78255,33.122,15.8926,12.5963,16.8111,24.9737,4.04309,9.29501,33.6992,12.7617,25.3833,15.7867,19.4942,9.30671,16.0583,11.868,37.768,26.0833,26.6333,36.6492,93.0992,19.8083,29.2583,16.0083,41.5083,31.1833,19.6737,
+mu: 
+updating best lambda
+STATS - lpIterations[1] lagIterations[7] sspIterations[10] numSeparations[8] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] lb[693.726] ub[835] numArcs: [1151897] numFixed: [25560] time: [2]
+lambda: 0,17.0204,7.38099,4.5336,19.6583,2.97308,2.78255,33.122,15.8926,12.5963,16.8111,24.9737,4.04309,9.29501,33.6992,12.7617,25.3833,15.7867,19.4942,9.30671,16.0583,11.868,37.768,26.0833,26.6333,36.6492,93.0992,19.8083,29.2583,16.0083,41.5083,31.1833,19.6737,
+mu: 
+alpha: 0.810428
+updating best lambda
+alpha: 0.0303864
+STATS - lpIterations[1] lagIterations[8] sspIterations[19] numSeparations[9] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] lb[705.171] ub[835] numArcs: [1151925] numFixed: [26514] time: [4]
+lambda: 0,17.7701,8.16103,5.34403,20.4991,2.19304,2.00251,33.1524,15.923,10.1954,15.2207,25.8145,3.98232,9.89273,34.4792,13.4809,26.2241,16.5059,19.8792,9.69172,16.6864,12.1922,37.9707,26.9241,27.4741,37.4292,93.8792,20.6491,30.0991,16.8491,42.3491,32.0241,20.5145,
+mu: 
+updating best lambda
+STATS - lpIterations[1] lagIterations[9] sspIterations[20] numSeparations[16] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] lb[705.568] ub[835] numArcs: [1152531] numFixed: [39669] time: [4]
+lambda: 0,17.7701,8.16103,5.34403,20.4991,2.19304,2.00251,33.1524,15.923,10.1954,15.2207,25.8145,3.98232,9.89273,34.4792,13.4809,26.2241,16.5059,19.8792,9.69172,16.6864,12.1922,37.9707,26.9241,27.4741,37.4292,93.8792,20.6491,30.0991,16.8491,42.3491,32.0241,20.5145,
+mu: 
+alpha: 1.15591
+updating best lambda
+alpha: 0.0215971
+STATS - lpIterations[1] lagIterations[10] sspIterations[40] numSeparations[17] numCuts[0] compileTime[1] sspSolveTime[7] lpSolveTime[0] lb[721.977] ub[835] numArcs: [1152334] numFixed: [40182] time: [10]
+lambda: 0,16.571,9.16576,6.45674,21.6766,3.28416,3.05043,34.2651,17.0357,11.2865,16.2902,26.9704,4.98705,10.5951,34.4576,13.4377,27.4016,16.4411,20.2792,10.0917,17.4536,12.5923,38.0899,28.1016,28.6516,38.5851,93.8792,21.8266,31.2766,18.0266,43.5266,33.18,21.6488,
+mu: 
+updating best lambda
+alpha: 0.0797154
+updating best lambda
+alpha: 1.35991
+alpha: 0.0223689
+STATS - lpIterations[1] lagIterations[13] sspIterations[73] numSeparations[46] numCuts[0] compileTime[1] sspSolveTime[14] lpSolveTime[0] lb[726.711] ub[835] numArcs: [1155135] numFixed: [61333] time: [18]
+lambda: 0,17.819,7.06605,4.85769,23.1386,2.70378,2.31062,33.6498,16.4777,10.7285,17.3788,26.7313,4.04307,11.3132,33.018,11.9757,28.8636,14.9791,20.2885,10.101,18.1046,12.7357,37.7161,29.5636,30.1136,37.1679,92.4619,23.2886,32.7386,19.4886,44.9886,34.6197,21.0111,
+mu: 
+updating best lambda
+alpha: 0.0358184
+STATS - lpIterations[1] lagIterations[14] sspIterations[82] numSeparations[64] numCuts[0] compileTime[1] sspSolveTime[16] lpSolveTime[0] lb[726.863] ub[835] numArcs: [1156302] numFixed: [74618] time: [19]
+lambda: 0,17.6758,7.06605,4.85769,23.1744,2.70378,2.31062,33.6856,16.5135,10.7643,17.343,26.7671,3.93561,10.955,32.9822,12.0116,28.8994,15.015,19.7512,9.56369,17.8181,12.2342,36.8922,29.5278,30.0778,37.2037,92.4978,23.3244,32.7744,19.5244,45.0244,34.5838,21.0469,
+mu: 
+updating best lambda
+STATS - lpIterations[1] lagIterations[15] sspIterations[84] numSeparations[73] numCuts[0] compileTime[1] sspSolveTime[16] lpSolveTime[0] lb[727.382] ub[835] numArcs: [1156887] numFixed: [74840] time: [20]
+lambda: 0,17.6758,7.06605,4.85769,23.1744,2.70378,2.31062,33.6856,16.5135,10.7643,17.343,26.7671,3.93561,10.955,32.9822,12.0116,28.8994,15.015,19.7512,9.56369,17.8181,12.2342,36.8922,29.5278,30.0778,37.2037,92.4978,23.3244,32.7744,19.5244,45.0244,34.5838,21.0469,
+mu: 
+alpha: 0.988291
+STATS - lpIterations[1] lagIterations[15] sspIterations[84] numSeparations[73] numCuts[0] compileTime[1] sspSolveTime[16] lpSolveTime[0] lb[727.808] ub[835] numArcs: [1156887] numFixed: [74840] time: [20]
+lambda: 0,16.6875,8.05434,5.84598,24.1627,3.69207,3.29891,34.6739,17.5018,11.7526,18.3313,27.7554,4.9239,9.96675,31.9939,12.9998,29.8877,16.0032,18.7629,8.5754,17.8181,13.2225,34.9157,29.5278,30.0778,38.192,93.4861,24.3127,33.7627,20.5127,46.0127,33.5956,22.0352,
+mu: 
+updating best lambda
+alpha: 0.0576696
+STATS - lpIterations[1] lagIterations[16] sspIterations[98] numSeparations[75] numCuts[0] compileTime[1] sspSolveTime[19] lpSolveTime[0] lb[731.953] ub[835] numArcs: [1156856] numFixed: [77517] time: [23]
+lambda: 0,16.6298,7.65065,5.55763,24.2204,3.00003,2.49154,33.8665,16.8674,10.7722,17.6393,27.6977,4.40488,10.0244,32.0515,12.8268,29.9454,15.8302,18.8206,8.63307,17.8757,13.2802,34.9733,29.5855,30.1355,38.1343,93.313,24.1397,33.5897,20.4551,46.0704,33.6532,21.7468,
+mu: 
+updating best lambda
+alpha: 0.111989
+STATS - lpIterations[1] lagIterations[17] sspIterations[104] numSeparations[85] numCuts[0] compileTime[1] sspSolveTime[20] lpSolveTime[0] lb[733.452] ub[835] numArcs: [1157368] numFixed: [87246] time: [24]
+lambda: 0,16.7418,6.97872,5.44565,24.3324,3.00003,2.37955,33.7545,16.3075,10.5483,17.0793,26.6898,3.62096,10.1364,32.1635,12.9388,30.0574,15.9422,18.9326,8.74506,17.9877,13.3922,35.0853,29.6975,30.2475,38.2463,93.425,24.2517,33.7017,20.5671,46.1824,33.7652,20.627,
+mu: 
+updating best lambda
+alpha: 0.46816
+updating best lambda
+alpha: 0.186892
+updating best lambda
+alpha: 0.975942
+updating best lambda
+alpha: 0.0634502
+STATS - lpIterations[1] lagIterations[21] sspIterations[126] numSeparations[95] numCuts[0] compileTime[1] sspSolveTime[24] lpSolveTime[0] lb[740.168] ub[835] numArcs: [1157944] numFixed: [93999] time: [29]
+lambda: 0,17.373,7.85177,6.13872,26.0268,2.949,2.5754,33.7035,16.6833,11.1744,17.3848,27.3725,4.24367,9.50518,33.858,12.5703,31.7518,15.6371,18.3013,8.11383,17.3565,11.5981,34.4541,30.2291,30.7791,38.941,93.0565,23.8832,33.3332,21.1348,47.8768,35.4597,20.9324,
+mu: 
+updating best lambda
+alpha: 0.270743
+STATS - lpIterations[1] lagIterations[22] sspIterations[131] numSeparations[103] numCuts[0] compileTime[1] sspSolveTime[25] lpSolveTime[0] lb[741.034] ub[835] numArcs: [1158314] numFixed: [112368] time: [30]
+lambda: 0,17.373,7.03954,5.59724,26.2976,2.40752,1.76317,32.8913,16.1418,10.6329,16.8433,26.2895,3.16069,9.50518,33.5872,12.5703,32.0226,15.9079,18.5721,8.38458,17.6272,11.8689,34.7248,30.4998,31.0498,39.2117,93.3272,24.1539,33.6039,21.4056,48.1476,35.1889,19.8494,
+mu: 
+updating best lambda
+alpha: 0.546322
+updating best lambda
+STATS - lpIterations[1] lagIterations[24] sspIterations[136] numSeparations[105] numCuts[0] compileTime[1] sspSolveTime[25] lpSolveTime[0] lb[741.377] ub[835] numArcs: [1158452] numFixed: [117657] time: [31]
+lambda: 0,16.8267,7.58586,6.14356,26.8439,2.95384,2.30949,33.4376,16.6881,11.1793,17.3896,26.8358,3.70701,10.0515,34.1335,10.9313,32.5689,14.8152,19.1184,8.9309,18.1736,12.4152,35.2712,31.0461,31.5961,38.6654,91.6883,22.5149,31.9649,20.3129,48.6939,35.7352,20.3958,
+mu: 
+alpha: 1.03084
+updating best lambda
+alpha: 0.0365938
+STATS - lpIterations[1] lagIterations[25] sspIterations[152] numSeparations[106] numCuts[0] compileTime[1] sspSolveTime[30] lpSolveTime[0] lb[750.815] ub[835] numArcs: [1158389] numFixed: [118849] time: [36]
+lambda: 0,16.8267,8.32395,6.84505,27.9113,3.43577,2.71824,34.1391,17.3164,11.0757,17.5788,27.8667,4.33532,9.94172,33.1393,10.9313,33.6363,15.8827,19.8199,9.63239,18.8384,13.2631,36.0092,31.8574,32.4074,39.7328,92.7557,23.5824,33.0324,21.3804,49.7613,34.741,21.207,
+mu: 
+updating best lambda
+alpha: 0.0813999
+STATS - lpIterations[1] lagIterations[26] sspIterations[162] numSeparations[121] numCuts[0] compileTime[1] sspSolveTime[32] lpSolveTime[0] lb[752.394] ub[835] numArcs: [1159200] numFixed: [155863] time: [39]
+lambda: 0,16.8267,7.99835,6.35665,27.9927,2.78457,2.06704,33.4065,16.828,10.5873,17.0904,27.5411,3.84692,9.77892,33.2207,11.0127,33.7177,15.9641,19.4129,9.22539,18.35,13.0189,35.6836,31.6132,32.1632,39.8142,92.8371,23.6638,33.1138,21.4618,49.8427,34.8224,20.8,
+mu: 
+updating best lambda
+STATS - lpIterations[1] lagIterations[27] sspIterations[163] numSeparations[129] numCuts[0] compileTime[1] sspSolveTime[33] lpSolveTime[0] lb[752.81] ub[835] numArcs: [1159624] numFixed: [163603] time: [40]
+lambda: 0,16.8267,7.99835,6.35665,27.9927,2.78457,2.06704,33.4065,16.828,10.5873,17.0904,27.5411,3.84692,9.77892,33.2207,11.0127,33.7177,15.9641,19.4129,9.22539,18.35,13.0189,35.6836,31.6132,32.1632,39.8142,92.8371,23.6638,33.1138,21.4618,49.8427,34.8224,20.8,
+mu: 
+alpha: 1.09771
+STATS - lpIterations[1] lagIterations[27] sspIterations[163] numSeparations[129] numCuts[0] compileTime[1] sspSolveTime[33] lpSolveTime[0] lb[752.814] ub[835] numArcs: [1159624] numFixed: [163603] time: [40]
+lambda: 0,17.9244,7.99835,7.45436,29.0904,3.88228,3.16475,34.5042,16.828,10.5873,17.0904,26.4434,3.84692,10.8766,34.3184,12.1104,34.8154,17.0618,20.5106,10.3231,19.4478,14.1166,36.7813,32.7109,33.2609,40.9119,93.9348,24.7615,34.2115,22.5595,50.9404,35.9201,19.7023,
+mu: 
+updating best lambda
+alpha: 0.0248328
+STATS - lpIterations[1] lagIterations[28] sspIterations[188] numSeparations[130] numCuts[0] compileTime[1] sspSolveTime[37] lpSolveTime[0] lb[754.961] ub[835] numArcs: [1159552] numFixed: [167136] time: [45]
+lambda: 0,17.7754,7.94868,7.37986,29.1153,3.78295,3.06542,34.4545,16.8032,10.5873,16.9662,26.4434,3.74759,10.4296,34.2936,11.9614,34.8403,16.8383,19.7656,9.55328,18.4793,13.3468,36.2847,32.0156,32.5656,40.6884,93.8851,24.7118,34.1618,22.5346,50.9404,35.9201,19.7023,
+mu: 
+updating best lambda
+alpha: 0.102823
+STATS - lpIterations[1] lagIterations[29] sspIterations[203] numSeparations[149] numCuts[0] compileTime[1] sspSolveTime[39] lpSolveTime[0] lb[755.468] ub[835] numArcs: [1161620] numFixed: [184932] time: [47]
+lambda: 0,17.5697,7.64021,6.96857,29.2181,2.54907,2.14001,33.1178,16.3919,10.4845,16.9662,26.5462,3.54194,10.1212,34.1908,11.2417,34.9431,16.3242,19.56,9.34764,18.3765,13.1411,35.9762,31.9128,32.4628,39.9687,93.371,24.1977,33.6477,22.1233,50.8376,35.9201,19.8051,
+mu: 
+updating best lambda
+alpha: 0.280238
+STATS - lpIterations[1] lagIterations[30] sspIterations[211] numSeparations[156] numCuts[0] compileTime[1] sspSolveTime[39] lpSolveTime[0] lb[757.293] ub[835] numArcs: [1162051] numFixed: [185724] time: [47]
+lambda: 0,17.2895,7.64021,7.24881,29.4983,2.82931,2.42025,33.398,16.6722,10.7647,17.2465,26.8264,3.82218,9.84094,33.6303,10.1207,35.2233,15.7637,19.2797,9.0674,18.0962,12.8609,35.9762,31.6325,32.1825,39.1279,92.5303,23.0768,32.5268,21.2826,50.5574,34.7991,20.0854,
+mu: 
+updating best lambda
+alpha: 1.10405
+alpha: 0.0239231
+STATS - lpIterations[1] lagIterations[32] sspIterations[234] numSeparations[160] numCuts[0] compileTime[1] sspSolveTime[44] lpSolveTime[0] lb[757.846] ub[835] numArcs: [1162349] numFixed: [200272] time: [53]
+lambda: 0,18.2261,8.67249,6.12084,30.6263,1.72526,1.3162,32.3179,16.6722,9.68458,17.1986,27.9305,4.75877,10.5144,34.7104,11.1291,36.3513,16.772,19.6182,9.40591,18.3869,13.2472,36.554,32.1624,32.7124,40.1363,93.5865,24.133,33.6069,22.3867,51.6614,35.8793,21.1894,
+mu: 
+updating best lambda
+alpha: 0.108243
+STATS - lpIterations[1] lagIterations[33] sspIterations[248] numSeparations[178] numCuts[0] compileTime[1] sspSolveTime[45] lpSolveTime[0] lb[758.435] ub[835] numArcs: [1164003] numFixed: [212716] time: [54]
+lambda: 0,17.7931,8.45601,6.12084,30.7345,1.72526,1.42444,32.4262,16.5639,9.68458,17.0904,27.6057,4.3258,9.86492,34.3857,10.4796,36.4595,16.1226,19.077,8.86469,17.8457,13.0307,36.2292,31.513,32.063,39.4868,93.0453,23.7,33.1739,22.0619,51.5532,35.771,20.8647,
+mu: 
+updating best lambda
+alpha: 0.512491
+updating best lambda
+alpha: 0.0875906
+alpha: 1.26521
+alpha: 0.0225484
+STATS - lpIterations[1] lagIterations[37] sspIterations[282] numSeparations[193] numCuts[0] compileTime[1] sspSolveTime[50] lpSolveTime[0] lb[768.71] ub[835] numArcs: [1164883] numFixed: [212765] time: [61]
+lambda: 0,18.0628,9.05089,7.406,32.6224,3.43532,3.19954,34.2464,17.3591,10.9697,17.818,27.4211,4.38564,10.6236,35.226,9.94457,38.3474,16.3922,19.5651,9.33026,18.091,13.6715,37.0929,32.1164,32.6664,40.9992,93.1329,23.6774,33.1514,22.0394,52.3059,35.0513,20.6575,
+mu: 
+updating best lambda
+alpha: 0.0676841
+updating best lambda
+alpha: 0.314544
+updating best lambda
+alpha: 1.11977
+alpha: 0.0847708
+updating best lambda
+alpha: 0.269455
+alpha: 0.288327
+alpha: 1.20659
+updating best lambda
+alpha: 0.026077
+STATS - lpIterations[1] lagIterations[45] sspIterations[357] numSeparations[236] numCuts[0] compileTime[1] sspSolveTime[62] lpSolveTime[0] lb[775.217] ub[835] numArcs: [1168013] numFixed: [296539] time: [74]
+lambda: 0,18.4244,8.39715,6.93978,35.9996,3.22122,3.09524,34.1782,17.3245,10.9351,17.9503,28.099,3.80743,9.37963,35.9415,10.2211,41.7246,16.9553,19.353,10.2379,16.9831,13.4904,37.6931,32.4724,33.0224,41.1819,93.663,22.9979,32.4719,21.4447,53.9824,35.3201,20.7411,
+mu: 
+updating best lambda
+alpha: 0.07211
+STATS - lpIterations[1] lagIterations[46] sspIterations[372] numSeparations[256] numCuts[0] compileTime[1] sspSolveTime[63] lpSolveTime[0] lb[775.793] ub[835] numArcs: [1169037] numFixed: [383284] time: [77]
+lambda: 0,18.136,8.32504,6.57923,36.0717,2.71645,2.44625,33.6734,17.036,10.5745,17.5177,28.0269,3.5911,9.1633,35.653,9.7884,41.7967,16.5947,18.8482,9.73308,16.6226,13.3461,36.972,32.0397,32.5897,40.8213,93.5909,23.0701,32.544,21.5168,53.9824,35.1759,20.5248,
+mu: 
+updating best lambda
+alpha: 0.152885
+STATS - lpIterations[1] lagIterations[47] sspIterations[381] numSeparations[265] numCuts[0] compileTime[1] sspSolveTime[64] lpSolveTime[0] lb[776.169] ub[835] numArcs: [1169216] numFixed: [381446] time: [78]
+lambda: 0,17.0658,7.86638,6.27346,36.2246,2.71645,2.44625,33.6734,16.8831,10.4216,17.3648,27.7211,3.28533,8.70464,34.5828,9.17686,41.9496,16.4418,19.0011,9.88597,16.7755,13.499,37.1249,32.1926,32.7426,40.6685,93.438,23.2229,32.6969,21.6697,53.5237,34.4114,20.219,
+mu: 
+updating best lambda
+alpha: 0.919484
+updating best lambda
+alpha: 0.0578751
+updating best lambda
+alpha: 0.118133
+STATS - lpIterations[1] lagIterations[50] sspIterations[416] numSeparations[280] numCuts[0] compileTime[1] sspSolveTime[69] lpSolveTime[0] lb[776.306] ub[835] numArcs: [1170056] numFixed: [393639] time: [83]
+lambda: 0,17.5754,7.96846,6.37792,37.2622,2.70516,2.20108,33.544,16.814,10.3525,17.4693,27.9365,3.15353,8.52863,35.3263,8.92454,42.9872,16.3655,18.2576,9.14249,16.9515,13.675,35.4619,32.3686,32.9186,40.3583,93.4774,22.9706,32.5024,21.7091,54.0912,35.2128,20.0872,
+mu: 
+updating best lambda
+alpha: 0.950187
+updating best lambda
+alpha: 0.041517
+STATS - lpIterations[1] lagIterations[52] sspIterations[442] numSeparations[282] numCuts[0] compileTime[1] sspSolveTime[72] lpSolveTime[0] lb[780.076] ub[835] numArcs: [1170076] numFixed: [391012] time: [88]
+lambda: 0,18.3595,8.545,6.17034,38.2124,3.40625,2.81913,34.2451,17.3905,10.9705,17.9213,28.5546,3.68855,9.31275,35.2848,9.66714,43.9789,16.9005,18.7926,9.67751,17.2374,14.0025,36.0385,32.6545,33.2045,40.8518,94.3031,23.7547,33.2865,22.5347,54.0497,34.2626,20.6222,
+mu: 
+updating best lambda
+alpha: 0.104055
+STATS - lpIterations[1] lagIterations[53] sspIterations[457] numSeparations[296] numCuts[0] compileTime[1] sspSolveTime[74] lpSolveTime[0] lb[781.533] ub[835] numArcs: [1171013] numFixed: [452620] time: [89]
+lambda: 0,18.0473,8.12878,5.75412,38.3165,2.99003,2.50696,33.7248,16.8702,10.3462,17.2969,28.0343,3.27233,9.10464,35.2848,9.14687,44.083,16.3803,18.8967,9.67751,17.2374,14.0025,36.0385,32.5505,33.1005,40.3315,93.7828,23.2345,32.6622,22.0145,53.8416,34.2626,20.1019,
+mu: 
+updating best lambda
+alpha: 1.08359
+alpha: 0.0518394
+STATS - lpIterations[1] lagIterations[55] sspIterations[480] numSeparations[301] numCuts[0] compileTime[1] sspSolveTime[78] lpSolveTime[0] lb[781.896] ub[835] numArcs: [1171123] numFixed: [464738] time: [94]
+lambda: 0,17.8918,8.5903,6.37115,39.4001,3.08867,2.70928,33.9271,17.3317,10.6522,17.7584,28.9624,3.682,9.00096,36.3165,9.97126,45.1666,16.1211,20.0321,9.72935,17.2892,14.0543,36.0903,31.5187,32.0687,40.0205,94.6072,23.8515,33.2792,22.7352,54.7696,35.3462,20.8745,
+mu: 
+updating best lambda
+alpha: 0.105439
+STATS - lpIterations[1] lagIterations[56] sspIterations[494] numSeparations[312] numCuts[0] compileTime[1] sspSolveTime[79] lpSolveTime[0] lb[783.993] ub[835] numArcs: [1171688] numFixed: [476147] time: [96]
+lambda: 0,17.6809,8.0631,6.16027,39.4001,2.77235,2.39297,33.6108,16.8045,10.125,17.3367,28.2243,3.15481,8.89552,36.3165,9.65494,45.272,15.9102,20.1375,9.83479,17.3947,14.1598,36.1957,31.6242,32.1742,39.7041,94.1854,23.2189,32.5412,21.9971,54.4533,35.2407,20.1364,
+mu: 
+updating best lambda
+alpha: 0.292157
+updating best lambda
+alpha: 0.97606
+alpha: 0.0305771
+alpha: 0.218506
+updating best lambda
+alpha: 1.00191
+updating best lambda
+alpha: 0.0227333
+STATS - lpIterations[1] lagIterations[62] sspIterations[554] numSeparations[329] numCuts[0] compileTime[1] sspSolveTime[86] lpSolveTime[0] lb[787.821] ub[835] numArcs: [1172350] numFixed: [460778] time: [104]
+lambda: 0,15.935,7.96983,6.08974,41.9193,3.21793,2.86127,34.1779,17.3489,10.6693,17.7062,28.7687,3.59254,9.11079,35.9995,9.56978,47.7912,16.8212,20.1968,9.86351,17.7618,13.7819,36.9429,32.4476,32.9976,40.4421,94.3266,23.8707,32.9009,22.6286,53.551,35.7783,20.6808,
+mu: 
+updating best lambda
+alpha: 0.112817
+STATS - lpIterations[1] lagIterations[63] sspIterations[568] numSeparations[345] numCuts[0] compileTime[1] sspSolveTime[87] lpSolveTime[0] lb[788.507] ub[835] numArcs: [1173446] numFixed: [569626] time: [106]
+lambda: 0,15.8222,7.63137,5.8641,41.9193,2.76666,2.41001,33.8394,17.0104,10.3309,17.3678,28.4302,3.02845,8.88516,35.8866,9.34415,47.6784,16.4828,19.6328,9.29942,17.0849,13.2178,36.4916,32.1091,32.6591,39.9909,93.8754,23.4194,32.4496,22.1774,53.4382,35.6654,20.3423,
+mu: 
+updating best lambda
+alpha: 0.84906
+updating best lambda
+alpha: 0.0331124
+updating best lambda
+alpha: 0.106832
+alpha: 0.748892
+updating best lambda
+alpha: 0.0218612
+updating best lambda
+alpha: 0.106713
+STATS - lpIterations[1] lagIterations[69] sspIterations[636] numSeparations[375] numCuts[0] compileTime[1] sspSolveTime[96] lpSolveTime[0] lb[788.622] ub[835] numArcs: [1174967] numFixed: [589432] time: [117]
+lambda: 0,16.9898,7.52211,6.26989,43.4104,2.8271,2.38236,33.6265,16.8712,10.258,17.3622,28.3241,3.07776,9.56927,35.6,8.99125,49.3096,15.9577,19.7753,9.52679,17.1976,13.4378,37.0757,32.5702,33.1202,39.5208,92.2991,23.3525,32.3827,22.1104,54.9294,35.6389,20.0962,
+mu: 
+alpha: 0.172576
+alpha: 0.83383
+updating best lambda
+alpha: 0.118056
+updating best lambda
+alpha: 1.15212
+alpha: 0.0270604
+STATS - lpIterations[1] lagIterations[74] sspIterations[674] numSeparations[388] numCuts[0] compileTime[1] sspSolveTime[100] lpSolveTime[0] lb[790.509] ub[835] numArcs: [1175775] numFixed: [491296] time: [123]
+lambda: 0,15.8383,7.9318,7.89425,44.0193,2.79361,2.49399,34.1542,17.2907,10.5422,18.8984,28.8518,3.31527,9.0688,35.2452,9.8796,49.5734,16.1674,19.7304,9.42738,17.1158,13.7651,37.1756,32.8968,33.4468,39.7575,94.5216,23.5622,32.5652,22.293,55.0481,35.23,20.5157,
+mu: 
+updating best lambda
+alpha: 0.0812233
+STATS - lpIterations[1] lagIterations[75] sspIterations[688] numSeparations[402] numCuts[0] compileTime[1] sspSolveTime[102] lpSolveTime[0] lb[791.37] ub[835] numArcs: [1176597] numFixed: [640352] time: [125]
+lambda: 0,15.7571,7.44446,7.32568,44.0193,2.38749,2.08787,33.5856,16.8033,10.1361,18.0861,28.2833,2.99038,8.98757,35.3264,9.96082,49.4921,16.0861,19.7304,9.34616,17.0346,13.7651,37.0131,32.8968,33.4468,39.6763,94.3592,23.3185,32.2404,21.9681,54.8856,35.1488,19.9472,
+mu: 
+updating best lambda
+alpha: 0.220874
+STATS - lpIterations[1] lagIterations[76] sspIterations[696] numSeparations[407] numCuts[0] compileTime[1] sspSolveTime[103] lpSolveTime[0] lb[792.438] ub[835] numArcs: [1176941] numFixed: [652633] time: [126]
+lambda: 0,15.5362,7.66533,7.10481,44.0193,2.60836,2.30874,33.5856,16.8033,10.3569,18.0861,28.2833,2.54863,8.7667,35.5473,9.96082,49.2713,16.0861,19.2886,8.68354,16.372,13.3233,36.3505,32.455,33.005,39.6763,93.6965,22.8767,31.3569,21.0846,54.4439,35.1488,19.9472,
+mu: 
+updating best lambda
+alpha: 0.912187
+alpha: 0.0462275
+updating best lambda
+alpha: 0.256826
+alpha: 0.215239
+alpha: 1.34049
+alpha: 0.0402391
+alpha: 0.217556
+alpha: 0.151225
+updating best lambda
+alpha: 0.40386
+updating best lambda
+alpha: 0.328884
+alpha: 0.130909
+alpha: 1.04564
+alpha: 0.0307684
+STATS - lpIterations[1] lagIterations[89] sspIterations[805] numSeparations[453] numCuts[0] compileTime[1] sspSolveTime[114] lpSolveTime[0] lb[793.052] ub[835] numArcs: [1179711] numFixed: [622638] time: [141]
+lambda: 0,16.8432,7.97817,7.06024,45.5263,2.53502,2.4217,33.7521,16.9815,11.2133,18.4394,29.1846,3.60749,9.28685,35.1013,10.5222,50.5636,15.5567,19.8577,9.03295,16.8569,14.0484,36.8909,33.3287,33.8787,40.2139,94.3922,22.9848,31.6337,22.055,54.8242,35.88,20.7869,
+mu: 
+updating best lambda
+alpha: 0.0906101
+updating best lambda
+alpha: 0.326764
+STATS - lpIterations[1] lagIterations[91] sspIterations[824] numSeparations[473] numCuts[0] compileTime[1] sspSolveTime[116] lpSolveTime[0] lb[793.346] ub[835] numArcs: [1180912] numFixed: [688372] time: [144]
+lambda: 0,16.0084,7.05281,6.28043,44.9277,1.84582,1.7325,32.7911,16.1111,10.9058,17.6596,28.1329,3.29998,7.79857,35.1013,9.68743,50.1463,15.5567,19.2948,8.70618,16.4395,13.0681,36.2374,32.5845,33.1345,40.2139,93.9749,22.5674,31.2163,21.6376,54.8242,35.88,19.8259,
+mu: 
+updating best lambda
+alpha: 1.18887
+alpha: 0.0339662
+updating best lambda
+alpha: 0.0951679
+alpha: 0.418289
+STATS - lpIterations[1] lagIterations[95] sspIterations[869] numSeparations[493] numCuts[0] compileTime[1] sspSolveTime[122] lpSolveTime[0] lb[793.363] ub[835] numArcs: [1182020] numFixed: [693926] time: [151]
+lambda: 0,15.7841,6.88183,6.24224,44.9265,1.77366,1.49724,32.2801,15.6206,10.4667,17.9583,27.7444,2.5785,8.79037,35.0049,9.52319,50.5985,14.9413,20.2294,9.60678,17.4013,14.193,37.2399,33.4512,34.0012,39.5985,94.426,22.8905,31.5394,21.9607,54.8242,36.7154,19.1791,
+mu: 
+updating best lambda
+alpha: 0.0296132
+alpha: 0.853126
+alpha: 0.0120063
+alpha: 0.0329501
+alpha: 0.282694
+alpha: 0.0650804
+alpha: 1.03833
+alpha: 0.0195455
+alpha: 0.0582455
+alpha: 0.184011
+STATS - lpIterations[1] lagIterations[105] sspIterations[981] numSeparations[560] numCuts[0] compileTime[1] sspSolveTime[135] lpSolveTime[0] lb[793.414] ub[835] numArcs: [1185748] numFixed: [701605] time: [167]
+lambda: 0,15.4175,7.50331,6.67211,45.6729,1.93353,1.63908,33.0132,16.1861,10.8982,18.1106,28.7033,3.12644,8.75467,35.4624,9.86505,51.7034,14.8731,19.2199,8.55344,16.5982,13.6073,36.8778,32.881,33.431,39.4466,94.5703,22.295,31.009,21.3001,55.1752,36.6041,19.9002,
+mu: 
+updating best lambda
+alpha: 0.421185
+alpha: 0.43838
+alpha: 0.356656
+alpha: 0.466594
+alpha: 0.0291139
+alpha: 0.30611
+alpha: 0.448752
+alpha: 0.91238
+alpha: 0.0224837
+updating best lambda
+alpha: 0.0613401
+STATS - lpIterations[1] lagIterations[115] sspIterations[1052] numSeparations[597] numCuts[0] compileTime[1] sspSolveTime[144] lpSolveTime[0] lb[793.509] ub[835] numArcs: [1187912] numFixed: [684621] time: [180]
+lambda: 0,16.4832,6.97512,6.65895,45.7113,2.60168,2.8256,33.3469,16.1625,11.6166,17.1278,28.3785,3.49497,8.41885,35.2639,9.72792,51.6549,15.7875,19.1628,8.51876,16.957,13.6438,36.9106,33.2459,33.7959,40.2931,94.2475,21.8858,31.3165,21.2254,55.3143,37.192,19.2187,
+mu: 
+alpha: 0.631929
+alpha: 0.0320725
+alpha: 0.444839
+alpha: 0.0346914
+alpha: 0.660047
+alpha: 0.0307142
+alpha: 0.123001
+alpha: 0.808774
+alpha: 0.0153905
+STATS - lpIterations[1] lagIterations[124] sspIterations[1137] numSeparations[637] numCuts[0] compileTime[1] sspSolveTime[155] lpSolveTime[0] lb[794.325] ub[835] numArcs: [1189688] numFixed: [688758] time: [193]
+lambda: 0,15.906,8.5374,6.35751,45.2268,1.86579,3.27141,32.8624,16.3099,11.5947,19.377,29.1425,3.74596,9.17605,35.0549,10.0857,51.6353,15.6047,19.7055,9.1335,17.3353,14.0362,37.5522,33.832,34.4127,39.9935,94.5605,22.2197,32.0501,21.9436,55.6026,37.7456,19.9827,
+mu: 
+updating best lambda
+alpha: 0.0555851
+updating best lambda
+alpha: 0.219201
+STATS - lpIterations[1] lagIterations[126] sspIterations[1162] numSeparations[668] numCuts[0] compileTime[1] sspSolveTime[158] lpSolveTime[0] lb[794.562] ub[835] numArcs: [1192028] numFixed: [719918] time: [197]
+lambda: 0,15.4121,7.60187,6.02714,45.0076,1.591,2.82987,32.6432,15.8684,10.9864,18.818,28.6453,3.30441,8.67892,34.8357,9.86654,51.3605,15.6047,19.48,8.9636,17.221,13.8107,37.2711,33.7177,34.2984,39.9935,93.7362,21.3954,30.951,21.1193,54.8339,36.702,19.5411,
+mu: 
+updating best lambda
+alpha: 0.163051
+updating best lambda
+alpha: 0.361451
+alpha: 0.199628
+alpha: 0.865567
+alpha: 0.0566723
+alpha: 0.214815
+alpha: 1.03309
+alpha: 0.0244065
+STATS - lpIterations[1] lagIterations[134] sspIterations[1226] numSeparations[681] numCuts[0] compileTime[1] sspSolveTime[165] lpSolveTime[0] lb[795.436] ub[835] numArcs: [1192980] numFixed: [675950] time: [206]
+lambda: 0,16.2241,7.23485,6.84631,45.2415,1.74378,2.51571,32.8448,15.8755,11.8401,18.5516,28.8762,4.1973,9.01126,36.2678,10.6206,51.9182,16.1446,19.413,8.87217,16.7835,14.0864,37.1143,33.8729,34.4536,40.5011,94.8645,22.2041,32.0924,22.3003,55.7553,38.0794,19.7964,
+mu: 
+updating best lambda
+alpha: 0.135452
+updating best lambda
+alpha: 0.170365
+alpha: 0.756424
+alpha: 0.041908
+alpha: 0.178054
+alpha: 0.479702
+alpha: 0.151115
+alpha: 0.890131
+alpha: 0.0274791
+alpha: 0.117404
+alpha: 0.533935
+alpha: 0.0511419
+alpha: 0.895972
+alpha: 0.0176495
+STATS - lpIterations[1] lagIterations[148] sspIterations[1360] numSeparations[732] numCuts[0] compileTime[1] sspSolveTime[178] lpSolveTime[0] lb[795.635] ub[835] numArcs: [1196140] numFixed: [731337] time: [223]
+lambda: 0,15.9427,7.07664,6.23503,45.7208,2.20496,2.85396,33.5376,16.0247,12.0164,19.0202,29.2558,3.63135,8.60717,36.0813,9.76384,52.592,16.2166,19.6862,9.02142,16.969,14.2469,37.4425,34.1585,34.7393,40.5401,94.0292,21.5015,31.1053,22.0561,55.5771,37.2655,20.1341,
+mu: 
+updating best lambda
+alpha: 0.0327697
+STATS - lpIterations[1] lagIterations[149] sspIterations[1374] numSeparations[752] numCuts[0] compileTime[1] sspSolveTime[180] lpSolveTime[0] lb[795.977] ub[835] numArcs: [1197309] numFixed: [743808] time: [225]
+lambda: 0,15.9099,7.07664,6.20226,45.6225,1.97557,2.55903,33.5376,15.9592,11.492,18.4304,29.223,3.53304,8.50886,36.0485,9.6983,52.5593,16.0528,19.4569,8.75926,16.7724,13.9847,37.1475,33.9291,34.5099,40.3434,94.0619,21.4688,31.0725,22.0233,55.5443,37.2655,20.1013,
+mu: 
+updating best lambda
+alpha: 0.127011
+STATS - lpIterations[1] lagIterations[150] sspIterations[1384] numSeparations[760] numCuts[0] compileTime[1] sspSolveTime[180] lpSolveTime[0] lb[796.108] ub[835] numArcs: [1197693] numFixed: [748281] time: [226]
+lambda: 0,15.7829,7.07664,6.07525,45.3684,1.84856,2.43202,33.2836,15.7051,11.365,18.4304,28.969,2.89798,8.38185,35.7945,9.6983,52.3052,15.2907,19.2028,8.50524,16.5184,13.7307,36.7665,33.6751,34.2558,39.5814,93.9349,21.2148,30.9455,21.7693,55.4173,37.3925,19.8473,
+mu: 
+updating best lambda
+alpha: 0.802792
+updating best lambda
+alpha: 0.0307358
+updating best lambda
+alpha: 0.142696
+alpha: 0.502754
+alpha: 0.0410974
+alpha: 0.617666
+alpha: 0.0253961
+alpha: 0.127629
+alpha: 0.644493
+alpha: 0.0151797
+updating best lambda
+alpha: 0.0700032
+alpha: 0.194231
+updating best lambda
+alpha: 0.574546
+alpha: 0.0546589
+alpha: 0.204809
+alpha: 0.426651
+alpha: 0.0343983
+alpha: 0.541245
+alpha: 0.0192905
+alpha: 0.231147
+alpha: 0.823292
+alpha: 0.0178538
+alpha: 0.0688827
+alpha: 0.194105
+alpha: 0.708228
+alpha: 0.0205312
+STATS - lpIterations[1] lagIterations[176] sspIterations[1640] numSeparations[864] numCuts[0] compileTime[1] sspSolveTime[208] lpSolveTime[0] lb[796.48] ub[835] numArcs: [1202956] numFixed: [750600] time: [261]
+lambda: 0,15.5287,6.98682,6.31503,46.2449,2.27325,2.86761,33.5536,16.1613,11.6539,18.7444,29.0257,3.77517,8.31736,35.6838,9.67114,53.2149,15.6844,19.5542,8.96361,16.9816,14.4659,37.4897,33.931,34.6329,40.3931,94.4214,21.811,30.7604,23.0589,55.2274,37.6578,20.218,
+mu: 
+updating best lambda
+alpha: 0.0962376
+STATS - lpIterations[1] lagIterations[177] sspIterations[1653] numSeparations[880] numCuts[0] compileTime[1] sspSolveTime[209] lpSolveTime[0] lb[796.648] ub[835] numArcs: [1203928] numFixed: [760432] time: [262]
+lambda: 0,15.5287,6.98682,6.21879,45.9562,1.98453,2.57889,33.3611,15.8726,11.3651,18.4557,28.8333,3.29399,8.22113,35.6838,9.76738,52.3488,15.3957,19.4579,8.77114,16.7891,14.3696,37.2972,33.7385,34.4404,40.0082,94.1326,21.1374,30.3754,22.4814,55.035,37.5616,19.8331,
+mu: 
+alpha: 0.362471
+alpha: 0.0313434
+alpha: 0.154445
+alpha: 0.122085
+alpha: 0.762889
+alpha: 0.0172479
+STATS - lpIterations[1] lagIterations[183] sspIterations[1705] numSeparations[893] numCuts[0] compileTime[1] sspSolveTime[214] lpSolveTime[0] lb[797.027] ub[835] numArcs: [1204373] numFixed: [761344] time: [270]
+lambda: 0,15.3469,7.68285,6.7065,45.9223,2.6604,2.94538,33.3444,16.0632,11.4698,18.7144,29.5071,3.74851,8.65846,36.2163,10.328,52.4304,15.1457,19.516,9.05615,17.1164,14.3262,37.3163,34.1597,34.893,39.7583,94.6651,21.2017,30.5942,22.5631,55.1479,38.3857,20.4551,
+mu: 
+updating best lambda
+alpha: 0.0383366
+alpha: 0.212633
+alpha: 0.222757
+alpha: 0.0986789
+updating best lambda
+alpha: 0.824577
+alpha: 0.0300788
+updating best lambda
+alpha: 0.0946
+alpha: 0.346838
+alpha: 0.0471825
+alpha: 0.405905
+alpha: 0.0601505
+alpha: 0.2137
+alpha: 0.28007
+alpha: 0.154993
+alpha: 0.652135
+alpha: 0.0361397
+alpha: 0.132588
+alpha: 0.620145
+alpha: 0.0419548
+alpha: 0.144608
+alpha: 0.73968
+alpha: 0.0337925
+alpha: 0.11479
+alpha: 0.494173
+alpha: 0.0273906
+alpha: 0.124481
+alpha: 0.283439
+alpha: 0.284917
+alpha: 0.748527
+alpha: 0.0203518
+STATS - lpIterations[1] lagIterations[213] sspIterations[1959] numSeparations[972] numCuts[0] compileTime[1] sspSolveTime[238] lpSolveTime[0] lb[797.76] ub[835] numArcs: [1208033] numFixed: [767080] time: [302]
+lambda: 0,15.3259,7.41331,6.19737,45.884,2.31672,2.44595,33.6932,15.861,11.7805,19.0668,29.0921,3.59398,8.51278,35.9106,10.1669,53.2418,15.7264,19.3842,9.23416,17.1379,14.3873,37.4068,33.8615,34.5948,40.2356,94.0048,20.9383,30.7636,22.7498,55.3421,37.7759,20.4888,
+mu: 
+updating best lambda
+alpha: 0.0751534
+alpha: 0.36664
+alpha: 0.0672727
+alpha: 0.40229
+alpha: 0.0489738
+alpha: 0.520306
+alpha: 0.0267796
+alpha: 0.126549
+alpha: 0.283821
+alpha: 0.380614
+updating best lambda
+alpha: 0.332857
+alpha: 0.0201896
+alpha: 0.215807
+alpha: 0.0460689
+alpha: 0.617934
+alpha: 0.0172975
+alpha: 0.10303
+alpha: 0.318711
+alpha: 0.0347611
+alpha: 0.759294
+alpha: 0.010324
+alpha: 0.0295307
+alpha: 0.0772556
+alpha: 0.32685
+alpha: 0.161258
+alpha: 0.694495
+alpha: 0.0164493
+alpha: 0.0453297
+alpha: 0.27454
+STATS - lpIterations[1] lagIterations[242] sspIterations[2210] numSeparations[1083] numCuts[0] compileTime[1] sspSolveTime[263] lpSolveTime[0] lb[797.909] ub[835] numArcs: [1213816] numFixed: [744829] time: [335]
+lambda: 0,15.3172,6.74417,5.53858,44.8398,1.84842,2.06823,33.356,15.3856,11.6307,18.0614,28.6737,2.61329,8.56036,35.7033,10.3371,52.8533,15.0623,19.0757,8.79952,16.6997,14.1912,37.2688,33.4667,34.4293,39.6147,93.8105,20.7361,30.3475,23.2551,55.1631,37.8832,19.6892,
+mu: 
+updating best lambda
+alpha: 0.646939
+alpha: 0.0228073
+updating best lambda
+alpha: 0.071323
+alpha: 0.358411
+alpha: 0.0324762
+alpha: 0.196078
+alpha: 0.244332
+alpha: 0.69523
+alpha: 0.0302816
+alpha: 0.1098
+alpha: 0.329023
+alpha: 0.0756905
+alpha: 0.583098
+alpha: 0.0181541
+alpha: 0.0526893
+STATS - lpIterations[1] lagIterations[257] sspIterations[2349] numSeparations[1124] numCuts[0] compileTime[1] sspSolveTime[276] lpSolveTime[0] lb[798.538] ub[835] numArcs: [1216397] numFixed: [787452] time: [353]
+lambda: 0,15.3318,6.58349,5.98108,45.0659,1.99171,2.45161,33.7555,15.6612,11.5444,18.6824,29.264,2.81744,8.19166,36.1807,10.1059,53.2319,15.3535,19.0654,8.7075,16.9617,14.3115,37.499,33.6389,34.6016,39.8326,93.9765,21.1359,30.1844,22.7686,54.7739,38.403,20.4225,
+mu: 
+alpha: 0.304388
+alpha: 0.0508356
+alpha: 0.200019
+alpha: 0.499419
+alpha: 0.0152528
+alpha: 0.152052
+alpha: 0.569444
+alpha: 0.027915
+alpha: 0.090041
+alpha: 0.217333
+alpha: 0.0234406
+alpha: 0.454322
+alpha: 0.0193297
+alpha: 0.105393
+alpha: 0.706127
+alpha: 0.0238313
+alpha: 0.112751
+alpha: 0.476572
+alpha: 0.0260162
+updating best lambda
+alpha: 0.0843247
+updating best lambda
+alpha: 0.33899
+updating best lambda
+alpha: 0.0197596
+alpha: 0.449722
+alpha: 0.0131929
+alpha: 0.104467
+alpha: 0.409189
+alpha: 0.0280617
+alpha: 0.176774
+alpha: 0.281285
+alpha: 0.0390432
+alpha: 0.697653
+alpha: 0.0256858
+alpha: 0.0933226
+alpha: 0.251342
+alpha: 0.0910561
+alpha: 0.530577
+alpha: 0.0228817
+alpha: 0.0998883
+alpha: 0.297982
+alpha: 0.0213226
+alpha: 0.455323
+alpha: 0.0127313
+alpha: 0.0563409
+alpha: 0.321267
+alpha: 0.0520443
+alpha: 0.578916
+alpha: 0.0192653
+alpha: 0.0457631
+alpha: 0.171733
+alpha: 0.39373
+alpha: 0.0451391
+no rcc cuts found
+STATS - lpIterations[2] lagIterations[308] sspIterations[2796] numSeparations[1268] numCuts[0] compileTime[1] sspSolveTime[322] lpSolveTime[0] lb[798.538] ub[835] numArcs: [1223390] numFixed: [799834] time: [414]
+alpha: 0.30764
+alpha: 0.140086
+alpha: 0.0810399
+alpha: 0.635966
+alpha: 0.0233474
+alpha: 0.080563
+alpha: 0.369987
+alpha: 0.0412392
+alpha: 0.0961729
+alpha: 0.421797
+alpha: 0.0634277
+alpha: 0.168433
+updating best lambda
+alpha: 0.0965524
+alpha: 0.483303
+alpha: 0.0292372
+updating best lambda
+alpha: 0.0732223
+alpha: 0.389471
+alpha: 0.0250525
+alpha: 0.0770149
+alpha: 0.48433
+alpha: 0.0166308
+alpha: 0.05211
+alpha: 0.292261
+alpha: 0.0220196
+alpha: 0.409607
+alpha: 0.0163165
+alpha: 0.0749881
+alpha: 0.399235
+alpha: 0.0234704
+alpha: 0.0812251
+updating best lambda
+alpha: 0.240274
+alpha: 0.0592572
+updating best lambda
+alpha: 0.515692
+alpha: 0.0162043
+STATS - lpIterations[2] lagIterations[342] sspIterations[3084] numSeparations[1332] numCuts[0] compileTime[1] sspSolveTime[348] lpSolveTime[0] lb[799.071] ub[835] numArcs: [1226439] numFixed: [785677] time: [450]
+lambda: 0,15.2592,7.05778,6.11851,45.0316,2.11595,2.42326,33.8578,15.9687,11.9071,19.0291,28.9125,3.10419,8.36893,36.5186,10.5309,53.0478,15.2467,19.1528,8.84003,17.044,14.7233,38.0432,33.8655,34.9539,39.2448,94.098,21.0715,30.36,23.1105,55.8601,38.6947,20.5455,
+mu: 
+alpha: 0.0546171
+alpha: 0.324823
+alpha: 0.0464137
+alpha: 0.434994
+alpha: 0.0188355
+alpha: 0.0641648
+alpha: 0.247756
+alpha: 0.0683314
+alpha: 0.467419
+alpha: 0.0207906
+alpha: 0.0329753
+alpha: 0.17539
+alpha: 0.472377
+alpha: 0.0250203
+alpha: 0.0578356
+alpha: 0.308217
+alpha: 0.0209733
+alpha: 0.117023
+alpha: 0.491292
+alpha: 0.0167367
+alpha: 0.0585874
+alpha: 0.394133
+alpha: 0.0294993
+updating best lambda
+alpha: 0.0528759
+updating best lambda
+alpha: 0.211334
+alpha: 0.238655
+alpha: 0.246638
+alpha: 0.177323
+alpha: 0.439841
+alpha: 0.0215172
+updating best lambda
+alpha: 0.28455
+alpha: 0.142904
+alpha: 0.142378
+alpha: 0.39172
+alpha: 0.0375367
+alpha: 0.227631
+alpha: 0.176732
+alpha: 0.596452
+alpha: 0.0347251
+alpha: 0.0775104
+updating best lambda
+alpha: 0.310631
+updating best lambda
+alpha: 0.0225135
+alpha: 0.0870713
+alpha: 0.325324
+alpha: 0.0270312
+alpha: 0.222934
+alpha: 0.0290724
+alpha: 0.091792
+alpha: 0.349376
+alpha: 0.0450661
+alpha: 0.389683
+alpha: 0.04052
+alpha: 0.106569
+alpha: 0.475663
+alpha: 0.0141969
+alpha: 0.0394773
+alpha: 0.0993906
+alpha: 0.307613
+alpha: 0.0241553
+alpha: 0.148884
+alpha: 0.0476345
+alpha: 0.34861
+alpha: 0.0202097
+alpha: 0.205682
+alpha: 0.125835
+alpha: 0.383115
+alpha: 0.0153086
+STATS - lpIterations[2] lagIterations[409] sspIterations[3638] numSeparations[1483] numCuts[0] compileTime[1] sspSolveTime[399] lpSolveTime[0] lb[799.322] ub[835] numArcs: [1233667] numFixed: [805632] time: [520]
+lambda: 0,15.0739,6.66247,5.54346,44.1945,2.17489,2.6086,33.7797,15.5846,11.8262,18.5105,28.9803,3.13909,8.36313,36.0263,10.4721,53.3856,15.5044,19.0298,9.03449,17.1623,14.6719,37.995,33.837,35.1361,39.4919,94.0701,21.3158,29.8596,23.2642,55.8783,38.548,20.6053,
+mu: 
+alpha: 0.0333536
+alpha: 0.269571
+alpha: 0.0316108
+alpha: 0.106142
+alpha: 0.509991
+alpha: 0.0175272
+alpha: 0.0851317
+alpha: 0.194893
+alpha: 0.364311
+alpha: 0.0172042
+alpha: 0.0637231
+alpha: 0.0561223
+alpha: 0.31904
+alpha: 0.0503424
+alpha: 0.0897674
+alpha: 0.38878
+alpha: 0.0150964
+alpha: 0.0523788
+updating best lambda
+alpha: 0.237756
+updating best lambda
+alpha: 0.0442199
+updating best lambda
+alpha: 0.379873
+alpha: 0.0257432
+STATS - lpIterations[2] lagIterations[431] sspIterations[3824] numSeparations[1529] numCuts[0] compileTime[1] sspSolveTime[416] lpSolveTime[0] lb[799.372] ub[835] numArcs: [1236137] numFixed: [811545] time: [543]
+lambda: 0,14.7607,6.76252,6.03713,44.6525,1.94329,2.37439,34.062,15.73,12.2545,18.7853,28.9092,3.10348,8.47863,36.2708,10.2609,53.3824,15.4833,18.9848,8.88742,17.2674,14.6792,38.0322,33.6768,34.9759,39.3317,94.147,21.3079,29.5678,23.2378,56.1732,38.6562,20.6181,
+mu: 
+updating best lambda
+alpha: 0.0507628
+updating best lambda
+alpha: 0.218662
+updating best lambda
+alpha: 0.0488236
+updating best lambda
+alpha: 0.398787
+alpha: 0.0129562
+STATS - lpIterations[2] lagIterations[436] sspIterations[3872] numSeparations[1534] numCuts[0] compileTime[1] sspSolveTime[420] lpSolveTime[0] lb[799.484] ub[835] numArcs: [1236215] numFixed: [831691] time: [549]
+lambda: 0,15.034,6.65832,5.91998,44.5613,2.08261,2.50075,33.9707,15.8953,12.1503,19.1811,28.7543,3.04363,8.50894,36.3281,10.5551,53.6393,15.4663,19.0833,8.94698,17.2751,14.7248,38.1555,33.7623,35.0743,39.2639,94.0539,21.5648,29.5255,23.1089,55.9103,38.7533,20.5269,
+mu: 
+updating best lambda
+alpha: 0.0423681
+STATS - lpIterations[2] lagIterations[437] sspIterations[3886] numSeparations[1544] numCuts[0] compileTime[1] sspSolveTime[421] lpSolveTime[0] lb[799.561] ub[835] numArcs: [1236926] numFixed: [824381] time: [551]
+lambda: 0,14.9917,6.61596,5.79287,44.5189,1.91314,2.33127,33.886,15.8105,11.9808,19.054,28.6695,2.91652,8.38183,36.1163,10.3857,53.4698,15.2544,18.8714,8.73514,17.1056,14.5553,38.0284,33.5504,34.8625,39.0097,94.0116,21.4377,29.4831,23.0665,55.8256,38.5414,20.4845,
+mu: 
+alpha: 0.263546
+alpha: 0.0292999
+alpha: 0.413415
+alpha: 0.011987
+alpha: 0.0420443
+STATS - lpIterations[2] lagIterations[442] sspIterations[3938] numSeparations[1567] numCuts[0] compileTime[1] sspSolveTime[426] lpSolveTime[0] lb[799.659] ub[835] numArcs: [1237965] numFixed: [825379] time: [557]
+lambda: 0,15.0455,6.48953,5.57113,44.656,1.82899,2.28841,34.0231,15.8816,11.9976,18.9529,28.7646,3.05521,7.96894,36.0439,10.3187,53.2444,15.3146,18.8633,8.75629,17.1576,14.5751,38.0397,33.6669,34.9789,39.0398,94.0664,21.3415,29.8808,23.0462,55.85,38.4818,20.5916,
+mu: 
+alpha: 0.187542
+alpha: 0.0416799
+alpha: 0.374115
+alpha: 0.0222177
+alpha: 0.064488
+alpha: 0.276241
+alpha: 0.0322366
+alpha: 0.191113
+alpha: 0.0899857
+alpha: 0.344285
+alpha: 0.093768
+alpha: 0.501804
+alpha: 0.023123
+alpha: 0.114202
+alpha: 0.0887182
+alpha: 0.316519
+alpha: 0.00962959
+alpha: 0.0390068
+alpha: 0.213412
+alpha: 0.0259605
+alpha: 0.113779
+alpha: 0.251147
+alpha: 0.0229971

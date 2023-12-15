@@ -1,0 +1,674 @@
+relax time window constraint
+capacity: 100
+instance upper bound: 730
+route length upper bound: 38
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 0
+cut phase: 0
+deactivate cut value threshold: 0
+deactivate cut iter threshold: 0
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[730] numArcs: [186348] numFixed: [0] time: [0]
+num vars: 186348
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[17] lb[675.197] ub[730] numArcs: [186348] numFixed: [0] time: [17]
+checking cuts, max violation: 0.904417, num cuts: 2
+new capacity cutset: 1 3 4 5 6 7 8 9 10 11 12 16 18 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 37 <= 25
+new capacity cutset: 2 13 14 15 17 24 36 <= 6
+num vars: 187965
+STATS - lpIterations[2] lagIterations[0] sspIterations[0] numSeparations[15] numCuts[2] compileTime[0] sspSolveTime[0] lpSolveTime[40] lb[687.08] ub[730] numArcs: [187965] numFixed: [0] time: [41]
+checking cuts, max violation: 0.522989, num cuts: 46
+new capacity cutset: 2 8 9 13 15 17 23 33 35 36 <= 8
+new capacity cutset: 2 5 7 8 9 11 13 14 15 17 20 21 22 23 24 27 28 31 32 33 35 36 37 <= 19
+nested set, do not add
+new capacity cutset: 6 18 19 29 30 34 <= 4
+new capacity cutset: 8 23 33 35 <= 3
+nested set, do not add
+new capacity cutset: 8 9 13 15 17 23 33 35 36 <= 7
+nested set, do not add
+new capacity cutset: 1 3 4 6 10 12 16 18 19 25 26 28 29 30 31 34 37 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 18 19 21 23 25 26 29 30 33 34 35 <= 16
+nested set, do not add
+new capacity cutset: 23 33 35 <= 2
+nested set, do not add
+new capacity cutset: 1 3 4 6 12 16 18 19 23 25 26 29 30 33 34 35 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 10 11 12 16 18 19 20 22 25 26 27 28 29 30 31 32 34 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 12 16 23 25 26 33 35 <= 8
+new capacity cutset: 1 2 3 4 5 6 7 9 10 11 12 13 14 15 16 17 18 19 20 22 24 25 26 27 28 29 30 31 32 34 36 37 <= 27
+nested set, do not add
+new capacity cutset: 13 15 17 36 <= 3
+nested set, do not add
+new capacity cutset: 5 7 11 20 22 27 28 31 32 37 <= 8
+new capacity cutset: 2 8 13 15 17 23 33 35 36 <= 7
+nested set, do not add
+new capacity cutset: 1 3 4 6 10 12 16 18 19 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 10 12 16 18 19 21 23 25 26 29 30 33 34 35 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 11 12 16 18 19 21 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 22
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 9 10 11 12 16 18 19 20 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 24
+nested set, do not add
+new capacity cutset: 2 5 7 9 11 13 14 15 17 20 22 24 27 32 36 <= 12
+new capacity cutset: 2 5 7 9 11 13 14 15 17 20 22 24 27 28 31 32 36 37 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 6 10 12 16 19 21 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 19 21 23 25 26 29 30 33 34 35 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 11 12 16 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 10 11 12 16 18 19 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 10 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 5 11 12 16 22 23 25 26 27 28 31 33 35 37 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 5 8 11 12 16 22 23 25 26 27 28 31 33 35 37 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 18 19 21 23 25 26 29 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 18 19 21 23 25 26 29 30 33 34 35 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 21
+nested set, do not add
+new capacity cutset: 5 7 11 20 22 27 <= 4
+nested set, do not add
+new capacity cutset: 5 7 11 20 22 27 32 <= 5
+nested set, do not add
+new capacity cutset: 2 5 7 11 13 14 15 17 20 22 24 27 28 31 32 36 37 <= 14
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 7 9 11 12 13 14 15 16 17 20 22 24 25 26 27 28 31 32 36 37 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 8 10 12 16 21 23 25 26 29 30 33 34 35 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 21 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 2 5 7 9 11 13 14 15 17 20 22 27 32 36 <= 11
+nested set, do not add
+new capacity cutset: 2 5 7 9 11 13 14 15 17 20 22 27 28 31 32 36 37 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 11 12 16 18 19 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 19
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 2 8 9 13 14 15 17 23 33 35 36 <= 9
+nested set, do not add
+num vars: 75268
+STATS - lpIterations[3] lagIterations[0] sspIterations[0] numSeparations[28] numCuts[7] compileTime[0] sspSolveTime[0] lpSolveTime[55] lb[693.13] ub[730] numArcs: [189110] numFixed: [113842] time: [56]
+checking cuts, max violation: 0.479167, num cuts: 71
+new capacity cutset: 1 3 4 6 8 10 12 16 18 19 21 23 25 26 29 30 33 34 35 <= 16
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 31
+nested set, do not add
+new capacity cutset: 8 23 33 35 <= 3
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 18 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 2 8 13 14 15 17 23 24 33 35 36 <= 9
+new capacity cutset: 5 7 11 22 27 28 31 37 <= 6
+new capacity cutset: 1 3 4 6 8 10 12 16 19 21 23 25 26 29 30 33 34 35 <= 15
+nested set, do not add
+new capacity cutset: 5 7 11 20 22 27 <= 4
+new capacity cutset: 1 3 4 6 12 16 18 19 23 25 26 29 30 33 34 35 <= 13
+nested set, do not add
+new capacity cutset: 5 7 11 20 22 27 32 <= 5
+nested set, do not add
+new capacity cutset: 1 3 4 8 12 16 23 25 26 33 35 <= 9
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 15 16 17 18 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 29
+nested set, do not add
+new capacity cutset: 1 3 4 6 12 16 19 25 29 34 <= 8
+nested set, do not add
+new capacity cutset: 1 3 4 6 12 16 25 29 34 <= 7
+nested set, do not add
+new capacity cutset: 1 3 4 6 10 12 16 18 19 25 26 28 29 30 31 34 37 <= 14
+new capacity cutset: 1 3 4 6 10 12 16 18 19 21 25 26 28 29 30 31 34 37 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 6 10 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 10 12 16 21 25 26 30 <= 8
+nested set, do not add
+new capacity cutset: 1 3 4 6 10 12 16 19 21 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 10 12 16 18 19 21 23 25 26 29 30 33 34 35 <= 15
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 11 12 13 14 15 16 17 18 19 21 22 23 24 25 26 27 28 29 30 31 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 1 3 4 6 12 16 18 19 21 25 26 28 29 30 31 34 37 <= 14
+new capacity cutset: 1 3 4 5 6 7 11 12 16 18 19 20 21 22 25 26 27 28 29 30 31 34 37 <= 19
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 10 11 12 16 18 19 20 21 22 25 26 27 28 29 30 31 34 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 10 11 12 16 18 19 20 21 22 25 26 27 28 29 30 31 32 34 37 <= 21
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 18 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 30
+nested set, do not add
+new capacity cutset: 1 3 4 5 7 11 12 16 20 22 25 26 27 28 31 37 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 5 7 11 12 16 20 22 25 26 27 28 31 32 37 <= 14
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 29
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 30
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 21 23 24 25 26 29 30 33 34 35 36 <= 21
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 19 21 23 24 25 26 29 30 33 34 35 36 <= 22
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 18 19 21 23 24 25 26 29 30 33 34 35 36 <= 23
+nested set, do not add
+new capacity cutset: 2 13 14 15 17 23 24 33 35 36 <= 8
+nested set, do not add
+new capacity cutset: 1 3 4 12 16 21 25 26 30 <= 7
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 15 16 17 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 2 5 7 11 13 14 15 17 20 22 27 28 31 32 36 37 <= 13
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 7 8 9 10 11 12 13 14 15 16 17 20 21 22 23 24 25 26 27 28 30 31 32 33 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 6 12 16 18 19 25 29 34 <= 9
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 18 19 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 18 19 23 25 26 29 30 33 34 35 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 11 12 16 18 19 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 18 19 20 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 15 16 17 18 19 20 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 18 19 20 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 29
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 30
+nested set, do not add
+new capacity cutset: 2 13 14 15 17 23 33 35 36 <= 7
+nested set, do not add
+new capacity cutset: 2 8 13 14 15 17 23 33 35 36 <= 8
+nested set, do not add
+new capacity cutset: 5 11 20 22 27 <= 3
+nested set, do not add
+new capacity cutset: 5 11 20 22 27 32 <= 4
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 23 24 25 26 29 30 33 34 35 36 <= 20
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 19 23 24 25 26 29 30 33 34 35 36 <= 21
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 18 19 23 24 25 26 29 30 33 34 35 36 <= 22
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 11 12 13 14 15 16 17 18 19 22 23 24 25 26 27 28 29 30 31 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 18 19 21 23 25 26 29 30 33 34 35 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 11 12 13 15 16 17 18 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 15 16 17 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 12 13 14 15 16 17 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 29
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 10 11 12 16 18 19 20 22 25 26 27 28 29 30 31 34 37 <= 19
+nested set, do not add
+new capacity cutset: 1 3 4 8 12 16 23 25 33 35 <= 8
+nested set, do not add
+new capacity cutset: 2 5 7 9 11 13 14 15 17 20 22 27 32 36 <= 11
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 11 12 16 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+new capacity cutset: 1 3 4 8 11 12 16 22 23 25 26 27 28 31 33 35 37 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 18 19 23 25 26 29 33 34 35 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 11 12 16 18 19 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 19
+new capacity cutset: 1 3 4 6 8 10 12 16 21 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+num vars: 73726
+STATS - lpIterations[4] lagIterations[0] sspIterations[0] numSeparations[46] numCuts[16] compileTime[0] sspSolveTime[0] lpSolveTime[94] lb[709.334] ub[730] numArcs: [190760] numFixed: [117034] time: [94]
+checking cuts, max violation: 0.363636, num cuts: 36
+new capacity cutset: 8 23 33 35 <= 3
+new capacity cutset: 1 3 4 5 6 7 8 9 10 11 12 16 17 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 36 37 <= 25
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 22
+nested set, do not add
+new capacity cutset: 1 3 4 8 12 16 23 25 26 33 35 <= 9
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 11 12 16 18 19 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 5 7 11 22 27 31 37 <= 5
+new capacity cutset: 2 8 13 15 17 23 33 35 36 <= 7
+nested set, do not add
+new capacity cutset: 5 7 11 20 22 27 32 <= 5
+new capacity cutset: 8 9 17 23 33 35 36 <= 5
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 7 8 9 10 11 12 13 14 15 16 17 20 21 22 23 24 25 26 27 28 30 31 32 33 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 6 12 16 25 29 34 <= 7
+new capacity cutset: 1 3 4 6 12 16 19 25 29 34 <= 8
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 18 19 23 25 26 29 33 34 35 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 9 10 12 13 15 16 17 18 19 21 23 25 26 29 30 33 34 35 36 <= 20
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 15 16 17 18 19 21 23 25 26 29 30 33 34 35 36 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 19 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 19 21 23 25 26 29 30 33 34 35 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 9 10 11 12 13 15 16 17 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 8 9 10 11 12 13 15 16 17 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 21 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 2 13 14 15 17 20 24 32 36 <= 7
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 18 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 7 8 11 12 13 14 15 16 17 20 22 23 24 25 26 27 31 32 33 35 36 37 <= 23
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 11 12 16 18 19 22 23 25 26 27 28 29 31 33 34 35 37 <= 19
+nested set, do not add
+new capacity cutset: 1 3 4 5 8 11 12 16 22 23 25 26 27 31 33 35 37 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 11 12 16 18 19 20 22 25 26 27 28 29 30 31 32 34 37 <= 19
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 10 11 12 13 14 15 16 17 18 19 20 21 22 24 25 26 27 28 29 30 31 32 34 36 37 <= 27
+nested set, do not add
+new capacity cutset: 2 5 7 11 13 14 15 17 20 22 24 27 31 32 36 37 <= 13
+nested set, do not add
+new capacity cutset: 2 5 7 11 13 14 15 17 20 22 27 31 32 36 37 <= 12
+nested set, do not add
+new capacity cutset: 1 3 4 5 7 11 12 16 20 22 25 26 27 31 32 37 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 11 12 13 15 16 17 18 19 20 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 11 12 13 14 15 16 17 18 19 20 22 23 25 26 27 28 29 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27 28 29 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 26
+nested set, do not add
+num vars: 53385
+STATS - lpIterations[5] lagIterations[0] sspIterations[0] numSeparations[65] numCuts[21] compileTime[0] sspSolveTime[0] lpSolveTime[121] lb[715.463] ub[730] numArcs: [192260] numFixed: [138875] time: [121]
+checking cuts, max violation: 0.314581, num cuts: 17
+new capacity cutset: 1 3 4 5 6 7 8 9 10 11 12 16 17 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 36 37 <= 25
+new capacity cutset: 1 3 4 8 12 16 23 25 26 33 35 <= 9
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 9 10 12 13 15 16 17 18 19 21 23 25 26 29 30 33 34 35 36 <= 20
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 15 16 17 18 19 21 23 25 26 29 30 33 34 35 36 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 21 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 22
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 11 12 16 18 19 22 23 25 26 27 28 29 31 33 34 35 37 <= 19
+nested set, do not add
+new capacity cutset: 1 3 4 5 8 11 12 16 22 23 25 26 27 33 35 37 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 5 8 11 12 16 22 23 25 26 27 31 33 35 37 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 10 11 12 16 18 19 20 21 22 25 26 27 28 29 30 31 34 37 <= 20
+new capacity cutset: 1 3 4 5 6 7 10 11 12 16 18 19 20 21 22 25 26 27 28 29 30 31 32 34 37 <= 21
+nested set, do not add
+new capacity cutset: 2 8 13 15 17 23 33 35 36 <= 7
+new capacity cutset: 8 9 17 23 33 35 36 <= 5
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 10 11 12 13 14 15 16 17 18 19 20 21 22 24 25 26 27 28 29 30 31 32 34 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 9 10 11 12 13 15 16 17 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27 28 29 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+num vars: 34659
+STATS - lpIterations[6] lagIterations[0] sspIterations[0] numSeparations[83] numCuts[25] compileTime[0] sspSolveTime[0] lpSolveTime[142] lb[717.155] ub[730] numArcs: [193590] numFixed: [158931] time: [143]
+checking cuts, max violation: 0.220928, num cuts: 30
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 32
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 31
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 19 21 23 25 26 29 30 33 34 35 <= 15
+nested set, do not add
+new capacity cutset: 1 3 4 8 12 16 23 25 26 33 35 <= 9
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 30
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 31
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 21 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 22
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 19 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 18 19 20 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 18 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 11 12 13 15 16 17 18 19 20 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 7 8 9 10 11 12 13 14 15 16 17 20 21 22 23 24 25 26 27 28 30 31 32 33 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 23 25 26 29 30 33 34 35 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 9 11 12 13 14 15 16 17 20 22 23 24 25 26 27 28 29 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 9 11 12 13 14 15 16 17 20 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 9 11 12 13 14 15 16 17 19 20 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 29
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 9 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 30
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 23 25 26 29 30 33 34 35 <= 12
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 18 19 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 11 12 16 18 19 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 10 11 12 13 14 15 16 17 18 19 20 21 22 24 25 26 27 28 29 30 31 32 34 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 9 10 11 12 13 15 16 17 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 8 9 10 11 12 13 15 16 17 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 11 12 16 18 19 22 23 25 26 27 28 29 31 33 34 35 37 <= 19
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 8 9 11 12 13 14 15 16 17 18 19 20 22 23 24 25 26 27 28 29 31 32 33 34 35 36 37 <= 29
+nested set, do not add
+num vars: 39582
+STATS - lpIterations[7] lagIterations[0] sspIterations[0] numSeparations[105] numCuts[26] compileTime[0] sspSolveTime[0] lpSolveTime[168] lb[718.684] ub[730] numArcs: [195074] numFixed: [155492] time: [169]
+checking cuts, max violation: 0.201365, num cuts: 23
+new capacity cutset: 1 3 4 6 8 10 12 16 19 21 23 25 26 29 30 33 34 35 <= 15
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 22
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 21 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 19 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 9 10 11 12 13 15 16 17 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 8 9 10 11 12 13 15 16 17 18 19 21 22 23 25 26 27 28 29 30 31 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 8 12 16 23 25 26 33 35 <= 9
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 18 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 18 19 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 21
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 18 19 20 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 5 8 11 12 16 22 23 25 26 27 31 33 35 37 <= 14
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 19 23 25 26 29 30 33 34 35 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 21 22 23 25 26 27 29 30 31 33 34 35 37 <= 19
+new capacity cutset: 1 3 4 5 6 8 10 11 12 16 19 21 22 23 25 26 27 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 11 12 16 18 19 22 23 25 26 27 28 29 30 31 33 34 35 37 <= 20
+nested set, do not add
+new capacity cutset: 1 2 3 4 5 6 7 10 11 12 13 14 15 16 17 18 19 20 21 22 24 25 26 27 28 29 30 31 32 34 36 37 <= 27
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 19 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 27
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 8 11 12 13 15 16 17 18 19 20 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 26
+new capacity cutset: 1 3 4 5 6 7 8 10 11 12 13 15 16 17 20 21 22 23 25 26 27 28 29 30 31 32 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 8 11 12 16 18 19 22 23 25 26 27 28 29 31 33 34 35 37 <= 19
+nested set, do not add
+new capacity cutset: 1 3 4 5 8 11 12 16 22 23 25 26 27 33 35 37 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 23 25 26 29 30 33 34 35 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 23 25 26 29 30 33 34 35 <= 12
+nested set, do not add
+num vars: 24851
+STATS - lpIterations[8] lagIterations[0] sspIterations[0] numSeparations[126] numCuts[31] compileTime[0] sspSolveTime[0] lpSolveTime[187] lb[720.639] ub[730] numArcs: [196568] numFixed: [171717] time: [188]
+checking cuts, max violation: 0.287611, num cuts: 4
+new capacity cutset: 8 9 17 23 33 35 36 <= 5
+new capacity cutset: 8 9 13 17 23 33 35 36 <= 6
+nested set, do not add
+new capacity cutset: 1 3 4 5 6 7 10 11 12 16 18 19 20 22 25 27 28 29 30 31 32 34 37 <= 19
+new capacity cutset: 1 3 4 5 6 7 10 11 12 16 18 19 20 22 25 27 28 29 30 31 34 37 <= 18
+nested set, do not add
+num vars: 86705
+STATS - lpIterations[9] lagIterations[0] sspIterations[0] numSeparations[144] numCuts[33] compileTime[0] sspSolveTime[0] lpSolveTime[262] lb[721.291] ub[730] numArcs: [197746] numFixed: [111041] time: [263]
+checking cuts, max violation: 0.246187, num cuts: 2
+new capacity cutset: 1 2 3 4 5 7 8 9 10 11 12 13 14 15 16 17 20 21 22 23 24 25 26 27 28 30 31 32 33 35 36 37 <= 27
+new capacity cutset: 1 3 4 8 12 16 23 25 26 33 35 <= 9
+nested set, do not add
+num vars: 19839
+STATS - lpIterations[10] lagIterations[0] sspIterations[0] numSeparations[162] numCuts[34] compileTime[0] sspSolveTime[0] lpSolveTime[279] lb[721.607] ub[730] numArcs: [199068] numFixed: [179229] time: [280]
+checking cuts, max violation: 0.110111, num cuts: 1
+new capacity cutset: 5 11 20 22 27 <= 3
+num vars: 160494
+STATS - lpIterations[11] lagIterations[0] sspIterations[0] numSeparations[182] numCuts[35] compileTime[0] sspSolveTime[0] lpSolveTime[431] lb[721.767] ub[730] numArcs: [200272] numFixed: [39778] time: [431]
+checking cuts, max violation: 0.108407, num cuts: 5
+new capacity cutset: 1 3 4 8 12 16 23 25 26 33 35 <= 9
+new capacity cutset: 1 3 4 6 8 10 12 16 21 23 25 26 29 30 33 34 35 <= 14
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 21 23 24 25 26 29 30 33 34 35 36 <= 21
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 10 12 16 23 25 26 29 30 33 34 35 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 6 8 12 16 23 25 26 29 30 33 34 35 <= 12
+nested set, do not add
+num vars: 18404
+STATS - lpIterations[12] lagIterations[0] sspIterations[0] numSeparations[201] numCuts[36] compileTime[0] sspSolveTime[0] lpSolveTime[445] lb[722.047] ub[730] numArcs: [201391] numFixed: [182987] time: [446]
+no rcc cuts found
+num vars: 15515
+STATS - lpIterations[13] lagIterations[0] sspIterations[0] numSeparations[206] numCuts[36] compileTime[0] sspSolveTime[0] lpSolveTime[456] lb[722.086] ub[730] numArcs: [201622] numFixed: [186107] time: [457]
+no rcc cuts found
+num vars: 33229
+STATS - lpIterations[14] lagIterations[0] sspIterations[0] numSeparations[216] numCuts[36] compileTime[0] sspSolveTime[0] lpSolveTime[478] lb[722.279] ub[730] numArcs: [202240] numFixed: [169011] time: [479]
+no rcc cuts found
+num vars: 18810
+STATS - lpIterations[15] lagIterations[0] sspIterations[0] numSeparations[222] numCuts[36] compileTime[0] sspSolveTime[0] lpSolveTime[492] lb[722.492] ub[730] numArcs: [202783] numFixed: [183973] time: [493]
+no rcc cuts found
+num vars: 153134
+STATS - lpIterations[16] lagIterations[0] sspIterations[0] numSeparations[237] numCuts[36] compileTime[0] sspSolveTime[0] lpSolveTime[601] lb[722.706] ub[730] numArcs: [203780] numFixed: [50646] time: [603]
+no rcc cuts found
+num vars: 13683
+STATS - lpIterations[17] lagIterations[0] sspIterations[0] numSeparations[246] numCuts[36] compileTime[0] sspSolveTime[0] lpSolveTime[612] lb[722.815] ub[730] numArcs: [204215] numFixed: [190532] time: [613]
+no rcc cuts found
+num vars: 157069
+STATS - lpIterations[18] lagIterations[0] sspIterations[0] numSeparations[254] numCuts[36] compileTime[0] sspSolveTime[0] lpSolveTime[734] lb[722.854] ub[730] numArcs: [204537] numFixed: [47468] time: [735]
+no rcc cuts found
+num vars: 13391
+STATS - lpIterations[19] lagIterations[0] sspIterations[0] numSeparations[263] numCuts[36] compileTime[0] sspSolveTime[0] lpSolveTime[744] lb[722.991] ub[730] numArcs: [205171] numFixed: [191780] time: [745]
+checking cuts, max violation: 0.120536, num cuts: 11
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 19 21 23 24 25 26 29 30 33 34 35 36 <= 22
+new capacity cutset: 1 2 3 4 8 9 12 13 14 15 16 17 23 24 25 26 33 35 36 <= 16
+nested set, do not add
+new capacity cutset: 1 2 3 4 8 9 10 12 13 14 15 16 17 21 23 24 25 26 29 30 33 34 35 36 <= 20
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 21 23 24 25 26 29 30 33 34 35 36 <= 21
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 11 12 13 14 15 16 17 18 19 21 22 23 24 25 26 27 29 30 33 34 35 36 37 <= 26
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 11 12 13 14 15 16 17 18 19 21 22 23 24 25 26 27 28 29 30 31 33 34 35 36 37 <= 28
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 18 19 21 23 24 25 26 29 30 33 34 35 36 <= 23
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 23 24 25 26 29 30 33 34 35 36 <= 20
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 19 23 24 25 26 29 30 33 34 35 36 <= 21
+nested set, do not add
+new capacity cutset: 1 2 3 4 6 8 9 10 12 13 14 15 16 17 18 19 23 24 25 26 29 30 33 34 35 36 <= 22
+new capacity cutset: 1 2 3 4 6 8 9 10 11 12 13 14 15 16 17 18 19 22 23 24 25 26 27 28 29 30 31 33 34 35 36 37 <= 27
+nested set, do not add
+num vars: 150844
+STATS - lpIterations[20] lagIterations[0] sspIterations[0] numSeparations[271] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[854] lb[723.087] ub[730] numArcs: [205365] numFixed: [54521] time: [856]
+no rcc cuts found
+num vars: 12921
+STATS - lpIterations[21] lagIterations[0] sspIterations[0] numSeparations[280] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[866] lb[723.106] ub[730] numArcs: [205907] numFixed: [192986] time: [867]
+no rcc cuts found
+num vars: 33385
+STATS - lpIterations[22] lagIterations[0] sspIterations[0] numSeparations[286] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[888] lb[723.178] ub[730] numArcs: [206147] numFixed: [172762] time: [890]
+no rcc cuts found
+num vars: 16845
+STATS - lpIterations[23] lagIterations[0] sspIterations[0] numSeparations[291] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[901] lb[723.203] ub[730] numArcs: [206522] numFixed: [189677] time: [902]
+no rcc cuts found
+num vars: 204050
+STATS - lpIterations[24] lagIterations[0] sspIterations[0] numSeparations[297] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1068] lb[723.228] ub[730] numArcs: [206897] numFixed: [2847] time: [1070]
+no rcc cuts found
+num vars: 12811
+STATS - lpIterations[25] lagIterations[0] sspIterations[0] numSeparations[306] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1079] lb[723.26] ub[730] numArcs: [207201] numFixed: [194390] time: [1080]
+no rcc cuts found
+num vars: 12662
+STATS - lpIterations[26] lagIterations[0] sspIterations[0] numSeparations[312] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1089] lb[723.268] ub[730] numArcs: [207502] numFixed: [194840] time: [1091]
+no rcc cuts found
+num vars: 101051
+STATS - lpIterations[27] lagIterations[0] sspIterations[0] numSeparations[316] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1156] lb[723.282] ub[730] numArcs: [207620] numFixed: [106569] time: [1158]
+no rcc cuts found
+num vars: 12706
+STATS - lpIterations[28] lagIterations[0] sspIterations[0] numSeparations[324] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1166] lb[723.297] ub[730] numArcs: [208049] numFixed: [195343] time: [1168]
+no rcc cuts found
+num vars: 199644
+STATS - lpIterations[29] lagIterations[0] sspIterations[0] numSeparations[337] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1321] lb[723.321] ub[730] numArcs: [208615] numFixed: [8971] time: [1323]
+no rcc cuts found
+num vars: 12525
+STATS - lpIterations[30] lagIterations[0] sspIterations[0] numSeparations[341] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1331] lb[723.337] ub[730] numArcs: [208748] numFixed: [196223] time: [1333]
+no rcc cuts found
+num vars: 24682
+STATS - lpIterations[31] lagIterations[0] sspIterations[0] numSeparations[346] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1349] lb[723.337] ub[730] numArcs: [208951] numFixed: [184269] time: [1351]
+no rcc cuts found
+num vars: 13543
+STATS - lpIterations[32] lagIterations[0] sspIterations[0] numSeparations[349] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1360] lb[723.351] ub[730] numArcs: [209083] numFixed: [195540] time: [1362]
+no rcc cuts found
+num vars: 192862
+STATS - lpIterations[33] lagIterations[0] sspIterations[0] numSeparations[353] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1511] lb[723.362] ub[730] numArcs: [209288] numFixed: [16426] time: [1513]
+no rcc cuts found
+num vars: 12250
+STATS - lpIterations[34] lagIterations[0] sspIterations[0] numSeparations[358] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1520] lb[723.362] ub[730] numArcs: [209409] numFixed: [197159] time: [1522]
+no rcc cuts found
+num vars: 131655
+STATS - lpIterations[35] lagIterations[0] sspIterations[0] numSeparations[363] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1616] lb[723.373] ub[730] numArcs: [209600] numFixed: [77945] time: [1619]
+no rcc cuts found
+num vars: 12025
+STATS - lpIterations[36] lagIterations[0] sspIterations[0] numSeparations[368] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1625] lb[723.387] ub[730] numArcs: [209895] numFixed: [197870] time: [1628]
+no rcc cuts found
+num vars: 127274
+STATS - lpIterations[37] lagIterations[0] sspIterations[0] numSeparations[374] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1715] lb[723.388] ub[730] numArcs: [210318] numFixed: [83044] time: [1717]
+no rcc cuts found
+num vars: 12071
+STATS - lpIterations[38] lagIterations[0] sspIterations[0] numSeparations[376] numCuts[38] compileTime[0] sspSolveTime[0] lpSolveTime[1725] lb[723.4] ub[730] numArcs: [210417] numFixed: [198346] time: [1727]
+checking cuts, max violation: 0.12, num cuts: 3
+new capacity cutset: 1 3 4 5 7 11 12 16 20 22 25 26 27 28 31 32 37 <= 14
+new capacity cutset: 1 3 4 5 7 11 12 16 20 22 25 26 27 28 31 37 <= 13
+nested set, do not add
+new capacity cutset: 1 3 4 5 7 11 12 16 20 22 25 26 27 31 32 37 <= 13
+nested set, do not add
+num vars: 191961
+STATS - lpIterations[39] lagIterations[0] sspIterations[0] numSeparations[377] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[1876] lb[723.4] ub[730] numArcs: [210519] numFixed: [18558] time: [1878]
+no rcc cuts found
+num vars: 12031
+STATS - lpIterations[40] lagIterations[0] sspIterations[0] numSeparations[379] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[1886] lb[723.402] ub[730] numArcs: [210588] numFixed: [198557] time: [1889]
+no rcc cuts found
+num vars: 48268
+STATS - lpIterations[41] lagIterations[0] sspIterations[0] numSeparations[383] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[1918] lb[723.403] ub[730] numArcs: [210835] numFixed: [162567] time: [1921]
+no rcc cuts found
+num vars: 205184
+STATS - lpIterations[42] lagIterations[0] sspIterations[0] numSeparations[386] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[2084] lb[723.404] ub[730] numArcs: [211000] numFixed: [5816] time: [2087]
+no rcc cuts found
+num vars: 11824
+STATS - lpIterations[43] lagIterations[0] sspIterations[0] numSeparations[388] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[2092] lb[723.406] ub[730] numArcs: [211136] numFixed: [199312] time: [2095]
+no rcc cuts found
+num vars: 167769
+STATS - lpIterations[44] lagIterations[0] sspIterations[0] numSeparations[389] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[2226] lb[723.409] ub[730] numArcs: [211196] numFixed: [43427] time: [2229]
+no rcc cuts found
+num vars: 12087
+STATS - lpIterations[45] lagIterations[0] sspIterations[0] numSeparations[394] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[2236] lb[723.412] ub[730] numArcs: [211393] numFixed: [199306] time: [2239]
+no rcc cuts found
+num vars: 44365
+STATS - lpIterations[46] lagIterations[0] sspIterations[0] numSeparations[399] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[2267] lb[723.412] ub[730] numArcs: [211654] numFixed: [167289] time: [2270]
+no rcc cuts found
+num vars: 173939
+STATS - lpIterations[47] lagIterations[0] sspIterations[0] numSeparations[402] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[2419] lb[723.413] ub[730] numArcs: [211860] numFixed: [37921] time: [2422]
+no rcc cuts found
+num vars: 12221
+STATS - lpIterations[48] lagIterations[0] sspIterations[0] numSeparations[406] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[2429] lb[723.414] ub[730] numArcs: [212150] numFixed: [199929] time: [2432]
+no rcc cuts found
+num vars: 161373
+STATS - lpIterations[49] lagIterations[0] sspIterations[0] numSeparations[409] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[2589] lb[723.414] ub[730] numArcs: [212324] numFixed: [50951] time: [2592]
+no rcc cuts found
+num vars: 12166
+STATS - lpIterations[50] lagIterations[0] sspIterations[0] numSeparations[411] numCuts[39] compileTime[0] sspSolveTime[0] lpSolveTime[2599] lb[723.414] ub[730] numArcs: [212391] numFixed: [200225] time: [2603]
+no rcc cuts found
+routes: 
+flow {0.432432}: 0 5 22 27 11 37 31 28 
+flow {0.108108}: 0 7 5 11 27 22 32 
+flow {0.198198}: 0 7 5 11 27 22 
+flow {0.261261}: 0 7 11 27 22 20 32 
+flow {0.0990991}: 0 7 31 37 25 16 4 1 3 12 26 
+flow {0.0810811}: 0 8 33 23 35 17 36 13 2 24 
+flow {0.0810811}: 0 9 2 17 36 13 15 14 24 
+flow {0.189189}: 0 9 8 33 35 23 26 21 
+flow {0.378378}: 0 9 17 36 13 15 14 24 
+flow {0.0810811}: 0 10 26 12 3 1 4 16 25 37 31 28 
+flow {0.423423}: 0 10 30 29 34 19 18 
+flow {0.351351}: 0 14 2 17 36 13 15 32 20 
+flow {0.0810811}: 0 14 2 33 35 23 8 9 
+flow {0.315315}: 0 18 19 6 34 29 10 21 
+flow {0.0630631}: 0 18 19 29 34 6 28 7 
+flow {0.0900901}: 0 19 29 34 6 28 31 20 32 
+flow {0.108108}: 0 19 34 6 28 5 7 20 
+flow {0.18018}: 0 21 10 30 23 35 33 8 
+flow {0.117117}: 0 21 30 12 3 1 4 16 25 6 
+flow {0.00900901}: 0 21 30 12 3 1 4 16 25 31 28 
+flow {0.189189}: 0 21 30 23 35 33 8 
+flow {0.0810811}: 0 24 2 17 36 13 15 32 20 7 
+flow {0.27027}: 0 24 2 33 35 23 8 9 
+flow {0.027027}: 0 24 14 2 13 15 32 20 7 
+flow {0.027027}: 0 24 14 2 17 36 15 32 20 
+flow {0.0540541}: 0 24 14 15 32 20 7 5 
+flow {0.198198}: 0 26 12 3 1 4 16 25 6 18 
+flow {0.108108}: 0 26 12 3 1 4 16 25 6 29 
+flow {0.0990991}: 0 26 12 3 1 4 16 25 37 5 
+flow {0.216216}: 0 26 12 3 1 4 16 25 37 31 28 
+flow {0.0720721}: 0 30 12 3 1 4 16 25 37 31 
+flow {0.00900901}: 0 30 26 23 35 33 8 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+solving IP
+num vars: 11621
