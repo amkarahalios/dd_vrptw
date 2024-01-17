@@ -190,7 +190,8 @@ class VRPTWDecisionDiagram
     //void findSRCThree(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
-                                   std::vector<double>& edgeFlow);
+                                   std::vector<double>& edgeFlow,
+                                   std::set<int>& rccArcs);
 
     // can be used for col gen or ssp, allows negative weights unlike dijkstra
     double computeShortestPathBFS(ShortestPathMode mode, std::vector<int>& routeByLocation);
@@ -239,7 +240,7 @@ class VRPTWDecisionDiagram
     bool checkSinglePathPossible() const;
 
     // for cuts
-    void addCapCutSet(const std::vector<int>& cutSet);
+    void addCapCutSet(const std::vector<int>& cutSet, const std::set<int>& rccArcs);
     void addCapCutSetRHS(const double& rhs) { capCutSetsRHS.push_back(rhs); }
     int getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
     int getNumCapCuts() const { return capCutSetsRHS.size(); }
@@ -285,6 +286,7 @@ class VRPTWDecisionDiagram
     // Rounded Capacity Cuts
     std::vector<std::vector<int>> capCutSets;
     std::vector<double> capCutSetsRHS;
+    std::vector<std::vector<std::vector<int>>> capCutSetRoutes;
     std::vector<std::vector<int>> capCutSetArcs;
 
     // Clique Cuts

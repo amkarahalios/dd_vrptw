@@ -62,14 +62,15 @@ class VRPTWDDSolver
     DDStats getStats() { return stats; }
 
     // public for testing purpose only
-    void addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, int maxNumCuts, bool& cutAdded);
+    void addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::set<int>& rccArcs, int maxNumCuts, bool& cutAdded);
     void addRCCs(const std::vector<std::vector<int>>& routes, bool& cutAdded);
     void addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeHead, std::vector<double>& edgeFlow, bool& cutAdded);
     void convertArcIndicesForVRPTWSep(const std::vector<double>& routeFlows,
                                      const std::vector<std::set<int>>& decomposedRoutes,
                                      std::vector<int>& edgeTail,
                                      std::vector<int>& edgeHead,
-                                     std::vector<double>& edgeFlow);
+                                     std::vector<double>& edgeFlow,
+                                     std::set<int>& rccArcs);
 
 
   private:

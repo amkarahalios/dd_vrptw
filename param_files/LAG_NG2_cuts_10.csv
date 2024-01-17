@@ -10,7 +10,7 @@ infeasibleRoutesBatchSize:1
 lagIterationDelayToStartSeparating:0
 lagOptimalityGapToStartRepairing:100
 percentFixedToChangeToCPLEX:97.5
-numArcsToChangeToCPLEX:100000
+numArcsToChangeToCPLEX:500000
 numArcsToChangeToLAG:999999999
 numLagItersForCuts:0
 numLagCuts:10
@@ -18,3 +18,5 @@ cutPhase:N
 deactivateCutValueThreshold:0.1
 deactivateCutIterThreshold:25
 betaMomentum:0.0
+alphaFactor:0.0
+bucketsPerVertex:0

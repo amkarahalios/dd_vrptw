@@ -65,7 +65,8 @@ void VRPTWDDSolver::convertArcIndicesForVRPTWSep(const std::vector<double>& rout
                                                const std::vector<std::set<int>>& decomposedRoutes,
                                                std::vector<int>& edgeTail,
                                                std::vector<int>& edgeHead,
-                                               std::vector<double>& edgeFlow)
+                                               std::vector<double>& edgeFlow,
+                                               std::set<int>& rccArcs)
 {
   double totalFlow = 0.0;
   for (double flow : routeFlows)
@@ -90,6 +91,8 @@ void VRPTWDDSolver::convertArcIndicesForVRPTWSep(const std::vector<double>& rout
       {
         edgeFlows[std::make_pair(nextLoc,currLoc)] = edgeFlows[std::make_pair(nextLoc,currLoc)] + (routeFlows[routeIndex]) / totalFlow;
       }
+
+      rccArcs.insert(arcIndex);
     }
   }
 
@@ -104,7 +107,7 @@ void VRPTWDDSolver::convertArcIndicesForVRPTWSep(const std::vector<double>& rout
     edgeFlow.push_back(edge.second);
   }
 };
-
+/*
 void VRPTWDDSolver::addRCCs(const std::vector<std::vector<int>>& routes, bool& cutAdded)
 {
   // Rounded Capacity Cuts when capacity is relaxed
@@ -147,8 +150,9 @@ void VRPTWDDSolver::addRCCs(const std::vector<std::vector<int>>& routes, bool& c
     std::cout << "no rcc cuts found" << std::endl;
   }
 }
+*/
 
-void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, int maxNumCuts, bool& cutAdded)
+void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::set<int>& rccArcs, int maxNumCuts, bool& cutAdded)
 {
   // Rounded Capacity Cuts
   char integerAndFeas = '0';
@@ -201,10 +205,13 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
       bool inFamily = false;
       for (int index=0; index<cutSets.size(); ++index)
       {
-        auto referenceCutSet = cutSets[index];
-        if (std::includes(cutSet.begin(), cutSet.end(), referenceCutSet.begin(), referenceCutSet.end()) || std::includes(referenceCutSet.begin(), referenceCutSet.end(), cutSet.begin(), cutSet.end()))
+        if (deactivatedCuts.find(index) == deactivatedCuts.end())
         {
-          inFamily = true;
+          auto referenceCutSet = cutSets[index];
+          if (std::includes(cutSet.begin(), cutSet.end(), referenceCutSet.begin(), referenceCutSet.end()) || std::includes(referenceCutSet.begin(), referenceCutSet.end(), cutSet.begin(), cutSet.end()))
+          {
+            inFamily = true;
+          }
         }
       }
 
@@ -216,7 +223,7 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
       {
         std::set<int> cutSetAsSet(cutSet.begin(), cutSet.end());
         cutSets.push_back(cutSetAsSet);
-        routeDD.addCapCutSet(cutSet);
+        routeDD.addCapCutSet(cutSet, rccArcs);
         routeDD.addCapCutSetRHS(RHS);
         stats.numCuts = stats.numCuts + 1;
       }
@@ -481,8 +488,9 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         std::vector<int> edgeTail;
         std::vector<int> edgeHead;
         std::vector<double> edgeFlow;
-        routeDD.convertSolutionForVRPTWSep(edgeTail, edgeHead, edgeFlow);
-        addRCCs(edgeTail, edgeHead, edgeFlow, 100, cutAdded);
+        std::set<int> rccArcs;
+        routeDD.convertSolutionForVRPTWSep(edgeTail, edgeHead, edgeFlow, rccArcs);
+        addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, 100, cutAdded);
       }
 
       bool stopFindingInfeasibilities = false;
@@ -521,11 +529,13 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
             allRoutesCapacityFeasible = false;
           }
         }
+        /*
         // RCC - rounded capacity cuts when dd relaxes capacity
         if (params.useCuts && (vrptw.problemType != ProblemType::PDP) && (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
         {
           addRCCs(decomposedRoutes, cutAdded);
         }
+        */
 
         for (auto infeasibleRoute : infeasibilities)
         {
@@ -564,10 +574,12 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         std::cout << "no more separations possible" << std::endl;
 
         // RCC - rounded capacity cuts when dd relaxes capacity
+        /*
         if (params.useCuts && (vrptw.problemType != ProblemType::PDP) && (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY) && !allRoutesCapacityFeasible)
         {
           addRCCs(decomposedRoutes, cutAdded);
         }
+        */
       }
 
       if (!cutAdded && !infeasibilityFound)
@@ -792,9 +804,12 @@ void VRPTWDDSolver::printMultipliers(std::vector<double>& lambda, std::vector<do
   std::cout << std::endl;
 
   std::cout << "mu: ";
-  for (double m : mu)
+  for (int index=0; index<mu.size(); ++index)
   {
-    std::cout << m << ",";
+    if (deactivatedCuts.find(index) == deactivatedCuts.end())
+    {
+      std::cout << mu[index] << ",";
+    }
   }
   std::cout << std::endl;
 }
@@ -843,15 +858,15 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
       double gammaCap = 2.0;
       gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
       std::cout << "rhs: " << routeDD.getCapCutSetRHS(i) << " cuts: " << cutValues[i] << std::endl;
-      if (gamma[gammaIndex] > 0)
+      if ((gamma[gammaIndex] > 0) && (gamma[gammaIndex] > gammaCap))
       {
         gamma[gammaIndex] = std::min(gamma[gammaIndex], gammaCap);
-        std::cout << "gamma for index " << i << " capped to " << gammaCap << std::endl;
+        std::cout << "gamma for index " << i << " capped to " << gamma[gammaIndex] << std::endl;
       }
-      else
+      else if ((gamma[gammaIndex] < 0) && (gamma[gammaIndex] < gammaCap))
       {
         gamma[gammaIndex] = std::max(gamma[gammaIndex], -1 * gammaCap);
-        std::cout << "gamma for index " << i << " capped to -" << gammaCap << std::endl;
+        std::cout << "gamma for index " << i << " capped to " << gamma[gammaIndex] << std::endl;
       }
 
       if ((mu[i] <= 0.1) && (gamma[gammaIndex] <= 0))
@@ -909,10 +924,10 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   // alpha_(k) = (psi_(star) - psi(lambda(k))) / ||gamma_(k)||_(2)^2
   double alpha = (psiStar - lagrangeanLowerBound) / normGammaSquared;
 
-  // half step size when no progress
+  // alphaFactor=1 but is kept from previous idea to half step size when no progress
   alpha = alpha * alphaFactor;
   stepSizes.push_back(alpha);
-  std::cout << "alpha: " << alpha << std::endl;
+  //std::cout << "alpha: " << alpha << std::endl;
 
   DBG(printMultipliers(lambda, mu);)
 
@@ -959,6 +974,7 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
         {
           std::cout << "deactivated cut at index: " << muIndex << std::endl;
           deactivatedCuts.insert(muIndex);
+          stats.numCuts = stats.numCuts - 1;
         }
       }
       else
@@ -1364,8 +1380,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<int> edgeTail;
       std::vector<int> edgeHead;
       std::vector<double> edgeFlow;
-      convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow);
-      addRCCs(edgeTail, edgeHead, edgeFlow, params.numLagCuts, cutAdded);
+      std::set<int> rccArcs;
+      convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow, rccArcs);
+      addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded);
 
       mu.resize(routeDD.getNumCapCuts());
       bestMuArcFixing.resize(mu.size());
@@ -1382,8 +1399,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<int> edgeTail;
       std::vector<int> edgeHead;
       std::vector<double> edgeFlow;
-      convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow);
-      addRCCs(edgeTail, edgeHead, edgeFlow, params.numLagCuts, cutAdded);
+      std::set<int> rccArcs;
+      convertArcIndicesForVRPTWSep(stepSizes, xDecompositions, edgeTail, edgeHead, edgeFlow, rccArcs);
+      addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded);
       mu.resize(routeDD.getNumCapCuts());
       bestMuArcFixing.resize(mu.size());
       cutTooSmallCounters.resize(mu.size());
@@ -1405,11 +1423,13 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
     infeasibleRoutes.clear();
   }
 
+/*
   if (stats.lowerBound < startingLowerBound + 0.01)
   {
     alphaFactor = alphaFactor / 2;
     std::cout << "halving alphaFactor: " << alphaFactor << std::endl;
   }
+*/
 
   return true;
 }

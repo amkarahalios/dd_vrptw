@@ -263,6 +263,7 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
 
   if (!arcs[newArcIndex].isReverseArc)
   {
+/*
     // add to appropriate cut sets
     capCutSetArcs.resize(capCutSets.size());
     for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
@@ -277,6 +278,7 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
         capCutSetArcs[capCutIndex].push_back(newArcIndex);
       }
     }
+*/
 
     // use duals for combs
     combCutArcs.resize(combRHS.size());
@@ -750,10 +752,13 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
       int timeQuotient = newTimeWithMultiplier / timeStepSize;
       int newTimeWithMultiplierDiscretized = timeStepSize * timeQuotient * timeWindowBinary;
       newTimeWithMultiplierDiscretized = std::max(newTimeWithMultiplierDiscretized, vrptw.startTimes[location] * vrptw.timeStateMultiplier) * timeWindowBinary;
+
+      /*
       if (newTimeWithMultiplierDiscretized == node.state.timeWithMultiplier)
       {
         newTimeWithMultiplierDiscretized = newTimeWithMultiplier;
       }
+      */
       //if (newCounter > 50)
       //{
       //  std::cout << node.state.lastVisited << " --> " << location << " " << node.state.timeWithMultiplier << " --> " << newTimeWithMultiplierDiscretized << std::endl;
@@ -3269,7 +3274,8 @@ bool VRPTWDecisionDiagram::checkSinglePathPossible() const
 
 void VRPTWDecisionDiagram::convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                              std::vector<int>& edgeHead,
-                                             std::vector<double>& edgeFlow)
+                                             std::vector<double>& edgeFlow,
+                                             std::set<int>& rccArcs)
 {
   std::map<std::pair<int,int>,double> edgeFlows;
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
@@ -3287,6 +3293,8 @@ void VRPTWDecisionDiagram::convertSolutionForVRPTWSep(std::vector<int>& edgeTail
       {
         edgeFlows[std::make_pair(nextLoc,currLoc)] = edgeFlows[std::make_pair(nextLoc,currLoc)] + arc.heuristicFlow;
       }
+
+      rccArcs.insert(arcIndex);
     }
   }
 
@@ -3301,11 +3309,12 @@ void VRPTWDecisionDiagram::convertSolutionForVRPTWSep(std::vector<int>& edgeTail
   }
 };
 
-void VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet)
+void VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet, const std::set<int>& rccArcs)
 {
   capCutSets.push_back(cutSet);
   capCutSetArcs.resize(capCutSets.size());
-  for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
+  //for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
+  for (int arcIndex : rccArcs)
   {
     if (!arcs[arcIndex].isReverseArc)
     {
