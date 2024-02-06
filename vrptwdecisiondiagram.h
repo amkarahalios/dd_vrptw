@@ -188,6 +188,7 @@ class VRPTWDecisionDiagram
     void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
     bool areNodesConnected(int nodeIndex1, int nodeIndex2);
     //void findSRCThree(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
+    void findSRCs(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
                                    std::vector<double>& edgeFlow,
@@ -290,8 +291,9 @@ class VRPTWDecisionDiagram
     std::vector<std::vector<int>> capCutSetArcs;
 
     // Clique Cuts
-    std::set<std::set<int>> cliqueCuts;
+    std::vector<std::set<int>> cliqueCuts;
     std::vector<std::vector<int>> cliqueCutArcs;
+    std::vector<std::vector<int>> cliqueCutCoeffs;
     std::vector<bool> cliqueCutActive;
 
     // Strengthened Comb Cuts

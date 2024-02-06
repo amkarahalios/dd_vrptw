@@ -491,6 +491,14 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         std::set<int> rccArcs;
         routeDD.convertSolutionForVRPTWSep(edgeTail, edgeHead, edgeFlow, rccArcs);
         addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, 100, cutAdded);
+
+        // Subset Row Cuts
+        std::vector<std::set<int>> decompositions;
+        std::vector<double> decompositionFlows;
+        decompositions.push_back(rccArcs);
+        decompositionFlows.push_back(1.0);
+        routeDD.findSRCs(decompositions, decompositionFlows, cutAdded);
+        addSRCCuts(srcDuals);
       }
 
       bool stopFindingInfeasibilities = false;
@@ -1410,13 +1418,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
       //combDuals.resize(routeDD.getNumCombCuts());
 
-      // for Subset Row Cuts add right away during cut rounds
-      // dont add for X was taking too long
-      // TOOD: maybe only add for small instances?
-      /*
-      routeDD.findSRCThree(xDecompositions, stepSizes, cutAdded);
+      // Subset Row Cuts
+      routeDD.findSRCs(xDecompositions, stepSizes, cutAdded);
       addSRCCuts(srcDuals);
-      */
+
       xDecompositions.clear();
       stepSizes.clear();
     }
