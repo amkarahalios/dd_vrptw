@@ -254,7 +254,7 @@ bool VRPTWColGen::setupAndSolveRMP()
   setCoverModel.add(coverConstraints);
 
   // one path for TSPs
-  if (vrptw.oneOrMorePaths == ONE_PATH)
+  if (vrptw.fixedNumPaths == FIXED_NUM_PATHS)
   {
     IloExpr onePath(env);
     for (int columnIndex=0; columnIndex<columns.size(); ++columnIndex)
@@ -322,7 +322,7 @@ bool VRPTWColGen::setupAndSolveRMP()
       std::cout << "dual [" << dualIndex << "]: " << setCoverDualVariables[dualIndex] << std::endl;
     }
 
-    if (vrptw.oneOrMorePaths == ONE_PATH)
+    if (vrptw.fixedNumPaths == FIXED_NUM_PATHS)
     {
       IloNumArray singlePathDualFromLP(env);
       solver.getDuals(singlePathDualFromLP, singlePathConstraint);

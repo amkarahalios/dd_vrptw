@@ -188,11 +188,13 @@ class VRPTWDecisionDiagram
     void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
     bool areNodesConnected(int nodeIndex1, int nodeIndex2);
     //void findSRCThree(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
-    void findSRCs(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
+    bool findSRCs(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& stepSizes);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
                                    std::vector<double>& edgeFlow,
-                                   std::set<int>& rccArcs);
+                                   std::vector<int>& rccArcs,
+                                   std::vector<double>& rccArcFlows);
+    void recalculateSRCCuts();
 
     // can be used for col gen or ssp, allows negative weights unlike dijkstra
     double computeShortestPathBFS(ShortestPathMode mode, std::vector<int>& routeByLocation);
@@ -208,7 +210,7 @@ class VRPTWDecisionDiagram
     void primalHeuristic(std::vector<std::vector<int>>& routesByLocation);
     bool doesRouteExistByArcs(const std::vector<int>& routeArcs) const;
     bool doesRouteExistByLocations(const std::vector<int>& routeByLocation) const;
-    void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, int maxS, DecompositionReason dr);
+    void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, int maxS, DecompositionReason dr);
     void getSolutionArcs(std::set<int>& solutionArcs);
     void separateInfeasibleRoute(const std::vector<int>& routeArcs, int maxS);
 
@@ -241,8 +243,7 @@ class VRPTWDecisionDiagram
     bool checkSinglePathPossible() const;
 
     // for cuts
-    void addCapCutSet(const std::vector<int>& cutSet, const std::set<int>& rccArcs);
-    void addCapCutSetRHS(const double& rhs) { capCutSetsRHS.push_back(rhs); }
+    void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, LPSolveType solveType);
     int getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
     int getNumCapCuts() const { return capCutSetsRHS.size(); }
 
@@ -259,8 +260,10 @@ class VRPTWDecisionDiagram
     int addArc(int fromNodeIndex, int toNodeIndex);
     int addReverseArc(int forwardArcIndex);
     bool generateNewStateFromExact(VRPTWNodeState& state, int action);
+    bool generateNewStateRelaxation(VRPTWNodeState& state, int action, int nodeIndex);
     bool moveArc(int arcIndex, int newToNodeIndex);
     void removeArc(int arcIndex);
+    void setupNgSets(int s);
  
     VRPTW vrptw;
     VRPTWDDParameters params;
@@ -268,6 +271,9 @@ class VRPTWDecisionDiagram
     std::vector<VRPTWArc> arcs;
     std::set<int> fixedArcs;
     std::set<int> removedArcs;
+    std::vector<std::set<int>> ngSets;
+
+    std::vector<std::set<int>> compilationAllVisitedDown;
 
     int rootNodeIndex;
     int terminalNodeIndex;
@@ -290,9 +296,10 @@ class VRPTWDecisionDiagram
     std::vector<std::vector<std::vector<int>>> capCutSetRoutes;
     std::vector<std::vector<int>> capCutSetArcs;
 
-    // Clique Cuts
+    // Clique Cuts (SRC)
     std::vector<std::set<int>> cliqueCuts;
     std::vector<std::vector<int>> cliqueCutArcs;
+    std::vector<int> cliqueCutLayers;
     std::vector<std::vector<int>> cliqueCutCoeffs;
     std::vector<bool> cliqueCutActive;
 

@@ -62,30 +62,31 @@ class VRPTWDDSolver
     DDStats getStats() { return stats; }
 
     // public for testing purpose only
-    void addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::set<int>& rccArcs, int maxNumCuts, bool& cutAdded);
+    void addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::vector<int>& rccArcs, int maxNumCuts, bool& cutAdded);
     void addRCCs(const std::vector<std::vector<int>>& routes, bool& cutAdded);
     void addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeHead, std::vector<double>& edgeFlow, bool& cutAdded);
     void convertArcIndicesForVRPTWSep(const std::vector<double>& routeFlows,
-                                     const std::vector<std::set<int>>& decomposedRoutes,
+                                     const std::vector<std::vector<int>>& decomposedRoutes,
                                      std::vector<int>& edgeTail,
                                      std::vector<int>& edgeHead,
                                      std::vector<double>& edgeFlow,
-                                     std::set<int>& rccArcs);
+                                     std::vector<int>& rccArcs,
+                                     std::vector<double>& rccArcFlows);
 
 
   private:
     void addSRCCuts(std::vector<double>& srcDuals);
 
-    bool solveLP(std::vector<double>& lambda, double& singlePathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
-    bool solveIP(std::vector<double>& lambda, double& singlePathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
+    bool solveLP(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
+    bool solveIP(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
     void addColumn();
     void initializeColumns();
     bool solvePricingProblem(std::vector<double>& lambda);
-    bool solveLPCG(std::vector<double>& lambda, double& singlePathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
-    bool solveLagrangeanRelaxation(std::vector<double>& lambda, double& singlePathDual, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& muSRC);
+    bool solveLPCG(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
+    bool solveLagrangeanRelaxation(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& muSRC);
 
-    void updateMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<double>& stepSizes, const std::set<int>& solutionArcs, double lagrangeanLowerBound, int iteration);
-    void printMultipliers(std::vector<double>& lambda, std::vector<double>& mu);
+    void updateMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<double>& stepSizes, double lagrangeanLowerBound, int iteration);
+    void printMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& srcDuals);
 
     VRPTW vrptw;
     VRPTWDecisionDiagram routeDD;
@@ -94,7 +95,9 @@ class VRPTWDDSolver
 
     std::vector<double> bestLambdaArcFixing;
     std::vector<double> bestMuArcFixing;
-    double bestSinglePathDualFixing;
+    std::vector<double> bestCombArcFixing;
+    std::vector<double> bestSrcArcFixing;
+    double bestFixedPathDualFixing;
     double bestLambdaPercentFixed;
     double bestLambdaLowerBound;
     std::vector<double> bestLambda;

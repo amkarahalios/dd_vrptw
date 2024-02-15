@@ -23,10 +23,10 @@ enum ProblemType
   PDP = 4
 };
 
-enum OneOrMorePaths
+enum FixedNumPaths
 {
-  ONE_PATH = 0,
-  MORE_PATHS = 1
+  FIXED_NUM_PATHS = 0,
+  FLEXIBLE_NUM_PATHS = 1
 };
 
 enum CircuitOrPath
@@ -1605,7 +1605,7 @@ struct VRPTW
       std::smatch vrptwInstanceMatch;
       if (std::regex_search(fileName, vrptwInstanceMatch, vrptwInstanceRegex))
       {
-        oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
+        fixedNumPaths = FixedNumPaths::FLEXIBLE_NUM_PATHS;
         circuitOrPath = CircuitOrPath::CIRCUIT;
         problemType = ProblemType::TW;
         vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
@@ -1730,7 +1730,7 @@ struct VRPTW
       }
 
       // CVRP instance format, relax num trucks constraint
-      std::regex cvrpInstanceRegex(".*-k.*");
+      std::regex cvrpInstanceRegex("([A-Z]).*-k([0-9]*).*");
       std::smatch cvrpInstanceMatch;
       if (std::regex_search(fileName, cvrpInstanceMatch, cvrpInstanceRegex))
       {
@@ -1738,13 +1738,24 @@ struct VRPTW
         finalTimeStateMultiplier = timeStateMultiplier;
         timeStateDiscretization = 10;
         capacityDiscretization = 0;
-        oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
+
+        if (cvrpInstanceMatch[1] == "X")
+        {
+          fixedNumPaths = FixedNumPaths::FLEXIBLE_NUM_PATHS;
+          std::cout << "flexible number of vehicles" << std::endl;
+        }
+        else
+        {
+          fixedNumPaths = FixedNumPaths::FIXED_NUM_PATHS;
+          std::cout << "fixed number of vehicles" << std::endl;
+        }
+        numVehicles = std::stoi(cvrpInstanceMatch[2]);
+
         circuitOrPath = CircuitOrPath::CIRCUIT;
         problemType = ProblemType::CVRP;
         vrptwCapacityType = VRPTWCapacityType::NO_RELAX_CAPACITY;
         counterType = VRPTWCounterType::NO_USE_COUNTER;
         vrptwTimeWindowType = VRPTWTimeWindowType::NO_TIME_WINDOWS;
-        std::cout << "relax time window constraint" << std::endl;
         std::vector<std::pair<double,double> > coordinates;
 
         bool nodeCoordSection = false;
@@ -1918,7 +1929,8 @@ struct VRPTW
           timeStateDiscretization = 10;
         }
 
-        oneOrMorePaths = OneOrMorePaths::ONE_PATH;
+        fixedNumPaths = FixedNumPaths::FIXED_NUM_PATHS;
+        numVehicles = 1;
         circuitOrPath = CircuitOrPath::CIRCUIT;
         problemType = ProblemType::TSPTW;
         std::vector<std::pair<double,double> > coordinates;
@@ -2046,7 +2058,8 @@ struct VRPTW
         timeStateDiscretization = 1;
         capacityDiscretization = 0;
 
-        oneOrMorePaths = OneOrMorePaths::ONE_PATH;
+        fixedNumPaths = FixedNumPaths::FIXED_NUM_PATHS;
+        numVehicles = 1;
         circuitOrPath = CircuitOrPath::PATH;
         problemType = ProblemType::SOP;
         std::vector<std::pair<double,double> > coordinates;
@@ -2169,7 +2182,7 @@ struct VRPTW
         finalTimeStateMultiplier = 1000000;
         capacityDiscretization = 1;
 
-        oneOrMorePaths = OneOrMorePaths::MORE_PATHS;
+        fixedNumPaths = FixedNumPaths::FLEXIBLE_NUM_PATHS;
         circuitOrPath = CircuitOrPath::CIRCUIT;
         problemType = ProblemType::PDP;
         std::vector<std::pair<double,double> > coordinates;
@@ -2427,7 +2440,7 @@ struct VRPTW
       }
 
       // distances
-      if ((problemType == ProblemType::PDP) || (problemType == ProblemType::TW) || (problemType == ProblemType::CVRP))
+      if ((problemType == ProblemType::PDP) || (problemType == ProblemType::TW))
       {
         std::set<int> greedyLocations;
         int greedyTime = 0;
@@ -2481,7 +2494,7 @@ struct VRPTW
     VRPTWCapacityType vrptwCapacityType;
     VRPTWTimeWindowType vrptwTimeWindowType;
     VRPTWCounterType counterType;
-    OneOrMorePaths oneOrMorePaths;
+    FixedNumPaths fixedNumPaths;
     CircuitOrPath circuitOrPath;
     ProblemType problemType;
     int timeStateMultiplier;
