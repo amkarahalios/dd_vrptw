@@ -1848,6 +1848,25 @@ struct VRPTW
           }
         }
 
+        /*
+        if (capacity >= 100)
+        {
+          vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
+          counterType = VRPTWCounterType::USE_COUNTER;
+
+          capacityDiscretization = 10;
+          if (capacity >= 200)
+          {
+            capacityDiscretization = 20;
+          }
+
+          if (capacity >= 500)
+          {
+            capacityDiscretization = 50;
+          }
+        }
+        */
+
         precedences.resize(demands.size());
         distances.resize(demands.size());
         for (int i=0; i < demands.size(); ++i)

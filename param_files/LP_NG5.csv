@@ -2,7 +2,7 @@ LPSolveType:LP
 InitialStateSpace:NG
 s:5
 maxS:50
-useCuts:N
+useCuts:Y
 useVariableFixing:Y
 useMuSSP:Y
 timeoutSeconds:3600
@@ -12,3 +12,11 @@ lagOptimalityGapToStartRepairing:5
 percentFixedToChangeToCPLEX:97.5
 numArcsToChangeToCPLEX:100000
 numArcsToChangeToLAG:999999999
+numLagItersForCuts:0
+numLagCuts:0
+cutPhase:N
+deactivateCutValueThreshold:0
+deactivateCutIterThreshold:0
+betaMomentum:0.0
+alphaFactor:0.0
+bucketsPerVertex:0

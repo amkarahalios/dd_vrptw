@@ -11,12 +11,12 @@
 
 struct VRPTWNodeState
 {
-  VRPTWNodeState(int _counter, int _capacity, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited) : counter(_counter), capacity(_capacity), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited) {};
-  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited) {};
+  VRPTWNodeState(int _counter, int _capacity, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited) : counter(_counter), capacity(_capacity), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited), srcCount(0) {};
+  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited), srcCount(state.srcCount) {};
 
   bool operator==(const VRPTWNodeState & rhs) const
   {
-    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
+    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited) && (srcCount == rhs.srcCount))
     {
       return true;
     }
@@ -26,6 +26,7 @@ struct VRPTWNodeState
     }
   }
 
+  // does not need full ordering, more of equivalence classes in nodeOrdering
   bool operator<(const VRPTWNodeState & rhs) const
   {
     if (counter < rhs.counter)
@@ -65,6 +66,8 @@ struct VRPTWNodeState
   int timeWithMultiplier;
   int lastVisited;
   std::set<int> visited;
+
+  int srcCount;
 };
 
 struct hash_state
@@ -188,7 +191,7 @@ class VRPTWDecisionDiagram
     void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
     bool areNodesConnected(int nodeIndex1, int nodeIndex2);
     //void findSRCThree(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
-    bool findSRCs(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& stepSizes);
+    int findSRCs(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& stepSizes);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
                                    std::vector<double>& edgeFlow,
@@ -205,14 +208,17 @@ class VRPTWDecisionDiagram
     void initializeColumnsByLPDecomp();
     double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, double& singlePathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
     double fixArcs(const std::vector<double>& lambda, double singlePathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double lowerBound, LPSolveType solveType);
+    bool isDualFeasibleForSeparatedRoutes(const std::vector<double>& lambda, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double fixedPathDual) { return true; }
 
     // primal heuristic and separation methods
     void primalHeuristic(std::vector<std::vector<int>>& routesByLocation);
     bool doesRouteExistByArcs(const std::vector<int>& routeArcs) const;
-    bool doesRouteExistByLocations(const std::vector<int>& routeByLocation) const;
+    bool doesRouteExistByLocations(const std::vector<int>& routeByLocation, std::vector<int>& routeArcs) const;
     void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, int maxS, DecompositionReason dr);
     void getSolutionArcs(std::set<int>& solutionArcs);
     void separateInfeasibleRoute(const std::vector<int>& routeArcs, int maxS);
+    int separateFeasibleRoute(const std::vector<int>& routeArcs);
+    bool isRouteFeasible(const std::vector<int>& route);
 
     // min cost flow for lagrangean
     void runDijkstra(ShortestPathMode mode, std::vector<int>& shortestPathByArc);
@@ -241,6 +247,7 @@ class VRPTWDecisionDiagram
     bool checkLC121SolutionPossible() const;
     bool checkLRC121SolutionPossible() const;
     bool checkSinglePathPossible() const;
+    void printCuts() const;
 
     // for cuts
     void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, LPSolveType solveType);
@@ -254,6 +261,9 @@ class VRPTWDecisionDiagram
     void addCombCutRHS(const double& rhs) { combRHS.push_back(rhs); }
     int getCombCutRHS(int index) const { return combRHS[index]; }
     int getNumCombCuts() const { return combRHS.size(); }
+
+    int getRCCCoeff(std::vector<int> route, int rccIndex);
+    int getSRCCoeff(std::vector<int> route, const std::set<int>& cutSet);
 
   private:
     int addNode(const VRPTWNodeState& state);
@@ -302,6 +312,7 @@ class VRPTWDecisionDiagram
     std::vector<int> cliqueCutLayers;
     std::vector<std::vector<int>> cliqueCutCoeffs;
     std::vector<bool> cliqueCutActive;
+    int separatedFeasibleRouteCounter;
 
     // Strengthened Comb Cuts
     std::vector<std::vector<std::set<int>>> teeths;

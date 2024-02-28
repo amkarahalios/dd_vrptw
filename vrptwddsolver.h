@@ -85,7 +85,7 @@ class VRPTWDDSolver
     bool solveLPCG(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
     bool solveLagrangeanRelaxation(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& muSRC);
 
-    void updateMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<double>& stepSizes, double lagrangeanLowerBound, int iteration);
+    void updateMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals, double lagrangeanLowerBound, int iteration);
     void printMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& srcDuals);
 
     VRPTW vrptw;
