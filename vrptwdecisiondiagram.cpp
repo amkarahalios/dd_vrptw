@@ -1296,6 +1296,30 @@ void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
     std::vector<int> shortestPathUp(nodes.size(), INF);
     shortestPathUp[terminalNodeIndex] = 0;
 
+    // when counter not used, need to calculate longest path down
+    std::vector<int> longestPathDown(nodes.size(), INF);
+    longestPathDown[rootNodeIndex] = 0;
+    if (vrptw.counterType == VRPTWCounterType::NO_USE_COUNTER)
+    {
+      for (auto capNodeIndices : nodeOrdering)
+      {
+        for (int nodeIndex : capNodeIndices.second)
+        {
+          for (int arcIndex : nodes[nodeIndex].outArcs)
+          {
+            int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
+            int toNodeIndex = arcs[arcIndex].toNodeIndex;
+
+            int possibleNewLongest = longestPathDown[fromNodeIndex] + 1;
+            if (possibleNewLongest > longestPathDown[toNodeIndex])
+            {
+              longestPathDown[toNodeIndex] = possibleNewLongest;
+            }
+          }
+        }
+      }
+    }
+
     for (auto capNodeIndices : nodeOrdering)
     {
       for (int nodeIndex : capNodeIndices.second)
@@ -1315,7 +1339,14 @@ void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
             shortestPathDown[toNodeIndex] = numTimesInSet;
           }
 
-          counterArcIndices[nodes[nodeIndex].state.counter].insert(arcIndex);
+          if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
+          {
+            counterArcIndices[nodes[nodeIndex].state.counter].insert(arcIndex);
+          }
+          else
+          {
+            counterArcIndices[longestPathDown[nodeIndex]].insert(arcIndex);
+          }
         }
       }
     }
@@ -1899,6 +1930,7 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double f
     }
   }
   lowerBound = lowerBound + fixedPathDual*vrptw.numVehicles;
+  std::cout << "fixing. lower bound used: " << lowerBound << std::endl;
 
   setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(lambda, capDuals, combDuals, srcDuals, solveType);
 

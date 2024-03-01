@@ -398,9 +398,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         {
           if (params.useVariableFixing)
           {
-            std::cout << "repairing" << std::endl;
             repairMultipliers(lambda, fixedPathDual, mu, combDuals, srcDuals, LPSolveType::LAGSolver);
-            std::cout << "fixing" << std::endl;
             percentArcsFixed = routeDD.fixArcs(lambda, fixedPathDual, mu, combDuals, srcDuals, params.lpSolveType);
           }
         }
