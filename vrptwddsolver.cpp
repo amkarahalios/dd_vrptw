@@ -807,7 +807,6 @@ void VRPTWDDSolver::repairMultipliers(std::vector<double>& repairedLambda, doubl
 {
   routeDD.clearRelaxedSrcs();
 
-  int iteration = 0;
   while (true)
   {
     routeDD.setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(repairedLambda, repairedMu, repairedCombDuals, repairedSrcDuals, solveType);
@@ -817,32 +816,42 @@ void VRPTWDDSolver::repairMultipliers(std::vector<double>& repairedLambda, doubl
     std::vector<int> shortestPathByArc;
     double shortestPathLength = routeDD.computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc);
     shortestPathLength = shortestPathLength - repairedFixedPathDual;
-    if (shortestPathLength > 0)
+    if (shortestPathLength >= 0)
     {
       break;
     }
     else
     {
+      bool updated = false;
       std::vector<std::vector<int>> shortestPathsByArc;
       shortestPathsByArc.push_back(shortestPathByArc);
       std::set<int> locations;
       routeDD.getLocationsOnArcPaths(shortestPathsByArc, locations);
-      if (shortestPathByArc.size() - 2 > 0)
+      double updateAmount = std::min(shortestPathLength, -0.001);
+      if (shortestPathByArc.size() - 1 > 0)
       {
         for (int loc : locations)
         {
-          repairedLambda[loc] = std::max(0.0, repairedLambda[loc] + (shortestPathLength / (shortestPathByArc.size() - 2)) - 0.000001);
+          if (repairedLambda[loc] > 0.00001)
+          {
+            updated = true;
+            repairedLambda[loc] = std::max(0.0, repairedLambda[loc] + (updateAmount / (shortestPathByArc.size() - 1)) - 0.000001);
+          }
         }
       }
 
-      if (iteration > 10)
+      if (!updated)
       {
         if (vrptw.fixedNumPaths == FixedNumPaths::FIXED_NUM_PATHS)
         {
-          repairedFixedPathDual = repairedFixedPathDual - shortestPathLength;
+          repairedFixedPathDual = repairedFixedPathDual + shortestPathLength - 0.001;
+        }
+
+        for (int index=1; index<vrptw.numLocations; ++index)
+        {
+          repairedLambda[index] = std::max(0.0, repairedLambda[index] - 0.01);
         }
       }
-      iteration = iteration + 1;
     }
   }
 };
