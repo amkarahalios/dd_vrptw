@@ -1252,20 +1252,19 @@ int VRPTWDecisionDiagram::findSRCs(const std::vector<std::vector<int>>& decompos
           }
 
           std::vector<int> emptyVector;
-          std::cout << "added new src cut: ";
+          std::cout << "added new src cut with arcs: ";
           cliqueCuts.push_back(testSet);
           cliqueCutActive.push_back(true);
           cliqueCutSeparatedArcs.push_back(bestLayerArcs);
           cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
           cliqueCutRelaxedArcs.push_back(emptyVector);
           cliqueCutRelaxedCoeffs.push_back(emptyVector);
-          std::cout << "with arcs: ";
           for (int a : bestLayerArcs)
           {
             std::cout << a << " ";
           }
-          std::cout << std::endl;
 
+          std::cout << " for test set: ";
           for (int loc : testSet)
           {
             std::cout << loc << " ";
@@ -1579,7 +1578,8 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       if (flowType == FlowType::IP)
       {
         // NOTE(akarahal) try seeing if upper bounds get dual values
-        x[arcIndex] = IloNumVar(env, 0, IloInfinity, ILOINT);
+        //x[arcIndex] = IloNumVar(env, 0, IloInfinity, ILOINT);
+        x[arcIndex] = IloNumVar(env, 0, 1, ILOINT);
         objective += x[arcIndex] * arcs[arcIndex].coeff;
         //if ((arcs[arcIndex].fromNodeIndex == rootNodeIndex) && (vrptw.problemType == ProblemType::PDP))
         //{
@@ -1597,7 +1597,8 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
         {
           ++numNonZeroVars;
           // NOTE(akarahal) try seeing if upper bounds get dual values
-          x[arcIndex] = IloNumVar(env, 0, IloInfinity);
+          //x[arcIndex] = IloNumVar(env, 0, IloInfinity);
+          x[arcIndex] = IloNumVar(env, 0, 1);
           objective += x[arcIndex] * arcs[arcIndex].coeff;
         }
       }
@@ -1809,10 +1810,10 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       {
         capDuals[dualIndex] = lpCapDuals[dualIndex];
         dualValue += (lpCapDuals[dualIndex] * capCutSetsRHS[dualIndex]);
-      }
-      for (int dualIndex=0; dualIndex<capCutSets.size(); ++dualIndex)
-      {
-        std::cout << "cap dual [" << dualIndex << "]: " << capDuals[dualIndex] << std::endl;
+        if (capDuals[dualIndex] < 0)
+        {
+          std::cout << "cap dual [" << dualIndex << "]: " << capDuals[dualIndex] << std::endl;
+        }
       }
  
       IloNumArray lpCombDuals(env);
@@ -1871,7 +1872,14 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double f
 
   for (int dualIndex=0; dualIndex<capCutSets.size(); ++dualIndex)
   {
-    lowerBound += (capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+    if (solveType == LPSolveType::LPSolver)
+    {
+      lowerBound += (capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+    }
+    else
+    {
+      lowerBound += (-1 * capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+    }
   }
 
   for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
@@ -1881,7 +1889,14 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double f
 
   for (int dualIndex=0; dualIndex<cliqueCuts.size(); ++dualIndex)
   {
-    lowerBound += srcDuals[dualIndex];
+    if (solveType == LPSolveType::LPSolver)
+    {
+      lowerBound += srcDuals[dualIndex];
+    }
+    else
+    {
+      lowerBound += srcDuals[dualIndex];
+    }
   }
   lowerBound = lowerBound + fixedPathDual*vrptw.numVehicles;
 

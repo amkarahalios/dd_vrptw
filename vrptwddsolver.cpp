@@ -807,6 +807,7 @@ void VRPTWDDSolver::repairMultipliers(std::vector<double>& repairedLambda, doubl
 {
   routeDD.clearRelaxedSrcs();
 
+  int iteration = 0;
   while (true)
   {
     routeDD.setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(repairedLambda, repairedMu, repairedCombDuals, repairedSrcDuals, solveType);
@@ -834,10 +835,14 @@ void VRPTWDDSolver::repairMultipliers(std::vector<double>& repairedLambda, doubl
         }
       }
 
-      if (vrptw.fixedNumPaths == FixedNumPaths::FIXED_NUM_PATHS)
+      if (iteration > 10)
       {
-        repairedFixedPathDual = repairedFixedPathDual - 1;
+        if (vrptw.fixedNumPaths == FixedNumPaths::FIXED_NUM_PATHS)
+        {
+          repairedFixedPathDual = repairedFixedPathDual - shortestPathLength;
+        }
       }
+      iteration = iteration + 1;
     }
   }
 };
@@ -1431,7 +1436,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<int> rccArcs;
       std::vector<double> rccArcFlows;
       convertArcIndicesForVRPTWSep(xDecompositionFlows, xDecompositions, edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
-      //addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded);
+      addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded);
 
       // Subset Row Cuts
       std::vector<std::vector<int>> newXDecompositionArcs;
