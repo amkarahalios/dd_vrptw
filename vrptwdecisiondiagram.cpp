@@ -1892,9 +1892,8 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   return 0;
 };
 
-double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double fixedPathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType)
+double VRPTWDecisionDiagram::getDualObjectiveValue(const std::vector<double>& lambda, double fixedPathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType)
 {
-  // get value of dual
   double lowerBound = 0.0;
   for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
   {
@@ -1930,6 +1929,14 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double f
     }
   }
   lowerBound = lowerBound + fixedPathDual*vrptw.numVehicles;
+
+  return lowerBound;
+}
+
+double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double fixedPathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType)
+{
+  // get value of dual
+  double lowerBound = getDualObjectiveValue(lambda, fixedPathDual, capDuals, combDuals, srcDuals, LPSolveType solveType);
   std::cout << "fixing. lower bound used: " << lowerBound << std::endl;
 
   setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(lambda, capDuals, combDuals, srcDuals, solveType);

@@ -207,6 +207,7 @@ class VRPTWDecisionDiagram
     // network flow for lp/ip
     void initializeColumnsByLPDecomp();
     double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, double& singlePathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
+    double getDualObjectiveValue(const std::vector<double>& lambda, double fixedPathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
     double fixArcs(const std::vector<double>& lambda, double singlePathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
 
     // primal heuristic and separation methods
