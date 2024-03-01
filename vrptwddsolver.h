@@ -100,7 +100,6 @@ class VRPTWDDSolver
     std::vector<double> bestSrcArcFixing;
     double bestFixedPathDualFixing;
     double bestLambdaPercentFixed;
-    double bestLambdaLowerBound;
     std::vector<double> bestLambda;
 
     std::vector<double> previousLambdaMomentum;

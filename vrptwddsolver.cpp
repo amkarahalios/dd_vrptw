@@ -49,7 +49,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
 
   // set best lambda lower bound to 0
-  bestLambdaLowerBound = 0.0;
   bestLambdaPercentFixed = 0.0;
   bestFixedPathDualFixing = 0.0;
   alphaFactor = 1.0;
@@ -1097,7 +1096,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       double minReducedCost = 0.0;
       std::vector<double> repairedLambda(lambda);
       double percentFixed = 0.0;
-      if (params.useVariableFixing && (bestLambdaLowerBound > 0.001))
+      if (params.useVariableFixing && (bestLambdaPercentFixed > 0.001))
       {
         std::vector<double> emptyComb;
         std::vector<double> emptySrc;
@@ -1304,7 +1303,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
           std::cout << "updating best lambda" << std::endl;
           bestFixedPathDualFixing = fixedPathDual;
           bestLambdaPercentFixed = percentFixed;
-          bestLambdaLowerBound = lagrangeanLowerBound;
           for (int index=0; index<lambda.size(); ++index)
           {
             bestLambdaArcFixing[index] = repairedLambda[index];
@@ -1331,30 +1329,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         {
           repairMultipliers(repairedLambda, fixedPathDual, mu, combDuals, srcDuals, LPSolveType::LAGSolver);
 
-          double repairedBound = 0.0;
-          for (int index=1; index<repairedLambda.size(); ++index)
-          {
-            repairedBound += repairedLambda[index];
-          }
-          // - mu_T(-Cx + r) because capCuts are Cx <= r (not >=)
-          for (int index=0; index<mu.size(); ++index)
-          {
-            repairedBound += mu[index] * routeDD.getCapCutSetRHS(index) * -1;
-          }
-
-          // - combDual_T(Ax - RHS)
-          for (int index=0; index<combDuals.size(); ++index)
-          {
-            repairedBound += (combDuals[index] * routeDD.getCombCutRHS(index));
-          }
-
-          // src duals, <=
-          for (int index=0; index<srcDuals.size(); ++index)
-          {
-            repairedBound += (srcDuals[index] * -1);
-          }
-
-          repairedBound = repairedBound + (fixedPathDual*vrptw.numVehicles);
+          double repairedBound = routeDD.getDualObjectiveValue(repairedLambda, fixedPathDual, mu, combDuals, srcDuals, LPSolveType::LAGSolver);
 
           DBG(std::cout << "repaired lb: " << repairedBound << std::endl;)
           // The repaired bound might be the best lb yet!
@@ -1372,7 +1347,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
             std::cout << "updating best lambda" << std::endl;
             bestLambdaPercentFixed = percentFixed;
             bestFixedPathDualFixing = fixedPathDual;
-            bestLambdaLowerBound = repairedBound;
             for (int index=0; index<lambda.size(); ++index)
             {
               bestLambdaArcFixing[index] = repairedLambda[index];
