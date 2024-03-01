@@ -197,7 +197,7 @@ class VRPTWDecisionDiagram
                                    std::vector<double>& edgeFlow,
                                    std::vector<int>& rccArcs,
                                    std::vector<double>& rccArcFlows);
-    void recalculateSRCCuts();
+    void strengthenSRCs(int layer);
 
     // can be used for col gen or ssp, allows negative weights unlike dijkstra
     double computeShortestPathBFS(ShortestPathMode mode, std::vector<int>& routeByLocation);
@@ -207,8 +207,7 @@ class VRPTWDecisionDiagram
     // network flow for lp/ip
     void initializeColumnsByLPDecomp();
     double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, double& singlePathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
-    double fixArcs(const std::vector<double>& lambda, double singlePathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double lowerBound, LPSolveType solveType);
-    bool isDualFeasibleForSeparatedRoutes(const std::vector<double>& lambda, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double fixedPathDual) { return true; }
+    double fixArcs(const std::vector<double>& lambda, double singlePathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
 
     // primal heuristic and separation methods
     void primalHeuristic(std::vector<std::vector<int>>& routesByLocation);
@@ -264,6 +263,7 @@ class VRPTWDecisionDiagram
 
     int getRCCCoeff(std::vector<int> route, int rccIndex);
     int getSRCCoeff(std::vector<int> route, const std::set<int>& cutSet);
+    void clearRelaxedSrcs();
 
   private:
     int addNode(const VRPTWNodeState& state);
@@ -308,9 +308,10 @@ class VRPTWDecisionDiagram
 
     // Clique Cuts (SRC)
     std::vector<std::set<int>> cliqueCuts;
-    std::vector<std::vector<int>> cliqueCutArcs;
-    std::vector<int> cliqueCutLayers;
-    std::vector<std::vector<int>> cliqueCutCoeffs;
+    std::vector<std::vector<int>> cliqueCutSeparatedArcs;
+    std::vector<std::vector<int>> cliqueCutSeparatedCoeffs;
+    std::vector<std::vector<int>> cliqueCutRelaxedArcs;
+    std::vector<std::vector<int>> cliqueCutRelaxedCoeffs;
     std::vector<bool> cliqueCutActive;
     int separatedFeasibleRouteCounter;
 

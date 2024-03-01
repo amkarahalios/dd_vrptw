@@ -87,6 +87,7 @@ class VRPTWDDSolver
 
     void updateMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals, double lagrangeanLowerBound, int iteration);
     void printMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& srcDuals);
+    void repairMultipliers(std::vector<double>& repairedLambda, double& repairedFixedPathDual, std::vector<double>& repairedMu, std::vector<double>& repairedCombDuals, std::vector<double>& repairedSrcDuals, LPSolveType solveType);
 
     VRPTW vrptw;
     VRPTWDecisionDiagram routeDD;

@@ -141,14 +141,6 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
 
   setTimeStepSize();
   separatedFeasibleRouteCounter = 0;
-
-  //TODO(akarahal) compute better bound on number of locations in longest route
-  //if (vrptw.counterType == VRPTWCounterType::COUNTER)
-  //{
-    // compile DD to set max counter value as longest path
-    // use default step sizes
-    //  compileNgRoute(8);
-  //}
 };
 
 void VRPTWDecisionDiagram::setTimeStepSize()
@@ -265,7 +257,6 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
   if (!arcs[newArcIndex].isReverseArc)
   {
     // add to appropriate cut sets
-    /*
     capCutSetArcs.resize(capCutSets.size());
     for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
     {
@@ -279,7 +270,6 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
         capCutSetArcs[capCutIndex].push_back(newArcIndex);
       }
     }
-    */
 
     // use duals for combs
     combCutArcs.resize(combRHS.size());
@@ -888,12 +878,32 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
   {
     if (isCliqueCutActive(cliqueCutIndex))
     {
-      auto currCliqueCutArcs = cliqueCutArcs[cliqueCutIndex];
-      auto currCliqueCutCoeffs = cliqueCutCoeffs[cliqueCutIndex];
-      for (int cutIndex=0; cutIndex<currCliqueCutArcs.size(); ++cutIndex)
+      auto currCliqueCutSeparatedArcs = cliqueCutSeparatedArcs[cliqueCutIndex];
+      auto currCliqueCutSeparatedCoeffs = cliqueCutSeparatedCoeffs[cliqueCutIndex];
+      for (int cutIndex=0; cutIndex<currCliqueCutSeparatedArcs.size(); ++cutIndex)
       {
-        int arcIndex = currCliqueCutArcs[cutIndex];
-        int coeff = currCliqueCutCoeffs[cutIndex];
+        int arcIndex = currCliqueCutSeparatedArcs[cutIndex];
+        int coeff = currCliqueCutSeparatedCoeffs[cutIndex];
+
+        VRPTWArc& arc = arcs[arcIndex];
+        if (solveType == LPSolveType::LPSolver)
+        {
+          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
+        }
+        else
+        {
+          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
+        }
+      }
+ 
+      auto currCliqueCutRelaxedArcs = cliqueCutRelaxedArcs[cliqueCutIndex];
+      auto currCliqueCutRelaxedCoeffs = cliqueCutRelaxedCoeffs[cliqueCutIndex];
+      for (int cutIndex=0; cutIndex<currCliqueCutRelaxedArcs.size(); ++cutIndex)
+      {
+        int arcIndex = currCliqueCutRelaxedArcs[cutIndex];
+        int coeff = currCliqueCutRelaxedCoeffs[cutIndex];
 
         VRPTWArc& arc = arcs[arcIndex];
         if (solveType == LPSolveType::LPSolver)
@@ -960,17 +970,25 @@ void VRPTWDecisionDiagram::getCliqueCutValues(std::vector<double>& cliqueCutValu
     {
       // get all disjoint path nodes possible greedily
       double value = 0.0;
-      auto currCliqueCutArcs = cliqueCutArcs[cliqueCutIndex];
-      auto currCliqueCutCoeffs = cliqueCutCoeffs[cliqueCutIndex];
-      for (int cutIndex=0; cutIndex<currCliqueCutArcs.size(); ++cutIndex)
+      auto currCliqueCutSeparatedArcs = cliqueCutSeparatedArcs[cliqueCutIndex];
+      auto currCliqueCutSeparatedCoeffs = cliqueCutSeparatedCoeffs[cliqueCutIndex];
+      for (int cutIndex=0; cutIndex<currCliqueCutSeparatedArcs.size(); ++cutIndex)
       {
-        int arcIndex = currCliqueCutArcs[cutIndex];
-        int coeff = currCliqueCutCoeffs[cutIndex];
+        int arcIndex = currCliqueCutSeparatedArcs[cutIndex];
+        int coeff = currCliqueCutSeparatedCoeffs[cutIndex];
+        value += arcs[arcIndex].heuristicFlow * coeff;
+      }
+ 
+      auto currCliqueCutRelaxedArcs = cliqueCutRelaxedArcs[cliqueCutIndex];
+      auto currCliqueCutRelaxedCoeffs = cliqueCutRelaxedCoeffs[cliqueCutIndex];
+      for (int cutIndex=0; cutIndex<currCliqueCutRelaxedArcs.size(); ++cutIndex)
+      {
+        int arcIndex = currCliqueCutRelaxedArcs[cutIndex];
+        int coeff = currCliqueCutRelaxedCoeffs[cutIndex];
         value += arcs[arcIndex].heuristicFlow * coeff;
       }
 
       cliqueCutValues.push_back(value);
-      ++cliqueCutIndex;
     }
   }
 }
@@ -1208,8 +1226,8 @@ int VRPTWDecisionDiagram::findSRCs(const std::vector<std::vector<int>>& decompos
               if (testSet == existingTestSet)
               {
                 existingTestSetFound = true;
-                existingArcSet = cliqueCutArcs[index];
-                existingCoeffs = cliqueCutCoeffs[index];
+                existingArcSet = cliqueCutSeparatedArcs[index];
+                existingCoeffs = cliqueCutSeparatedCoeffs[index];
                 for (int bestLayerArcIndex=0; bestLayerArcIndex<bestLayerArcs.size(); ++bestLayerArcIndex)
                 {
                   int arcIndex = bestLayerArcs[bestLayerArcIndex];
@@ -1233,12 +1251,14 @@ int VRPTWDecisionDiagram::findSRCs(const std::vector<std::vector<int>>& decompos
             bestLayerCoeffs = existingCoeffs;
           }
 
+          std::vector<int> emptyVector;
           std::cout << "added new src cut: ";
           cliqueCuts.push_back(testSet);
           cliqueCutActive.push_back(true);
-          cliqueCutArcs.push_back(bestLayerArcs);
-          cliqueCutLayers.push_back(0);
-          cliqueCutCoeffs.push_back(bestLayerCoeffs);
+          cliqueCutSeparatedArcs.push_back(bestLayerArcs);
+          cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
+          cliqueCutRelaxedArcs.push_back(emptyVector);
+          cliqueCutRelaxedCoeffs.push_back(emptyVector);
           std::cout << "with arcs: ";
           for (int a : bestLayerArcs)
           {
@@ -1260,374 +1280,16 @@ int VRPTWDecisionDiagram::findSRCs(const std::vector<std::vector<int>>& decompos
   return numAdded;
 }
 
-/*
-// can send in the decomposition one of two ways
-bool VRPTWDecisionDiagram::findSRCs(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& routeFlows)
+void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
 {
-  // if no counters, need to create counters...
-  std::vector<int> longestPathDown(nodes.size(), 0);
-  longestPathDown[rootNodeIndex] = 0;
-  if (vrptw.counterType == VRPTWCounterType::NO_USE_COUNTER)
-  {
-    for (auto capNodeIndices : nodeOrdering)
-    {
-      for (int nodeIndex : capNodeIndices.second)
-      {
-        for (int arcIndex : nodes[nodeIndex].outArcs)
-        {
-          int toNodeIndex = arcs[arcIndex].toNodeIndex;
+  // clear src relaxed arcs
+  clearRelaxedSrcs();
 
-          int possibleLongestPathDown = longestPathDown[nodeIndex] + 1;
-          if (possibleLongestPathDown > longestPathDown[toNodeIndex])
-          {
-            longestPathDown[toNodeIndex] = possibleLongestPathDown;
-          }
-        }
-      }
-    }
-  }
-
-  // get flow through each location
-  int maxCounter = 0;
-  std::map<int,std::set<int>> counterArcIndices;
-  std::unordered_map<int,double> arcWeightedFlows;
-  for (int index=0; index<decompositionArcs.size(); ++index)
-  {
-    auto route = decompositionArcs[index];
-    for (auto arcIndex : route)
-    {
-      double arcWeightedFlow = routeFlows[index] * 1.0;
-      arcWeightedFlows[arcIndex] = arcWeightedFlow;
-      if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
-      {
-        int counter = nodes[arcs[arcIndex].fromNodeIndex].state.counter;
-        counterArcIndices[counter].insert(arcIndex);
-        maxCounter = std::max(counter, maxCounter);
-      }
-      else
-      {
-        int counter = longestPathDown[arcs[arcIndex].fromNodeIndex];
-        counterArcIndices[counter].insert(arcIndex);
-        maxCounter = std::max(counter, maxCounter);
-      }
-    }
-  }
-
-  // find set C by checking all triples. check based on ideal cut. SRC(3,1/2) y2 + y3 + 2y4 + 2y5 + ... <= 1
-  // check the actual routes in a solution... routes need to visit more than once to add flow...
-  double largestValue = 0;
-  std::set<int> largestSet;
-  for (int i=1; i<vrptw.numLocations-2; ++i)
-  {
-    for (int j=i+1; j<vrptw.numLocations-1; ++j)
-    {
-      for (int k=j+1; k<vrptw.numLocations; ++k)
-      {
-        // calculate cut violation of current solution for given set
-        double value = 0.0;
-        for (int index=0; index<decomposition.size(); ++index)
-        {
-          auto route = decomposition[index];
-          double flow = routeFlows[index];
-
-          int minNumVisited = 0;
-          for (int location : route)
-          {
-            if ((location == i) || (location == j) || (location == k))
-            {
-              minNumVisited = minNumVisited + 1;
-            }
-          }
-
-          if (minNumVisited >= 4)
-          {
-            value = (value + (flow * 2));
-          }
-          else if (minNumVisited > 1)
-          {
-            value = (value + flow);
-          }
-        }
-
-        if (value > largestValue)
-        {
-          std::set<int> currSet = {i,j,k};
-          largestSet = currSet;
-          largestValue = value;
-        }
-      }
-    }
-  }
-
-  if (largestValue > 1)
-  {
-    std::cout << "largest src violation: " << largestValue << std::endl;
-  }
-  else
-  {
-    return false;
-  }
-
-  // calculate min times visiting C for each node, Down and Up
-  std::vector<int> shortestPathDown(nodes.size(), INF);
-  shortestPathDown[rootNodeIndex] = 0;
-  std::vector<int> shortestPathUp(nodes.size(), INF);
-  shortestPathUp[terminalNodeIndex] = 0;
-
-  for (auto capNodeIndices : nodeOrdering)
-  {
-    for (int nodeIndex : capNodeIndices.second)
-    {
-      for (int arcIndex : nodes[nodeIndex].outArcs)
-      {
-        int toNodeIndex = arcs[arcIndex].toNodeIndex;
-
-        int numTimesInSet = shortestPathDown[nodeIndex];
-        bool countLocation = largestSet.find(arcs[arcIndex].location) != largestSet.end();
-        if (countLocation)
-        {
-          ++numTimesInSet;
-        }
-        if (numTimesInSet < shortestPathDown[toNodeIndex])
-        {
-          shortestPathDown[toNodeIndex] = numTimesInSet;
-        }
-      }
-    }
-  }
-
-  for (auto it=nodeOrdering.rbegin(); it!=nodeOrdering.rend(); ++it)
-  {
-    for (int nodeIndex : it->second)
-    {
-      for (int arcIndex : nodes[nodeIndex].inArcs)
-      {
-        int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
-
-        int numTimesInSet = shortestPathUp[nodeIndex];
-        bool countLocation = largestSet.find(arcs[arcIndex].location) != largestSet.end();
-        if (countLocation)
-        {
-          ++numTimesInSet;
-        }
-        if (numTimesInSet < shortestPathUp[fromNodeIndex])
-        {
-          shortestPathUp[fromNodeIndex] = numTimesInSet;
-        }
-      }
-    }
-  }
-
-  // choose layer from which to select arcs by using counter bands and flow arcs
-  int bestLayer = 0;
-  double bestLayerFlow = 0;
-  std::set<int> layersToTry;
-  int layerToTry = 2;
-  while (layerToTry < maxCounter)
-  {
-    layersToTry.insert(layerToTry);
-    ++layerToTry;
-  }
-
-  for (int layer : layersToTry)
-  {
-    double value = 0.0;
-    if (counterArcIndices.find(layer) != counterArcIndices.end())
-    {
-      auto arcSet = counterArcIndices[layer];
-      for (int arcIndex : arcSet)
-      {
-        int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
-        int minNumVisited = shortestPathDown[fromNodeIndex] + shortestPathUp[fromNodeIndex];
-        double flow = arcWeightedFlows[arcIndex];
-        if (minNumVisited >= 4)
-        {
-          value = (value + (flow * 2));
-        }
-        else if (minNumVisited > 1)
-        {
-          value = (value + flow);
-        }
-      }
-    }
-
-    if (value > bestLayerFlow)
-    {
-      bestLayerFlow = value;
-      bestLayer = layer;
-    }
-  }
-
-  // save best layer arcs and coeffs
-  std::vector<int> bestLayerArcs;
-  std::vector<int> bestLayerCoeffs;
-  auto arcSet = counterArcIndices[bestLayer];
-  for (int arcIndex : arcSet)
-  {
-    int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
-    int toNodeIndex = arcs[arcIndex].toNodeIndex;
-    int minNumVisited = shortestPathDown[fromNodeIndex] + shortestPathUp[toNodeIndex];
-
-    int arcLocation = arcs[arcIndex].location;
-    if (largestSet.find(arcLocation) != largestSet.end())
-    {
-      minNumVisited = minNumVisited + 1;
-    }
-
-    int coeff = 1;
-    if (minNumVisited >= 4)
-    {
-      coeff = 2;
-    }
-    else if (minNumVisited <= 1)
-    {
-      continue;
-    }
-
-    bestLayerCoeffs.push_back(coeff);
-    bestLayerArcs.push_back(arcIndex);
-  }
-
-  // FOR TESTING
-  bestLayerFlow = 0.99;
-  if (bestLayerFlow > 1.01)
-  {
-    cliqueCuts.push_back(largestSet);
-    cliqueCutActive.push_back(true);
-    cliqueCutArcs.push_back(bestLayerArcs);
-    cliqueCutLayers.push_back(bestLayer);
-    cliqueCutCoeffs.push_back(bestLayerCoeffs);
-
-    std::cout << "added src cut: ";
-    for (int loc : largestSet)
-    {
-      std::cout << loc << " ";
-    }
-    std::cout << " at layer " << bestLayer << " with flow " << bestLayerFlow << std::endl;
-    return true;
-  }
-  else
-  {
-    // check flow on feasible routes to see if we should separate out and add strong cut
-    double feasibleRoutesFlow = 0.0;
-    for (int index=0; index<decomposition.size(); ++index)
-    {
-      auto route = decomposition[index];
-      int srcCoeff = getSRCCoeff(route, largestSet);
-      if (isRouteFeasible(route) && (srcCoeff > 0))
-      {
-        feasibleRoutesFlow = feasibleRoutesFlow + (srcCoeff * routeFlows[index]);
-        std::cout << "route: " << index << " flow " << routeFlows[index] << " coeff " << srcCoeff << std::endl;
-      }
-    }
-
-    if (feasibleRoutesFlow > 1.01)
-    {
-      //print();
-      bestLayerArcs.clear();
-      bestLayerCoeffs.clear();
-      std::cout << "separating out feasible paths for src cut flow: " << feasibleRoutesFlow << std::endl;
-      for (int index=0; index<decompositionArcs.size(); ++index)
-      {
-        // remove route from DD
-        auto routeArcs = decompositionArcs[index];
-        auto route = decomposition[index];
-        if (isRouteFeasible(route))
-        {
-          int srcCoeff = getSRCCoeff(route, largestSet);
-          if (srcCoeff > 0)
-          {
-            for (auto arc : routeArcs)
-            {
-              std::cout << arc << " ";
-            }
-            std::cout << std::endl;
-            for (auto loc : route)
-            {
-              std::cout << loc << " ";
-            }
-            std::cout << std::endl;
-
-            // check if already separated
-            if (route[1] == 0)
-            {
-              bestLayerArcs.push_back(routeArcs[0]);
-              bestLayerCoeffs.push_back(srcCoeff);
-              std::cout << "already separated" << std::endl;
-            }
-            else
-            {
-              if (doesRouteExistByArcs(routeArcs))
-              {
-                int newStartArc = separateFeasibleRoute(routeArcs);
-                bestLayerArcs.push_back(newStartArc);
-                bestLayerCoeffs.push_back(srcCoeff);
-              }
-              else
-              {
-                std::vector<int> updatedRouteArcs;
-                doesRouteExistByLocations(route, updatedRouteArcs);
-                int newStartArc = separateFeasibleRoute(updatedRouteArcs);
-                bestLayerArcs.push_back(newStartArc);
-                bestLayerCoeffs.push_back(srcCoeff);
-              }
-            }
-          }
-        }
-      }
-
-      //print();
-      cliqueCuts.push_back(largestSet);
-      cliqueCutActive.push_back(true);
-      cliqueCutArcs.push_back(bestLayerArcs);
-      cliqueCutLayers.push_back(bestLayer);
-      cliqueCutCoeffs.push_back(bestLayerCoeffs);
-
-      std::cout << "added src cut: ";
-      for (int loc : largestSet)
-      {
-        std::cout << loc << " ";
-      }
-      std::cout << std::endl;
-
-      std::cout << "arc set: ";
-      for (int arc : bestLayerArcs)
-      {
-        std::cout << arc << " ";
-      }
-      std::cout << std::endl;
-
-      std::cout << "coeff set: ";
-      for (int coeff : bestLayerCoeffs)
-      {
-        std::cout << coeff << " ";
-      }
-      std::cout << std::endl;
-      //print();
-
-      return true;
-    }
-  }
-
-  std::cout << "no src found, best layer flow: " << bestLayerFlow << std::endl;
-  return false;
-}
-*/
-
-/*
-void VRPTWDecisionDiagram::recalculateSRCCuts()
-{
   for (int index=0; index<cliqueCuts.size(); ++index)
   {
     std::map<int,std::set<int>> counterArcIndices;
     auto largestSet = cliqueCuts[index];
-    int layer = cliqueCutLayers[index];
-    std::cout << "recalculate src cut: " << index << " ";
-    for (int loc : largestSet)
-    {
-      std::cout << loc << " ";
-    }
-    std::cout << " at layer " << layer << std::endl;
+    int layer = averageRouteLength;
 
     // calculate min times visiting C for each node, Down and Up
     std::vector<int> shortestPathDown(nodes.size(), INF);
@@ -1686,6 +1348,12 @@ void VRPTWDecisionDiagram::recalculateSRCCuts()
     auto arcSet = counterArcIndices[layer];
     for (int arcIndex : arcSet)
     {
+      // check if part of separated
+      if (std::find(cliqueCutSeparatedArcs[index].begin(), cliqueCutSeparatedArcs[index].end(), arcIndex) != cliqueCutSeparatedArcs[index].end())
+      {
+        continue;
+      }
+
       int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
       int toNodeIndex = arcs[arcIndex].toNodeIndex;
       int minNumVisited = shortestPathDown[fromNodeIndex] + shortestPathUp[toNodeIndex];
@@ -1696,184 +1364,25 @@ void VRPTWDecisionDiagram::recalculateSRCCuts()
         minNumVisited = minNumVisited + 1;
       }
 
-      int coeff = 1;
+      int coeff = 0;
       if (minNumVisited >= 4)
       {
         coeff = 2;
       }
-      else if (minNumVisited <= 1)
+      else if (minNumVisited > 1)
       {
-        continue;
+        coeff = 1;
       }
 
       bestLayerCoeffs.push_back(coeff);
       bestLayerArcs.push_back(arcIndex);
+      std::cout << "strengthen src " << index << "by adding arc: " << arcIndex << std::endl;
     }
 
-    cliqueCutArcs[index] = bestLayerArcs;
-    cliqueCutCoeffs[index] = bestLayerCoeffs;
+    cliqueCutRelaxedArcs[index] = bestLayerArcs;
+    cliqueCutRelaxedCoeffs[index] = bestLayerCoeffs;
   }
 };
-*/
-/*
-void VRPTWDecisionDiagram::findSRCThree(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded)
-{
-  // find nodes in solution and sort by load
-  std::unordered_map<int,int> nodeFlowWeight;
-  std::set<int> nodesUsed;
-  if (decomposition.empty())
-  {
-    for (auto arc : arcs)
-    {
-      if (arc.heuristicFlow > 0.01)
-      {
-        int fromNodeIndex = arc.fromNodeIndex;
-        int toNodeIndex = arc.toNodeIndex;
-        if (fromNodeIndex != rootNodeIndex)
-        {
-          nodesUsed.insert(fromNodeIndex);
-        }
-        nodesUsed.insert(toNodeIndex);
-        nodeFlowWeight[fromNodeIndex] = nodeFlowWeight[fromNodeIndex] + std::ceil(arc.heuristicFlow * 100.0);
-      }
-    }
-  }
-  else
-  {
-    double totalFlow = 0.0;
-    for (double flow : stepSizes)
-    {
-      totalFlow += flow;
-    }
-
-    std::map<std::pair<int,int>,double> edgeFlows;
-    for (int routeIndex=0; routeIndex<decomposition.size(); ++routeIndex)
-    {
-      auto route = decomposition[routeIndex];
-      double flow = (stepSizes[routeIndex] / totalFlow);
-      if (flow > 0.001)
-      {
-        for (int arcIndex : route)
-        {
-          int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
-          int toNodeIndex = arcs[arcIndex].toNodeIndex;
-          if (fromNodeIndex != rootNodeIndex)
-          {
-            nodesUsed.insert(fromNodeIndex);
-          }
-          nodesUsed.insert(toNodeIndex);
-          nodeFlowWeight[fromNodeIndex] = nodeFlowWeight[fromNodeIndex] + std::ceil(flow * 100.0);
-        }
-      }
-    }
-  }
-
-  std::cout << "finding max clique" << std::endl;
-  std::vector<int> nodesUsedVector(nodesUsed.begin(), nodesUsed.end());
-  graph_t* g;
-  g=(graph_t*)calloc(1,sizeof(graph_t));
-  g->n = (int)nodesUsedVector.size();
-  g->edges = (set_t*)calloc(g->n,sizeof(set_t));
-  g->weights = (int*)calloc(g->n,sizeof(int));
-  for (int i=0; i<g->n; ++i)
-  {
-    g->edges[i] = set_new(g->n);
-    if (nodeFlowWeight.find(nodesUsedVector[i]) != nodeFlowWeight.end())
-    {
-      g->weights[i] = nodeFlowWeight[nodesUsedVector[i]];
-    }
-    else
-    {
-      g->weights[i] = 0.0;
-    }
-  }
-  for (int index1=0; index1<nodesUsedVector.size()-1; ++index1)
-  {
-    if (nodeFlowWeight[nodesUsedVector[index1]] >= 1)
-    {
-      for (int index2=index1+1; index2<nodesUsedVector.size(); ++index2)
-      {
-        if (nodeFlowWeight[nodesUsedVector[index2]] >= 1)
-        {
-          int nodeIndex1 = nodesUsedVector[index1];
-          int nodeIndex2 = nodesUsedVector[index2];
-          auto nodeState1 = std::set<int>(nodes[nodeIndex1].state.visited.begin(), nodes[nodeIndex1].state.visited.end());
-          auto nodeState2 = std::set<int>(nodes[nodeIndex2].state.visited.begin(), nodes[nodeIndex2].state.visited.end());
-          std::set<int> intersection;
-          std::set_intersection(nodeState1.begin(), nodeState1.end(),
-                                nodeState2.begin(), nodeState2.end(),
-                                std::inserter(intersection, intersection.begin()));
-          if (!intersection.empty())
-          {
-            if (!areNodesConnected(nodeIndex1, nodeIndex2))
-            {
-              GRAPH_ADD_EDGE(g,index1,index2);
-            }
-          }
-        }
-      }
-    }
-  }
-  std::cout << "graph setup complete" << std::endl;
-  clique_options* opts;
-  opts = (clique_options*)malloc(sizeof(clique_options));
-  opts->time_function=clique_print_time;
-  opts->output=stderr;
-  opts->reorder_function = NULL;
-  opts->reorder_map = NULL;
-  opts->user_function=record_clique_func;
-  opts->user_data=NULL;
-  opts->clique_list=NULL;
-  opts->clique_list_length=0;
-  //set_t clique = clique_find_single(g,103,200,FALSE,opts);
-  set_t clique = clique_find_single(g,0,0,FALSE,opts);
-  if (!clique)
-  {
-    std::cout << "no clique returned" << std::endl;
-    return;
-  }
-  int cliqueWeight = graph_subgraph_weight(g,clique);
-  std::cout << "got max clique with weight: " << cliqueWeight << std::endl;
-  std::set<int> cliqueSet;
-  for (int i=0; i<SET_MAX_SIZE(clique); ++i)
-  {
-    if (SET_CONTAINS(clique,i))
-    {
-      cliqueSet.insert(nodesUsedVector[i]);
-      std::cout << nodesUsedVector[i] << " has state: ";
-      for (auto n1 : nodes[nodesUsedVector[i]].state.visited)
-      {
-        std::cout << n1 << ",";
-      }
-      std::cout << std::endl;
-    }
-  }
-
-  if ((cliqueWeight > (100 + cliqueSet.size())) && (cliqueSet.size() > 1))
-  {
-    // NOTE(akarahal) should try to maximize nodes in the clique set, even if not in flow
-    int beforeSize = cliqueCuts.size();
-    cliqueCuts.insert(cliqueSet);
-    int afterSize = cliqueCuts.size();
-    if (beforeSize < afterSize)
-    {
-      cutAdded = true;
-      cliqueCutActive.push_back(true);
-
-      // add relevant arcs
-      cliqueCutArcs.resize(cliqueCuts.size());
-      for (auto nodeIndex : cliqueSet)
-      {
-        const auto node = nodes[nodeIndex];
-        for (int arcIndex : node.outArcs)
-        {
-          cliqueCutArcs.back().push_back(arcIndex);
-        }
-      }
-    }
-  }
-}
-*/
 
 void VRPTWDecisionDiagram::addColumnForLPCG(const std::vector<int>& route)
 {
@@ -2195,12 +1704,21 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       if (isCliqueCutActive(cliqueCutIndex))
       {
         IloExpr cliqueCutSum(env);
-        auto currCliqueCutArcs = cliqueCutArcs[cliqueCutIndex];
-        auto currCliqueCutCoeffs = cliqueCutCoeffs[cliqueCutIndex];
-        for (int cutIndex=0; cutIndex<currCliqueCutArcs.size(); ++cutIndex)
+        auto currCliqueCutSeparatedArcs = cliqueCutSeparatedArcs[cliqueCutIndex];
+        auto currCliqueCutSeparatedCoeffs = cliqueCutSeparatedCoeffs[cliqueCutIndex];
+        for (int cutIndex=0; cutIndex<currCliqueCutSeparatedArcs.size(); ++cutIndex)
         {
-          int arcIndex = currCliqueCutArcs[cutIndex];
-          int coeff = currCliqueCutCoeffs[cutIndex];
+          int arcIndex = currCliqueCutSeparatedArcs[cutIndex];
+          int coeff = currCliqueCutSeparatedCoeffs[cutIndex];
+          cliqueCutSum += x[arcIndex] * coeff;
+        }
+ 
+        auto currCliqueCutRelaxedArcs = cliqueCutRelaxedArcs[cliqueCutIndex];
+        auto currCliqueCutRelaxedCoeffs = cliqueCutRelaxedCoeffs[cliqueCutIndex];
+        for (int cutIndex=0; cutIndex<currCliqueCutRelaxedArcs.size(); ++cutIndex)
+        {
+          int arcIndex = currCliqueCutRelaxedArcs[cutIndex];
+          int coeff = currCliqueCutRelaxedCoeffs[cutIndex];
           cliqueCutSum += x[arcIndex] * coeff;
         }
 
@@ -2342,9 +1860,30 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   return 0;
 };
 
-double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double fixedPathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, double lowerBound, LPSolveType solveType)
+double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double fixedPathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType)
 {
-  DBG(std::cout << "fixing" << std::endl;)
+  // get value of dual
+  double lowerBound = 0.0;
+  for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
+  {
+    lowerBound += lambda[dualIndex];
+  }
+
+  for (int dualIndex=0; dualIndex<capCutSets.size(); ++dualIndex)
+  {
+    lowerBound += (capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+  }
+
+  for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
+  {
+    lowerBound += combDuals[dualIndex];
+  }
+
+  for (int dualIndex=0; dualIndex<cliqueCuts.size(); ++dualIndex)
+  {
+    lowerBound += srcDuals[dualIndex];
+  }
+  lowerBound = lowerBound + fixedPathDual*vrptw.numVehicles;
 
   setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(lambda, capDuals, combDuals, srcDuals, solveType);
 
@@ -2766,6 +2305,8 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
     nodes[arc.toNodeIndex].inArcs.push_back(arcIndex);
   }
   fixedArcs.clear();
+
+  clearRelaxedSrcs();
 
 /*
   std::cout << "separating route arcs: ";
@@ -4059,34 +3600,6 @@ void VRPTWDecisionDiagram::addCombCutTeeth(const std::vector<std::set<int>>& tee
   }
 };
 
-/*
-bool VRPTWDecisionDiagram::isCliqueCutActive(int index)
-{
-  if (cliqueCutActive[index])
-  {
-    auto it = cliqueCuts.begin();
-    std::advance(it, index);
-    auto cliqueSet = *it;
-    std::vector<int> cliqueSetVec(cliqueSet.begin(), cliqueSet.end());
-    for (int index1=0; index1<cliqueSet.size()-1; ++index1)
-    {
-      for (int index2=index1+1; index2<cliqueSet.size(); ++index2)
-      {
-        int nodeIndex1 = cliqueSetVec[index1];
-        int nodeIndex2 = cliqueSetVec[index2];
-        if (!areNodesConnected(nodeIndex1, nodeIndex2))
-        {
-          cliqueCutActive[index] = false;
-          return false;
-        }
-      }
-    }
-  }
-
-  return true;
-};
-*/
-
 bool VRPTWDecisionDiagram::isCliqueCutActive(int index)
 {
   return cliqueCutActive[index];
@@ -4146,135 +3659,12 @@ int VRPTWDecisionDiagram::getSRCCoeff(std::vector<int> route, const std::set<int
     return 0;
   }
 };
-
-void VRPTWDecisionDiagram::printCuts() const
+ 
+void VRPTWDecisionDiagram::clearRelaxedSrcs()
 {
-  std::cout << "print clique cuts" << std::endl;
-  for (int index=0; index<cliqueCuts.size(); ++index)
+  for (int index=0; index<cliqueCutRelaxedArcs.size(); ++index)
   {
-    std::cout << "index: " << index;
-    auto cliqueCut = cliqueCuts[index];
-    std::cout << "set: ";
-    for (int v : cliqueCut)
-    {
-      std::cout << v << " ";
-    }
-    std::cout << " arcs: ";
-    auto cliqueArcs = cliqueCutArcs[index];
-    for (int arcIndex : cliqueArcs)
-    {
-      std::cout << arcIndex << " ";
-    }
-    std::cout << std::endl;
+    cliqueCutRelaxedArcs[index].clear();
+    cliqueCutRelaxedCoeffs[index].clear();
   }
-};
-
-/*
-          // get time of current route decomposing
-            routeTime = std::max(routeTime + vrptw.serviceTimes[lastLocation] + vrptw.distances[lastLocation][currLocation], vrptw.startTimes[currLocation]*1.0);
-            routeLoad = routeLoad + vrptw.demands[currLocation];
-            for (int lastLocationIndex=0; lastLocationIndex<lastLocationsVisited.size(); ++lastLocationIndex)
-            {
-              // if we have already visited, return the route of arcs causing the infeasibility
-              if (lastLocationsVisited[lastLocationIndex] == currLocation)
-              {
-                // can be smarter and only return subsection, but this complicates the separation routine
-                //for (int index=lastLocationIndex+1; index<lastLocationsVisited.size(); ++index)
-                for (int index=0; index<route.size(); ++index)
-                {
-                  //routeArcs.push_back(lastArcsVisited[index]);
-                  routeArcs.push_back(route[index]);
-                }
-                //routeArcs.push_back(arcIndex);
-                for (int routeArcIndex : route)
-                {
-                  arcs[routeArcIndex].decompositionFlow = arcs[routeArcIndex].decompositionFlow - routeFlow;
-                }
-                DBG(std::cout << "infeas already visited, separate " << currLocation << std::endl;)
-                return;
-              }
-            }
-
-            // if we are past the time window, return the route of arcs causing this
-            if ((vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS) && (vrptw.endTimes[currLocation] < routeTime))
-            {
-              DBG(std::cout << "infeas time window, separate " << vrptw.endTimes[currLocation] << " " << routeTime << std::endl;)
-              for (int index=0; index<route.size(); ++index)
-              {
-                routeArcs.push_back(route[index]);
-              }
-              for (int routeArcIndex : route)
-              {
-                arcs[routeArcIndex].decompositionFlow = arcs[routeArcIndex].decompositionFlow - routeFlow;
-              }
-              return;
-            }
-
-            // if we are over capacity, return the route of arcs causing this
-            if ((vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY) && (routeLoad > vrptw.capacity))
-            {
-              DBG(std::cout << "infeas capacity, separate " << vrptw.capacity << " " << routeLoad << std::endl;)
-              for (int index=0; index<route.size(); ++index)
-              {
-                routeArcs.push_back(route[index]);
-              }
-              for (int routeArcIndex : route)
-              {
-                arcs[routeArcIndex].decompositionFlow = arcs[routeArcIndex].decompositionFlow - routeFlow;
-              }
-              return;
-            }
-
-            // if precedence not followed, return route of arcs causing this
-            if (!vrptw.precedences.empty())
-            {
-              bool precedenceBroke = false;
-              for (int index=0; index<route.size()-1; ++index)
-              {
-                if (vrptw.precedences[routeByLoc[index]].find(currLocation) != vrptw.precedences[routeByLoc[index]].end())
-                {
-                  precedenceBroke = true;
-                  DBG(std::cout << "1 infeas precedence" << std::endl;)
-                }
-              }
-
-              for (int precLoc : vrptw.precedences[currLocation])
-              {
-                if (std::find(routeByLoc.begin(), routeByLoc.end()-1, precLoc) == routeByLoc.end()-1)
-                {
-                  precedenceBroke = true;
-                  DBG(std::cout << "2 infeas precedence " << precLoc << " " << currLocation << std::endl;)
-                }
-              }
-
-              if (precedenceBroke)
-              {
-                for (int index=0; index<route.size(); ++index)
-                {
-                  routeArcs.push_back(route[index]);
-                }
-                for (int routeArcIndex : route)
-                {
-                  arcs[routeArcIndex].decompositionFlow = arcs[routeArcIndex].decompositionFlow - routeFlow;
-                }
-                return;
-              }
-            }
-
-            if (lastLocationsVisited.size() == maxS)
-            {
-              lastLocationsVisited.push_back(arcs[arcIndex].location);
-              lastLocationsVisited.pop_front();
-              lastNodesVisited.push_back(currentNodeIndex);
-              lastNodesVisited.pop_front();
-              lastArcsVisited.push_back(arcIndex);
-              lastArcsVisited.pop_front();
-            }
-            else
-            {
-              lastLocationsVisited.push_back(arcs[arcIndex].location);
-              lastNodesVisited.push_back(currentNodeIndex);
-              lastArcsVisited.push_back(arcIndex);
-            }
-          }
-*/
+}

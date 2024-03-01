@@ -1,4 +1,4 @@
-LPSolveType:LP
+LPSolveType:LAG
 InitialStateSpace:NG
 s:2
 maxS:50
@@ -10,13 +10,13 @@ infeasibleRoutesBatchSize:1
 lagIterationDelayToStartSeparating:0
 lagOptimalityGapToStartRepairing:100
 percentFixedToChangeToCPLEX:97.5
-numArcsToChangeToCPLEX:100000
+numArcsToChangeToCPLEX:1000
 numArcsToChangeToLAG:999999999
 numLagItersForCuts:0
-numLagCuts:0
-cutPhase:Y
-deactivateCutValueThreshold:0
-deactivateCutIterThreshold:0
+numLagCuts:10
+cutPhase:N
+deactivateCutValueThreshold:0.1
+deactivateCutIterThreshold:25
 betaMomentum:0.0
 alphaFactor:0.0
 bucketsPerVertex:0
