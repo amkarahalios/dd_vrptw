@@ -851,13 +851,13 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
       VRPTWArc& arc = arcs[arcIndex];
       if (solveType == LPSolveType::LPSolver)
       {
-        arc.coeff = arc.coeff - capDuals[capCutIndex];
-        arc.cijPi = arc.cijPi - capDuals[capCutIndex];
+        arc.coeff = arc.coeff + capDuals[capCutIndex];
+        arc.cijPi = arc.cijPi + capDuals[capCutIndex];
       }
       else
       {
-        arc.coeff = arc.coeff + capDuals[capCutIndex];
-        arc.cijPi = arc.cijPi + capDuals[capCutIndex];
+        arc.coeff = arc.coeff - capDuals[capCutIndex];
+        arc.cijPi = arc.cijPi - capDuals[capCutIndex];
       }
     }
   }
@@ -888,13 +888,13 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
         VRPTWArc& arc = arcs[arcIndex];
         if (solveType == LPSolveType::LPSolver)
         {
-          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
         }
         else
         {
-          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
         }
       }
  
@@ -908,13 +908,13 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
         VRPTWArc& arc = arcs[arcIndex];
         if (solveType == LPSolveType::LPSolver)
         {
-          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
         }
         else
         {
-          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
         }
       }
     }
@@ -1926,7 +1926,7 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double f
     }
     else
     {
-      lowerBound += srcDuals[dualIndex];
+      lowerBound -= srcDuals[dualIndex];
     }
   }
   lowerBound = lowerBound + fixedPathDual*vrptw.numVehicles;
