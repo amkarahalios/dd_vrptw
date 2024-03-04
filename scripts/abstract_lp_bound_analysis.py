@@ -117,6 +117,7 @@ test_set = ["CVRP_LAG_NG2_src_phase", "CVRP_LAG_NG2_rcc_phase"]
 
 instances = []
 instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/CVRP/"
+instances_to_lp_opt = []
 
 for instance in os.listdir(instance_dir):
   instances.append(instance)
@@ -132,6 +133,12 @@ for test in test_set:
     col_elim = False
     log_file = open(log_file_name, "r")
     for line in log_file:
+      # only go until end of LP solver
+      if "switching to IP" in line:
+        #print("stop")
+        instances_to_lp_opt.append((instance,test))
+        break
+
       colelim_match = colelim_pattern.match(line)
       if colelim_match:
         col_elim = True
@@ -165,186 +172,13 @@ results_df.reset_index(drop=True,inplace=True)
 table_results_df = results_df[['instance','test','lb','time','iterations','numSep','numCut','lagIterations','numArcs']]
 print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
 
-# get instance attributes: number locations
-instance_num_locations = {}
+# analysis
 for instance in instances:
-  instance_file_name = instance_dir + '/' + instance
-  instance_file = open(instance_file_name, "r")
-  for line in instance_file:
-    split_line = line.split()
-    if len(split_line) > 0:
-      num_locations = split_line[0]
-  instance_num_locations[instance] = num_locations
-
-print(vrpsolver_results)
-
-# create output table for SOA comparison
-num_printed = 0
-for i, row in table_results_df.iterrows():
-  instance = row['instance']
-  instance_name = instance.split('.')[0]
-  instance_name = instance_name.replace("_","\\_")
-  lb_value = row['lb']
-  if not math.isnan(lb_value):
-    lb_value = float(lb_value)
-  else:
-    lb_value = 0
-
-  numArcs = row['numArcs']
-  if not math.isnan(numArcs):
-    numArcs = int(numArcs)
-
-  time = row['time']
-  if not math.isnan(time):
-    time = int(time)
-
-  if lb_value < instance_upper_bounds[instance]:
-    time = 3600
-
-  numLpIterations = row['iterations']
-  if not math.isnan(numLpIterations):
-    numLpIterations = int(numLpIterations)
-  else:
-    numLpIterations = '-'
- 
-  numLagIterations = row['lagIterations']
-  if not math.isnan(numLagIterations):
-    numLagIterations = int(numLagIterations)
-  else:
-    numLagIterations = '-'
-
-  numSeparations = row['numSep']
-  if not math.isnan(numSeparations):
-    numSeparations = int(numSeparations)
-  else:
-    numSeparations = '-'
- 
-  numCuts = row['numCut']
-  if not math.isnan(numCuts):
-    numCuts = int(numCuts)
-  else:
-    numCuts = '-'
-
-  #gap = round((instance_upper_bounds[instance] - lb_value) * 100.0 / instance_upper_bounds[instance], 1)
-  if instance in vrpsolver_results.keys():
-    vrpsolver_result = vrpsolver_results[instance]
-    vrpsolver_num_nodes = vrpsolver_result[0]
-    vrpsolver_lb = vrpsolver_result[1]
-    #vrpsolver_ub = vrpsolver_result[2]
-    vrpsolver_time = int(vrpsolver_result[3])
-  else:
-    vrpsolver_num_nodes = '-'
-    vrpsolver_lb = '-'
-    #vrpsolver_ub = vrpsolver_result[1]
-
-  if (vrpsolver_lb == '-') or (vrpsolver_lb < instance_upper_bounds[instance]):
-    vrpsolver_time = 3600
-
-  if (lb_value == 0) or (lb_value == '-'):
-    lb_value = '-'
-    numLpIterations = '-'
-    numLagIterations = '-'
-    numSeparations = '-'
-    numCuts = '-'
-
-  if (lb_value == '-') and (vrpsolver_lb == '-'):
-    continue
-  else:
-    num_printed = num_printed + 1
-
-  if (num_printed == 25) or ((num_printed > 27) and ((num_printed - 25) % 27 == 0)):
-    print("")
-
-  if (lb_value != '-') and (vrpsolver_lb != '-') and (lb_value > vrpsolver_lb):
-    print(f"{instance_name} & {instance_upper_bounds[instance]} & & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & & \\textbf\u007b{lb_value}\u007d & {numLpIterations} & {numLagIterations} & {numSeparations} & {numCuts} & {time} \\\\")
-  else:
-    print(f"{instance_name} & {instance_upper_bounds[instance]} & & {vrpsolver_lb} & {vrpsolver_num_nodes} & {vrpsolver_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {numCuts} & {time} \\\\")
-
-# get aggregate statistics. By class, avg gap and num missing lower bounds
-ce_avg_gaps = {}
-ce_missing_lbs = {}
-vrpsolver_avg_gaps = {}
-vrpsolver_missing_lbs = {}
-diff_avg_gaps = {}
-instance_classes = set()
-for i, row in table_results_df.iterrows():
-  instance = row['instance']
-  instance_class = instance[0]
-  instance_class = instance_class.replace("_","")
-  instance_classes.add(instance_class)
-
-  ce_missing = False
-  lb_value = row['lb']
-  if not math.isnan(lb_value) and float(lb_value) != 0:
-    lb_value = float(lb_value)
-  else:
-    lb_value = 0
-    ce_missing = True
-    if instance_class in ce_missing_lbs:
-      ce_missing_lbs[instance_class] = ce_missing_lbs[instance_class] + 1
-    else:
-      ce_missing_lbs[instance_class] = 1
-
-  vrpsolver_missing = False
-  if instance in vrpsolver_results.keys():
-    vrpsolver_result = vrpsolver_results[instance]
-    vrpsolver_num_nodes = vrpsolver_result[0]
-    vrpsolver_lb = vrpsolver_result[1]
-    #vrpsolver_ub = vrpsolver_result[2]
-    vrpsolver_time = int(vrpsolver_result[3])
-  else:
-    vrpsolver_missing = True
-    vrpsolver_num_nodes = '-'
-    vrpsolver_lb = '-'
-    #vrpsolver_ub = vrpsolver_result[1]
-    if instance_class in vrpsolver_missing_lbs:
-      vrpsolver_missing_lbs[instance_class] = vrpsolver_missing_lbs[instance_class] + 1
-    else:
-      vrpsolver_missing_lbs[instance_class] = 1
-
-  use_missing = False
-  if not ce_missing:
-    ce_gap = round((instance_upper_bounds[instance] - lb_value) * 100.0 / instance_upper_bounds[instance], 1)
-    if instance_class in ce_avg_gaps:
-      ce_avg_gaps[instance_class].append(ce_gap)
-    else:
-      ce_avg_gaps[instance_class] = []
-      ce_avg_gaps[instance_class].append(ce_gap)
-  elif use_missing:
-    ce_gap = 100
-    if instance_class in ce_avg_gaps:
-      ce_avg_gaps[instance_class].append(ce_gap)
-    else:
-      ce_avg_gaps[instance_class] = []
-      ce_avg_gaps[instance_class].append(ce_gap)
-
-  if not vrpsolver_missing:
-    vrpsolver_gap = round((instance_upper_bounds[instance] - vrpsolver_lb) * 100.0 / instance_upper_bounds[instance], 1)
-    if instance_class in vrpsolver_avg_gaps:
-      vrpsolver_avg_gaps[instance_class].append(vrpsolver_gap)
-    else:
-      vrpsolver_avg_gaps[instance_class] = []
-      vrpsolver_avg_gaps[instance_class].append(vrpsolver_gap)
-  elif use_missing:
-    vrpsolver_gap = 100
-    if instance_class in vrpsolver_avg_gaps:
-      vrpsolver_avg_gaps[instance_class].append(vrpsolver_gap)
-    else:
-      vrpsolver_avg_gaps[instance_class] = []
-      vrpsolver_avg_gaps[instance_class].append(vrpsolver_gap)
-
-instance_classes = sorted(instance_classes)
-for instance_class in instance_classes:
-  vrpsolver_avg_gap = round(numpy.average(vrpsolver_avg_gaps[instance_class]),1)
-  ce_avg_gap = round(numpy.average(ce_avg_gaps[instance_class]),1)
-
-  vrpsolver_total_gaps = [100] * ce_missing_lbs[instance_class]
-  vrpsolver_total_gaps = vrpsolver_total_gaps + vrpsolver_avg_gaps[instance_class]
-  vrpsolver_total_gap = round(numpy.average(vrpsolver_total_gaps),1)
-
-  ce_total_gaps = [100] * ce_missing_lbs[instance_class]
-  ce_total_gaps = ce_total_gaps + ce_avg_gaps[instance_class]
-  ce_total_gap = round(numpy.average(ce_total_gaps),1)
-
-  print(f"{instance_class} & 50 & & {vrpsolver_avg_gap} & {vrpsolver_missing_lbs[instance_class]} & & {ce_avg_gap} & {ce_missing_lbs[instance_class]} \\\\")
-  #print(f"{instance_class} & 50 & & {vrpsolver_avg_gap} & {vrpsolver_total_gap} & {vrpsolver_missing_lbs[instance_class]} & & {ce_avg_gap} & {ce_total_gap} & {ce_missing_lbs[instance_class]} \\\\")
+  if (instance, "CVRP_LAG_NG2_rcc_phase") in instances_to_lp_opt:
+    instance_df = table_results_df[table_results_df['instance'] == instance]
+    src_df = instance_df[instance_df['test'] == "CVRP_LAG_NG2_src_phase"]
+    rcc_df = instance_df[instance_df['test'] == "CVRP_LAG_NG2_rcc_phase"]
+    src_lb = src_df['lb'].values[0]
+    rcc_lb = rcc_df['lb'].values[0]
+    if src_lb > rcc_lb:
+      print(instance, src_lb, rcc_lb)
