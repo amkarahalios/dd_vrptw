@@ -1,0 +1,1425 @@
+fixed number of vehicles
+capacity: 100
+instance upper bound: 1288
+route length upper bound: 62
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 10
+cut phase: 1
+deactivate cut value threshold: 0.1
+deactivate cut iter threshold: 25
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[9] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1288] numArcs: [527176] numFixed: [0] time: [9]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[9] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1288] numArcs: [527176] numFixed: [0] time: [9]
+fixed path dual: 15.78
+STATS - lpIterations[1] lagIterations[1] sspIterations[8] numSeparations[0] numCuts[0] compileTime[9] sspSolveTime[2] lpSolveTime[0] lb[1000.42] ub[1288] numArcs: [527126] numFixed: [0] time: [11]
+lambda: 0,34.32,16.92,27.2,15.2,7.14,11.44,0.72,8.46,13.32,7.68,11.2,3.48,0.78,1.6,1.32,17.02,8.16,3.18,15.6,1.96,1.9,2.08,24.48,37.4,7.92,16.72,24.48,0.08,12.32,15.4,2.36,9.54,37.6,2.24,32.76,10.26,14.76,3.04,30.72,22.36,5.94,37.26,16.32,10.4,12.6,27.3,39.84,13.44,31.54,22.8,5.76,3,1,3,2.96,14.26,21.44,52,30.66,2.08,5.46,
+mu: 
+srcDuals: 
+fixing. lower bound used: 905.492
+percent fixed: 0.0013277
+updating best lambda
+fixing. lower bound used: 905.492
+fixed path dual: 18.4963
+STATS - lpIterations[1] lagIterations[2] sspIterations[16] numSeparations[5] numCuts[0] compileTime[9] sspSolveTime[7] lpSolveTime[0] lb[1025.96] ub[1288] numArcs: [527566] numFixed: [7] time: [21]
+lambda: 0,34.4818,17.0818,27.2,15.3618,7.30185,11.6018,0.72,8.62185,13.4818,7.84185,11.3618,3.64185,0.941849,1.76185,1.32,17.1818,8.32185,3.34185,15.7618,2.12185,2.06185,2.24185,24.6418,37.4,8.08185,14.9397,24.6418,0,12.4818,15.5618,2.52185,9.70185,37.7618,2.24,32.9218,10.4218,14.9218,3.20185,30.72,22.5218,6.10185,37.0982,16.4818,10.5618,12.7618,27.4618,40.0018,13.6018,31.7018,22.9618,5.92185,3.16185,1.16185,3.16185,2.47445,14.4218,21.6018,52.1618,28.8797,2.24185,5.62185,
+mu: 
+srcDuals: 
+fixing. lower bound used: 909.376
+percent fixed: 0.00132644
+fixing. lower bound used: 905.492
+fixed path dual: 19.9044
+STATS - lpIterations[1] lagIterations[3] sspIterations[24] numSeparations[8] numCuts[0] compileTime[9] sspSolveTime[13] lpSolveTime[0] lb[1046.7] ub[1288] numArcs: [528077] numFixed: [9] time: [30]
+lambda: 0,34.8463,17.4463,25.7423,15.7263,7.66628,11.9663,0.72,8.98628,13.8463,8.20628,11.7263,4.00628,0.21298,2.12628,1.32,17.5463,8.68628,2.97741,16.1263,2.48628,2.42628,2.60628,25.0063,35.9423,8.44628,15.3041,25.0063,0,12.8463,15.1974,2.88628,10.0663,38.1263,2.60443,33.2863,10.7863,15.2863,3.56628,30.72,22.8863,6.46628,34.5471,16.8463,10.9263,12.3974,27.8263,39.6374,13.9663,32.0663,23.3263,6.28628,3.52628,0.797415,3.52628,2.83889,14.7863,21.9663,52.5263,29.2441,2.60628,5.98628,
+mu: 
+srcDuals: 
+fixing. lower bound used: 918.852
+percent fixed: 0.00170367
+updating best lambda
+fixing. lower bound used: 918.852
+fixed path dual: 19.3283
+STATS - lpIterations[1] lagIterations[4] sspIterations[32] numSeparations[12] numCuts[0] compileTime[9] sspSolveTime[18] lpSolveTime[0] lb[1063.86] ub[1288] numArcs: [528526] numFixed: [9] time: [39]
+lambda: 0,35.5062,18.1062,26.4021,16.3862,8.32616,12.6262,0.72,9.64616,14.5062,8.86616,12.3862,3.34641,0.872856,2.78616,0.000248196,18.2062,9.34616,3.63729,16.7862,2.48628,3.08616,3.26616,25.6662,35.9423,9.10616,13.9843,25.6662,0,13.5062,15.8573,3.54616,10.7262,38.7862,3.26431,33.9462,11.4462,15.9462,4.22616,31.3799,23.5462,7.12616,35.207,17.5062,11.5862,12.3974,27.8263,38.9775,13.3064,32.7262,23.9862,6.94616,4.18616,0.797415,4.18616,2.83889,12.1468,22.6262,53.1862,27.9243,3.26616,6.64616,
+mu: 
+srcDuals: 
+fixing. lower bound used: 940.637
+percent fixed: 0.00170203
+fixing. lower bound used: 918.852
+fixed path dual: 19.6883
+STATS - lpIterations[1] lagIterations[5] sspIterations[40] numSeparations[16] numCuts[0] compileTime[9] sspSolveTime[24] lpSolveTime[0] lb[1080.98] ub[1288] numArcs: [529273] numFixed: [11] time: [48]
+lambda: 0,33.9243,18.6334,26.9294,16.9134,8.85345,13.1534,0.72,10.1734,13.9789,9.39345,12.9134,3.8737,0.345566,3.31345,0.000248196,18.7334,8.81887,2.05542,17.3134,2.48628,3.61345,3.79345,26.1934,36.4696,9.63345,14.5116,26.1934,0,14.0334,14.2754,4.07345,11.2534,38.2589,3.7916,34.4734,11.9734,16.4734,3.69887,31.9072,24.0734,7.65345,35.7343,18.0334,12.1134,12.9247,28.3536,39.5048,13.8337,33.2534,22.4043,7.47345,4.71345,1.32471,4.71345,3.36618,12.6741,23.1534,51.6043,28.4516,3.79345,7.17345,
+mu: 
+srcDuals: 
+fixing. lower bound used: 954.874
+percent fixed: 0.00207716
+updating best lambda
+fixing. lower bound used: 954.874
+fixed path dual: 20.1356
+STATS - lpIterations[1] lagIterations[6] sspIterations[48] numSeparations[19] numCuts[0] compileTime[9] sspSolveTime[29] lpSolveTime[0] lb[1105.15] ub[1288] numArcs: [529674] numFixed: [11] time: [57]
+lambda: 0,34.5677,19.2769,26.9294,17.5569,9.49689,11.2231,0.72,10.8169,14.6223,10.0369,13.5569,4.51714,0.989005,3.95689,0.000248196,19.3769,9.46231,2.69886,17.9569,2.48628,4.25689,4.43689,26.8369,35.8261,10.2769,15.1551,26.8369,0,14.6769,14.9189,4.71689,9.32313,38.9023,4.43504,35.1169,12.6169,17.1169,3.69887,32.5506,22.1431,8.29689,35.7343,18.6769,12.7569,12.2813,28.3536,38.218,14.4771,33.8969,23.0477,8.11689,5.35689,1.96814,5.35689,4.00962,13.3175,23.7969,52.2477,29.0951,4.43689,6.53001,
+mu: 
+srcDuals: 
+fixing. lower bound used: 975.464
+percent fixed: 0.00207546
+fixing. lower bound used: 954.874
+fixed path dual: 19.5724
+STATS - lpIterations[1] lagIterations[7] sspIterations[56] numSeparations[23] numCuts[0] compileTime[9] sspSolveTime[35] lpSolveTime[0] lb[1113.05] ub[1288] numArcs: [530129] numFixed: [11] time: [67]
+lambda: 0,34.9815,19.6906,27.3432,17.9706,9.91062,11.6369,0.72,11.2306,15.036,10.4506,13.9706,4.93086,1.40273,4.37062,0.000248196,19.3769,9.87603,3.11258,18.3706,2.48628,4.67062,4.85062,27.2506,36.2398,10.6906,12.6727,27.2506,0,15.0906,15.3326,5.13062,9.73686,38.4886,4.43504,35.5306,12.2032,17.1169,4.1126,32.9643,22.5569,8.71062,36.148,19.0906,13.1706,12.695,28.7673,38.6317,14.8909,34.3106,23.4615,8.53062,4.94316,2.38187,5.77062,3.18216,13.7312,24.2106,52.2477,26.6127,4.85062,6.94374,
+mu: 
+srcDuals: 
+fixing. lower bound used: 987.876
+percent fixed: 0.00207352
+fixing. lower bound used: 954.874
+fixed path dual: 19.1045
+STATS - lpIterations[1] lagIterations[8] sspIterations[64] numSeparations[26] numCuts[0] compileTime[9] sspSolveTime[40] lpSolveTime[0] lb[1121.6] ub[1288] numArcs: [530513] numFixed: [11] time: [76]
+lambda: 0,35.4543,19.6906,27.3432,18.4435,10.3835,12.1097,0.72,11.7035,15.5089,10.9235,14.4435,3.03952,1.40273,4.84345,0.000248196,19.8497,10.3489,3.11258,16.9521,2.48628,5.14345,5.32345,27.7235,36.2398,11.1635,13.1455,27.7235,0,15.5635,15.8054,5.60345,10.2097,38.9614,4.90788,36.0035,12.676,17.5897,2.69409,33.4372,23.0297,9.18345,36.148,19.5635,13.6435,12.695,29.2401,38.6317,12.9995,34.7835,23.9343,9.00345,5.416,0.490532,6.24345,3.655,14.2041,24.6835,52.7206,27.0855,5.32345,7.41657,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1000.17
+percent fixed: 0.00207179
+fixing. lower bound used: 954.874
+fixed path dual: 19.2274
+STATS - lpIterations[1] lagIterations[9] sspIterations[72] numSeparations[31] numCuts[0] compileTime[9] sspSolveTime[46] lpSolveTime[0] lb[1133.41] ub[1288] numArcs: [531248] numFixed: [11] time: [86]
+lambda: 0,35.9952,20.2315,26.2614,18.9843,10.9243,12.6506,0.72,12.2443,14.4271,11.4643,14.9843,3.58042,0.861835,3.76166,0.000248196,19.8497,10.3489,3.65348,17.493,3.02718,5.68435,5.86435,28.2643,35.158,11.7043,13.6864,28.2643,0,16.1043,16.3463,6.14435,10.7506,38.9614,5.44877,36.5443,12.1351,17.5897,3.23499,33.9781,23.5706,9.72435,33.4435,20.1043,14.1843,13.2359,29.781,39.1726,13.5404,35.3243,23.3934,9.54435,4.8751,1.03143,5.16166,4.1959,14.745,25.2243,52.1797,27.6264,4.24166,7.95747,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1010.99
+percent fixed: 0.00206876
+fixing. lower bound used: 954.874
+fixed path dual: 18.7198
+STATS - lpIterations[1] lagIterations[10] sspIterations[80] numSeparations[35] numCuts[0] compileTime[9] sspSolveTime[51] lpSolveTime[0] lb[1135.74] ub[1288] numArcs: [531870] numFixed: [11] time: [95]
+lambda: 0,34.049,20.5095,26.5394,19.2624,11.2024,12.9286,0.72,12.5224,13.593,11.7424,15.2624,3.58042,0.583808,4.03968,0.000248196,20.1278,10.6269,2.26335,17.771,3.02718,5.96238,6.14238,28.5424,35.4361,11.9824,13.9645,28.5424,0,16.3824,14.4001,6.42238,11.0286,39.2394,5.7268,36.8224,12.4131,17.8678,2.67893,34.2561,23.8486,10.0024,33.7215,20.3824,14.4624,13.5139,30.0591,39.4506,13.8184,35.6024,23.6714,9.82238,5.15313,0.753402,5.43968,4.47392,15.023,25.5024,52.4577,27.9045,4.51968,8.2355,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1017.38
+percent fixed: 0.00206612
+fixing. lower bound used: 954.874
+fixed path dual: 17.9275
+STATS - lpIterations[1] lagIterations[11] sspIterations[88] numSeparations[39] numCuts[0] compileTime[9] sspSolveTime[56] lpSolveTime[0] lb[1143.48] ub[1288] numArcs: [532719] numFixed: [11] time: [104]
+lambda: 0,34.7194,21.18,25.8689,19.2624,10.5319,12.2582,0.72,13.1928,14.2634,12.4128,15.9328,4.25087,1.25426,3.36924,0.000248196,20.7982,11.2973,2.93379,18.4415,3.02718,6.63282,6.81282,26.531,36.1065,11.3119,14.6349,26.531,0,17.0528,15.0706,6.42238,10.3582,39.9099,6.39725,36.8224,13.0836,18.5382,3.34938,32.2447,23.1782,9.33193,34.392,21.0528,15.1328,14.1844,30.7295,40.121,14.4889,34.9319,24.3419,10.4928,5.82358,1.42385,6.11013,5.14437,15.6934,26.1728,53.1281,28.5749,3.84924,8.2355,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1031.46
+percent fixed: 0.00206264
+fixing. lower bound used: 954.874
+fixed path dual: 17.4564
+STATS - lpIterations[1] lagIterations[12] sspIterations[96] numSeparations[43] numCuts[0] compileTime[9] sspSolveTime[62] lpSolveTime[0] lb[1152.21] ub[1288] numArcs: [533220] numFixed: [11] time: [114]
+lambda: 0,35.2195,21.18,26.369,19.7625,11.032,12.7582,0.72,13.6929,14.7635,12.9129,16.4329,4.25087,1.75433,3.86931,0.000248196,21.2983,11.2973,3.43387,18.4415,3.52726,7.1329,6.81282,27.0311,36.6066,11.812,15.135,27.0311,0,17.5529,15.5707,6.92245,10.8582,38.9097,6.39725,37.3225,13.0836,18.5382,3.34938,32.7448,23.6782,9.83201,34.8921,21.5529,15.1328,14.6844,31.2296,40.6211,14.4889,35.432,21.8415,10.9929,5.82358,1.92393,6.61021,4.14421,14.6933,26.6729,50.6277,29.075,4.34931,8.73557,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1043.96
+percent fixed: 0.00206043
+fixing. lower bound used: 954.874
+fixed path dual: 16.765
+fixing. lower bound used: 1047.98
+percent fixed: 0.00205796
+fixing. lower bound used: 954.874
+fixed path dual: 14.5452
+fixing. lower bound used: 1061.44
+percent fixed: 0.00205646
+fixing. lower bound used: 954.874
+fixed path dual: 16.1482
+STATS - lpIterations[1] lagIterations[15] sspIterations[120] numSeparations[53] numCuts[0] compileTime[9] sspSolveTime[78] lpSolveTime[0] lb[1162.57] ub[1288] numArcs: [535077] numFixed: [12] time: [142]
+lambda: 0,34.4934,21.1661,27.7012,20.2909,10.7567,12.7444,0.72,14.5105,15.0665,13.7305,16.1576,5.06846,0.883619,3.59404,0.000248196,22.6304,12.6295,3.22231,18.4276,4.85943,8.46507,6.79895,28.3633,36.7332,11.5367,14.4481,28.3633,0,17.539,14.8445,6.64718,10.8444,40.2419,7.0564,38.6546,13.0697,18.5243,3.33551,34.077,22.3183,11.1642,35.0187,22.6278,15.119,14.811,31.3562,40.7477,15.8211,35.1567,23.1736,11.8105,5.8097,1.9378,7.68509,4.80336,16.0255,28.0051,51.9599,28.3881,4.07404,7.37566,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1064.79
+percent fixed: 0.00223904
+updating best lambda
+fixing. lower bound used: 1064.79
+fixed path dual: 16.3505
+STATS - lpIterations[1] lagIterations[16] sspIterations[128] numSeparations[58] numCuts[0] compileTime[9] sspSolveTime[84] lpSolveTime[0] lb[1165.21] ub[1288] numArcs: [536326] numFixed: [12] time: [152]
+lambda: 0,34.8326,21.5054,27.7012,19.2732,10.7567,13.0836,0.72,14.1713,15.4058,12.7128,15.1399,5.4077,1.22286,3.59404,0.000248196,22.9697,12.9688,3.56154,18.7669,5.19867,7.44736,7.13819,26.6671,36.7332,10.8583,14.7873,27.6848,0,17.1998,15.1837,5.96871,11.1836,40.5811,6.37792,38.9939,13.4089,18.8636,3.67475,33.7378,22.6576,9.46798,35.3579,21.9493,15.4582,15.1503,31.6954,41.087,16.1603,35.496,23.5129,11.4713,6.14894,2.27704,8.02433,5.1426,16.3647,28.3443,52.2992,28.7273,4.41328,7.7149,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1065.81
+percent fixed: 0.00223371
+fixing. lower bound used: 1064.79
+fixed path dual: 15.3542
+STATS - lpIterations[1] lagIterations[17] sspIterations[136] numSeparations[61] numCuts[0] compileTime[9] sspSolveTime[90] lpSolveTime[0] lb[1168.97] ub[1288] numArcs: [536600] numFixed: [12] time: [161]
+lambda: 0,35.302,21.9747,27.7012,19.7426,11.2261,13.553,0.72,14.6406,15.8752,13.1822,15.6093,3.99954,1.22286,3.59404,0.000248196,23.4391,13.4381,3.56154,19.2362,5.19867,7.91674,7.60758,27.1365,36.2638,11.3276,15.2567,28.1542,0,17.6692,15.6531,6.43809,11.653,41.0505,6.84731,39.4633,13.8783,19.333,4.14414,34.2071,23.127,9.93737,34.8885,22.4187,15.9276,14.6809,31.6954,40.6176,14.7521,35.9654,23.9823,11.9406,6.61833,0.399489,8.49372,5.61199,14.0178,28.8137,52.7685,29.1967,4.88267,8.18429,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1077.54
+percent fixed: 0.00353459
+updating best lambda
+fixing. lower bound used: 1077.54
+fixed path dual: 14.0014
+fixing. lower bound used: 1086.53
+percent fixed: 0.0182176
+updating best lambda
+fixing. lower bound used: 1086.53
+fixed path dual: 14.4218
+STATS - lpIterations[1] lagIterations[19] sspIterations[152] numSeparations[67] numCuts[0] compileTime[9] sspSolveTime[101] lpSolveTime[0] lb[1172.24] ub[1288] numArcs: [537756] numFixed: [98] time: [181]
+lambda: 0,36.0497,21.2238,28.4489,19.7459,10.9813,14.0526,0.72,15.3883,16.6228,13.6817,15.8607,4.74723,1.97055,3.84548,0.000248196,23.6872,13.6863,4.30924,18.4852,5.69823,8.66443,6.85659,27.8842,37.0115,10.0903,15.0053,28.9019,0,18.1687,16.4008,6.44139,12.1526,40.7991,6.09962,38.474,12.1282,18.0824,3.39315,34.9548,23.6265,10.6851,35.6362,23.1664,15.1766,15.4286,32.4431,41.3653,15.4998,34.9761,24.73,12.4402,5.36778,0.647619,9.24141,5.36056,14.7654,29.5614,53.0167,29.9444,4.14158,8.93198,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1088.27
+percent fixed: 0.0193014
+updating best lambda
+fixing. lower bound used: 1088.27
+fixed path dual: 13.3769
+STATS - lpIterations[1] lagIterations[20] sspIterations[160] numSeparations[67] numCuts[0] compileTime[9] sspSolveTime[107] lpSolveTime[0] lb[1176.98] ub[1288] numArcs: [537689] numFixed: [104] time: [190]
+lambda: 0,36.6732,21.8472,27.2019,20.3693,11.6048,13.4291,0.72,16.0118,17.2463,13.0583,16.4842,5.37069,1.34708,4.46894,0.000248196,24.3107,14.3097,3.0623,19.1087,5.07476,9.2879,7.48005,28.5076,35.7646,10.7138,15.6288,29.5253,0,17.5453,17.0243,7.06486,11.5291,41.4226,6.72308,39.0975,12.7517,18.7059,4.01661,35.5783,23.0031,11.3085,34.3893,23.7898,15.8001,14.1816,33.0666,40.1183,16.1233,35.5996,25.3534,11.8167,5.99124,1.27109,7.99448,5.98402,15.3889,30.1849,53.6401,30.5679,4.76505,9.55545,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1101.36
+percent fixed: 0.0762683
+updating best lambda
+fixing. lower bound used: 1101.36
+fixed path dual: 13.908
+STATS - lpIterations[1] lagIterations[21] sspIterations[168] numSeparations[71] numCuts[0] compileTime[9] sspSolveTime[113] lpSolveTime[0] lb[1177.79] ub[1288] numArcs: [538513] numFixed: [411] time: [200]
+lambda: 0,36.875,22.049,27.4038,19.3603,10.9993,13.6309,0.921813,16.2136,17.4481,13.2601,15.6769,5.57251,1.54889,4.06532,0.000248196,24.5125,14.5116,3.26412,19.3105,5.27658,8.27883,7.68187,27.4986,35.5627,9.90651,15.427,28.9199,0,17.7471,17.2261,6.05579,11.7309,41.4226,6.31946,39.2993,12.9535,18.9077,4.21842,35.3765,23.2049,10.2995,34.5911,23.9917,16.0019,14.3835,33.2684,40.3201,16.3251,35.5996,25.1516,12.0185,6.19306,1.4729,8.19629,5.5804,15.5907,30.3867,53.4383,30.1643,4.15961,9.75726,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1097.93
+percent fixed: 0.0763275
+updating best lambda
+fixing. lower bound used: 1097.93
+fixed path dual: 13.5408
+fixing. lower bound used: 1100.07
+percent fixed: 0.0606514
+fixing. lower bound used: 1097.93
+fixed path dual: 13.5135
+STATS - lpIterations[1] lagIterations[23] sspIterations[184] numSeparations[82] numCuts[0] compileTime[9] sspSolveTime[123] lpSolveTime[0] lb[1180.64] ub[1288] numArcs: [540151] numFixed: [243] time: [219]
+lambda: 0,35.4167,22.4901,27.8448,19.8013,11.4403,14.0719,0.921813,15.705,16.9395,12.9889,16.118,5.3013,1.04028,4.30273,0.000248196,24.9535,13.7309,2.51809,19.7516,5.7176,8.71986,8.12289,27.9396,36.0038,10.3475,15.6644,29.3609,0,17.7133,15.7678,6.49682,12.1719,39.6238,6.14964,39.7403,13.3945,19.3487,4.65945,35.8175,23.6459,10.7405,35.0321,23.483,16.4429,14.8245,33.7094,40.7612,16.7661,36.0406,25.1854,12.2222,6.63408,1.67651,8.16249,4.59613,16.0318,30.8277,52.6577,30.1981,4.60063,10.1983,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1103.94
+percent fixed: 0.102124
+updating best lambda
+fixing. lower bound used: 1103.94
+fixed path dual: 13.1073
+fixing. lower bound used: 1107.18
+percent fixed: 0.137083
+updating best lambda
+fixing. lower bound used: 1107.18
+fixed path dual: 13.6262
+STATS - lpIterations[1] lagIterations[25] sspIterations[200] numSeparations[85] numCuts[0] compileTime[9] sspSolveTime[133] lpSolveTime[0] lb[1183.87] ub[1288] numArcs: [540788] numFixed: [744] time: [237]
+lambda: 0,35.8936,21.2003,27.4095,19.366,11.7348,14.2544,1.39869,16.1819,17.4164,13.4657,15.6826,5.48374,1.33472,4.23228,0.000248196,25.1359,14.2078,2.99497,18.4618,5.6056,8.28453,7.42201,27.1394,36.2982,10.642,16.1412,28.5607,0,18.1902,16.2447,6.9737,12.3544,40.1007,6.62652,40.2172,12.9881,18.6478,3.36969,35.0173,23.5339,10.1227,35.1441,23.9599,15.4476,15.3014,33.8214,41.238,17.243,36.5175,25.6623,12.699,6.22764,1.67651,8.63937,5.07301,16.5086,31.3046,53.1345,30.6749,4.16531,10.0863,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1106.26
+percent fixed: 0.139044
+updating best lambda
+fixing. lower bound used: 1106.26
+fixed path dual: 14.2139
+STATS - lpIterations[1] lagIterations[26] sspIterations[208] numSeparations[91] numCuts[0] compileTime[9] sspSolveTime[140] lpSolveTime[0] lb[1190.34] ub[1288] numArcs: [541650] numFixed: [662] time: [247]
+lambda: 0,36.1149,21.4216,27.6307,19.5873,11.7348,14.2544,0.956125,15.518,17.6377,13.2445,15.9039,5.70503,1.556,4.23228,0.000248196,25.3572,14.4291,3.21625,18.6831,5.82688,8.50582,7.6433,27.3607,36.5195,10.8633,14.5923,28.782,0,17.5263,16.466,7.19498,12.3544,40.322,6.18395,40.4385,13.2094,18.8691,3.59098,35.2386,23.7552,10.344,35.3654,22.8535,15.6689,15.5226,34.0427,41.4593,17.4643,36.7388,25.8836,12.4778,6.44893,1.8978,8.86066,4.63044,16.7299,31.5259,53.3558,28.9047,4.16531,9.865,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1108.03
+percent fixed: 0.150414
+updating best lambda
+fixing. lower bound used: 1108.03
+fixed path dual: 11.238
+fixing. lower bound used: 1120.39
+percent fixed: 0.360114
+updating best lambda
+fixing. lower bound used: 1120.39
+fixed path dual: 12.0285
+fixing. lower bound used: 1120.39
+percent fixed: 0.373513
+updating best lambda
+fixing. lower bound used: 1120.39
+fixed path dual: 10.5076
+fixing. lower bound used: 1125.55
+percent fixed: 0.482281
+updating best lambda
+fixing. lower bound used: 1125.55
+fixed path dual: 10.8747
+fixing. lower bound used: 1123.65
+percent fixed: 0.50515
+updating best lambda
+fixing. lower bound used: 1123.65
+fixed path dual: 9.80253
+fixing. lower bound used: 1127.71
+percent fixed: 0.562582
+updating best lambda
+fixing. lower bound used: 1127.71
+fixed path dual: 11.1898
+fixing. lower bound used: 1127.89
+percent fixed: 0.607832
+updating best lambda
+fixing. lower bound used: 1127.89
+fixed path dual: 10.1126
+fixing. lower bound used: 1138.32
+percent fixed: 1.02647
+updating best lambda
+fixing. lower bound used: 1138.32
+fixed path dual: 11.5148
+STATS - lpIterations[1] lagIterations[34] sspIterations[272] numSeparations[120] numCuts[0] compileTime[9] sspSolveTime[186] lpSolveTime[0] lb[1197.78] ub[1288] numArcs: [545709] numFixed: [5596] time: [326]
+lambda: 0,36.9362,22.6491,28.1683,20.4217,11.2781,15.1649,2.00814,17.0054,18.5653,13.9821,15.8657,5.61489,2.10278,3.27806,0.000248196,26.6961,15.4387,4.41385,19.7315,6.55841,9.11596,8.55771,27.9708,35.8472,10.2233,15.6019,29.3921,0,18.3293,17.2874,6.73257,12.1996,40.6243,6.89072,40.9049,14.0681,19.1017,4.63945,35.8487,24.2776,10.9541,34.7657,24.0023,16.5833,15.6847,33.3704,41.1679,17.9973,36.9821,26.4942,13.6688,6.99457,1.56236,8.83846,4.93268,17.2629,32.4859,53.2893,31.6072,4.31864,9.20728,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1137.06
+percent fixed: 1.03201
+updating best lambda
+fixing. lower bound used: 1137.06
+fixed path dual: 9.73687
+fixing. lower bound used: 1142.39
+percent fixed: 1.32554
+updating best lambda
+fixing. lower bound used: 1142.39
+fixed path dual: 9.77569
+fixing. lower bound used: 1138.29
+percent fixed: 1.33129
+updating best lambda
+fixing. lower bound used: 1138.29
+fixed path dual: 8.97803
+fixing. lower bound used: 1144.8
+percent fixed: 1.59818
+updating best lambda
+fixing. lower bound used: 1144.8
+fixed path dual: 9.51267
+fixing. lower bound used: 1149.91
+percent fixed: 2.00041
+updating best lambda
+fixing. lower bound used: 1149.91
+fixed path dual: 10.057
+fixing. lower bound used: 1148.49
+percent fixed: 2.00505
+updating best lambda
+fixing. lower bound used: 1148.49
+fixed path dual: 9.77655
+STATS - lpIterations[1] lagIterations[40] sspIterations[320] numSeparations[137] numCuts[0] compileTime[9] sspSolveTime[219] lpSolveTime[0] lb[1200.72] ub[1288] numArcs: [548363] numFixed: [10021] time: [384]
+lambda: 0,37.0643,22.9785,29.4791,20.7972,12.3042,15.7458,1.65234,16.573,18.6745,13.0271,16.9935,6.273,1.58159,3.10928,0.000248196,27.9554,15.5742,5.07401,20.0609,6.42284,8.71336,8.8871,27.5682,35.9374,10.5072,15.7089,29.3047,0,17.3648,17.4155,7.11817,12.4653,40.7598,7.68302,42.1445,13.9996,18.9661,4.43678,36.0765,26.0019,10.5515,35.939,23.0379,16.9127,16.858,33.4606,42.3412,19.3238,37.0627,26.6298,13.7874,7.39106,2.15337,9.08515,5.9568,17.6594,32.6215,53.4248,32.3162,3.73302,9.85797,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1153.91
+percent fixed: 2.39798
+updating best lambda
+fixing. lower bound used: 1153.91
+fixed path dual: 7.298
+fixing. lower bound used: 1159.44
+percent fixed: 3.11525
+updating best lambda
+fixing. lower bound used: 1159.44
+fixed path dual: 8.63612
+fixing. lower bound used: 1156.81
+percent fixed: 3.15362
+updating best lambda
+fixing. lower bound used: 1156.81
+fixed path dual: 8.72039
+fixing. lower bound used: 1160.11
+percent fixed: 3.20547
+updating best lambda
+fixing. lower bound used: 1160.11
+fixed path dual: 7.40323
+fixing. lower bound used: 1167.4
+percent fixed: 4.52729
+updating best lambda
+fixing. lower bound used: 1167.4
+fixed path dual: 7.99591
+fixing. lower bound used: 1166.08
+percent fixed: 4.5559
+updating best lambda
+fixing. lower bound used: 1166.08
+fixed path dual: 7.78032
+fixing. lower bound used: 1169.56
+percent fixed: 4.93737
+updating best lambda
+fixing. lower bound used: 1169.56
+fixed path dual: 7.609
+fixing. lower bound used: 1167.34
+percent fixed: 4.98701
+updating best lambda
+fixing. lower bound used: 1167.34
+fixed path dual: 7.96431
+STATS - lpIterations[1] lagIterations[48] sspIterations[384] numSeparations[164] numCuts[0] compileTime[9] sspSolveTime[268] lpSolveTime[0] lb[1202.05] ub[1288] numArcs: [551976] numFixed: [24888] time: [467]
+lambda: 0,36.8567,23.0914,28.7361,21.0931,11.7223,15.5114,2.55637,17.7704,18.7886,13.7384,16.9465,5.99169,1.67676,3.52208,0.000248196,27.8503,16.3903,4.26425,20.4637,6.26807,8.94249,8.71027,27.7973,37.1348,10.8358,16.4114,29.5339,0,17.7632,17.2079,6.5204,11.0619,42.0838,7.40709,43.3641,14.988,18.4995,4.83955,36.3056,25.3898,10.7807,36.6097,24.2352,16.7358,18.0553,35.2601,43.5385,20.9978,37.7556,26.938,14.9848,8.08967,1.28145,7.80718,5.82731,18.352,33.0923,53.4791,32.8967,4.61963,8.96538,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1169.74
+percent fixed: 5.02609
+updating best lambda
+fixing. lower bound used: 1169.74
+fixed path dual: 7.90245
+STATS - lpIterations[1] lagIterations[49] sspIterations[392] numSeparations[170] numCuts[0] compileTime[9] sspSolveTime[274] lpSolveTime[0] lb[1204.76] ub[1288] numArcs: [552598] numFixed: [27825] time: [477]
+lambda: 0,37.1239,23.3586,29.0033,21.3603,11.7223,15.7785,2.55637,18.0375,19.0558,14.0055,17.2137,5.72452,1.94393,2.98774,0.000248196,28.1175,16.3903,4.53142,20.4637,6.26807,9.20966,8.97744,28.0645,37.4019,11.103,15.3427,29.801,0,18.0303,17.475,6.78757,11.3291,41.8166,6.60558,43.6312,15.2552,18.7666,4.83955,36.5728,25.6569,11.0478,36.8769,24.5024,17.003,18.3225,35.5273,43.8057,19.6619,38.0228,27.2052,15.2519,8.35684,1.01428,8.07435,5.0258,17.5505,33.3594,53.4791,31.2937,4.61963,9.23255,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1172.95
+percent fixed: 5.75032
+updating best lambda
+fixing. lower bound used: 1172.95
+fixed path dual: 6.81104
+fixing. lower bound used: 1173.09
+percent fixed: 5.97064
+updating best lambda
+fixing. lower bound used: 1173.09
+fixed path dual: 7.35126
+fixing. lower bound used: 1176.34
+percent fixed: 6.44023
+updating best lambda
+fixing. lower bound used: 1176.34
+fixed path dual: 6.78145
+fixing. lower bound used: 1177.98
+percent fixed: 6.94806
+updating best lambda
+fixing. lower bound used: 1177.98
+fixed path dual: 7.05026
+STATS - lpIterations[1] lagIterations[53] sspIterations[424] numSeparations[180] numCuts[0] compileTime[9] sspSolveTime[297] lpSolveTime[0] lb[1205.72] ub[1288] numArcs: [554314] numFixed: [38060] time: [519]
+lambda: 0,36.5875,23.5372,29.8156,20.9199,12.109,15.2793,2.56796,17.4174,19.4185,13.4118,17.1989,5.67489,1.40751,3.37447,0.000248196,28.6571,16.3034,4.44456,20.7972,6.9114,9.62039,9.15599,28.4752,37.7886,10.6626,16.155,30.2118,0,17.8357,17.3882,6.77274,11.2795,41.7297,7.44188,43.1909,15.2532,18.7646,5.17303,36.9835,26.3003,11.4586,37.2636,24.0884,17.1816,17.8581,36.3636,43.3413,20.5114,37.5824,27.1183,14.4256,8.35485,1.19645,8.43707,5.38852,18.8124,33.2726,53.3923,32.5555,5.03036,9.6697,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1180.72
+percent fixed: 7.86016
+updating best lambda
+fixing. lower bound used: 1180.72
+fixed path dual: 6.71662
+fixing. lower bound used: 1180.94
+percent fixed: 8.12385
+updating best lambda
+fixing. lower bound used: 1180.94
+fixed path dual: 6.71346
+STATS - lpIterations[1] lagIterations[55] sspIterations[440] numSeparations[182] numCuts[0] compileTime[9] sspSolveTime[309] lpSolveTime[0] lb[1206.35] ub[1288] numArcs: [554757] numFixed: [43739] time: [540]
+lambda: 0,37.118,22.826,29.4656,20.3498,12.6395,15.8099,2.16725,17.9479,19.949,13.9424,16.6288,5.5846,1.93805,3.90501,0.000248196,28.8773,16.834,4.97511,20.0861,6.20028,9.0503,8.44487,27.9052,38.0991,10.973,16.6855,29.6417,0,18.3663,17.9187,6.6429,11.81,42.2603,7.53217,43.7214,14.8525,18.0535,4.46191,36.4134,26.8308,10.8885,37.1338,24.6189,16.4704,17.9483,36.2337,43.4316,20.4212,38.1129,27.6489,14.9562,7.95414,0.795742,8.96761,5.91906,18.1012,33.8031,53.9228,33.0861,5.12065,10.2002,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1184.05
+percent fixed: 9.05458
+updating best lambda
+fixing. lower bound used: 1184.05
+fixed path dual: 6.83438
+STATS - lpIterations[1] lagIterations[56] sspIterations[448] numSeparations[185] numCuts[0] compileTime[9] sspSolveTime[315] lpSolveTime[0] lb[1208.62] ub[1288] numArcs: [555090] numFixed: [50382] time: [551]
+lambda: 0,37.4423,23.1503,28.817,20.6741,11.6667,16.1342,2.49154,18.2722,19.949,14.2666,16.6288,5.90889,1.61377,3.58072,0.000248196,29.2015,17.1583,4.65082,20.4104,6.52456,9.37459,8.76916,28.2294,37.4505,10.6487,15.3884,29.966,0,18.6906,18.243,6.31861,12.1343,42.5846,6.88359,43.3971,15.1768,18.3778,4.7862,36.7377,27.1551,11.2128,36.4852,24.9432,16.7947,17.6241,36.2337,43.1073,20.7454,38.1129,27.9731,15.2805,8.27843,1.12003,8.31903,5.59478,18.4255,34.1274,54.2471,31.4646,4.47207,10.5245,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1185.34
+percent fixed: 9.51867
+updating best lambda
+fixing. lower bound used: 1185.34
+fixed path dual: 6.76597
+STATS - lpIterations[1] lagIterations[57] sspIterations[456] numSeparations[187] numCuts[0] compileTime[9] sspSolveTime[322] lpSolveTime[0] lb[1210.49] ub[1288] numArcs: [555300] numFixed: [52469] time: [561]
+lambda: 0,37.6844,23.3924,29.0592,20.9162,11.9088,14.9236,2.49154,18.5143,20.1911,14.5088,16.8709,6.151,1.85588,3.82283,0.000248196,29.4437,16.4319,4.89293,20.6525,6.28245,9.6167,9.01127,28.4715,37.6926,10.8908,15.6305,30.2081,0,18.6906,18.4851,6.56072,11.408,41.8582,6.64148,43.6392,15.4189,18.6199,5.02831,36.9798,26.4288,11.4549,36.7273,25.1853,17.0368,17.8662,36.4759,43.3494,20.9876,38.355,27.2468,15.5226,8.52054,1.36214,8.56114,4.86844,18.6676,33.4011,53.5208,31.7067,4.71418,9.55609,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1187.76
+percent fixed: 10.3708
+updating best lambda
+fixing. lower bound used: 1187.76
+fixed path dual: 6.14865
+fixing. lower bound used: 1191.16
+percent fixed: 11.7738
+updating best lambda
+fixing. lower bound used: 1191.16
+fixed path dual: 4.91606
+fixing. lower bound used: 1192.18
+percent fixed: 12.6682
+updating best lambda
+fixing. lower bound used: 1192.18
+fixed path dual: 5.10317
+fixing. lower bound used: 1196.05
+percent fixed: 14.4547
+updating best lambda
+fixing. lower bound used: 1196.05
+fixed path dual: 5.07374
+fixing. lower bound used: 1198.86
+percent fixed: 15.862
+updating best lambda
+fixing. lower bound used: 1198.86
+fixed path dual: 5.41082
+fixing. lower bound used: 1194.81
+percent fixed: 15.8451
+fixing. lower bound used: 1198.86
+fixed path dual: 6.05756
+STATS - lpIterations[1] lagIterations[63] sspIterations[504] numSeparations[205] numCuts[0] compileTime[9] sspSolveTime[359] lpSolveTime[0] lb[1214.23] ub[1288] numArcs: [557687] numFixed: [88424] time: [627]
+lambda: 0,37.3546,24.2215,29.6208,20.5864,12.6429,16.0564,2.50231,18.7775,19.6916,14.5956,16.9939,5.44296,1.51173,3.63175,0.312951,28.9292,16.6665,5.00166,21.1289,5.73263,8.959,9.59809,27.8138,37.6317,11.1721,16.4905,29.5504,0,18.6011,18.7664,6.2309,12.228,42.0928,7.37561,43.6258,15.8734,18.7222,4.88794,36.3221,27.5977,10.7972,37.9,25.4485,17.6237,18.4278,36.4292,43.911,20.4501,38.3416,27.4814,15.3329,9.04121,1.22483,8.66987,6.04114,18.791,33.6357,53.7554,32.8794,4.83151,9.81926,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1197.17
+percent fixed: 16.2031
+updating best lambda
+fixing. lower bound used: 1197.17
+fixed path dual: 4.62933
+fixing. lower bound used: 1201.82
+percent fixed: 17.7695
+updating best lambda
+fixing. lower bound used: 1201.82
+fixed path dual: 5.4941
+fixing. lower bound used: 1199.26
+percent fixed: 17.8078
+updating best lambda
+fixing. lower bound used: 1199.26
+fixed path dual: 4.68861
+fixing. lower bound used: 1203.78
+percent fixed: 19.2221
+updating best lambda
+fixing. lower bound used: 1203.78
+fixed path dual: 5.23116
+fixing. lower bound used: 1199.87
+percent fixed: 19.294
+updating best lambda
+fixing. lower bound used: 1199.87
+fixed path dual: 4.67014
+fixing. lower bound used: 1205.08
+percent fixed: 20.3268
+updating best lambda
+fixing. lower bound used: 1205.08
+fixed path dual: 5.34226
+STATS - lpIterations[1] lagIterations[69] sspIterations[552] numSeparations[229] numCuts[0] compileTime[9] sspSolveTime[402] lpSolveTime[0] lb[1215.99] ub[1288] numArcs: [561113] numFixed: [114512] time: [699]
+lambda: 0,37.0292,24.5189,29.4422,21.0159,12.2193,16.5649,2.34171,18.6974,19.7427,14.1385,16.8711,6.5284,1.66369,3.2375,0.463446,28.7429,17.1795,4.95178,21.4263,6.47212,9.38649,9.89546,28.2413,37.9941,11.5564,17.075,29.9779,0,17.9174,18.6428,6.66245,11.2285,42.2332,7.06201,44.1606,15.016,19.0196,4.60646,36.7496,27.2061,11.2247,37.9594,24.9958,17.921,18.7902,36.7917,44.2734,21.3445,38.9773,28.3669,15.1767,8.18382,1.43138,8.41789,6.03103,19.6854,33.7672,54.2683,33.6949,4.40792,9.66309,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1204.01
+percent fixed: 20.4062
+updating best lambda
+fixing. lower bound used: 1204.01
+fixed path dual: 2.78945
+fixing. lower bound used: 1204.11
+percent fixed: 20.0601
+fixing. lower bound used: 1204.01
+fixed path dual: 3.52678
+fixing. lower bound used: 1208.38
+percent fixed: 22.3615
+updating best lambda
+fixing. lower bound used: 1208.38
+fixed path dual: 3.99821
+fixing. lower bound used: 1211.21
+percent fixed: 24.5093
+updating best lambda
+fixing. lower bound used: 1211.21
+fixed path dual: 4.73908
+fixing. lower bound used: 1207.5
+percent fixed: 24.515
+updating best lambda
+fixing. lower bound used: 1207.5
+fixed path dual: 5.01676
+STATS - lpIterations[1] lagIterations[74] sspIterations[592] numSeparations[246] numCuts[0] compileTime[9] sspSolveTime[438] lpSolveTime[0] lb[1218] ub[1288] numArcs: [564292] numFixed: [123780] time: [761]
+lambda: 0,37.8944,24.5525,29.8531,21.0323,12.2809,16.6209,2.36887,19.076,20.2444,14.6755,17.3418,5.57886,1.93135,3.36554,0.83376,28.7765,17.0771,5.63528,21.2899,5.58311,9.79736,9.92904,28.6522,37.521,11.3179,16.616,30.3887,0,18.2903,19.508,6.00815,11.7771,42.1308,6.74642,44.2856,16.063,19.0532,4.47007,37.1605,27.7432,11.6355,37.4863,25.3744,17.9546,18.3171,36.3185,43.8003,21.1959,38.4175,28.2646,15.7253,9.23081,1.62272,8.73789,5.91454,19.0211,33.6648,54.166,33.0576,4.44869,10.0418,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1208.66
+percent fixed: 23.2145
+fixing. lower bound used: 1207.5
+fixed path dual: 4.04922
+fixing. lower bound used: 1211.31
+percent fixed: 25.046
+updating best lambda
+fixing. lower bound used: 1211.31
+fixed path dual: 4.63708
+fixing. lower bound used: 1208.35
+percent fixed: 25.1105
+updating best lambda
+fixing. lower bound used: 1208.35
+fixed path dual: 3.39822
+fixing. lower bound used: 1207.09
+percent fixed: 25.1331
+updating best lambda
+fixing. lower bound used: 1207.09
+fixed path dual: 4.60785
+fixing. lower bound used: 1208.41
+percent fixed: 22.7705
+fixing. lower bound used: 1207.09
+fixed path dual: 3.60704
+fixing. lower bound used: 1210.45
+percent fixed: 24.1498
+fixing. lower bound used: 1207.09
+fixed path dual: 4.01298
+fixing. lower bound used: 1212.26
+percent fixed: 25.5924
+updating best lambda
+fixing. lower bound used: 1212.26
+fixed path dual: 5.1978
+STATS - lpIterations[1] lagIterations[81] sspIterations[648] numSeparations[265] numCuts[0] compileTime[9] sspSolveTime[488] lpSolveTime[0] lb[1221.19] ub[1288] numArcs: [567137] numFixed: [146104] time: [849]
+lambda: 0,38.1341,24.0677,29.573,20.9939,12.5666,16.558,3.02559,19.4524,20.275,14.5753,17.3507,6.70953,1.28928,3.48286,1.35349,29.4699,17.3226,5.22922,21.1978,6.23983,9.46919,9.44424,28.324,37.6486,11.0581,15.9457,30.2966,0,18.1901,19.4451,6.06455,12.0225,42.3763,7.14143,44.0796,15.971,18.5684,4.37802,37.3043,27.7832,11.3074,37.4516,25.7509,17.4698,17.4602,36.1658,43.3545,21.8527,38.3011,28.51,16.4474,9.13876,1.56104,8.52104,6.31766,19.6779,33.9102,54.4114,33.1594,4.38044,10.0817,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1209.12
+percent fixed: 25.6462
+updating best lambda
+fixing. lower bound used: 1209.12
+fixed path dual: 3.37266
+fixing. lower bound used: 1208.1
+percent fixed: 23.6885
+fixing. lower bound used: 1209.12
+fixed path dual: 5.06669
+fixing. lower bound used: 1208.9
+percent fixed: 23.7274
+fixing. lower bound used: 1209.12
+fixed path dual: 4.95356
+fixing. lower bound used: 1208.67
+percent fixed: 23.7295
+fixing. lower bound used: 1209.12
+fixed path dual: 3.31449
+fixing. lower bound used: 1208.27
+percent fixed: 23.5873
+fixing. lower bound used: 1209.12
+fixed path dual: 3.4811
+fixing. lower bound used: 1211.09
+percent fixed: 24.6919
+fixing. lower bound used: 1209.12
+fixed path dual: 3.8536
+fixing. lower bound used: 1209.28
+percent fixed: 23.6416
+fixing. lower bound used: 1209.12
+fixed path dual: 2.55699
+fixing. lower bound used: 1202.52
+percent fixed: 23.1569
+fixing. lower bound used: 1209.12
+fixed path dual: 4.39309
+fixing. lower bound used: 1210.99
+percent fixed: 25.0548
+fixing. lower bound used: 1209.12
+fixed path dual: 5.06169
+fixing. lower bound used: 1211
+percent fixed: 25.2093
+fixing. lower bound used: 1209.12
+fixed path dual: 4.51304
+fixing. lower bound used: 1214.17
+percent fixed: 27.8272
+updating best lambda
+fixing. lower bound used: 1214.17
+fixed path dual: 3.75383
+fixing. lower bound used: 1211.33
+percent fixed: 27.9592
+updating best lambda
+fixing. lower bound used: 1211.33
+fixed path dual: 4.28828
+fixing. lower bound used: 1213.32
+percent fixed: 27.0115
+fixing. lower bound used: 1211.33
+fixed path dual: 4.68111
+fixing. lower bound used: 1213.04
+percent fixed: 27.0808
+fixing. lower bound used: 1211.33
+fixed path dual: 1.25427
+fixing. lower bound used: 1203.38
+percent fixed: 27.0892
+fixing. lower bound used: 1211.33
+fixed path dual: 3.43805
+fixing. lower bound used: 1218.33
+percent fixed: 30.8656
+updating best lambda
+fixing. lower bound used: 1218.33
+fixed path dual: 3.65021
+fixing. lower bound used: 1217.08
+percent fixed: 31.1182
+updating best lambda
+fixing. lower bound used: 1217.08
+fixed path dual: 3.44811
+fixing. lower bound used: 1216.62
+percent fixed: 30.5194
+fixing. lower bound used: 1217.08
+fixed path dual: 4.04974
+fixing. lower bound used: 1218.98
+percent fixed: 31.9948
+updating best lambda
+fixing. lower bound used: 1218.98
+fixed path dual: 3.799
+fixing. lower bound used: 1219.96
+percent fixed: 32.7005
+updating best lambda
+fixing. lower bound used: 1219.96
+fixed path dual: 3.48101
+fixing. lower bound used: 1214.34
+percent fixed: 32.5508
+fixing. lower bound used: 1219.96
+fixed path dual: 4.18144
+STATS - lpIterations[1] lagIterations[102] sspIterations[816] numSeparations[340] numCuts[0] compileTime[9] sspSolveTime[645] lpSolveTime[0] lb[1222.07] ub[1288] numArcs: [578491] numFixed: [189487] time: [1118]
+lambda: 0,37.4456,24.3995,29.9035,21.2823,12.4552,17.3517,2.63672,19.5077,19.4848,14.1467,17.2531,6.03139,1.23083,3.13151,2.01206,30.3498,16.9838,4.9735,21.3377,6.78587,9.63521,10.0671,28.4901,37.9718,11.3279,17.0635,30.4626,0,17.3087,19.1448,6.03198,12.683,42.0375,7.07429,44.8642,16.1702,18.6357,5.02122,37.4704,28.8008,11.4734,38.081,25.7319,17.8016,18.2307,36.5515,44.125,21.9492,38.5275,28.1712,16.6349,9.04694,1.60289,8.10698,6.72592,19.8892,34.7026,54.0726,33.5334,5.01229,9.68796,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1219.69
+percent fixed: 33.279
+updating best lambda
+fixing. lower bound used: 1219.69
+fixed path dual: 3.78981
+fixing. lower bound used: 1220.19
+percent fixed: 33.2512
+fixing. lower bound used: 1219.69
+fixed path dual: 3.90338
+fixing. lower bound used: 1219.41
+percent fixed: 33.2071
+fixing. lower bound used: 1219.69
+fixed path dual: 4.18418
+STATS - lpIterations[1] lagIterations[105] sspIterations[840] numSeparations[351] numCuts[0] compileTime[9] sspSolveTime[668] lpSolveTime[0] lb[1224.11] ub[1288] numArcs: [579731] numFixed: [190490] time: [1158]
+lambda: 0,38.0021,24.2654,30.46,20.8453,11.904,16.7448,2.85048,20.0643,20.0413,14.3154,16.3194,5.67387,1.6731,3.1913,1.7637,30.7124,17.1525,5.53003,20.8608,6.49757,9.695,9.93303,28.5498,38.5283,11.1393,17.3915,30.5224,0,17.4774,19.7014,6.47426,11.6883,42.2062,7.40231,44.924,16.23,18.5016,4.77286,37.5302,28.1939,11.5332,38.6375,26.2884,17.6675,18.2905,37.108,44.1848,21.4774,38.0906,28.34,16.8036,9.10673,1.47388,8.66351,6.78038,19.4174,34.4835,54.2414,33.7471,4.32698,10.2445,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1221.89
+percent fixed: 35.0879
+updating best lambda
+fixing. lower bound used: 1221.89
+fixed path dual: 2.6703
+fixing. lower bound used: 1213.56
+percent fixed: 35.0276
+fixing. lower bound used: 1221.89
+fixed path dual: 3.49749
+fixing. lower bound used: 1219.97
+percent fixed: 35.1532
+updating best lambda
+fixing. lower bound used: 1219.97
+fixed path dual: 3.58597
+fixing. lower bound used: 1216.14
+percent fixed: 32.4429
+fixing. lower bound used: 1219.97
+fixed path dual: 4.04747
+fixing. lower bound used: 1219.66
+percent fixed: 33.1957
+fixing. lower bound used: 1219.97
+fixed path dual: 4.23896
+fixing. lower bound used: 1218.25
+percent fixed: 32.6922
+fixing. lower bound used: 1219.97
+fixed path dual: 3.63988
+fixing. lower bound used: 1215.62
+percent fixed: 32.4507
+fixing. lower bound used: 1219.97
+fixed path dual: 3.80255
+fixing. lower bound used: 1218.16
+percent fixed: 32.7228
+fixing. lower bound used: 1219.97
+fixed path dual: 4.18391
+fixing. lower bound used: 1220.18
+percent fixed: 33.6714
+fixing. lower bound used: 1219.97
+fixed path dual: 2.25562
+fixing. lower bound used: 1211.95
+percent fixed: 33.6806
+fixing. lower bound used: 1219.97
+fixed path dual: 3.37302
+fixing. lower bound used: 1217.88
+percent fixed: 32.4584
+fixing. lower bound used: 1219.97
+fixed path dual: 3.33754
+fixing. lower bound used: 1217.59
+percent fixed: 32.4538
+fixing. lower bound used: 1219.97
+fixed path dual: 4.68314
+STATS - lpIterations[1] lagIterations[117] sspIterations[936] numSeparations[380] numCuts[0] compileTime[9] sspSolveTime[759] lpSolveTime[0] lb[1225.57] ub[1288] numArcs: [583560] numFixed: [190433] time: [1313]
+lambda: 0,38.278,23.882,29.9223,21.0291,12.3989,16.8501,3.00728,19.5181,20.2018,14.3196,16.5434,6.14245,1.50552,3.16857,2.21296,30.3516,17.1037,5.13893,21.3178,6.36004,9.4232,9.54966,28.278,38.17,11.3485,16.5813,30.2506,0,16.7697,19.6856,6.38257,12.1338,42.1574,7.47649,45.1397,16.2139,18.1183,5.07788,37.2584,28.5123,11.2614,38.6121,25.7423,17.2842,18.4262,36.713,44.3206,22.0124,38.4859,28.2911,16.7999,9.09062,1.98365,8.92892,6.12012,19.9823,34.7901,54.1925,33.0032,4.57823,9.71013,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1218.6
+percent fixed: 32.5974
+fixing. lower bound used: 1219.97
+fixed path dual: 3.3971
+fixing. lower bound used: 1220.38
+percent fixed: 32.9829
+fixing. lower bound used: 1219.97
+fixed path dual: 4.10045
+fixing. lower bound used: 1222.18
+percent fixed: 34.8515
+fixing. lower bound used: 1219.97
+fixed path dual: 2.84833
+fixing. lower bound used: 1215.01
+percent fixed: 34.8606
+fixing. lower bound used: 1219.97
+fixed path dual: 3.26861
+fixing. lower bound used: 1215.05
+percent fixed: 32.3976
+fixing. lower bound used: 1219.97
+fixed path dual: 4.10562
+fixing. lower bound used: 1220.15
+percent fixed: 33.1969
+fixing. lower bound used: 1219.97
+fixed path dual: 3.53035
+fixing. lower bound used: 1220.14
+percent fixed: 33.3481
+fixing. lower bound used: 1219.97
+fixed path dual: 4.24021
+fixing. lower bound used: 1221.86
+percent fixed: 34.7132
+fixing. lower bound used: 1219.97
+fixed path dual: 3.86701
+fixing. lower bound used: 1223.33
+percent fixed: 36.1666
+updating best lambda
+fixing. lower bound used: 1223.33
+fixed path dual: 3.14514
+fixing. lower bound used: 1220.23
+percent fixed: 36.2174
+updating best lambda
+fixing. lower bound used: 1220.23
+fixed path dual: 3.11692
+fixing. lower bound used: 1219.07
+percent fixed: 36.2265
+updating best lambda
+fixing. lower bound used: 1219.07
+fixed path dual: 4.094
+fixing. lower bound used: 1222.81
+percent fixed: 35.5717
+fixing. lower bound used: 1219.07
+fixed path dual: 3.62836
+fixing. lower bound used: 1223.65
+percent fixed: 35.8835
+fixing. lower bound used: 1219.07
+fixed path dual: 3.91567
+fixing. lower bound used: 1224
+percent fixed: 36.3065
+updating best lambda
+fixing. lower bound used: 1224
+fixed path dual: 3.33388
+fixing. lower bound used: 1222.12
+percent fixed: 36.5103
+updating best lambda
+fixing. lower bound used: 1222.12
+fixed path dual: 3.10164
+fixing. lower bound used: 1219.71
+percent fixed: 34.9417
+fixing. lower bound used: 1222.12
+fixed path dual: 3.55499
+fixing. lower bound used: 1222.69
+percent fixed: 35.9896
+fixing. lower bound used: 1222.12
+fixed path dual: 3.5465
+fixing. lower bound used: 1221.52
+percent fixed: 36.1728
+fixing. lower bound used: 1222.12
+fixed path dual: 3.54748
+fixing. lower bound used: 1222.79
+percent fixed: 35.6949
+fixing. lower bound used: 1222.12
+fixed path dual: 3.62195
+fixing. lower bound used: 1222.47
+percent fixed: 35.7015
+fixing. lower bound used: 1222.12
+fixed path dual: 4.2915
+STATS - lpIterations[1] lagIterations[137] sspIterations[1096] numSeparations[424] numCuts[0] compileTime[9] sspSolveTime[915] lpSolveTime[0] lb[1227.53] ub[1288] numArcs: [590537] numFixed: [207437] time: [1579]
+lambda: 0,39.0003,24.1253,29.7467,21.5198,11.8601,16.5696,2.41817,20.2152,20.0548,14.4878,16.8262,6.47867,1.20491,3.20048,2.27886,30.7301,17.3246,5.38068,21.6855,5.98273,9.73581,9.79289,28.5907,37.7402,11.5123,16.6645,30.5632,0,16.6626,19.8172,6.26063,11.567,42.3783,7.40007,45.2564,16.4931,18.3615,5.17759,37.571,28.3377,11.574,38.2638,26.1713,17.5274,18.4245,36.7018,44.3189,22.1815,38.9593,28.512,16.6531,9.5802,1.67035,8.3089,6.0361,20.7019,35.011,54.4134,33.3845,4.22268,9.60629,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1224.02
+percent fixed: 36.8685
+updating best lambda
+fixing. lower bound used: 1224.02
+fixed path dual: 2.97967
+fixing. lower bound used: 1219.64
+percent fixed: 36.738
+fixing. lower bound used: 1224.02
+fixed path dual: 3.49827
+fixing. lower bound used: 1221.11
+percent fixed: 36.746
+fixing. lower bound used: 1224.02
+fixed path dual: 3.84309
+fixing. lower bound used: 1223.64
+percent fixed: 36.9773
+updating best lambda
+fixing. lower bound used: 1223.64
+fixed path dual: 3.44729
+fixing. lower bound used: 1220.43
+percent fixed: 35.9171
+fixing. lower bound used: 1223.64
+fixed path dual: 3.72208
+fixing. lower bound used: 1224.01
+percent fixed: 37.1601
+updating best lambda
+fixing. lower bound used: 1224.01
+fixed path dual: 3.2773
+fixing. lower bound used: 1222.63
+percent fixed: 36.9422
+fixing. lower bound used: 1224.01
+fixed path dual: 3.85925
+fixing. lower bound used: 1224.27
+percent fixed: 37.4113
+updating best lambda
+fixing. lower bound used: 1224.27
+fixed path dual: 4.09517
+fixing. lower bound used: 1224.9
+percent fixed: 37.7626
+updating best lambda
+fixing. lower bound used: 1224.9
+fixed path dual: 3.20773
+fixing. lower bound used: 1221.28
+percent fixed: 37.8556
+updating best lambda
+fixing. lower bound used: 1221.28
+fixed path dual: 2.90324
+fixing. lower bound used: 1220.93
+percent fixed: 37.8549
+fixing. lower bound used: 1221.28
+fixed path dual: 3.52098
+fixing. lower bound used: 1222.46
+percent fixed: 35.2372
+fixing. lower bound used: 1221.28
+fixed path dual: 3.39926
+fixing. lower bound used: 1223.55
+percent fixed: 35.8392
+fixing. lower bound used: 1221.28
+fixed path dual: 3.9412
+fixing. lower bound used: 1226.93
+percent fixed: 39.2349
+updating best lambda
+fixing. lower bound used: 1226.93
+fixed path dual: 2.80287
+fixing. lower bound used: 1220.29
+percent fixed: 39.2337
+fixing. lower bound used: 1226.93
+fixed path dual: 3.59428
+fixing. lower bound used: 1224.86
+percent fixed: 39.3574
+updating best lambda
+fixing. lower bound used: 1224.86
+fixed path dual: 2.90766
+fixing. lower bound used: 1220.67
+percent fixed: 36.9724
+fixing. lower bound used: 1224.86
+fixed path dual: 3.84059
+fixing. lower bound used: 1226.41
+percent fixed: 38.6551
+fixing. lower bound used: 1224.86
+fixed path dual: 3.33927
+fixing. lower bound used: 1224.87
+percent fixed: 38.0706
+fixing. lower bound used: 1224.86
+fixed path dual: 3.55483
+fixing. lower bound used: 1224.48
+percent fixed: 37.3647
+fixing. lower bound used: 1224.86
+fixed path dual: 3.75804
+fixing. lower bound used: 1226.03
+percent fixed: 38.2673
+fixing. lower bound used: 1224.86
+fixed path dual: 3.43711
+fixing. lower bound used: 1225.83
+percent fixed: 38.164
+fixing. lower bound used: 1224.86
+fixed path dual: 3.52643
+fixing. lower bound used: 1225.99
+percent fixed: 38.5147
+fixing. lower bound used: 1224.86
+fixed path dual: 3.38469
+fixing. lower bound used: 1225.19
+percent fixed: 37.9603
+fixing. lower bound used: 1224.86
+fixed path dual: 2.94726
+fixing. lower bound used: 1222.73
+percent fixed: 36.9735
+fixing. lower bound used: 1224.86
+fixed path dual: 3.5977
+fixing. lower bound used: 1225.58
+percent fixed: 37.9265
+fixing. lower bound used: 1224.86
+fixed path dual: 3.88827
+STATS - lpIterations[1] lagIterations[163] sspIterations[1304] numSeparations[482] numCuts[0] compileTime[9] sspSolveTime[1119] lpSolveTime[0] lb[1228.94] ub[1288] numArcs: [596810] numFixed: [222405] time: [1928]
+lambda: 0,38.8085,23.9278,30.0273,21.305,12.7859,17.0218,2.86285,20.0788,20.5996,15.0945,16.5503,6.24386,1.25736,3.73206,2.38781,31.0561,17.1718,5.61683,21.6823,5.88522,9.66612,9.80241,28.521,38.2424,11.3138,16.7643,30.4935,0,16.1107,20.2118,6.18837,11.9891,42.2255,7.2911,45.9247,16.5972,17.957,4.96915,37.5013,28.8709,11.5043,38.863,25.8027,17.3299,18.6861,36.7641,44.2782,22.1992,39.0204,28.3593,16.8937,9.47726,2.01063,8.52613,5.80114,21.0733,34.6651,54.2606,33.5716,4.40579,9.60323,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1228.25
+percent fixed: 40.2861
+updating best lambda
+fixing. lower bound used: 1228.25
+fixed path dual: 3.42708
+fixing. lower bound used: 1226.54
+percent fixed: 40.4216
+updating best lambda
+fixing. lower bound used: 1226.54
+fixed path dual: 3.0908
+fixing. lower bound used: 1223.84
+percent fixed: 38.8749
+fixing. lower bound used: 1226.54
+fixed path dual: 3.93227
+STATS - lpIterations[1] lagIterations[166] sspIterations[1328] numSeparations[488] numCuts[0] compileTime[9] sspSolveTime[1144] lpSolveTime[0] lb[1229.17] ub[1288] numArcs: [597657] numFixed: [234185] time: [1970]
+lambda: 0,38.4441,23.6775,30.0986,21.34,12.4216,17.1865,2.69033,20.1138,20.2353,14.7209,16.1133,5.96507,1.12902,3.60371,2.49547,31.2208,17.3365,5.48849,21.6395,6.25739,9.70109,9.55213,28.5559,38.114,11.1491,17.344,30.5285,0,16.418,20.5555,6.22334,12.1537,42.3902,7.59841,46.0323,16.3469,17.7067,4.92636,37.5362,29.3144,11.5393,38.7346,25.8377,17.0796,18.5214,36.3634,44.1135,22.3639,39.128,28.5239,16.6563,9.22698,1.9108,8.63379,5.96583,20.823,34.8298,54.4253,34.1512,4.51344,10.0467,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1228.74
+percent fixed: 40.795
+updating best lambda
+fixing. lower bound used: 1228.74
+fixed path dual: 3.55455
+fixing. lower bound used: 1227.42
+percent fixed: 40.8975
+updating best lambda
+fixing. lower bound used: 1227.42
+fixed path dual: 3.75801
+fixing. lower bound used: 1227.56
+percent fixed: 40.0005
+fixing. lower bound used: 1227.42
+fixed path dual: 3.1748
+fixing. lower bound used: 1223.11
+percent fixed: 39.2552
+fixing. lower bound used: 1227.42
+fixed path dual: 3.26696
+fixing. lower bound used: 1227.37
+percent fixed: 39.9048
+fixing. lower bound used: 1227.42
+fixed path dual: 3.22753
+fixing. lower bound used: 1226.44
+percent fixed: 39.4127
+fixing. lower bound used: 1227.42
+fixed path dual: 3.75556
+fixing. lower bound used: 1226.32
+percent fixed: 39.4573
+fixing. lower bound used: 1227.42
+fixed path dual: 4.0646
+STATS - lpIterations[1] lagIterations[173] sspIterations[1384] numSeparations[506] numCuts[0] compileTime[9] sspSolveTime[1204] lpSolveTime[0] lb[1229.8] ub[1288] numArcs: [599514] numFixed: [237269] time: [2070]
+lambda: 0,38.787,23.8439,30.2004,21.4421,12.6963,17.1473,2.88741,20.2898,20.0363,15.1675,16.6558,5.83046,1.23081,3.47649,2.36845,30.8462,17.228,5.38588,21.4556,6.02273,9.52368,9.7186,28.3785,38.3301,11.1466,16.8805,30.3511,0,16.5941,20.576,6.338,12.1146,42.2818,7.35754,46.0864,16.6362,17.8732,4.8518,37.3588,29.4473,11.3619,38.5902,26.0138,17.2461,18.721,36.681,44.313,22.0434,39.1821,28.4155,17.3735,9.51626,1.09852,8.57438,5.84162,20.5995,34.7214,54.3169,33.672,4.09795,10.0616,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1228.24
+percent fixed: 40.8521
+fixing. lower bound used: 1227.42
+fixed path dual: 3.06486
+fixing. lower bound used: 1224.44
+percent fixed: 40.9453
+updating best lambda
+fixing. lower bound used: 1224.44
+fixed path dual: 3.6219
+fixing. lower bound used: 1228.23
+percent fixed: 40.766
+fixing. lower bound used: 1224.44
+fixed path dual: 3.13611
+fixing. lower bound used: 1223.91
+percent fixed: 40.8296
+fixing. lower bound used: 1224.44
+fixed path dual: 3.74835
+fixing. lower bound used: 1228.33
+percent fixed: 40.3279
+fixing. lower bound used: 1224.44
+fixed path dual: 4.04257
+STATS - lpIterations[1] lagIterations[178] sspIterations[1424] numSeparations[518] numCuts[0] compileTime[9] sspSolveTime[1242] lpSolveTime[0] lb[1230.73] ub[1288] numArcs: [601365] numFixed: [223655] time: [2135]
+lambda: 0,38.8402,23.9573,30.0144,21.2732,12.3686,16.9775,2.96526,20.4245,19.5572,15.1063,16.4928,5.95466,1.43046,3.3009,2.39806,31.264,17.3414,5.36089,21.8734,6.05422,9.64414,9.83199,28.499,38.251,10.9777,16.9938,30.4715,0,16.337,20.7024,6.09288,11.9448,42.3951,7.5639,45.4779,16.7496,17.9866,5.11823,37.4793,29.3861,11.4823,38.3597,26.1484,17.3595,18.6456,36.9046,44.2376,22.1676,38.5003,28.5289,17.1164,9.62965,1.52468,8.16372,6.25942,20.4247,34.8347,54.4303,34.3942,4.22511,10.1962,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1229.34
+percent fixed: 41.7193
+updating best lambda
+fixing. lower bound used: 1229.34
+fixed path dual: 2.76285
+fixing. lower bound used: 1223.49
+percent fixed: 41.7867
+updating best lambda
+fixing. lower bound used: 1223.49
+fixed path dual: 3.07382
+fixing. lower bound used: 1225.26
+percent fixed: 37.3646
+fixing. lower bound used: 1223.49
+fixed path dual: 3.98462
+fixing. lower bound used: 1229.84
+percent fixed: 41.9314
+updating best lambda
+fixing. lower bound used: 1229.84
+fixed path dual: 3.64094
+fixing. lower bound used: 1228.36
+percent fixed: 42.0289
+updating best lambda
+fixing. lower bound used: 1228.36
+fixed path dual: 2.94006
+fixing. lower bound used: 1225.79
+percent fixed: 40.4617
+fixing. lower bound used: 1228.36
+fixed path dual: 3.4348
+fixing. lower bound used: 1228.96
+percent fixed: 41.5264
+fixing. lower bound used: 1228.36
+fixed path dual: 2.92052
+fixing. lower bound used: 1224.38
+percent fixed: 40.4052
+fixing. lower bound used: 1228.36
+fixed path dual: 3.27154
+fixing. lower bound used: 1226.94
+percent fixed: 40.4753
+fixing. lower bound used: 1228.36
+fixed path dual: 2.68368
+fixing. lower bound used: 1224.01
+percent fixed: 40.3984
+fixing. lower bound used: 1228.36
+fixed path dual: 3.57482
+fixing. lower bound used: 1230.17
+percent fixed: 42.5869
+updating best lambda
+fixing. lower bound used: 1230.17
+fixed path dual: 2.91368
+fixing. lower bound used: 1227.05
+percent fixed: 42.7039
+updating best lambda
+fixing. lower bound used: 1227.05
+fixed path dual: 2.48223
+fixing. lower bound used: 1222.88
+percent fixed: 39.3012
+fixing. lower bound used: 1227.05
+fixed path dual: 3.26894
+fixing. lower bound used: 1227.02
+percent fixed: 39.7274
+fixing. lower bound used: 1227.05
+fixed path dual: 3.29088
+fixing. lower bound used: 1228.16
+percent fixed: 40.2716
+fixing. lower bound used: 1227.05
+fixed path dual: 3.8008
+STATS - lpIterations[1] lagIterations[193] sspIterations[1544] numSeparations[555] numCuts[0] compileTime[9] sspSolveTime[1367] lpSolveTime[0] lb[1232.02] ub[1288] numArcs: [606241] numFixed: [240254] time: [2347]
+lambda: 0,38.8202,23.6963,30.3442,21.4258,12.6216,16.879,3.02849,20.2266,19.9613,15.2428,16.2185,6.44786,1.26509,3.4436,2.49828,31.5396,16.9184,5.35251,22.0339,6.74664,9.71016,9.82193,28.565,38.6006,11.0652,17.0213,30.5375,0,16.3905,20.7074,6.39986,11.9148,41.9721,7.32754,45.859,16.7267,17.9765,5.27257,37.5453,29.3601,11.5483,38.7572,25.9505,17.3494,18.5,36.7112,44.4263,22.132,38.7348,28.1059,17.4295,9.78717,1.5137,8.99091,6.2345,20.886,34.5197,54.0072,34.3413,4.27169,9.93557,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1231.64
+percent fixed: 43.5317
+updating best lambda
+fixing. lower bound used: 1231.64
+fixed path dual: 2.20815
+fixing. lower bound used: 1223.59
+percent fixed: 43.5312
+fixing. lower bound used: 1231.64
+fixed path dual: 2.40576
+fixing. lower bound used: 1224.65
+percent fixed: 43.5388
+updating best lambda
+fixing. lower bound used: 1224.65
+fixed path dual: 2.99256
+fixing. lower bound used: 1227.33
+percent fixed: 39.0042
+fixing. lower bound used: 1224.65
+fixed path dual: 2.88643
+fixing. lower bound used: 1226.41
+percent fixed: 38.3191
+fixing. lower bound used: 1224.65
+fixed path dual: 3.70107
+fixing. lower bound used: 1230.7
+percent fixed: 42.5686
+fixing. lower bound used: 1224.65
+fixed path dual: 3.44341
+fixing. lower bound used: 1230.54
+percent fixed: 42.2235
+fixing. lower bound used: 1224.65
+fixed path dual: 3.41342
+fixing. lower bound used: 1230.32
+percent fixed: 42.2379
+fixing. lower bound used: 1224.65
+fixed path dual: 3.53175
+fixing. lower bound used: 1231.14
+percent fixed: 43.257
+fixing. lower bound used: 1224.65
+fixed path dual: 3.04325
+fixing. lower bound used: 1226.15
+percent fixed: 38.2182
+fixing. lower bound used: 1224.65
+fixed path dual: 3.37087
+fixing. lower bound used: 1229.44
+percent fixed: 41.2797
+fixing. lower bound used: 1224.65
+fixed path dual: 2.72065
+fixing. lower bound used: 1225.44
+percent fixed: 37.1991
+fixing. lower bound used: 1224.65
+fixed path dual: 3.39524
+fixing. lower bound used: 1230.89
+percent fixed: 42.8866
+fixing. lower bound used: 1224.65
+fixed path dual: 3.13353
+fixing. lower bound used: 1228.62
+percent fixed: 40.6718
+fixing. lower bound used: 1224.65
+fixed path dual: 2.53813
+fixing. lower bound used: 1224.86
+percent fixed: 37.3445
+fixing. lower bound used: 1224.65
+fixed path dual: 3.42333
+fixing. lower bound used: 1230.06
+percent fixed: 42.0937
+fixing. lower bound used: 1224.65
+fixed path dual: 3.31423
+fixing. lower bound used: 1231.06
+percent fixed: 43.2342
+fixing. lower bound used: 1224.65
+fixed path dual: 2.78049
+fixing. lower bound used: 1228.26
+percent fixed: 43.3197
+fixing. lower bound used: 1224.65
+fixed path dual: 3.02615
+fixing. lower bound used: 1228.85
+percent fixed: 41.0674
+fixing. lower bound used: 1224.65
+fixed path dual: 3.30043
+fixing. lower bound used: 1229.66
+percent fixed: 41.6169
+fixing. lower bound used: 1224.65
+fixed path dual: 3.42068
+fixing. lower bound used: 1230.73
+percent fixed: 42.7773
+fixing. lower bound used: 1224.65
+fixed path dual: 3.33371
+STATS - lpIterations[1] lagIterations[214] sspIterations[1712] numSeparations[605] numCuts[0] compileTime[9] sspSolveTime[1547] lpSolveTime[0] lb[1232.03] ub[1288] numArcs: [612974] numFixed: [264823] time: [2653]
+lambda: 0,39.1293,23.8438,30.0871,21.4684,12.5787,17.1465,2.8868,20.3398,19.9235,15.5144,16.2722,6.48002,1.57349,3.43616,2.66384,31.3486,16.7693,5.36207,22.0609,6.20545,9.9653,9.96944,28.8201,38.5664,11.4741,17.1323,30.7927,0,16.1119,21.0647,6.38085,11.9499,41.6555,7.56347,45.9642,16.5201,17.8855,5.57396,37.8004,29.0347,11.8035,38.5395,26.1729,17.4969,18.6517,36.8236,44.5781,22.137,38.4328,28.1243,17.6013,9.8191,1.67371,8.92219,6.32016,21.6648,34.5381,53.8581,34.6406,4.27922,9.96845,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1231.47
+percent fixed: 43.4602
+fixing. lower bound used: 1224.65
+fixed path dual: 3.39999
+fixing. lower bound used: 1231.69
+percent fixed: 43.7215
+updating best lambda
+fixing. lower bound used: 1231.69
+fixed path dual: 2.13055
+fixing. lower bound used: 1221.81
+percent fixed: 43.7384
+updating best lambda
+fixing. lower bound used: 1221.81
+fixed path dual: 3.5489
+fixing. lower bound used: 1231.06
+percent fixed: 42.7985
+fixing. lower bound used: 1221.81
+fixed path dual: 3.10684
+fixing. lower bound used: 1230.25
+percent fixed: 42.348
+fixing. lower bound used: 1221.81
+fixed path dual: 3.11325
+fixing. lower bound used: 1229.96
+percent fixed: 41.8604
+fixing. lower bound used: 1221.81
+fixed path dual: 3.47284
+fixing. lower bound used: 1231.57
+percent fixed: 43.8666
+updating best lambda
+fixing. lower bound used: 1231.57
+fixed path dual: 2.87439
+fixing. lower bound used: 1229.18
+percent fixed: 43.9963
+updating best lambda
+fixing. lower bound used: 1229.18
+fixed path dual: 3.37262
+fixing. lower bound used: 1231.42
+percent fixed: 43.3586
+fixing. lower bound used: 1229.18
+fixed path dual: 2.8306
+fixing. lower bound used: 1228.29
+percent fixed: 43.4475
+fixing. lower bound used: 1229.18
+fixed path dual: 3.41308
+STATS - lpIterations[1] lagIterations[224] sspIterations[1792] numSeparations[628] numCuts[0] compileTime[9] sspSolveTime[1627] lpSolveTime[0] lb[1232.14] ub[1288] numArcs: [615804] numFixed: [256441] time: [2796]
+lambda: 0,38.7456,23.4271,30.4669,21.838,12.8456,16.7767,3.11458,20.1831,19.9797,15.3577,16.3732,6.44643,1.28561,3.4258,2.59007,31.5926,16.9945,5.22436,22.0267,6.24843,9.83233,9.55278,28.6872,38.6041,11.6015,17.1843,30.6597,0,15.9552,20.874,6.41515,11.8909,41.8807,7.27346,46.5304,16.4338,17.4688,5.30328,37.6675,29.3309,11.6705,38.7077,26.0162,17.0802,18.6201,36.8229,44.5464,22.4139,39.061,28.3495,17.5573,9.73278,1.70189,8.84514,6.40698,21.4825,34.6155,54.0834,34.4506,4.59016,9.99258,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1231.68
+percent fixed: 43.3017
+fixing. lower bound used: 1229.18
+fixed path dual: 3.41099
+fixing. lower bound used: 1230.97
+percent fixed: 42.8448
+fixing. lower bound used: 1229.18
+fixed path dual: 3.57053
+STATS - lpIterations[1] lagIterations[226] sspIterations[1808] numSeparations[637] numCuts[0] compileTime[9] sspSolveTime[1646] lpSolveTime[0] lb[1234.16] ub[1288] numArcs: [616905] numFixed: [256838] time: [2827]
+lambda: 0,38.9421,23.6237,30.415,21.7228,12.7823,16.9732,2.87742,20.3796,20.1763,15.5542,16.5177,6.15733,1.08911,3.46645,2.59007,31.7891,17.191,5.27631,21.9341,5.86672,9.92493,9.74928,28.7798,38.3669,11.3304,17.3808,30.7523,0,16.1517,21.0705,6.40385,12.0874,42.0772,7.31411,46.2074,16.6303,17.6653,5.35523,37.7601,29.5274,11.7631,38.4706,26.2127,17.2768,18.3829,36.7303,44.3093,21.7431,38.6861,28.546,17.7538,9.92929,1.26822,8.79319,6.60349,20.8117,34.812,54.2799,34.6471,4.52691,10.1891,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1233.85
+percent fixed: 46.0471
+updating best lambda
+fixing. lower bound used: 1233.85
+fixed path dual: 2.9649
+fixing. lower bound used: 1230.8
+percent fixed: 46.0759
+updating best lambda
+fixing. lower bound used: 1230.8
+fixed path dual: 2.65855
+fixing. lower bound used: 1226.52
+percent fixed: 42.8737
+fixing. lower bound used: 1230.8
+fixed path dual: 3.26281
+fixing. lower bound used: 1231.27
+percent fixed: 43.6188
+fixing. lower bound used: 1230.8
+fixed path dual: 1.85725
+fixing. lower bound used: 1223.94
+percent fixed: 42.8811
+fixing. lower bound used: 1230.8
+fixed path dual: 2.63956
+fixing. lower bound used: 1228.82
+percent fixed: 42.9076
+fixing. lower bound used: 1230.8
+fixed path dual: 2.80667
+fixing. lower bound used: 1230.2
+percent fixed: 43.1727
+fixing. lower bound used: 1230.8
+fixed path dual: 3.20022
+fixing. lower bound used: 1230.68
+percent fixed: 43.1942
+fixing. lower bound used: 1230.8
+fixed path dual: 2.23904
+fixing. lower bound used: 1225.31
+percent fixed: 42.8557
+fixing. lower bound used: 1230.8
+fixed path dual: 2.98961
+fixing. lower bound used: 1230.05
+percent fixed: 43.1003
+fixing. lower bound used: 1230.8
+fixed path dual: 3.43763
+fixing. lower bound used: 1232.74
+percent fixed: 44.9633
+fixing. lower bound used: 1230.8
+fixed path dual: 2.85554
+fixing. lower bound used: 1229.89
+percent fixed: 42.9453
+fixing. lower bound used: 1230.8
+fixed path dual: 3.35715
+fixing. lower bound used: 1232.7
+percent fixed: 44.685
+fixing. lower bound used: 1230.8
+fixed path dual: 2.38951
+fixing. lower bound used: 1227.14
+percent fixed: 42.833
+fixing. lower bound used: 1230.8
+fixed path dual: 2.97608
+fixing. lower bound used: 1230.49
+percent fixed: 43.1628
+fixing. lower bound used: 1230.8
+fixed path dual: 2.93193
+fixing. lower bound used: 1229.61
+percent fixed: 42.859
+fixing. lower bound used: 1230.8
+fixed path dual: 3.75955
+fixing. lower bound used: 1233.26
+percent fixed: 44.8898
+fixing. lower bound used: 1230.8
+fixed path dual: 2.64779
+fixing. lower bound used: 1227.89
+percent fixed: 42.818
+fixing. lower bound used: 1230.8
+fixed path dual: 1.9321
+fixing. lower bound used: 1222.62
+percent fixed: 42.8075
+fixing. lower bound used: 1230.8
+fixed path dual: 3.29027
+fixing. lower bound used: 1230.88
+percent fixed: 43.4306
+fixing. lower bound used: 1230.8
+fixed path dual: 3.60007
+STATS - lpIterations[1] lagIterations[246] sspIterations[1968] numSeparations[695] numCuts[0] compileTime[9] sspSolveTime[1827] lpSolveTime[0] lb[1235.09] ub[1288] numArcs: [624775] numFixed: [269758] time: [3127]
+lambda: 0,38.7698,23.6896,30.3347,21.6032,12.5417,17.5345,3.21544,20.2075,19.355,15.7171,16.2257,5.8742,1.24282,3.59599,2.50767,32.0479,17.2482,5.18623,22.032,5.80441,9.90879,9.9593,28.7636,38.5,11.4257,17.2692,30.7362,0,15.9328,21.0074,6.42542,11.8201,42.1344,7.28066,46.5216,16.7491,17.4556,5.19438,37.7439,29.3114,11.747,38.844,26.0406,17.4868,18.7041,36.5244,44.6304,21.822,38.9797,28.6032,17.6287,9.94121,1.188,8.67413,6.50526,21.1996,35.1194,54.3371,34.6215,4.51514,10.3051,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1234.94
+percent fixed: 47.2083
+updating best lambda
+fixing. lower bound used: 1234.94
+fixed path dual: 1.65012
+fixing. lower bound used: 1221.72
+percent fixed: 47.2117
+updating best lambda
+fixing. lower bound used: 1221.72
+fixed path dual: 2.81438
+fixing. lower bound used: 1228.49
+percent fixed: 40.2831
+fixing. lower bound used: 1221.72
+fixed path dual: 3.69159
+STATS - lpIterations[1] lagIterations[249] sspIterations[1992] numSeparations[705] numCuts[0] compileTime[9] sspSolveTime[1854] lpSolveTime[0] lb[1235.52] ub[1288] numArcs: [626227] numFixed: [213338] time: [3171]
+lambda: 0,39.213,23.663,30.2734,21.3434,12.7765,17.508,3.18892,20.181,19.7982,15.2209,16.4053,6.31736,1.26935,3.56723,2.48114,32.0213,17.2217,5.26804,22.2343,6.00667,9.91261,9.93277,28.7675,38.5818,11.2538,16.9897,30.74,0,16.3759,21.0892,6.22093,11.7936,42.1079,6.89055,46.4375,16.7226,17.429,5.15575,37.7478,29.7545,11.7508,38.8379,26.0141,17.4602,18.4897,36.4858,44.4161,22.2651,38.7199,28.5767,17.1325,9.91469,1.42284,8.70066,6.11738,21.6428,35.0929,54.3106,33.9806,4.51896,10.2786,
+mu: 
+srcDuals: 
+fixing. lower bound used: 1235.16
+percent fixed: 47.0399
+fixing. lower bound used: 1221.72
+fixed path dual: 3.3454
+fixing. lower bound used: 1233.22
+percent fixed: 45.1648
+fixing. lower bound used: 1221.72
+fixed path dual: 3.46519
+fixing. lower bound used: 1233.17
+percent fixed: 45.0029
+fixing. lower bound used: 1221.72
+fixed path dual: 3.28098
+fixing. lower bound used: 1231.82
+percent fixed: 43.59
+fixing. lower bound used: 1221.72
+fixed path dual: 2.62913
+fixing. lower bound used: 1226.19
+percent fixed: 37.8073
+fixing. lower bound used: 1221.72
+fixed path dual: 3.4736
+fixing. lower bound used: 1232.05
+percent fixed: 43.9047
+fixing. lower bound used: 1221.72
+fixed path dual: 3.62838
+fixing. lower bound used: 1234.51
+percent fixed: 46.7915
+fixing. lower bound used: 1221.72
+fixed path dual: 2.36882
+fixing. lower bound used: 1227.29
+percent fixed: 46.8457
+fixing. lower bound used: 1221.72
+fixed path dual: 2.52082
+fixing. lower bound used: 1226.69
+percent fixed: 38.3596
+fixing. lower bound used: 1221.72
+fixed path dual: 2.83847
+fixing. lower bound used: 1230.02
+percent fixed: 41.6065
+fixing. lower bound used: 1221.72
+fixed path dual: 3.2777
+fixing. lower bound used: 1231.78
+percent fixed: 43.6232
+fixing. lower bound used: 1221.72
+fixed path dual: 3.20847
+fixing. lower bound used: 1232.11
+percent fixed: 43.832
+fixing. lower bound used: 1221.72
+fixed path dual: 2.82849
+fixing. lower bound used: 1230.1
+percent fixed: 41.7407
+fixing. lower bound used: 1221.72
+fixed path dual: 2.87758
+fixing. lower bound used: 1230.57
+percent fixed: 42.2079
+fixing. lower bound used: 1221.72
+fixed path dual: 3.52051
+fixing. lower bound used: 1232.43
+percent fixed: 44.2321
+fixing. lower bound used: 1221.72
+fixed path dual: 2.84118
+fixing. lower bound used: 1231.6
+percent fixed: 43.4288
+fixing. lower bound used: 1221.72
+fixed path dual: 2.97686
+fixing. lower bound used: 1230.05
+percent fixed: 41.6937
+fixing. lower bound used: 1221.72
+fixed path dual: 2.80397
+fixing. lower bound used: 1229.43
+percent fixed: 41.1868
+fixing. lower bound used: 1221.72
+fixed path dual: 3.27516
+fixing. lower bound used: 1233.09
+percent fixed: 44.9193
+fixing. lower bound used: 1221.72
+fixed path dual: 2.95191
+fixing. lower bound used: 1232.03
+percent fixed: 43.7081
+fixing. lower bound used: 1221.72
+fixed path dual: 3.15948
+fixing. lower bound used: 1231.65
+percent fixed: 43.091
+fixing. lower bound used: 1221.72
+fixed path dual: 2.15664
+fixing. lower bound used: 1227.3
+percent fixed: 43.1652
+fixing. lower bound used: 1221.72
+fixed path dual: 2.98057
+fixing. lower bound used: 1232.34
+percent fixed: 44.0038
+fixing. lower bound used: 1221.72
+fixed path dual: 2.33101
+fixing. lower bound used: 1228.64
+percent fixed: 40.1972
+fixing. lower bound used: 1221.72
+fixed path dual: 3.34369
+fixing. lower bound used: 1233.79
+percent fixed: 45.6473
+fixing. lower bound used: 1221.72
+fixed path dual: 2.64524
+fixing. lower bound used: 1229.9
+percent fixed: 41.8204
+fixing. lower bound used: 1221.72
+fixed path dual: 3.111
+fixing. lower bound used: 1231.71
+percent fixed: 43.4316
+fixing. lower bound used: 1221.72
+fixed path dual: 2.93121
+fixing. lower bound used: 1231.2
+percent fixed: 43.1011
+fixing. lower bound used: 1221.72
+fixed path dual: 2.07358
+fixing. lower bound used: 1228.91
+percent fixed: 43.1844

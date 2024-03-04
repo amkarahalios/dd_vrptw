@@ -1,0 +1,167 @@
+fixed number of vehicles
+capacity: 35
+instance upper bound: 450
+route length upper bound: 16
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 10
+cut phase: 1
+deactivate cut value threshold: 0.1
+deactivate cut iter threshold: 25
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[450] numArcs: [915] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[450] numArcs: [915] numFixed: [0] time: [0]
+fixed path dual: 10.2
+STATS - lpIterations[1] lagIterations[1] sspIterations[8] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[419.543] ub[450] numArcs: [894] numFixed: [0] time: [0]
+lambda: 0,15.2,36,30.1714,28.9143,14.4571,21.2571,18.8571,51.2,14.6286,9.6,11.2,24,9.94286,33.6571,18.8571,
+mu: 
+srcDuals: 
+fixing. lower bound used: 407.543
+percent fixed: 37.1795
+updating best lambda
+switching from LAG to LP solver
+num vars: 567
+DUALS: -0,22,36,38,33,15.6,18,21.6,58,24.8,11,18,28,7,40.4,22,
+fixed path dual: 6
+lp dual value: 441.4
+STATS - lpIterations[2] lagIterations[1] sspIterations[8] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[441.4] ub[450] numArcs: [894] numFixed: [348] time: [0]
+checking cuts, max violation: 0.4, num cuts: 2
+new capacity cutset: 2 5 6 7 8 9 13 14 <= 3
+new capacity cutset: 5 7 9 14 <= 2
+added new src cut with arcs: 953 980 997  for test set: 4 11 15 
+added new src cut with arcs: 1014 1037 1053  for test set: 5 7 14 
+num src cuts added: 2
+num vars: 1037
+DUALS: -0,20,34,38,31,18,16,24,56,32,11,18,26,11,43,22,
+fixed path dual: 8
+cap dual [0]: -4
+cap dual [1]: -3
+lp dual value: 446
+STATS - lpIterations[3] lagIterations[1] sspIterations[8] numSeparations[2] numCuts[4] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[446] ub[450] numArcs: [1018] numFixed: [0] time: [0]
+checking cuts, max violation: 0.25, num cuts: 5
+new capacity cutset: 3 4 10 11 12 15 <= 3
+new capacity cutset: 4 11 15 <= 1
+new capacity cutset: 3 4 11 12 15 <= 2
+new capacity cutset: 3 10 12 <= 1
+new capacity cutset: 3 4 10 12 15 <= 2
+added new src cut with arcs: 1087 1103 1126  for test set: 3 10 12 
+added new src cut with arcs: 953 980 997 1148 1160 1172  for test set: 4 11 15 
+added new src cut with arcs: 1014 1037 1053 1187  for test set: 5 7 14 
+num src cuts added: 3
+routes: 
+flow {0.25}: 0 3 1 
+flow {0.5}: 0 9 3 10 
+flow {0.25}: 0 12 3 
+flow {0.25}: 0 12 15 11 
+flow {0.75}: 0 1 
+flow {1}: 0 2 
+flow {0.75}: 0 4 11 
+flow {0.25}: 0 4 15 
+flow {1}: 0 6 
+flow {1}: 0 13 8 
+flow {0.5}: 0 14 5 
+flow {0.5}: 0 15 12 10 
+flow {0.5}: 0 0 7 9 5 
+flow {0.5}: 0 0 7 14 
+no more separations possible
+fixing. lower bound used: 446
+num vars: 254
+DUALS: -0,12,26,38,47,14,8,20,48,28,5,24,51,8,37,28,
+fixed path dual: 16
+cap dual [0]: -1
+cap dual [1]: -4
+cap dual [4]: -30
+cap dual [5]: -3
+lp dual value: 448
+STATS - lpIterations[4] lagIterations[1] sspIterations[8] numSeparations[2] numCuts[12] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[448] ub[450] numArcs: [1139] numFixed: [900] time: [0]
+no rcc cuts found
+added new src cut with arcs: 1014 1037 1053 1187 1213  for test set: 5 7 14 
+num src cuts added: 1
+routes: 
+flow {0.5}: 0 3 1 
+flow {0.5}: 0 5 9 7 
+flow {0.5}: 0 9 13 3 
+flow {1}: 0 10 12 15 
+flow {0.5}: 0 1 
+flow {1}: 0 2 
+flow {1}: 0 6 
+flow {0.5}: 0 8 
+flow {0.5}: 0 8 13 
+flow {1}: 0 0 11 4 
+flow {0.5}: 0 0 7 14 
+flow {0.5}: 0 0 14 5 
+no more separations possible
+fixing. lower bound used: 405.5
+num vars: 866
+DUALS: -0,15,29,38,31,17,11,23,51,31,9,20,30,11,40,24,
+fixed path dual: 13
+cap dual [0]: -4
+cap dual [1]: -4
+cap dual [4]: -7
+cap dual [5]: -2
+lp dual value: 448
+STATS - lpIterations[5] lagIterations[1] sspIterations[8] numSeparations[2] numCuts[13] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[448] ub[450] numArcs: [1164] numFixed: [313] time: [0]
+no rcc cuts found
+added new src cut with arcs: 1014 1037 1053 1187 1213 1228  for test set: 5 7 14 
+num src cuts added: 1
+routes: 
+flow {0.5}: 0 3 1 
+flow {0.5}: 0 3 13 9 
+flow {1}: 0 10 12 15 
+flow {0.5}: 0 1 
+flow {1}: 0 2 
+flow {1}: 0 6 
+flow {0.5}: 0 8 
+flow {0.5}: 0 13 8 
+flow {0.5}: 0 14 7 
+flow {0.5}: 0 0 7 9 5 
+flow {1}: 0 0 4 11 
+flow {0.5}: 0 0 14 5 
+no more separations possible
+fixing. lower bound used: 448
+num vars: 347
+DUALS: -0,22,36,38,38,28,18,34,58,37,11,18,32,22,49,22,
+fixed path dual: 6
+cap dual [0]: -15
+cap dual [1]: -1
+cap dual [3]: -4
+cap dual [4]: -1
+cap dual [5]: -3
+src dual [6]: -5
+lp dual value: 450
+STATS - lpIterations[6] lagIterations[1] sspIterations[8] numSeparations[2] numCuts[14] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[450] ub[450] numArcs: [1178] numFixed: [846] time: [0]
+integral solution - no cut added
+num src cuts added: 0
+routes: 
+flow {1}: 0 5 9 3 
+flow {1}: 0 10 12 15 
+flow {1}: 0 1 
+flow {1}: 0 2 
+flow {1}: 0 6 
+flow {1}: 0 13 8 
+flow {1}: 0 0 4 11 
+flow {1}: 0 0 14 7 
+flow {1}: 0 5 9 3 
+flow {1}: 0 10 12 15 
+flow {1}: 0 1 
+flow {1}: 0 2 
+flow {1}: 0 6 
+flow {1}: 0 13 8 
+flow {1}: 0 0 4 11 
+flow {1}: 0 0 14 7 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[6] lagIterations[1] sspIterations[8] numSeparations[2] numCuts[14] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[450] ub[450] numArcs: [1178] numFixed: [846] time: [0]
+finished solving - complete
+time elapsed: 0

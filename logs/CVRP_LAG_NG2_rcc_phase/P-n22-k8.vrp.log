@@ -1,0 +1,86 @@
+fixed number of vehicles
+capacity: 3000
+instance upper bound: 603
+route length upper bound: 22
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 10
+cut phase: 1
+deactivate cut value threshold: 0.1
+deactivate cut iter threshold: 25
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[603] numArcs: [5662] numFixed: [0] time: [0]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[0] ub[603] numArcs: [5662] numFixed: [0] time: [0]
+fixed path dual: 8.475
+STATS - lpIterations[1] lagIterations[1] sspIterations[8] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[488.333] ub[603] numArcs: [5638] numFixed: [0] time: [0]
+lambda: 0,35.9333,22.4,22.4,38.2667,51.8,8.26667,16.5333,1.6,9.33333,6.8,18.4,9.53333,13.8667,1.4,12,14,14.6667,17.4,51.6667,38.4,15.8667,
+mu: 
+srcDuals: 
+fixing. lower bound used: 482.05
+percent fixed: 2.90186
+updating best lambda
+switching from LAG to LP solver
+num vars: 5497
+DUALS: -0,57.75,49.75,39.125,68.125,84.875,13.375,23.125,2,23.75,14.75,47.5,41.5,43.5,-0,33,55,29.5,39,97,69,48,
+fixed path dual: -35
+lp dual value: 599.625
+STATS - lpIterations[2] lagIterations[1] sspIterations[8] numSeparations[0] numCuts[0] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[599.625] ub[603] numArcs: [5638] numFixed: [165] time: [0]
+checking cuts, max violation: 0.625, num cuts: 3
+new capacity cutset: 1 2 5 6 7 9 11 12 13 14 15 16 17 18 20 21 <= 10
+new capacity cutset: 1 2 5 6 7 9 11 12 13 14 15 16 17 18 19 20 21 <= 10
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 20 21 <= 13
+num vars: 5728
+DUALS: -0,56.75,48.25,37.25,66.25,81.75,12.75,21.25,2,22.5,13.5,45,40,41,0,33,50,27,39,93,64,48,
+fixed path dual: -30
+lp dual value: 602.25
+STATS - lpIterations[3] lagIterations[1] sspIterations[8] numSeparations[4] numCuts[3] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[601.25] ub[603] numArcs: [5704] numFixed: [0] time: [0]
+checking cuts, max violation: 0.25, num cuts: 8
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 <= 7
+new capacity cutset: 1 2 3 4 5 7 8 9 10 11 <= 6
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 13 17 21 <= 9
+new capacity cutset: 1 2 3 4 5 6 7 8 9 11 <= 6
+new capacity cutset: 1 2 3 4 5 6 7 8 9 11 13 17 21 <= 8
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 <= 6
+new capacity cutset: 1 2 3 4 5 6 7 8 10 11 13 17 21 <= 8
+new capacity cutset: 1 2 3 4 5 7 8 9 10 11 13 17 21 <= 8
+fixing. lower bound used: 601.248
+num vars: 175
+DUALS: -0,91,49,90,71,62,64,94,54,97,10,53,40,33,0,33,50,27,39,92,64,48,
+fixed path dual: -30
+cap dual [6]: -53
+lp dual value: 603
+STATS - lpIterations[4] lagIterations[1] sspIterations[8] numSeparations[6] numCuts[11] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[603] ub[603] numArcs: [5753] numFixed: [5602] time: [0]
+integral solution - no cut added
+routes: 
+flow {1}: 0 9 2 1 6 
+flow {1}: 0 10 8 3 4 
+flow {1}: 0 13 11 
+flow {1}: 0 21 17 12 
+flow {1}: 0 5 7 
+flow {1}: 0 14 20 18 
+flow {1}: 0 16 15 
+flow {1}: 0 19 
+flow {1}: 0 9 2 1 6 
+flow {1}: 0 10 8 3 4 
+flow {1}: 0 13 11 
+flow {1}: 0 21 17 12 
+flow {1}: 0 5 7 
+flow {1}: 0 14 20 18 
+flow {1}: 0 16 15 
+flow {1}: 0 19 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[4] lagIterations[1] sspIterations[8] numSeparations[6] numCuts[11] compileTime[0] sspSolveTime[0] lpSolveTime[0] lb[603] ub[603] numArcs: [5753] numFixed: [5602] time: [0]
+finished solving - complete
+time elapsed: 0

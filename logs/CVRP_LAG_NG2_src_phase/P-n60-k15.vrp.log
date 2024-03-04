@@ -1,0 +1,1244 @@
+fixed number of vehicles
+capacity: 80
+instance upper bound: 968
+route length upper bound: 60
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+iteration delay to start separating: 0
+optimality gap to start repairing: 100
+percent fixed to change to CPLEX: 97.5
+num arcs to change to CPLEX: 100000
+num arcs to change to LAG: 999999999
+num lag iters to cut: 0
+num cuts lag: 10
+cut phase: 1
+deactivate cut value threshold: 0.1
+deactivate cut iter threshold: 25
+momentum beta: 0
+stall alpha factor: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[3] sspSolveTime[0] lpSolveTime[0] lb[0] ub[968] numArcs: [199463] numFixed: [0] time: [3]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[3] sspSolveTime[0] lpSolveTime[0] lb[0] ub[968] numArcs: [199463] numFixed: [0] time: [3]
+fixed path dual: 11.7867
+STATS - lpIterations[1] lagIterations[1] sspIterations[15] numSeparations[0] numCuts[0] compileTime[3] sspSolveTime[0] lpSolveTime[0] lb[828.75] ub[968] numArcs: [199404] numFixed: [0] time: [4]
+lambda: 0,11.25,9.75,5.5,5.25,13.125,4.275,5.25,6.4,17.4,16.9,26.825,4.8,6.9,21.7,5.4,9.025,4,11.375,8.625,20.35,18.9,9,4.65,22.275,11.55,2.7,6.8,18.125,5.85,7.7,23.125,15.4,12.15,4.75,4.5,9.9,11.2,16.2,8.8,11.55,13.5,9.9,14.4,8.925,7.35,7.425,12.825,10.5,3.5,16.5,3.3,6.65,12.65,10.8,7.35,24.05,9.8,10.5,22.8,
+mu: 
+srcDuals: 
+fixing. lower bound used: 820.945
+percent fixed: 0.294203
+updating best lambda
+fixing. lower bound used: 820.945
+fixed path dual: 12.7289
+STATS - lpIterations[1] lagIterations[2] sspIterations[30] numSeparations[4] numCuts[0] compileTime[3] sspSolveTime[2] lpSolveTime[0] lb[850.482] ub[968] numArcs: [199725] numFixed: [587] time: [7]
+lambda: 0,10.7435,10.2565,6.00651,4.74349,13.6315,4.275,5.75651,6.90651,16.8935,17.4065,27.3315,4.8,7.40651,22.2065,5.90651,9.53151,2.98698,11.8815,9.13151,20.8565,19.4065,9.50651,5.15651,22.7815,12.0565,2.7,6.8,18.6315,5.85,7.7,23.6315,14.8935,12.6565,3.23047,5.00651,10.4065,11.7065,16.7065,8.29349,10.0305,12.9935,9.39349,12.8805,9.43151,6.84349,6.41198,13.3315,10.5,4.00651,16.5,3.80651,6.14349,13.1565,11.3065,7.85651,24.5565,10.3065,11.0065,23.3065,
+mu: 
+srcDuals: 
+fixing. lower bound used: 831.925
+percent fixed: 0.391643
+updating best lambda
+fixing. lower bound used: 831.925
+fixed path dual: 13.1132
+STATS - lpIterations[1] lagIterations[3] sspIterations[45] numSeparations[7] numCuts[0] compileTime[3] sspSolveTime[4] lpSolveTime[0] lb[862.539] ub[968] numArcs: [199858] numFixed: [725] time: [11]
+lambda: 0,11.1368,10.6498,6.39981,4.74349,13.6315,4.275,4.5766,6.5132,17.2868,17.7998,27.3315,5.1933,7.79981,21.0266,6.29981,9.92481,2.98698,12.2748,9.52481,21.2498,18.6199,9.89981,5.54981,23.1748,12.4498,2.7,7.1933,19.0248,5.4567,7.7,24.0248,15.2868,13.0498,3.23047,3.8266,10.7998,12.0998,17.0998,8.6868,10.4238,13.3868,9.7868,13.2738,9.82481,6.84349,5.62537,12.5449,9.32009,4.39981,16.8933,4.19981,6.5368,11.5833,11.6998,8.24981,24.9498,10.6998,11.3998,23.6998,
+mu: 
+srcDuals: 
+fixing. lower bound used: 838.689
+percent fixed: 0.472269
+updating best lambda
+fixing. lower bound used: 838.689
+fixed path dual: 13.1626
+STATS - lpIterations[1] lagIterations[4] sspIterations[60] numSeparations[8] numCuts[0] compileTime[3] sspSolveTime[6] lpSolveTime[0] lb[873.386] ub[968] numArcs: [199879] numFixed: [887] time: [14]
+lambda: 0,11.6181,11.1311,6.39981,4.26222,14.1128,4.275,5.05787,6.99448,17.2868,17.3185,27.8128,5.1933,8.28109,21.5079,6.78109,10.4061,2.50571,12.7561,10.0061,21.7311,19.1012,10.3811,6.03109,23.6561,12.9311,2.7,7.1933,19.5061,5.93797,8.18127,24.5061,12.8804,13.5311,2.26793,4.30787,11.2811,12.5811,16.6185,8.6868,9.46123,13.8681,10.2681,13.7551,8.38099,6.84349,5.1441,13.0262,9.80136,4.88109,16.8933,4.68109,6.5368,12.0646,12.1811,8.73109,25.4311,11.1811,10.9185,24.1811,
+mu: 
+srcDuals: 
+fixing. lower bound used: 849.227
+percent fixed: 0.734791
+updating best lambda
+fixing. lower bound used: 849.227
+fixed path dual: 13.0947
+STATS - lpIterations[1] lagIterations[5] sspIterations[75] numSeparations[13] numCuts[0] compileTime[3] sspSolveTime[8] lpSolveTime[0] lb[881.012] ub[968] numArcs: [200250] numFixed: [1413] time: [17]
+lambda: 0,10.3831,10.5136,7.01731,4.26222,13.4953,3.6575,5.67537,7.61197,17.2868,17.936,27.8128,4.57581,8.89858,21.5079,7.39858,10.4061,2.50571,13.3736,10.6236,21.7311,19.1012,10.9986,6.64858,24.2736,13.5486,2.7,7.8108,18.2711,5.93797,6.32879,25.1236,13.4979,12.2961,2.88542,4.30787,11.8986,12.5811,17.236,8.6868,10.0787,13.2506,9.65057,11.9026,8.99849,6.84349,5.7616,13.6437,9.80136,5.49858,17.5108,4.68109,7.15429,12.6821,12.7986,9.34858,26.0486,11.7986,11.536,24.7986,
+mu: 
+srcDuals: 
+fixing. lower bound used: 857.94
+percent fixed: 1.12917
+updating best lambda
+fixing. lower bound used: 857.94
+fixed path dual: 12.4495
+fixing. lower bound used: 865.896
+percent fixed: 1.73147
+updating best lambda
+fixing. lower bound used: 865.896
+fixed path dual: 13.5493
+STATS - lpIterations[1] lagIterations[7] sspIterations[105] numSeparations[19] numCuts[0] compileTime[3] sspSolveTime[11] lpSolveTime[0] lb[896.723] ub[968] numArcs: [200621] numFixed: [3417] time: [24]
+lambda: 0,11.3801,11.5106,5.62391,4.26222,13.1813,4.31302,4.70582,7.926,16.9728,17.622,28.1543,5.57281,9.89558,20.5109,7.08455,10.3786,2.50571,14.3706,10.2546,21.4171,19.0737,11.9956,6.96261,24.5876,14.5456,2.7,7.49677,19.2681,6.252,7.32579,26.1206,13.4705,12.9516,2.57139,3.99384,12.5541,12.2671,16.922,8.37277,9.7647,13.9061,10.6476,12.8996,8.28806,6.52946,5.44757,13.6162,9.7739,5.81261,18.1663,4.65363,6.18475,11.7125,13.7956,10.3456,26.3626,11.4846,11.222,25.7956,
+mu: 
+srcDuals: 
+fixing. lower bound used: 866.376
+percent fixed: 1.82119
+updating best lambda
+fixing. lower bound used: 866.376
+fixed path dual: 12.3257
+fixing. lower bound used: 878.637
+percent fixed: 3.70172
+updating best lambda
+fixing. lower bound used: 878.637
+fixed path dual: 12.9522
+STATS - lpIterations[1] lagIterations[9] sspIterations[135] numSeparations[21] numCuts[0] compileTime[3] sspSolveTime[15] lpSolveTime[0] lb[899.032] ub[968] numArcs: [200800] numFixed: [7390] time: [31]
+lambda: 0,11.7508,11.1399,6.9293,3.42416,12.6173,3.9423,5.54388,7.55528,17.4401,17.2513,28.0576,5.20209,9.52487,20.8816,6.5206,10.846,2.97305,14.274,9.88392,20.8531,18.703,13.301,7.33333,24.9583,15.851,2.7,7.12605,18.8974,4.9466,6.95507,27.426,14.3085,13.4189,3.03873,4.36456,13.8595,11.7031,16.5513,8.84011,11.0701,13.8095,10.551,12.8029,9.12612,7.83486,5.91491,13.2455,9.40318,6.18333,18.0697,4.18629,7.49015,12.5506,13.4249,11.651,26.7333,11.8553,10.8513,27.101,
+mu: 
+srcDuals: 
+fixing. lower bound used: 879.077
+percent fixed: 3.98892
+updating best lambda
+fixing. lower bound used: 879.077
+fixed path dual: 12.8271
+STATS - lpIterations[1] lagIterations[10] sspIterations[150] numSeparations[22] numCuts[0] compileTime[3] sspSolveTime[17] lpSolveTime[0] lb[905.992] ub[968] numArcs: [200833] numFixed: [7843] time: [35]
+lambda: 0,12.2418,10.6489,7.42026,3.42416,13.1083,3.9423,5.05293,8.04624,16.4582,17.7422,27.5667,4.71114,10.0158,21.3725,7.01155,11.3369,2.4821,14.7649,10.3749,21.3441,19.1939,13.7919,7.82428,25.4493,16.3419,2.7,6.6351,19.3883,5.43755,7.44602,27.9169,14.3085,13.4189,1.56588,4.85551,14.3504,12.1941,17.0422,7.8582,9.59724,14.3004,11.0419,13.2939,9.61707,7.34391,5.42395,13.7364,9.89414,6.67428,18.5606,4.67724,6.01729,12.0596,13.9158,12.1419,27.2243,12.3462,11.3422,27.5919,
+mu: 
+srcDuals: 
+fixing. lower bound used: 888.039
+percent fixed: 6.48821
+updating best lambda
+fixing. lower bound used: 888.039
+fixed path dual: 12.8742
+STATS - lpIterations[1] lagIterations[11] sspIterations[165] numSeparations[24] numCuts[0] compileTime[3] sspSolveTime[19] lpSolveTime[0] lb[908.599] ub[968] numArcs: [200952] numFixed: [13007] time: [38]
+lambda: 0,12.5585,10.9657,5.83635,3.42416,13.1083,3.9423,5.36971,8.36302,16.775,17.4255,27.8835,5.02792,10.3326,21.6893,7.32833,10.7034,2.4821,15.0817,10.6917,21.6608,18.5604,14.1087,8.14106,25.1325,16.6587,2.7,6.95188,19.7051,5.75433,7.7628,28.2337,13.675,13.4189,1.88266,5.17229,13.0833,12.1941,16.7255,8.17498,9.91402,14.6172,11.3587,13.6107,8.34995,7.66069,5.74073,12.4693,9.57736,6.3575,18.2439,4.36046,6.33407,12.3764,14.2326,12.4587,27.5411,12.663,11.0255,27.9087,
+mu: 
+srcDuals: 
+fixing. lower bound used: 889.893
+percent fixed: 7.22451
+updating best lambda
+fixing. lower bound used: 889.893
+fixed path dual: 12.598
+fixing. lower bound used: 893.239
+percent fixed: 8.8488
+updating best lambda
+fixing. lower bound used: 893.239
+fixed path dual: 12.4693
+STATS - lpIterations[1] lagIterations[13] sspIterations[195] numSeparations[26] numCuts[0] compileTime[3] sspSolveTime[23] lpSolveTime[0] lb[911.273] ub[968] numArcs: [201110] numFixed: [17859] time: [45]
+lambda: 0,12.5201,10.9272,6.82108,3.42416,13.0698,4.4539,6.35443,7.81294,15.3941,17.4639,27.845,5.53952,10.8057,20.6277,7.28985,11.215,2.00897,14.647,11.1648,21.6224,19.5451,15.0934,8.10259,25.6441,15.7509,2.7,7.42501,19.6666,5.7928,6.77808,29.2184,14.6597,13.9305,2.86738,4.11062,14.0681,12.1556,16.7639,8.21345,9.47937,14.0671,10.8086,13.0606,9.33467,7.69916,6.72546,13.454,9.61583,6.8691,17.3361,4.39893,7.31879,12.3379,14.7057,13.4434,27.5026,12.6245,11.0639,28.8934,
+mu: 
+srcDuals: 
+fixing. lower bound used: 899.045
+percent fixed: 12.4135
+updating best lambda
+fixing. lower bound used: 899.045
+fixed path dual: 12.5326
+STATS - lpIterations[1] lagIterations[14] sspIterations[210] numSeparations[26] numCuts[0] compileTime[3] sspSolveTime[25] lpSolveTime[0] lb[913.098] ub[968] numArcs: [201096] numFixed: [25043] time: [49]
+lambda: 0,12.9583,11.3655,6.3828,3.42416,13.5081,4.01562,6.35443,6.93638,15.8324,17.9022,27.845,5.9778,9.92916,21.0659,7.72814,9.90012,2.44725,15.0853,10.2882,22.0606,19.1068,15.5317,8.54087,25.2058,16.1892,2.7,6.11016,20.1049,6.23109,7.21636,29.6567,15.098,13.4923,1.99082,4.5489,13.6298,12.5939,17.2022,8.65174,9.91765,14.5054,11.2469,13.4989,8.89639,7.26088,6.72546,13.0158,9.17755,6.43082,17.7744,3.96065,6.00395,12.3379,13.8292,13.8817,27.9409,13.0628,11.5022,29.3317,
+mu: 
+srcDuals: 
+fixing. lower bound used: 899.133
+percent fixed: 12.8746
+updating best lambda
+fixing. lower bound used: 899.133
+fixed path dual: 12.6259
+STATS - lpIterations[1] lagIterations[15] sspIterations[225] numSeparations[27] numCuts[0] compileTime[3] sspSolveTime[27] lpSolveTime[0] lb[917.981] ub[968] numArcs: [201085] numFixed: [25085] time: [52]
+lambda: 0,12.523,10.9302,6.8181,3.42416,13.0728,4.45092,5.91913,7.37169,16.2677,17.4669,27.4097,6.4131,10.3645,21.5012,7.29283,10.3354,2.44725,15.5206,10.7235,21.6253,19.5421,15.5317,6.79965,25.6411,16.6245,2.7,6.54547,19.6696,6.66639,6.78105,30.092,15.5333,13.9276,2.42613,4.98421,14.0651,12.1586,16.7669,9.08704,10.353,13.1995,10.8116,13.4989,9.3317,7.69619,7.16076,13.4511,9.61285,6.86613,18.2097,4.39596,6.43926,11.9026,14.2645,14.317,26.1996,12.6275,11.0669,29.767,
+mu: 
+srcDuals: 
+fixing. lower bound used: 903.247
+percent fixed: 16.0284
+updating best lambda
+fixing. lower bound used: 903.247
+fixed path dual: 12.4493
+STATS - lpIterations[1] lagIterations[16] sspIterations[240] numSeparations[28] numCuts[0] compileTime[3] sspSolveTime[29] lpSolveTime[0] lb[919.225] ub[968] numArcs: [201128] numFixed: [32268] time: [56]
+lambda: 0,13.0098,11.4169,6.8181,3.42416,13.5595,3.96419,6.40586,7.85842,16.7544,17.9536,27.8964,5.92637,10.8512,21.0145,7.77956,10.8222,1.96052,14.0604,10.2368,22.1121,19.0554,16.0185,7.28638,25.1544,17.1113,2.7,7.03221,20.1563,7.15313,7.26778,30.5788,14.5598,13.9276,2.42613,4.49748,13.5783,12.6453,17.2536,9.57378,9.86622,13.6862,11.2983,13.9856,8.35823,8.18292,7.16076,12.9643,9.12612,6.37939,16.2627,3.90923,6.92599,12.3894,14.7512,14.8038,26.6864,13.1142,11.5536,29.2803,
+mu: 
+srcDuals: 
+fixing. lower bound used: 906.658
+percent fixed: 19.8038
+updating best lambda
+fixing. lower bound used: 906.658
+fixed path dual: 12.3823
+fixing. lower bound used: 907.385
+percent fixed: 20.9656
+updating best lambda
+fixing. lower bound used: 907.385
+fixed path dual: 12.2778
+STATS - lpIterations[1] lagIterations[18] sspIterations[270] numSeparations[30] numCuts[0] compileTime[3] sspSolveTime[33] lpSolveTime[0] lb[921.567] ub[968] numArcs: [201316] numFixed: [42368] time: [63]
+lambda: 0,13.5011,11.5725,7.6452,3.42416,12.3719,3.80865,5.75901,7.36711,16.1075,18.1092,27.7409,6.75346,10.3599,21.3503,7.26355,10.6666,2.78761,14.8875,9.74547,21.5961,19.8825,15.8382,8.11347,25.9815,17.9384,2.7,7.03221,20.3119,6.63711,7.42332,31.4059,14.8956,13.772,1.77927,4.83325,14.0697,11.7935,17.4092,8.92692,9.71068,13.8418,11.1181,14.1412,9.18532,7.84714,7.00523,13.4557,9.95321,7.20649,17.0898,3.75369,5.29651,11.7425,14.2599,15.6309,27.5135,13.2698,11.7092,30.1074,
+mu: 
+srcDuals: 
+fixing. lower bound used: 912.402
+percent fixed: 27.2204
+updating best lambda
+fixing. lower bound used: 912.402
+fixed path dual: 11.8734
+fixing. lower bound used: 913.735
+percent fixed: 29.4113
+updating best lambda
+fixing. lower bound used: 913.735
+fixed path dual: 12.3093
+STATS - lpIterations[1] lagIterations[20] sspIterations[300] numSeparations[36] numCuts[0] compileTime[3] sspSolveTime[37] lpSolveTime[0] lb[924.487] ub[968] numArcs: [201848] numFixed: [58913] time: [70]
+lambda: 0,12.7035,11.3249,7.39763,3.42416,12.6195,4.66107,6.309,7.61467,16.6575,17.3116,28.5933,5.95591,10.305,21.2954,7.20868,10.4191,3.09004,15.1351,9.69061,21.8436,19.6349,15.5907,8.4159,25.7339,16.6738,2.7,6.97734,20.0643,7.48953,7.17576,32.2583,14.8407,14.6245,2.63169,4.47596,13.8221,12.0411,17.1616,9.47691,10.0131,13.0442,10.3205,13.8936,8.93776,8.69956,7.25279,13.2081,9.70565,6.95892,16.1277,4.60611,6.14893,12.2925,14.8099,16.1808,27.8159,13.2149,10.9116,30.3549,
+mu: 
+srcDuals: 
+fixing. lower bound used: 914.439
+percent fixed: 30.7993
+updating best lambda
+fixing. lower bound used: 914.439
+fixed path dual: 11.6427
+fixing. lower bound used: 918.875
+percent fixed: 37.4405
+updating best lambda
+fixing. lower bound used: 918.875
+fixed path dual: 11.9034
+fixing. lower bound used: 919.49
+percent fixed: 39.827
+updating best lambda
+fixing. lower bound used: 919.49
+fixed path dual: 11.8165
+STATS - lpIterations[1] lagIterations[23] sspIterations[345] numSeparations[39] numCuts[0] compileTime[3] sspSolveTime[44] lpSolveTime[0] lb[928.699] ub[968] numArcs: [202134] numFixed: [80237] time: [81]
+lambda: 0,13.6233,11.6408,7.16606,3.42416,13.1555,4.48314,6.13106,8.53449,15.8313,16.9114,28.4154,5.91374,10.4572,21.8314,7.3609,10.4612,2.55402,16.0127,9.84283,22.3796,19.9508,16.1267,8.18432,26.2699,17.5514,2.7,6.70359,21.3679,6.81775,7.49167,32.71,15.3346,14.4465,2.16356,5.01198,15.1257,12.5771,17.1194,9.50263,9.11901,13.1964,10.8565,13.662,9.08998,8.58951,7.21062,13.524,9.03387,7.49494,16.5794,5.03207,6.17464,12.6084,15.7297,17.0585,27.5843,13.3671,11.3633,30.891,
+mu: 
+srcDuals: 
+fixing. lower bound used: 924.608
+percent fixed: 47.7121
+updating best lambda
+fixing. lower bound used: 924.608
+fixed path dual: 11.2189
+fixing. lower bound used: 918.386
+percent fixed: 47.7435
+updating best lambda
+fixing. lower bound used: 918.386
+fixed path dual: 12.0881
+STATS - lpIterations[1] lagIterations[25] sspIterations[375] numSeparations[40] numCuts[0] compileTime[3] sspSolveTime[48] lpSolveTime[0] lb[932.523] ub[968] numArcs: [202177] numFixed: [74271] time: [88]
+lambda: 0,13.4085,11.2471,6.95118,3.42416,12.0936,4.48314,6.07146,8.31961,16.4399,17.5199,29.0239,6.52231,10.2424,21.4377,7.3013,10.2463,3.16259,15.5234,9.29386,22.32,19.5572,16.1863,8.51841,24.9571,18.16,2.7,6.7632,20.9742,6.75814,7.43207,33.3185,15.9431,14.4465,2.77213,4.61828,14.3979,11.8493,17.728,10.1112,9.72758,12.9816,10.6417,13.7216,9.14958,9.19808,7.81919,12.4621,9.30835,6.18214,16.3645,4.8172,6.50873,12.5488,15.5148,17.6671,27.9184,13.3075,11.9719,31.1654,
+mu: 
+srcDuals: 
+fixing. lower bound used: 926.393
+percent fixed: 51.1241
+updating best lambda
+switching from LAG to LP solver
+num vars: 98766
+DUALS: -0,15.6249,14.1874,8.89571,7.53727,14.6009,6.79143,7.83257,8.98165,19.7289,18.7914,30.2511,6.83257,10.5436,21.6651,9.05731,12.2917,7.29171,16.8957,11.1628,25.844,23.1874,17.7291,7.979,27.7499,18.4166,6.83257,9.16284,23.6871,9.54359,8.958,37.3123,17.7083,16.8537,4.16284,6.58601,16.5436,11.7867,21.7489,12.3954,12.7083,14.7914,11.8957,15.7914,10.9163,10.344,10.1325,14.1146,10.9869,7.979,20.3123,5.89571,9.16284,16.7489,18.9816,18.8957,31.5416,14.5436,14.2923,35.4186,
+fixed path dual: 5.16743
+lp dual value: 956.116
+STATS - lpIterations[2] lagIterations[25] sspIterations[375] numSeparations[40] numCuts[0] compileTime[3] sspSolveTime[48] lpSolveTime[4] lb[956.116] ub[968] numArcs: [202177] numFixed: [103808] time: [94]
+checking cuts, max violation: 0.533737, num cuts: 39
+new capacity cutset: 1 22 23 41 42 43 56 <= 5
+new capacity cutset: 1 2 5 6 15 20 21 22 23 28 29 30 33 36 37 41 42 43 45 47 48 56 57 <= 17
+new capacity cutset: 5 15 20 21 29 36 37 45 47 48 57 <= 8
+new capacity cutset: 4 7 8 11 13 14 19 27 34 35 38 46 52 53 54 59 <= 11
+new capacity cutset: 4 8 13 14 19 27 34 46 52 53 54 59 <= 8
+new capacity cutset: 1 2 3 5 6 15 16 18 20 21 22 23 24 25 28 29 30 33 36 37 41 42 43 44 45 47 48 49 50 51 55 56 57 <= 25
+new capacity cutset: 4 8 13 19 27 34 46 52 54 <= 6
+new capacity cutset: 22 23 41 42 43 56 <= 4
+new capacity cutset: 1 23 41 42 43 56 <= 4
+new capacity cutset: 1 5 15 20 21 22 23 28 29 30 36 37 41 42 43 45 47 48 56 57 <= 15
+new capacity cutset: 4 8 13 14 19 27 34 35 46 52 53 54 59 <= 9
+new capacity cutset: 5 15 20 29 36 37 45 47 48 57 <= 7
+new capacity cutset: 5 15 20 29 37 45 57 <= 5
+new capacity cutset: 5 15 20 29 37 57 <= 4
+new capacity cutset: 5 15 20 21 28 29 30 36 37 45 47 48 57 <= 9
+new capacity cutset: 7 14 35 53 59 <= 3
+new capacity cutset: 4 5 8 13 15 20 21 27 29 34 36 37 45 46 47 48 52 54 57 <= 14
+new capacity cutset: 1 2 3 5 6 9 10 12 15 16 17 18 20 21 22 23 24 25 28 29 30 31 32 33 36 37 38 39 40 41 42 43 44 45 47 48 49 50 51 55 56 57 58 <= 32
+new capacity cutset: 2 5 15 20 21 28 29 30 36 37 47 48 57 <= 9
+new capacity cutset: 1 2 5 6 15 16 20 21 22 23 24 28 29 30 33 36 37 41 42 43 45 47 48 49 51 56 57 <= 20
+new capacity cutset: 1 2 3 5 6 9 12 15 16 17 18 20 21 22 23 24 25 28 29 30 31 32 33 36 37 39 40 41 42 43 44 45 47 48 49 50 51 55 56 57 <= 30
+new capacity cutset: 15 20 36 37 47 57 <= 4
+new capacity cutset: 5 8 13 15 20 21 27 28 29 30 36 37 45 47 48 52 54 57 <= 13
+new capacity cutset: 1 2 3 5 6 9 15 16 18 20 21 22 23 24 25 28 29 30 31 32 33 36 37 39 41 42 43 44 47 48 49 50 51 55 56 57 <= 27
+new capacity cutset: 1 2 22 23 28 41 42 43 56 <= 6
+new capacity cutset: 14 35 53 59 <= 2
+new capacity cutset: 4 5 13 15 20 27 29 34 37 45 46 52 54 57 <= 10
+new capacity cutset: 4 5 13 15 20 21 27 29 34 36 37 45 46 47 48 52 54 57 <= 13
+new capacity cutset: 5 8 13 15 20 27 29 36 37 45 47 48 52 54 57 <= 11
+new capacity cutset: 5 8 13 14 15 19 20 21 27 29 36 37 45 47 48 52 54 57 59 <= 14
+new capacity cutset: 5 8 13 14 15 19 20 21 27 28 29 30 35 36 37 45 47 48 52 54 57 59 <= 16
+new capacity cutset: 1 2 3 4 5 6 7 8 9 10 11 13 14 15 16 18 19 20 21 22 23 24 25 27 28 29 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 <= 41
+new capacity cutset: 1 2 5 15 20 21 22 23 28 29 30 33 36 37 41 42 43 45 47 48 56 57 <= 16
+new capacity cutset: 7 8 10 11 13 14 19 26 27 35 38 52 53 54 58 59 <= 11
+new capacity cutset: 5 15 20 21 29 36 37 45 47 57 <= 7
+new capacity cutset: 1 2 3 5 6 8 13 15 16 18 20 21 22 23 24 25 27 28 29 30 33 36 37 41 42 43 44 45 47 48 49 50 51 52 54 55 56 57 <= 29
+new capacity cutset: 5 8 13 14 15 19 20 27 29 35 36 37 45 47 48 52 54 57 59 <= 14
+new capacity cutset: 8 13 14 19 27 35 53 54 59 <= 6
+new capacity cutset: 7 8 13 14 19 27 35 53 54 59 <= 7
+added new src cut with arcs: 203211 203372 203559 203764 203950 204163 204370  for test set: 1 22 23 
+added new src cut with arcs: 204529 204688 204873 205074 205258 205469 205674  for test set: 1 22 56 
+added new src cut with arcs: 205832 206016 206216 206399 206609 206813  for test set: 1 23 43 
+added new src cut with arcs: 206971 207155 207355 207538 207748 207952  for test set: 1 41 43 
+added new src cut with arcs: 208110 208294 208494 208677 208887 209091  for test set: 1 43 56 
+added new src cut with arcs: 209315 209493 209719 209924 210145  for test set: 3 24 50 
+added new src cut with arcs: 210367 210543 210767 210970 211189  for test set: 3 49 50 
+added new src cut with arcs: 211308 211402 211567 211715 211826  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378  for test set: 10 31 58 
+added new src cut with arcs: 212521 212723 212941  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502  for test set: 16 49 51 
+added new src cut with arcs: 213663 213800 213920 214090  for test set: 21 30 48 
+added new src cut with arcs: 214311 214486 214688 214906 215052  for test set: 24 44 50 
+added new src cut with arcs: 215175 215320 215440  for test set: 26 38 58 
+added new src cut with arcs: 215599 215734 215928 216096  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747  for test set: 29 47 48 
+added new src cut with arcs: 216968 217143 217345 217563 217707  for test set: 44 49 50 
+num src cuts added: 17
+num vars: 217542
+DUALS: -0,19.5338,15.9727,9.5682,9.64887,16.2966,6.85766,8.24098,10.06,20.6715,19.7356,30.693,7.44603,12.4965,24.9498,10.9369,13.4187,7.10795,17.5752,11.301,29.1628,24.9727,20.6275,13.6346,30.0534,19.5705,7.64887,9.30097,23.6489,11.4743,9.29657,37.5111,18.7295,17.0878,4.30097,8.43781,18.4777,15.2202,21.9416,12.5172,13.0949,21.4259,19.6696,21.729,11.5125,12.7699,9.96832,15.0937,12.2966,6.63464,20.7356,7.18862,9.30097,17.9842,19.2689,19.7973,35.9727,17.4743,15.241,37.0441,
+fixed path dual: 4.35113
+cap dual [0]: -4.11506
+cap dual [7]: -1.19515
+cap dual [8]: -1.25088
+cap dual [11]: -1.58228
+cap dual [13]: -0.831035
+cap dual [21]: -0.00337342
+cap dual [25]: -2
+cap dual [31]: -0.634644
+cap dual [36]: -0.0599883
+src dual [11]: -1.77636e-15
+lp dual value: 959.963
+STATS - lpIterations[3] lagIterations[25] sspIterations[375] numSeparations[44] numCuts[56] compileTime[3] sspSolveTime[48] lpSolveTime[21] lb[959.963] ub[968] numArcs: [217181] numFixed: [0] time: [171]
+checking cuts, max violation: 0.293781, num cuts: 12
+new capacity cutset: 5 20 36 37 47 <= 3
+new capacity cutset: 5 13 15 20 21 27 29 36 37 45 47 48 52 54 57 <= 11
+new capacity cutset: 1 2 5 6 13 15 20 21 22 23 27 28 29 30 33 36 37 41 42 43 45 47 48 52 54 56 57 <= 20
+new capacity cutset: 18 25 31 50 55 <= 3
+new capacity cutset: 3 18 24 25 31 32 44 49 50 55 <= 7
+new capacity cutset: 1 2 4 5 6 7 8 11 13 14 15 19 20 21 22 23 27 28 29 30 33 34 35 36 37 41 42 43 45 46 47 48 52 53 54 56 57 59 <= 28
+new capacity cutset: 1 2 4 5 6 13 15 20 21 22 23 27 28 29 30 33 34 36 37 41 42 43 45 46 47 48 52 54 56 57 <= 22
+new capacity cutset: 1 2 4 5 6 8 13 14 15 19 20 21 22 23 27 28 29 30 33 34 36 37 41 42 43 45 46 47 48 52 54 56 57 59 <= 25
+new capacity cutset: 3 9 16 18 24 25 31 32 39 44 49 50 51 55 <= 10
+new capacity cutset: 3 9 16 18 23 24 25 31 32 39 41 42 43 44 49 50 51 55 56 <= 14
+new capacity cutset: 5 15 20 21 29 36 37 47 48 57 <= 7
+new capacity cutset: 5 13 14 15 19 20 21 27 29 36 37 45 47 48 52 54 57 59 <= 13
+added new src cut with arcs: 218245 218371 218482  for test set: 2 6 28 
+added new src cut with arcs: 218657 218868 219088  for test set: 5 20 36 
+added new src cut with arcs: 219261 219470 219688  for test set: 5 20 47 
+added new src cut with arcs: 219860 220068 220285  for test set: 5 36 37 
+added new src cut with arcs: 220457 220665 220882  for test set: 5 37 47 
+added new src cut with arcs: 221037 221160 211402  for test set: 9 12 40 
+added new src cut with arcs: 221267 212378 215175  for test set: 11 38 58 
+added new src cut with arcs: 221420 221534 211402  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552  for test set: 13 27 52 
+added new src cut with arcs: 222760 222977 223204  for test set: 15 20 29 
+added new src cut with arcs: 223412 223629 223855  for test set: 15 29 37 
+added new src cut with arcs: 224063 224280 224506  for test set: 20 29 57 
+added new src cut with arcs: 213663 213800 213920 214090 224683  for test set: 21 30 48 
+added new src cut with arcs: 224909 225120 225320 225525 225690  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090  for test set: 29 36 48 
+added new src cut with arcs: 226281 226498 226724  for test set: 29 37 57 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090  for test set: 29 47 48 
+num src cuts added: 17
+fixing. lower bound used: 959.955
+num vars: 44581
+DUALS: -0,20.1056,16.3378,9.54834,8.96599,24.7765,7.82728,8.92549,10.778,20.7486,20.0711,30.9412,7.38708,12.6477,25.3126,17.8804,13.3814,7.22583,17.6271,12.2793,36.569,26.1498,21.9943,14.1555,30.0967,20.1555,7.38708,11.0554,23.778,16.0199,11.5216,37.8785,18.9297,17.6603,6.17539,9.2969,28.7635,21.2404,22.2144,13.0199,12.7742,21.7,17.9911,21.1056,11.9943,11.8105,10.684,23.637,18.0329,7.98854,21.3814,7.54834,11.0554,18.8571,21.0554,21.756,35.9412,21.0199,15.4127,37.6049,
+fixed path dual: 4.61292
+cap dual [0]: -4.16062
+cap dual [8]: -0.996816
+cap dual [11]: -1.2564
+cap dual [14]: -0.811998
+cap dual [25]: -2
+cap dual [31]: -1.15552
+cap dual [39]: -2.7436
+cap dual [40]: -0.776079
+cap dual [42]: -0.632786
+cap dual [44]: -0.512801
+cap dual [46]: -0.0508216
+cap dual [49]: -5.33932
+lp dual value: 961.433
+STATS - lpIterations[4] lagIterations[25] sspIterations[375] numSeparations[51] numCuts[85] compileTime[3] sspSolveTime[48] lpSolveTime[27] lb[961.433] ub[968] numArcs: [226842] numFixed: [182602] time: [225]
+no rcc cuts found
+added new src cut with arcs: 209315 209493 209719 209924 210145 227911 228113 228334  for test set: 3 24 50 
+added new src cut with arcs: 210367 210543 210767 210970 211189 228510 228710 228929  for test set: 3 49 50 
+added new src cut with arcs: 229054 229271 229394 229559  for test set: 7 11 26 
+added new src cut with arcs: 229738 229881 230097 230313 230528  for test set: 8 19 35 
+added new src cut with arcs: 221037 221160 211402 230657 230806  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567  for test set: 12 39 40 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521  for test set: 16 49 51 
+added new src cut with arcs: 214311 214486 214688 214906 215052 233116 233315 233533  for test set: 24 44 50 
+added new src cut with arcs: 216968 217143 217345 217563 217707 233708 233907 234125  for test set: 44 49 50 
+num src cuts added: 12
+fixing. lower bound used: 961.427
+num vars: 96907
+DUALS: -0,16.1074,16.7496,9.77262,8.85137,23.8086,7.31745,8.60905,10.609,20.3376,20.8825,31.4216,7.52746,13.5582,25.8005,17.0897,13.7641,6.94507,17.3487,11.609,34.391,26.6599,21.441,14.4532,30.0727,19.5046,7.52746,10.8942,23.7617,15.0897,10.6599,37.7985,19.3005,17.1939,5.89418,8.98788,28.0897,22.7577,21.8239,13.3805,13.0549,22.3296,18.1634,21.4256,12.0004,12.5153,10.5153,22.5582,16.2771,7.89984,21.1906,8.10985,10.8942,18.2302,20.8942,21.5796,35.9195,20.3708,15.3122,37.2302,
+fixed path dual: 4.47254
+cap dual [7]: -4.31815
+cap dual [8]: -1.50606
+cap dual [13]: -0.531502
+cap dual [14]: -0.910339
+cap dual [25]: -2
+cap dual [31]: -1.24556
+cap dual [39]: -3.5315
+cap dual [40]: -1.28514
+cap dual [42]: -0.112076
+cap dual [44]: -0.121163
+cap dual [49]: -4.61309
+lp dual value: 961.915
+STATS - lpIterations[5] lagIterations[25] sspIterations[375] numSeparations[59] numCuts[97] compileTime[3] sspSolveTime[48] lpSolveTime[38] lb[961.915] ub[968] numArcs: [233825] numFixed: [137249] time: [296]
+checking cuts, max violation: 0.25, num cuts: 3
+new capacity cutset: 1 6 16 18 22 23 24 25 33 41 42 43 49 51 55 56 <= 12
+new capacity cutset: 7 14 53 59 <= 2
+new capacity cutset: 1 3 6 16 18 22 23 24 25 32 33 41 42 43 44 49 50 51 55 56 <= 15
+added new src cut with arcs: 209315 209493 209719 209924 210145 227911 228113 228334 234896  for test set: 3 24 50 
+added new src cut with arcs: 210367 210543 210767 210970 211189 228510 228710 228929 235059 209493 209924  for test set: 3 49 50 
+added new src cut with arcs: 235318 235485 219088 221763  for test set: 5 15 29 
+added new src cut with arcs: 235742 235907 219088 221763  for test set: 5 29 57 
+added new src cut with arcs: 236017 236147 236253  for test set: 7 14 53 
+added new src cut with arcs: 236361 236489 236591  for test set: 7 53 59 
+added new src cut with arcs: 236802 237009 237173 237355 221976  for test set: 8 27 52 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996  for test set: 13 27 52 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122  for test set: 16 49 51 
+added new src cut with arcs: 239705 239909 240070 240244 221976  for test set: 19 27 52 
+added new src cut with arcs: 214311 214486 214688 214906 215052 233116 233315 233533 240406 209493 209924  for test set: 24 44 50 
+added new src cut with arcs: 215175 215320 215440 212378 231214  for test set: 26 38 58 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976  for test set: 27 52 54 
+added new src cut with arcs: 216968 217143 217345 217563 217707 233708 233907 234125 241315 209493 209924  for test set: 44 49 50 
+num src cuts added: 19
+fixing. lower bound used: 961.908
+num vars: 88563
+DUALS: -0,20.54,16.6968,9.90397,8.59583,24.8592,7.56122,8.60528,10.161,20.1712,19.7854,30.6855,7.20555,12.4396,24.4343,17.7833,13.9012,6.3145,18.8077,12.1311,35.8983,27.2585,21.4432,15.0846,30.1547,20.8077,7.04011,10.6556,24.1575,15.8212,11.2585,38.5455,19.7511,17.6792,6.25954,9.27111,28.8212,22.3584,22.5455,12.5798,13.5201,22.4866,18.1684,21.54,12.3049,12.6556,10.6957,23.8212,17.8592,8.24393,20.4006,8.27439,10.6556,18.6454,22.5054,21.5828,35.5917,20.8212,15.1712,39.2504,
+fixed path dual: 4.95989
+cap dual [0]: -3.62307
+cap dual [8]: -1.69307
+cap dual [11]: -0.040108
+cap dual [14]: -1.5617
+cap dual [25]: -2
+cap dual [31]: -1.23101
+cap dual [39]: -3
+cap dual [42]: -0.372686
+cap dual [45]: -0.524489
+cap dual [49]: -5.60287
+cap dual [50]: -0.959892
+cap dual [52]: -0.434053
+cap dual [53]: -0.386136
+lp dual value: 962.856
+STATS - lpIterations[6] lagIterations[25] sspIterations[375] numSeparations[63] numCuts[119] compileTime[3] sspSolveTime[48] lpSolveTime[48] lb[962.856] ub[968] numArcs: [240732] numFixed: [152494] time: [371]
+checking cuts, max violation: 0.220787, num cuts: 2
+new capacity cutset: 18 24 25 50 55 <= 3
+new capacity cutset: 18 24 25 49 50 55 <= 4
+added new src cut with arcs: 218245 218371 218482 241776  for test set: 2 6 28 
+added new src cut with arcs: 235318 235485 219088 221763 242032 242218 242384  for test set: 5 15 29 
+added new src cut with arcs: 235742 235907 219088 221763 242638 242822 242986  for test set: 5 29 57 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385  for test set: 8 19 35 
+added new src cut with arcs: 236802 237009 237173 237355 221976 243601 243803 222385  for test set: 8 27 52 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802  for test set: 10 31 58 
+added new src cut with arcs: 221267 212378 215175 244295 229394  for test set: 11 38 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355  for test set: 13 27 52 
+added new src cut with arcs: 245075 245316 215052 228334  for test set: 18 24 44 
+added new src cut with arcs: 245503 245742 215052 228334  for test set: 18 44 49 
+added new src cut with arcs: 213663 213800 213920 214090 224683 245909  for test set: 21 30 48 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355  for test set: 27 52 54 
+num src cuts added: 14
+fixing. lower bound used: 962.851
+num vars: 100062
+DUALS: -0,16.9426,16.8148,10.2487,8.74034,24.8367,7.6214,8.69011,10.7453,20.4599,20.0809,30.8811,7.3672,12.5895,25.1496,17.8039,13.9823,6.47327,19.5169,11.7453,35.4362,27.329,21.4658,14.8619,30.2643,21.5169,7.13193,10.7492,24.2546,15.8498,11.329,38.452,19.7219,17.71,6.33559,9.4895,28.8498,22.8498,22.5494,12.811,13.2915,22.5107,18.1638,21.566,12.0731,12.8082,10.8082,23.7908,17.8367,8.33349,21.1658,8.34133,10.7492,18.7492,22.5632,22.6096,35.868,20.8498,15.3626,38.1319,
+fixed path dual: 4.86807
+cap dual [7]: -3.62344
+cap dual [8]: -1.69804
+cap dual [11]: -0.0590542
+cap dual [14]: -1.51422
+cap dual [25]: -2
+cap dual [31]: -1.43045
+cap dual [39]: -3
+cap dual [40]: -0.940946
+cap dual [42]: -0.81658
+cap dual [45]: -0.0628961
+cap dual [46]: -0.382763
+cap dual [49]: -5.52079
+cap dual [52]: -0.327551
+cap dual [53]: -0.262041
+cap dual [54]: -0.451679
+lp dual value: 962.927
+STATS - lpIterations[7] lagIterations[25] sspIterations[375] numSeparations[68] numCuts[135] compileTime[3] sspSolveTime[48] lpSolveTime[60] lb[962.927] ub[968] numArcs: [245813] numFixed: [146070] time: [461]
+checking cuts, max violation: 0.15324, num cuts: 1
+new capacity cutset: 7 8 13 14 19 35 53 54 59 <= 6
+added new src cut with arcs: 246989 247164 247343 209719 245075  for test set: 3 44 50 
+added new src cut with arcs: 235318 235485 219088 221763 242032 242218 242384 247542 247709  for test set: 5 15 29 
+added new src cut with arcs: 235742 235907 219088 221763 242638 242822 242986 247906 248071 235318  for test set: 5 29 57 
+added new src cut with arcs: 236802 237009 237173 237355 221976 243601 243803 222385 248253 222552 229271  for test set: 8 27 52 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919  for test set: 10 31 58 
+added new src cut with arcs: 221267 212378 215175 244295 229394 248479 244052  for test set: 11 38 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802  for test set: 13 27 52 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075  for test set: 16 49 51 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802  for test set: 27 52 54 
+added new src cut with arcs: 249889 250049 222552  for test set: 34 45 46 
+added new src cut with arcs: 250168 250326 222552  for test set: 34 46 52 
+num src cuts added: 14
+fixing. lower bound used: 962.919
+num vars: 102380
+DUALS: -0,16.3568,16.7294,9.72175,9.18693,24.1069,7.35003,8.71655,10.573,20.7728,20.193,30.9004,7.46854,12.6549,24.2022,16.934,13.9707,6.51741,18.5913,12.1521,35,26.2706,21.3238,14.631,30.2511,20.9392,7.18693,10.8571,23.8717,14.934,10.2706,38.6109,19.7728,17.2511,6.51069,9.94869,29.7294,22.0629,22.6714,12.9707,13.201,22.4465,18.6561,21.7092,12.3186,13.044,11.044,22.8913,17.1069,8.21197,20.4647,8.33048,10.8571,18.9035,22.9035,21.3424,36.0556,21.5101,15.5266,39.0403,
+fixed path dual: 4.81307
+cap dual [7]: -4.35247
+cap dual [8]: -1.65363
+cap dual [11]: -0.257178
+cap dual [14]: -0.541234
+cap dual [25]: -2
+cap dual [27]: -0.705559
+cap dual [31]: -1.57178
+cap dual [39]: -3.00367
+cap dual [40]: -0.189371
+cap dual [42]: -0.114692
+cap dual [49]: -5.65425
+cap dual [50]: -0.435553
+cap dual [54]: -0.130422
+cap dual [56]: -0.189982
+src dual [83]: -0.185706
+src dual [84]: -0.0604765
+lp dual value: 963.155
+STATS - lpIterations[8] lagIterations[25] sspIterations[375] numSeparations[75] numCuts[150] compileTime[3] sspSolveTime[48] lpSolveTime[72] lb[963.155] ub[968] numArcs: [249840] numFixed: [147769] time: [562]
+no rcc cuts found
+added new src cut with arcs: 218245 218371 218482 241776 203211  for test set: 2 6 28 
+added new src cut with arcs: 250936 251058 222552  for test set: 4 34 45 
+added new src cut with arcs: 251269 219088 242384  for test set: 5 20 29 
+added new src cut with arcs: 251478 219088 242384  for test set: 5 29 37 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159  for test set: 8 19 35 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282  for test set: 10 31 58 
+added new src cut with arcs: 221267 212378 215175 244295 229394 248479 244052 252381  for test set: 11 38 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313  for test set: 13 27 52 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001  for test set: 16 49 51 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001  for test set: 18 25 50 
+added new src cut with arcs: 213663 213800 213920 214090 224683 245909 254046  for test set: 21 30 48 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683  for test set: 29 47 48 
+num src cuts added: 16
+fixing. lower bound used: 962.904
+num vars: 97508
+DUALS: -0,20.5135,16.9124,9.79017,9.25747,23.8028,7.51345,8.75408,10.5427,20.6673,20.7667,30.7909,7.6451,13.2425,24.0272,16.6591,14.1145,6.59564,18.7091,12.779,34.6771,26.0876,21.7614,14.8142,29.9124,20.9905,7.25747,11.0046,23.5135,14.6591,10.0876,38.5796,19.6673,16.9124,6.22615,10.276,29.5105,22.2308,22.971,13.0036,13.1269,22.5105,18.24,21.5135,12.2851,13.2847,11.2621,22.8257,16.8028,8.31672,20.4407,8.33817,11.0046,19.2713,22.9874,21.2142,35.9364,21.5334,15.4974,39.761,
+fixed path dual: 4.74253
+cap dual [0]: -4.42327
+cap dual [8]: -1.47564
+cap dual [11]: -0.515143
+cap dual [14]: -0.175276
+cap dual [25]: -2
+cap dual [27]: -0.703767
+cap dual [31]: -1.54035
+cap dual [39]: -3
+cap dual [42]: -0.14909
+cap dual [49]: -5.46175
+cap dual [50]: -0.765122
+cap dual [54]: -0.0745448
+cap dual [56]: -0.478132
+src dual [98]: -0.675441
+src dual [99]: -0.221489
+src dual [100]: -0.110194
+src dual [105]: -7.10543e-15
+lp dual value: 963.285
+STATS - lpIterations[9] lagIterations[25] sspIterations[375] numSeparations[79] numCuts[166] compileTime[3] sspSolveTime[48] lpSolveTime[85] lb[963.285] ub[968] numArcs: [255267] numFixed: [158066] time: [668]
+no rcc cuts found
+added new src cut with arcs: 218245 218371 218482 241776 203211 256352 256471  for test set: 2 6 28 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052  for test set: 3 44 50 
+added new src cut with arcs: 250936 251058 222552 256758 249889  for test set: 4 34 45 
+added new src cut with arcs: 235318 235485 219088 221763 242032 242218 242384 247542 247709 256941  for test set: 5 15 29 
+added new src cut with arcs: 251269 219088 242384 257122 215928  for test set: 5 20 29 
+added new src cut with arcs: 251478 219088 242384 257302 215928  for test set: 5 29 37 
+added new src cut with arcs: 235742 235907 219088 221763 242638 242822 242986 247906 248071 235318 257482 242032 242384  for test set: 5 29 57 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009  for test set: 8 19 35 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715  for test set: 10 31 58 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313 258001 237009 242032 243803  for test set: 13 27 52 
+added new src cut with arcs: 222760 222977 223204 258224 258404 215928 219088 242032  for test set: 15 20 29 
+added new src cut with arcs: 223412 223629 223855 258624 258804 215928 219088 242032  for test set: 15 29 37 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334  for test set: 16 24 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506  for test set: 18 50 55 
+added new src cut with arcs: 213663 213800 213920 214090 224683 245909 254046 258912  for test set: 21 30 48 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052  for test set: 26 38 58 
+added new src cut with arcs: 259033 259202 259375 222552 242032 242384 245909  for test set: 27 29 45 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909  for test set: 29 47 48 
+num src cuts added: 24
+fixing. lower bound used: 962.806
+num vars: 98063
+DUALS: -0,17.7434,17.7572,10.3515,9.13995,23.8229,8.75067,9.10145,11.0391,20.9481,21.2132,31.2551,7.7449,13.4273,24.2334,16.774,14.389,6.51019,19.3399,13.1361,34.8387,25.807,21.6171,16.1549,30.4078,21.3431,7.13995,11.2224,24.5429,14.774,10.9226,38.9061,20.0461,17.6474,6.22242,10.4817,29.7898,21.9686,22.9061,13.4682,12.8849,23.2658,18.7817,22.5046,12.7507,13.6943,11.3353,23.0409,16.8229,9.278,20.781,8.37024,11.2224,19.2592,23.0842,21.6971,36.1314,22.0079,15.9481,40.2934,
+fixed path dual: 4.86005
+cap dual [7]: -3.76122
+cap dual [8]: -2.16451
+cap dual [11]: -0.633434
+cap dual [14]: -0.138276
+cap dual [25]: -2
+cap dual [30]: -0.0271089
+cap dual [31]: -2.16124
+cap dual [39]: -3
+cap dual [41]: -0.122045
+cap dual [45]: -0.117602
+cap dual [49]: -5.12859
+cap dual [50]: -0.989736
+cap dual [53]: -0.0980061
+cap dual [56]: -0.153366
+src dual [109]: -1.11553
+src dual [113]: -7.10543e-15
+src dual [116]: -7.10543e-15
+src dual [118]: -0.604954
+src dual [119]: -0.107274
+src dual [124]: -7.10543e-15
+lp dual value: 963.5
+STATS - lpIterations[10] lagIterations[25] sspIterations[375] numSeparations[85] numCuts[190] compileTime[3] sspSolveTime[48] lpSolveTime[100] lb[963.5] ub[968] numArcs: [259384] numFixed: [161626] time: [788]
+checking cuts, max violation: 0.105446, num cuts: 1
+new capacity cutset: 1 6 16 22 23 33 41 42 43 56 <= 7
+added new src cut with arcs: 260614 209719 245075 253732  for test set: 3 24 25 
+added new src cut with arcs: 260854 209719 245075 253732  for test set: 3 24 55 
+added new src cut with arcs: 261093 209719 245075 253732  for test set: 3 25 49 
+added new src cut with arcs: 209719 215052 247343 253732  for test set: 3 32 50 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732  for test set: 3 44 50 
+added new src cut with arcs: 261332 209719 245075 253732  for test set: 3 49 55 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871  for test set: 8 19 35 
+added new src cut with arcs: 236802 237009 237173 237355 221976 243601 243803 222385 248253 222552 229271 262088 262303  for test set: 8 27 52 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790 262728 262848 230806  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313 258001 237009 242032 243803 263481  for test set: 13 27 52 
+added new src cut with arcs: 222760 222977 223204 258224 258404 215928 219088 242032 263716 221763 251269  for test set: 15 20 29 
+added new src cut with arcs: 223412 223629 223855 258624 258804 215928 219088 242032 263949 221763 251269 258224  for test set: 15 29 37 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732  for test set: 18 50 55 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052 267142 267287 229394  for test set: 26 38 58 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968 267501  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073  for test set: 29 47 48 
+num src cuts added: 25
+fixing. lower bound used: 962.699
+num vars: 112670
+DUALS: -0,20.6468,17.3928,10.4303,9.15645,23.7442,8.98974,9.01482,11.371,21.0148,21.2294,31.3859,7.61414,13.9541,23.7964,16.9548,15.0445,6.77173,19.6461,12.5958,34.9067,26.0276,21.7989,17.2831,30.3304,21.2442,7.15645,11.4541,24.4531,14.9548,11.0956,38.8584,20.0148,18.2623,6.45412,11.0452,30.1456,22.3651,22.8584,13.6153,12.7706,24.9155,20.4275,23.6858,12.428,13.6207,11.0343,22.6034,17.2184,8.90019,20.8002,8.45654,11.4541,19.2442,23.0047,21.8002,36.9437,22.0047,16.0148,39.8306,
+fixed path dual: 4.84355
+cap dual [0]: -2.06754
+cap dual [7]: -2.03897
+cap dual [8]: -2.74209
+cap dual [11]: -0.652394
+cap dual [25]: -1.82502
+cap dual [30]: -0.228626
+cap dual [31]: -2.24423
+cap dual [36]: -0.347606
+cap dual [39]: -3
+cap dual [40]: -0.858364
+cap dual [49]: -5.12354
+cap dual [57]: -0.931961
+src dual [109]: -1.06804
+src dual [111]: -3.28626e-14
+src dual [112]: -3.55271e-14
+src dual [127]: -0.474138
+src dual [139]: -7.10543e-15
+src dual [143]: -0.45768
+src dual [145]: -0.224708
+lp dual value: 963.618
+STATS - lpIterations[11] lagIterations[25] sspIterations[375] numSeparations[92] numCuts[216] compileTime[3] sspSolveTime[48] lpSolveTime[116] lb[963.618] ub[968] numArcs: [267212] numFixed: [154843] time: [940]
+no rcc cuts found
+added new src cut with arcs: 260614 209719 245075 253732 268409 209924 245316 246989  for test set: 3 24 25 
+added new src cut with arcs: 260854 209719 245075 253732 268599 209924 245316 246989  for test set: 3 24 55 
+added new src cut with arcs: 261093 209719 245075 253732 268788 209924 245316 246989  for test set: 3 25 49 
+added new src cut with arcs: 209719 215052 247343 253732 268977 269152 269318 246989  for test set: 3 32 50 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924  for test set: 3 44 50 
+added new src cut with arcs: 261332 209719 245075 253732 270033 209924 245316 246989  for test set: 3 49 55 
+added new src cut with arcs: 250936 251058 222552 256758 249889 237173  for test set: 4 34 45 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871 270224 229271  for test set: 8 19 35 
+added new src cut with arcs: 236802 237009 237173 237355 221976 243601 243803 222385 248253 222552 229271 262088 262303 230097 230313  for test set: 8 27 52 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580 270372 248375  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790 262728 262848 230806 270518 270670 262580  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313 258001 237009 242032 243803 263481 262088  for test set: 13 27 52 
+added new src cut with arcs: 222760 222977 223204 258224 258404 215928 219088 242032 263716 221763 251269 271148 271407 271602  for test set: 15 20 29 
+added new src cut with arcs: 223412 223629 223855 258624 258804 215928 219088 242032 263949 221763 251269 258224 271783 272040 272232  for test set: 15 29 37 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989  for test set: 18 50 55 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052 267142 267287 229394 274745  for test set: 26 38 58 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968 267501 262088  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202  for test set: 29 47 48 
+num src cuts added: 26
+fixing. lower bound used: 962.669
+num vars: 124028
+DUALS: -0,18.6923,17.5589,10.4784,9.28247,23.9269,9.02378,9.3247,11.263,21.0312,21.3364,31.2126,7.5951,13.594,23.9737,16.7903,15.1224,6.76082,19.7072,12.263,35.1263,25.8612,21.704,17.259,30.3378,21.1618,7.28247,10.9301,24.5518,14.7903,10.9702,39.0032,20.1895,18.2321,6.31334,10.9269,30.2988,22.7033,23.0504,13.6366,12.9265,24.7871,19.9322,23.4744,12.3797,13.8879,11.2126,22.747,17.181,9.01597,20.7949,8.47835,10.9301,19.6608,23.258,21.896,36.6969,21.9301,15.9351,39.6558,
+fixed path dual: 4.71753
+cap dual [7]: -3.78211
+cap dual [8]: -2.7775
+cap dual [11]: -1
+cap dual [14]: -0.157204
+cap dual [25]: -1.85131
+cap dual [31]: -2.26295
+cap dual [39]: -3.18879
+cap dual [40]: -0.991838
+cap dual [41]: -0.00319375
+cap dual [49]: -5.03903
+cap dual [52]: -0.0617459
+cap dual [56]: -0.327892
+cap dual [57]: -0.891057
+src dual [109]: -1.10894
+src dual [127]: -0.254081
+src dual [168]: -0.0489709
+src dual [169]: -0.513485
+lp dual value: 963.605
+WARNING possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[12] lagIterations[25] sspIterations[375] numSeparations[95] numCuts[242] compileTime[3] sspSolveTime[48] lpSolveTime[132] lb[963.605] ub[968] numArcs: [273944] numFixed: [150217] time: [1105]
+no rcc cuts found
+added new src cut with arcs: 260614 209719 245075 253732 268409 209924 245316 246989 275158 275384 275586  for test set: 3 24 25 
+added new src cut with arcs: 260854 209719 245075 253732 268599 209924 245316 246989 275772 275996 276196  for test set: 3 24 55 
+added new src cut with arcs: 261093 209719 245075 253732 268788 209924 245316 246989 276381 276604 276803  for test set: 3 25 49 
+added new src cut with arcs: 209719 215052 247343 253732 268977 269152 269318 246989 277026 277205  for test set: 3 32 50 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804  for test set: 3 44 50 
+added new src cut with arcs: 261332 209719 245075 253732 270033 209924 245316 246989 277989 278212 278411  for test set: 3 49 55 
+added new src cut with arcs: 250936 251058 222552 256758 249889 237173 278553  for test set: 4 34 45 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871 270224 229271 278683  for test set: 8 19 35 
+added new src cut with arcs: 236802 237009 237173 237355 221976 243601 243803 222385 248253 222552 229271 262088 262303 230097 230313 278900  for test set: 8 27 52 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580 270372 248375 279023 279177 244433  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790 262728 262848 230806 270518 270670 262580 279329  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820 262728  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313 258001 237009 242032 243803 263481 262088 279823 280038  for test set: 13 27 52 
+added new src cut with arcs: 222760 222977 223204 258224 258404 215928 219088 242032 263716 221763 251269 271148 271407 271602 280231 280458  for test set: 15 20 29 
+added new src cut with arcs: 223412 223629 223855 258624 258804 215928 219088 242032 263949 221763 251269 258224 271783 272040 272232 280649 280875 271602  for test set: 15 29 37 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270  for test set: 18 50 55 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052 267142 267287 229394 274745 262728  for test set: 26 38 58 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968 267501 262088 283496 283710  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202 283901  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202 284092  for test set: 29 47 48 
+num src cuts added: 26
+fixing. lower bound used: 961.243
+num vars: 126980
+DUALS: -0,18.6768,16.7189,10.155,9.26326,24.1427,8.93578,9.39286,11.0556,21.2761,21.1669,31.3386,7.49535,13.7265,25.2012,17.7472,15.3786,7.00929,19.3812,12.2307,36.0844,28.2797,21.8568,15.4811,30.6071,21.493,7.29966,11.1389,24.05,15.7472,12.2797,39.0594,20.2761,18.4954,6.7641,10.8183,30.3843,23.9785,23.1424,13.7096,12.795,22.8072,19.355,22.4443,12.8214,13.8343,11.5137,22.6774,18.8343,9.26184,21.2642,8.70963,11.1765,19.7301,22.9639,22.2524,37.1736,22.0014,16.1931,38.7301,
+fixed path dual: 4.70034
+cap dual [7]: -2.62289
+cap dual [8]: -2.49819
+cap dual [11]: -0.850394
+cap dual [13]: -0.0824835
+cap dual [14]: -0.786692
+cap dual [25]: -2
+cap dual [31]: -2.48109
+cap dual [39]: -3.08248
+cap dual [40]: -0.945785
+cap dual [49]: -5.22596
+cap dual [52]: -0.199755
+cap dual [57]: -0.888215
+src dual [127]: -1.77404
+src dual [190]: -0.279205
+src dual [191]: -0.0375629
+src dual [195]: -0.240609
+src dual [198]: -1.42109e-14
+src dual [202]: -3.55271e-15
+lp dual value: 963.529
+WARNING possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[13] lagIterations[25] sspIterations[375] numSeparations[100] numCuts[268] compileTime[3] sspSolveTime[48] lpSolveTime[151] lb[963.529] ub[968] numArcs: [283627] numFixed: [156946] time: [1293]
+no rcc cuts found
+added new src cut with arcs: 218245 218371 218482 241776 203211 256352 256471 284792  for test set: 2 6 28 
+added new src cut with arcs: 260614 209719 245075 253732 268409 209924 245316 246989 275158 275384 275586 285034 249001  for test set: 3 24 25 
+added new src cut with arcs: 260854 209719 245075 253732 268599 209924 245316 246989 275772 275996 276196 285274 249001 260614 268409  for test set: 3 24 55 
+added new src cut with arcs: 261093 209719 245075 253732 268788 209924 245316 246989 276381 276604 276803 285513 249001 260614 268409  for test set: 3 25 49 
+added new src cut with arcs: 209719 215052 247343 253732 268977 269152 269318 246989 277026 277205 268409  for test set: 3 32 50 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804 268409 277205  for test set: 3 44 50 
+added new src cut with arcs: 261332 209719 245075 253732 270033 209924 245316 246989 277989 278212 278411 285752 249001 260614 268409  for test set: 3 49 55 
+added new src cut with arcs: 250936 251058 222552 256758 249889 237173 278553 285897  for test set: 4 34 45 
+added new src cut with arcs: 251269 219088 242384 257122 215928 218868 271148 280231  for test set: 5 20 29 
+added new src cut with arcs: 251478 219088 242384 257302 215928 218868 271148 280231  for test set: 5 29 37 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871 270224 229271 278683 286141 286354 286571  for test set: 8 19 35 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580 270372 248375 279023 279177 244433 286749  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790 262728 262848 230806 270518 270670 262580 279329 286925  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820 262728 270670  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313 258001 237009 242032 243803 263481 262088 279823 280038 287311 278900  for test set: 13 27 52 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416 287465 287704 287925 260614  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778 288164 288383 260614  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409  for test set: 18 50 55 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052 267142 267287 229394 274745 262728 270670  for test set: 26 38 58 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968 267501 262088 283496 283710 290417 278900  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202 283901 290587 218868 280231  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202 284092 290755 218868 280231  for test set: 29 47 48 
+num src cuts added: 26
+fixing. lower bound used: 962.556
+num vars: 123716
+DUALS: -0,20.7714,16.4468,9.78764,9.43622,24.0172,7.90894,9.36733,10.2876,20.49,20.56,30.3612,7.52876,13.4111,24.7509,16.9037,14.6276,6.94247,18.9477,12.733,37.1788,26.9195,19.9502,14.7876,30.4487,20.7876,7.43622,10.5789,24.2436,14.9037,10.9195,38.6888,19.57,18.5268,6.3512,10.4231,29.6918,21.4161,23.2439,13.5863,12.965,22.6088,18.8127,21.7714,12.5063,13.7874,10.7874,22.2291,17.6362,7.8064,20.7176,8.50625,10.5789,19.8035,22.9061,21.8652,36.7714,20.925,14.935,39.9607,
+fixed path dual: 4.56378
+cap dual [0]: -1.22828
+cap dual [8]: -3.83742
+cap dual [11]: -0.725938
+cap dual [13]: -0.0463365
+cap dual [14]: -0.807336
+cap dual [25]: -2
+cap dual [31]: -1.60505
+cap dual [36]: -0.227725
+cap dual [39]: -3.0714
+cap dual [42]: -0.250106
+cap dual [46]: -0.078121
+cap dual [49]: -5.18343
+cap dual [50]: -0.791507
+cap dual [52]: -0.731661
+cap dual [53]: -0.0800357
+cap dual [56]: -0.154093
+cap dual [57]: -1
+src dual [112]: -7.10543e-15
+src dual [127]: -0.66539
+src dual [211]: -2.13163e-14
+src dual [217]: -0.772275
+src dual [223]: -0.0925453
+src dual [224]: -1.77636e-15
+lp dual value: 963.64
+STATS - lpIterations[14] lagIterations[25] sspIterations[375] numSeparations[104] numCuts[294] compileTime[3] sspSolveTime[48] lpSolveTime[168] lb[963.64] ub[968] numArcs: [290068] numFixed: [166649] time: [1497]
+no rcc cuts found
+added new src cut with arcs: 260614 209719 245075 253732 268409 209924 245316 246989 275158 275384 275586 285034 249001 291329 291505 291742  for test set: 3 24 25 
+added new src cut with arcs: 260854 209719 245075 253732 268599 209924 245316 246989 275772 275996 276196 285274 249001 260614 268409 291942 292116 292351 275384 285034  for test set: 3 24 55 
+added new src cut with arcs: 261093 209719 245075 253732 268788 209924 245316 246989 276381 276604 276803 285513 249001 260614 268409 292550 292784 275384 285034  for test set: 3 25 49 
+added new src cut with arcs: 209719 215052 247343 253732 268977 269152 269318 246989 277026 277205 268409 293018 293193 256613 275384  for test set: 3 32 50 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804 268409 277205 293392 293626 275384  for test set: 3 44 50 
+added new src cut with arcs: 261332 209719 245075 253732 270033 209924 245316 246989 277989 278212 278411 285752 249001 260614 268409 293825 294059 275384 285034  for test set: 3 49 55 
+added new src cut with arcs: 235318 235485 219088 221763 242032 242218 242384 247542 247709 256941 271148  for test set: 5 15 29 
+added new src cut with arcs: 251269 219088 242384 257122 215928 218868 271148 280231 256941  for test set: 5 20 29 
+added new src cut with arcs: 251478 219088 242384 257302 215928 218868 271148 280231 256941  for test set: 5 29 37 
+added new src cut with arcs: 235742 235907 219088 221763 242638 242822 242986 247906 248071 235318 257482 242032 242384 256941 271148  for test set: 5 29 57 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871 270224 229271 278683 286141 286354 286571 294189 294406  for test set: 8 19 35 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580 270372 248375 279023 279177 244433 286749 294561 294709  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790 262728 262848 230806 270518 270670 262580 279329 286925 294855 295003  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820 262728 270670 295149  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100 295302 295447 279023  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313 258001 237009 242032 243803 263481 262088 279823 280038 287311 278900 295649 295860 286354  for test set: 13 27 52 
+added new src cut with arcs: 222760 222977 223204 258224 258404 215928 219088 242032 263716 221763 251269 271148 271407 271602 280231 280458 256941  for test set: 15 20 29 
+added new src cut with arcs: 223412 223629 223855 258624 258804 215928 219088 242032 263949 221763 251269 258224 271783 272040 272232 280649 280875 271602 256941 271148 280231  for test set: 15 29 37 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416 287465 287704 287925 260614 296059 296232 296397 296583 285034  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778 288164 288383 260614 296782 296945 297129 228334 285034  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614 297328 297501 285034  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409 297674 297908 298081 272836 275384 285034  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614 298280 272836 285034  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409 298453 298687 272836 275384 285034  for test set: 18 50 55 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052 267142 267287 229394 274745 262728 270670 298832 298969  for test set: 26 38 58 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968 267501 262088 283496 283710 290417 278900 299169 299378 286354  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202 283901 290587 218868 280231 254046  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202 284092 290755 218868 280231 254046  for test set: 29 47 48 
+num src cuts added: 28
+fixing. lower bound used: 962.839
+num vars: 102732
+DUALS: -0,19.3933,16.5167,9.84333,9.49667,23.9967,8.01333,9.41667,10.4133,20.5533,20.59,30.4833,7.49667,13.6317,24.4967,16.9867,14.6967,7.00667,19.0633,12.8083,36.7767,26.9767,20.1667,14.84,30.46,20.86,7.49667,10.7467,24.2367,14.9867,10.9767,38.66,19.6467,18.4967,6.49667,10.33,29.7367,21.7167,23.17,13.6033,12.9933,22.5867,18.8233,21.85,12.4933,13.7467,10.7467,22.2567,17.7167,7.99,20.77,8.51,10.7467,19.7133,22.7983,21.8933,36.7833,20.9867,15.0433,39.6917,
+fixed path dual: 4.50333
+cap dual [7]: -1.40667
+cap dual [8]: -3.65667
+cap dual [11]: -0.75
+cap dual [14]: -0.74
+cap dual [25]: -1.75
+cap dual [31]: -1.65333
+cap dual [36]: -0.25
+cap dual [39]: -3.01
+cap dual [40]: -0.115
+cap dual [42]: -0.163333
+cap dual [46]: -0.0933333
+cap dual [49]: -5.25
+cap dual [50]: -0.635
+cap dual [52]: -0.633333
+cap dual [53]: -0.0933333
+cap dual [54]: -0.0733333
+cap dual [56]: -0.176667
+cap dual [57]: -0.943333
+src dual [127]: -0.72
+src dual [217]: -0.75
+src dual [236]: -2.13163e-14
+src dual [251]: -0.25
+src dual [263]: -3.55271e-15
+lp dual value: 963.63
+STATS - lpIterations[15] lagIterations[25] sspIterations[375] numSeparations[105] numCuts[322] compileTime[3] sspSolveTime[48] lpSolveTime[183] lb[963.63] ub[968] numArcs: [298340] numFixed: [195905] time: [1692]
+no rcc cuts found
+added new src cut with arcs: 260614 209719 245075 253732 268409 209924 245316 246989 275158 275384 275586 285034 249001 291329 291505 291742 228113  for test set: 3 24 25 
+added new src cut with arcs: 260854 209719 245075 253732 268599 209924 245316 246989 275772 275996 276196 285274 249001 260614 268409 291942 292116 292351 275384 285034 228113  for test set: 3 24 55 
+added new src cut with arcs: 261093 209719 245075 253732 268788 209924 245316 246989 276381 276604 276803 285513 249001 260614 268409 292550 292784 275384 285034 228113  for test set: 3 25 49 
+added new src cut with arcs: 209719 215052 247343 253732 268977 269152 269318 246989 277026 277205 268409 293018 293193 256613 275384 299566 253876  for test set: 3 32 50 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804 268409 277205 293392 293626 275384 299706 228113 269152  for test set: 3 44 50 
+added new src cut with arcs: 261332 209719 245075 253732 270033 209924 245316 246989 277989 278212 278411 285752 249001 260614 268409 293825 294059 275384 285034 228113  for test set: 3 49 55 
+added new src cut with arcs: 251269 219088 242384 257122 215928 218868 271148 280231 256941 247709  for test set: 5 20 29 
+added new src cut with arcs: 251478 219088 242384 257302 215928 218868 271148 280231 256941 247709  for test set: 5 29 37 
+added new src cut with arcs: 229054 229271 229394 229559 299919 300098 300221 261871 294406  for test set: 7 11 26 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871 270224 229271 278683 286141 286354 286571 294189 294406 300474 300685  for test set: 8 19 35 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580 270372 248375 279023 279177 244433 286749 294561 294709 300823 300972 301094  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790 262728 262848 230806 270518 270670 262580 279329 286925 294855 295003 301213 301360 301480  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820 262728 270670 295149 301597 295003  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100 295302 295447 279023 301733 301879 301998  for test set: 12 39 40 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416 287465 287704 287925 260614 296059 296232 296397 296583 285034 228113  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778 288164 288383 260614 296782 296945 297129 228334 285034 228113 264574  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614 297328 297501 285034 228113 264574 269152  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409 297674 297908 298081 272836 275384 285034 264574 269152  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614 298280 272836 285034 228113 264574 269152  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409 298453 298687 272836 275384 285034 264574 269152  for test set: 18 50 55 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052 267142 267287 229394 274745 262728 270670 298832 298969 302119 295003  for test set: 26 38 58 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202 283901 290587 218868 280231 254046 302279  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202 284092 290755 218868 280231 254046 302437  for test set: 29 47 48 
+num src cuts added: 23
+fixing. lower bound used: 962.212
+num vars: 105286
+DUALS: -0,21.81,16.9542,10.285,9.32094,23.958,9.07889,9.31251,11.0765,21.0851,20.9798,30.9959,7.39446,13.5118,23.8357,17.4791,15.8009,7.21108,19.8129,12.956,36.9052,27.8588,22.052,16.1412,30.0277,21.4755,7.39446,10.8652,23.8228,15.4791,11.8588,39.069,20.1586,18.3209,6.58142,10.855,29.981,22.4263,23.3738,13.8901,12.7889,23.5146,19.6943,22.81,12.6262,13.3606,11.3504,22.5784,18.3606,9.42753,21.1702,8.81662,10.8652,19.8255,22.1296,22.1818,37.3366,21.6014,15.7803,39.9977,
+fixed path dual: 4.60554
+cap dual [0]: -2.81989
+cap dual [8]: -2.61586
+cap dual [11]: -1
+cap dual [14]: -0.501896
+cap dual [25]: -2
+cap dual [31]: -2.36971
+cap dual [39]: -3
+cap dual [49]: -5.59732
+cap dual [50]: -0.524963
+cap dual [53]: -0.0735201
+cap dual [54]: -0.0438171
+cap dual [57]: -1.14662
+src dual [127]: -1.40268
+src dual [217]: -0.118917
+src dual [251]: -1.06581e-14
+src dual [267]: -7.10543e-15
+src dual [268]: -9.9476e-14
+src dual [273]: -0.0907942
+src dual [283]: -4.61853e-14
+lp dual value: 963.579
+WARNING possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[16] lagIterations[25] sspIterations[375] numSeparations[107] numCuts[345] compileTime[3] sspSolveTime[48] lpSolveTime[200] lb[963.579] ub[968] numArcs: [301488] numFixed: [196497] time: [1898]
+no rcc cuts found
+added new src cut with arcs: 260614 209719 245075 253732 268409 209924 245316 246989 275158 275384 275586 285034 249001 291329 291505 291742 228113 302801 303038 303280  for test set: 3 24 25 
+added new src cut with arcs: 260854 209719 245075 253732 268599 209924 245316 246989 275772 275996 276196 285274 249001 260614 268409 291942 292116 292351 275384 285034 228113 303491 303726 303966 275586  for test set: 3 24 55 
+added new src cut with arcs: 261093 209719 245075 253732 268788 209924 245316 246989 276381 276604 276803 285513 249001 260614 268409 292550 292784 275384 285034 228113 304200 304439 275586  for test set: 3 25 49 
+added new src cut with arcs: 209719 215052 247343 253732 268977 269152 269318 246989 277026 277205 268409 293018 293193 256613 275384 299566 253876 304606 304840  for test set: 3 32 50 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804 268409 277205 293392 293626 275384 299706 228113 269152 305005 305239 275586 299566  for test set: 3 44 50 
+added new src cut with arcs: 261332 209719 245075 253732 270033 209924 245316 246989 277989 278212 278411 285752 249001 260614 268409 293825 294059 275384 285034 228113 305473 305712 275586  for test set: 3 49 55 
+added new src cut with arcs: 250936 251058 222552 256758 249889 237173 278553 285897 305857  for test set: 4 34 45 
+added new src cut with arcs: 251269 219088 242384 257122 215928 218868 271148 280231 256941 247709 306068  for test set: 5 20 29 
+added new src cut with arcs: 251478 219088 242384 257302 215928 218868 271148 280231 256941 247709 306277  for test set: 5 29 37 
+added new src cut with arcs: 229054 229271 229394 229559 299919 300098 300221 261871 294406 306402 267142  for test set: 7 11 26 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580 270372 248375 279023 279177 244433 286749 294561 294709 300823 300972 301094 306556  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790 262728 262848 230806 270518 270670 262580 279329 286925 294855 295003 301213 301360 301480 306708 306832 301094  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820 262728 270670 295149 301597 295003 301213  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100 295302 295447 279023 301733 301879 301998 306983 300823 301094  for test set: 12 39 40 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416 287465 287704 287925 260614 296059 296232 296397 296583 285034 228113 307193 307432 275586  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778 288164 288383 260614 296782 296945 297129 228334 285034 228113 264574 307671 275586 287925 296583  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614 297328 297501 285034 228113 264574 269152 307881 308120 275586 287925  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409 297674 297908 298081 272836 275384 285034 264574 269152 308330 308564 308803 287925 293193  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614 298280 272836 285034 228113 264574 269152 309042 275586 287925  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409 298453 298687 272836 275384 285034 264574 269152 309252 309486 309725 287925  for test set: 18 50 55 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052 267142 267287 229394 274745 262728 270670 298832 298969 302119 295003 300221  for test set: 26 38 58 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202 283901 290587 218868 280231 254046 302279 309933  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202 284092 290755 218868 280231 254046 302437 310141 290587  for test set: 29 47 48 
+num src cuts added: 23
+fixing. lower bound used: 962.955
+num vars: 123052
+DUALS: -0,21.5605,17.0093,10.2874,9.49841,24.2946,8.96576,9.57484,10.871,21.0032,21.2357,30.8686,7.43949,13.7771,24.1579,17.4281,15.7062,7.12102,19.8686,13.0921,37.7909,27.6162,20.8893,16.6298,29.7436,21.4634,7.49841,10.883,24.4206,15.4281,11.6162,39.3113,20.1178,18.8198,6.73726,10.9721,30.1385,21.7362,23.3113,13.7373,12.9379,23.3567,19.6855,22.5605,12.332,13.8209,11.1489,22.4984,18.2171,9.26354,21.1123,8.62261,10.883,19.9865,23.0589,22.336,36.6162,21.3702,16.0032,40.4713,
+fixed path dual: 4.50159
+cap dual [0]: -1.19055
+cap dual [8]: -3.79618
+cap dual [11]: -0.826433
+cap dual [13]: -0.0278662
+cap dual [14]: -0.656582
+cap dual [25]: -2
+cap dual [31]: -2.17994
+cap dual [36]: -0.145701
+cap dual [39]: -3.02787
+cap dual [41]: -0.265658
+cap dual [42]: -0.392516
+cap dual [49]: -5.44586
+cap dual [50]: -0.468418
+cap dual [52]: -0.336783
+cap dual [56]: -0.234873
+cap dual [57]: -1.40525
+src dual [127]: -0.950372
+src dual [273]: -0.239915
+src dual [287]: -0.11465
+src dual [293]: -0.526274
+src dual [294]: -5.32907e-15
+src dual [299]: -0.691879
+lp dual value: 963.839
+STATS - lpIterations[17] lagIterations[25] sspIterations[375] numSeparations[107] numCuts[368] compileTime[3] sspSolveTime[48] lpSolveTime[217] lb[963.839] ub[968] numArcs: [309026] numFixed: [186269] time: [2141]
+no rcc cuts found
+added new src cut with arcs: 253732 272836 277205 291329 291742  for test set: 3 25 44 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804 268409 277205 293392 293626 275384 299706 228113 269152 305005 305239 275586 299566 291329 291742  for test set: 3 44 50 
+added new src cut with arcs: 253732 272836 277205 291329 291742  for test set: 3 44 55 
+added new src cut with arcs: 251269 219088 242384 257122 215928 218868 271148 280231 256941 247709 306068 235485  for test set: 5 20 29 
+added new src cut with arcs: 251478 219088 242384 257302 215928 218868 271148 280231 256941 247709 306277 235485 306068  for test set: 5 29 37 
+added new src cut with arcs: 229054 229271 229394 229559 299919 300098 300221 261871 294406 306402 267142 310354 215175  for test set: 7 11 26 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871 270224 229271 278683 286141 286354 286571 294189 294406 300474 300685 310565 299919  for test set: 8 19 35 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580 270372 248375 279023 279177 244433 286749 294561 294709 300823 300972 301094 306556 310714 252536  for test set: 9 12 40 
+added new src cut with arcs: 211826 269152 272836 277205  for test set: 9 32 44 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820 262728 270670 295149 301597 295003 301213 310834  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100 295302 295447 279023 301733 301879 301998 306983 300823 301094 310981 306556  for test set: 12 39 40 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416 287465 287704 287925 260614 296059 296232 296397 296583 285034 228113 307193 307432 275586 291329 291505 303280  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778 288164 288383 260614 296782 296945 297129 228334 285034 228113 264574 307671 275586 287925 296583 272418 281416 291329 303280  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614 297328 297501 285034 228113 264574 269152 307881 308120 275586 287925 281416 291329 291505 303280  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409 297674 297908 298081 272836 275384 285034 264574 269152 308330 308564 308803 287925 293193 281416 291505 291742 303280  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614 298280 272836 285034 228113 264574 269152 309042 275586 287925 281416 291329 303280  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409 298453 298687 272836 275384 285034 264574 269152 309252 309486 309725 287925 281416 291505 291742 303280  for test set: 18 50 55 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202 283901 290587 218868 280231 254046 302279 309933 306068  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202 284092 290755 218868 280231 254046 302437 310141 290587 306068  for test set: 29 47 48 
+num src cuts added: 19
+fixing. lower bound used: 962.601
+num vars: 122502
+DUALS: -0,21.5603,17.2232,10.3337,9.37091,24.2988,8.92239,9.74698,11.0422,21.0896,21.427,31.0281,7.37091,14.3393,25.0597,16.9234,15.7492,7.25817,20.4769,13.9421,37.2232,27.81,20.5603,16.3105,30.2232,21.8058,7.37091,11.3233,24.0853,15.9234,11.81,39.4885,20.2584,18.1251,6.91737,11.269,30.2847,23.0932,23.4885,14.0561,12.7418,23.5603,19.5603,22.5603,12.5539,14.1653,11.4569,23.0772,18.716,9.57748,21.7573,8.85714,11.3233,20.2865,23.5362,23.5938,36.81,22.0631,16.0896,40.6064,
+fixed path dual: 4.62909
+cap dual [0]: -1.47447
+cap dual [8]: -4
+cap dual [11]: -0.766281
+cap dual [14]: -0.714414
+cap dual [25]: -2
+cap dual [31]: -2.5166
+cap dual [39]: -3.22767
+cap dual [42]: -0.459138
+cap dual [49]: -4.90592
+cap dual [50]: -1.23372
+cap dual [52]: -0.44453
+cap dual [54]: -0.497748
+cap dual [56]: -0.21287
+cap dual [57]: -0.866538
+src dual [127]: -0.872458
+src dual [293]: -0.341055
+src dual [313]: -0.227671
+src dual [314]: -3.55271e-15
+src dual [316]: -0.40592
+src dual [319]: -0.60103
+src dual [321]: -3.55271e-15
+src dual [324]: -0.168855
+src dual [325]: -3.55271e-15
+src dual [327]: -0.772329
+lp dual value: 964.017
+STATS - lpIterations[18] lagIterations[25] sspIterations[375] numSeparations[109] numCuts[387] compileTime[3] sspSolveTime[48] lpSolveTime[235] lb[964.017] ub[968] numArcs: [310085] numFixed: [187876] time: [2396]
+no rcc cuts found
+added new src cut with arcs: 218245 218371 218482 241776 203211 256352 256471 284792 311314  for test set: 2 6 28 
+added new src cut with arcs: 260614 209719 245075 253732 268409 209924 245316 246989 275158 275384 275586 285034 249001 291329 291505 291742 228113 302801 303038 303280 311551  for test set: 3 24 25 
+added new src cut with arcs: 260854 209719 245075 253732 268599 209924 245316 246989 275772 275996 276196 285274 249001 260614 268409 291942 292116 292351 275384 285034 228113 303491 303726 303966 275586 311786 302801 303038  for test set: 3 24 55 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804 268409 277205 293392 293626 275384 299706 228113 269152 305005 305239 275586 299566 291329 291742 312020 303038 304606  for test set: 3 44 50 
+added new src cut with arcs: 229054 229271 229394 229559 299919 300098 300221 261871 294406 306402 267142 310354 215175 312185 243199 252381  for test set: 7 11 26 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871 270224 229271 278683 286141 286354 286571 294189 294406 300474 300685 310565 299919 312415 310354  for test set: 8 19 35 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580 270372 248375 279023 279177 244433 286749 294561 294709 300823 300972 301094 306556 310714 252536 312537  for test set: 9 12 40 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100 295302 295447 279023 301733 301879 301998 306983 300823 301094 310981 306556 312657 300972  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313 258001 237009 242032 243803 263481 262088 279823 280038 287311 278900 295649 295860 286354 312913  for test set: 13 27 52 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416 287465 287704 287925 260614 296059 296232 296397 296583 285034 228113 307193 307432 275586 291329 291505 303280 313099 313320 302801  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778 288164 288383 260614 296782 296945 297129 228334 285034 228113 264574 307671 275586 287925 296583 272418 281416 291329 303280 313504 313723 264114  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614 297328 297501 285034 228113 264574 269152 307881 308120 275586 287925 281416 291329 291505 303280 313941 247164 302801  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409 297674 297908 298081 272836 275384 285034 264574 269152 308330 308564 308803 287925 293193 281416 291505 291742 303280 314175 314393 314568 302801 303038  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614 298280 272836 285034 228113 264574 269152 309042 275586 287925 281416 291329 303280 314786 247164  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409 298453 298687 272836 275384 285034 264574 269152 309252 309486 309725 287925 281416 291505 291742 303280 315020 315238 247164 302801 303038  for test set: 18 50 55 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968 267501 262088 283496 283710 290417 278900 299169 299378 286354 315492 279823 295649  for test set: 27 52 54 
+num src cuts added: 16
+fixing. lower bound used: 959.681
+num vars: 138740
+DUALS: -0,19.5441,17.2875,9.57718,9.34016,23.2875,8.42209,8.70442,10.4619,20.474,21.2911,30.7418,7.5962,12.5854,23.2698,15.9628,14.2721,6.80761,18.8822,12.0212,34.8597,25.0029,19.5935,15.2908,30.2769,20.793,7.80761,10.4504,24.6247,13.9685,10.2875,38.812,19.9576,18.2056,5.63375,10.1131,29.2531,20.697,22.812,13.4835,13.4038,23.5123,19.0188,22.0984,12.5728,13.1472,10.9412,21.9685,16.2875,8.3237,20.7557,8,10.4935,19.469,21.8283,22.2158,36.8076,20.9399,15.5298,38.8468,
+fixed path dual: 4.19239
+cap dual [7]: -1.53548
+cap dual [8]: -4.42538
+cap dual [11]: -1
+cap dual [25]: -1.83521
+cap dual [31]: -1.55377
+cap dual [39]: -3
+cap dual [40]: -0.540798
+cap dual [42]: -0.215801
+cap dual [49]: -5.14026
+cap dual [57]: -0.715435
+src dual [293]: -7.10543e-15
+src dual [314]: -1.77636e-15
+src dual [319]: -0.717828
+src dual [329]: -1.28456
+src dual [333]: -5.32907e-15
+src dual [334]: -0.111589
+src dual [337]: -0.174393
+src dual [338]: -1.42109e-14
+src dual [341]: -0.305048
+src dual [343]: -0.178493
+lp dual value: 963.922
+WARNING possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[19] lagIterations[25] sspIterations[375] numSeparations[112] numCuts[403] compileTime[3] sspSolveTime[48] lpSolveTime[262] lb[963.922] ub[968] numArcs: [314700] numFixed: [176253] time: [2696]
+checking cuts, max violation: 0.122165, num cuts: 1
+new capacity cutset: 10 31 38 58 <= 2
+added new src cut with arcs: 253732 272836 277205 291329 291742 228113 247343 253506 269318 275384 311551  for test set: 3 25 44 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804 268409 277205 293392 293626 275384 299706 228113 269152 305005 305239 275586 299566 291329 291742 312020 303038 304606 269318 311551  for test set: 3 44 50 
+added new src cut with arcs: 253732 272836 277205 291329 291742 228113 247343 253506 269318 275384 311551  for test set: 3 44 55 
+added new src cut with arcs: 250936 251058 222552 256758 249889 237173 278553 285897 305857 315977  for test set: 4 34 45 
+added new src cut with arcs: 251269 219088 242384 257122 215928 218868 271148 280231 256941 247709 306068 235485 316144  for test set: 5 20 29 
+added new src cut with arcs: 251478 219088 242384 257302 215928 218868 271148 280231 256941 247709 306277 235485 306068 316309  for test set: 5 29 37 
+added new src cut with arcs: 229054 229271 229394 229559 299919 300098 300221 261871 294406 306402 267142 310354 215175 312185 243199 252381 236253  for test set: 7 11 26 
+added new src cut with arcs: 211826 269152 272836 277205 316433 247164 247343 253506 269318  for test set: 9 32 44 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820 262728 270670 295149 301597 295003 301213 310834 316553  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100 295302 295447 279023 301733 301879 301998 306983 300823 301094 310981 306556 312657 300972 316760 316915 317069 237504  for test set: 12 39 40 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416 287465 287704 287925 260614 296059 296232 296397 296583 285034 228113 307193 307432 275586 291329 291505 303280 313099 313320 302801 317234  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778 288164 288383 260614 296782 296945 297129 228334 285034 228113 264574 307671 275586 287925 296583 272418 281416 291329 303280 313504 313723 264114 317397 313099 313320  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614 297328 297501 285034 228113 264574 269152 307881 308120 275586 287925 281416 291329 291505 303280 313941 247164 302801 317559 313320  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409 297674 297908 298081 272836 275384 285034 264574 269152 308330 308564 308803 287925 293193 281416 291505 291742 303280 314175 314393 314568 302801 303038 317721 311551 313320  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614 298280 272836 285034 228113 264574 269152 309042 275586 287925 281416 291329 303280 314786 247164 317883 313320  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409 298453 298687 272836 275384 285034 264574 269152 309252 309486 309725 287925 281416 291505 291742 303280 315020 315238 247164 302801 303038 318045 311551 313320  for test set: 18 50 55 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202 283901 290587 218868 280231 254046 302279 309933 306068 318222  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202 284092 290755 218868 280231 254046 302437 310141 290587 306068 318397  for test set: 29 47 48 
+added new src cut with arcs: 318514 211715 212378 244177  for test set: 31 38 58 
+num src cuts added: 19
+fixing. lower bound used: 961.996
+num vars: 96569
+DUALS: -0,20.3568,17.0122,10.2471,9.54068,24.3595,8.43817,9.32092,10.3541,20.0624,21.52,30.5015,7.39519,13.621,24.3703,16.2585,15.0835,6.8861,19.4652,13.4962,35.7112,26.1312,20.0401,15.496,29.4825,19.8469,7.54068,10.8486,24.6744,14.8203,10.6385,39.2585,19.8115,18.7411,6.61024,10.2187,30.0485,22.5519,23.2585,13.771,13.2594,23.7023,19.4661,22.2725,12.4492,13.7032,10.8022,22.7795,16.7977,8.38841,20.6891,8.34542,10.8486,19.8224,22.5054,22.8633,37.2425,21.4686,15.2585,40.0826,
+fixed path dual: 4.45932
+cap dual [7]: -0.915684
+cap dual [8]: -4.42597
+cap dual [11]: -0.438285
+cap dual [14]: -0.626345
+cap dual [25]: -2
+cap dual [31]: -1.55207
+cap dual [39]: -3.56172
+cap dual [42]: -0.468997
+cap dual [45]: -0.273305
+cap dual [49]: -5.09456
+cap dual [50]: -1.04638
+cap dual [52]: -0.626928
+cap dual [56]: -0.165113
+cap dual [57]: -1.49263
+cap dual [58]: -0.196127
+src dual [329]: -0.507368
+src dual [334]: -0.755813
+src dual [337]: -0.139311
+src dual [346]: -0.749046
+src dual [348]: -0.76168
+src dual [349]: -0.561715
+src dual [351]: -0.20796
+src dual [353]: -1
+src dual [355]: -0.152667
+src dual [361]: -3.55271e-15
+lp dual value: 964.429
+STATS - lpIterations[20] lagIterations[25] sspIterations[375] numSeparations[112] numCuts[423] compileTime[3] sspSolveTime[48] lpSolveTime[277] lb[964.429] ub[968] numArcs: [317370] numFixed: [221094] time: [2912]
+no rcc cuts found
+added new src cut with arcs: 209315 209493 209719 209924 210145 227911 228113 228334 234896 318718 291742 317234  for test set: 3 24 50 
+added new src cut with arcs: 210367 210543 210767 210970 211189 228510 228710 228929 235059 209493 209924 318920 209719 210145 227911 228113 291742 317234  for test set: 3 49 50 
+added new src cut with arcs: 218657 218868 219088 319080 319268 271148 271602 306068  for test set: 5 20 36 
+added new src cut with arcs: 219860 220068 220285 319426 319612 218657 271148 271602 306068  for test set: 5 36 37 
+added new src cut with arcs: 229054 229271 229394 229559 299919 300098 300221 261871 294406 306402 267142 310354 215175 312185 243199 252381 236253 319718 286571  for test set: 7 11 26 
+added new src cut with arcs: 211402 243928 272836 312537 316433 316760  for test set: 9 25 39 
+added new src cut with arcs: 211826 269152 272836 277205 316433 247164 247343 253506 269318 227911 243928  for test set: 9 32 44 
+added new src cut with arcs: 211402 243928 272836 312537 316433 316760  for test set: 9 39 55 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100 295302 295447 279023 301733 301879 301998 306983 300823 301094 310981 306556 312657 300972 316760 316915 317069 237504 262458 312537  for test set: 12 39 40 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614 297328 297501 285034 228113 264574 269152 307881 308120 275586 287925 281416 291329 291505 303280 313941 247164 302801 317559 313320 319924 317234  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409 297674 297908 298081 272836 275384 285034 264574 269152 308330 308564 308803 287925 293193 281416 291505 291742 303280 314175 314393 314568 302801 303038 317721 311551 313320 317234  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614 298280 272836 285034 228113 264574 269152 309042 275586 287925 281416 291329 303280 314786 247164 317883 313320 320128 317234  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409 298453 298687 272836 275384 285034 264574 269152 309252 309486 309725 287925 281416 291505 291742 303280 315020 315238 247164 302801 303038 318045 311551 313320 317234  for test set: 18 50 55 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968 267501 262088 283496 283710 290417 278900 299169 299378 286354 315492 279823 295649 320358 320542 312913  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202 283901 290587 218868 280231 254046 302279 309933 306068 318222 320712  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202 284092 290755 218868 280231 254046 302437 310141 290587 306068 318397 320880  for test set: 29 47 48 
+added new src cut with arcs: 250168 250326 222552 321073 321246 321368 249889  for test set: 34 46 52 
+num src cuts added: 17
+fixing. lower bound used: 960.156
+num vars: 115576
+DUALS: -0,21.0162,17.5349,10.2789,8.99272,25.2425,9.01621,9.61727,11.3923,20.8234,21.7327,31.2279,7.54648,14.9636,25.2342,16.9282,15.784,6.90705,19.7737,13.9782,36.2425,27.1634,21.9491,16.4863,29.8214,21.4112,6.99272,11.8138,24.7929,15.8138,11.7493,39.1737,20.0536,18.6742,7.2352,11.3334,30.6212,24.3133,23.2865,14.1446,12.5392,23.7155,19.9904,22.7033,12.782,13.9854,11.2279,23.8564,17.3569,9.38406,20.9266,8.91432,11.8138,19.6934,23.821,22.26,37.2074,22.2352,15.7106,40.4962,
+fixed path dual: 5.00728
+cap dual [0]: -1.54449
+cap dual [7]: -0.687066
+cap dual [8]: -3.04135
+cap dual [14]: -0.750248
+cap dual [25]: -1.82732
+cap dual [30]: -0.464109
+cap dual [31]: -2.51439
+cap dual [36]: -0.114456
+cap dual [39]: -3.88554
+cap dual [46]: -0.127688
+cap dual [49]: -5.0999
+cap dual [50]: -1.00728
+cap dual [52]: -0.35263
+cap dual [56]: -0.164406
+cap dual [57]: -1.36255
+src dual [252]: -1.42109e-14
+src dual [329]: -0.585842
+src dual [330]: -2.13163e-14
+src dual [337]: -0.578564
+src dual [348]: -0.178961
+src dual [349]: -0.885544
+src dual [353]: -0.708237
+lp dual value: 963.82
+WARNING possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[21] lagIterations[25] sspIterations[375] numSeparations[117] numCuts[440] compileTime[3] sspSolveTime[48] lpSolveTime[296] lb[963.82] ub[968] numArcs: [320664] numFixed: [205381] time: [3187]
+no rcc cuts found
+added new src cut with arcs: 260614 209719 245075 253732 268409 209924 245316 246989 275158 275384 275586 285034 249001 291329 291505 291742 228113 302801 303038 303280 311551 322026  for test set: 3 24 25 
+added new src cut with arcs: 260854 209719 245075 253732 268599 209924 245316 246989 275772 275996 276196 285274 249001 260614 268409 291942 292116 292351 275384 285034 228113 303491 303726 303966 275586 311786 302801 303038 322226 291329 303280 311551  for test set: 3 24 55 
+added new src cut with arcs: 261093 209719 245075 253732 268788 209924 245316 246989 276381 276604 276803 285513 249001 260614 268409 292550 292784 275384 285034 228113 304200 304439 275586 322425 291329 303280 311551  for test set: 3 25 49 
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804 268409 277205 293392 293626 275384 299706 228113 269152 305005 305239 275586 299566 291329 291742 312020 303038 304606 269318 311551 322624 322799  for test set: 3 44 50 
+added new src cut with arcs: 261332 209719 245075 253732 270033 209924 245316 246989 277989 278212 278411 285752 249001 260614 268409 293825 294059 275384 285034 228113 305473 305712 275586 322998 291329 303280 311551  for test set: 3 49 55 
+added new src cut with arcs: 218657 218868 219088 319080 319268 271148 271602 306068 258224 280231  for test set: 5 20 36 
+added new src cut with arcs: 219261 219470 219688 218657 219088 258224 280231 319080  for test set: 5 20 47 
+added new src cut with arcs: 219860 220068 220285 319426 319612 218657 271148 271602 306068 219088 258224 280231 319080 319268  for test set: 5 36 37 
+added new src cut with arcs: 220457 220665 220882 218657 219088 258224 280231 319080  for test set: 5 37 47 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871 270224 229271 278683 286141 286354 286571 294189 294406 300474 300685 310565 299919 312415 310354 323189 323406  for test set: 8 19 35 
+added new src cut with arcs: 221037 221160 211402 230657 230806 237504 262458 262580 270372 248375 279023 279177 244433 286749 294561 294709 300823 300972 301094 306556 310714 252536 312537 323528 317069  for test set: 9 12 40 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790 262728 262848 230806 270518 270670 262580 279329 286925 294855 295003 301213 301360 301480 306708 306832 301094 323714 323862 323982 294709 317069  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820 262728 270670 295149 301597 295003 301213 310834 316553 324128  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100 295302 295447 279023 301733 301879 301998 306983 300823 301094 310981 306556 312657 300972 316760 316915 317069 237504 262458 312537 324312 324431 294709  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313 258001 237009 242032 243803 263481 262088 279823 280038 287311 278900 295649 295860 286354 312913 324632 248253  for test set: 13 27 52 
+added new src cut with arcs: 222760 222977 223204 258224 258404 215928 219088 242032 263716 221763 251269 271148 271407 271602 280231 280458 256941 235318 312913  for test set: 15 20 29 
+added new src cut with arcs: 223412 223629 223855 258624 258804 215928 219088 242032 263949 221763 251269 258224 271783 272040 272232 280649 280875 271602 256941 271148 280231 235318 271407 312913  for test set: 15 29 37 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416 287465 287704 287925 260614 296059 296232 296397 296583 285034 228113 307193 307432 275586 291329 291505 303280 313099 313320 302801 317234 324760 324959  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778 288164 288383 260614 296782 296945 297129 228334 285034 228113 264574 307671 275586 287925 296583 272418 281416 291329 303280 313504 313723 264114 317397 313099 313320 325158  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614 297328 297501 285034 228113 264574 269152 307881 308120 275586 287925 281416 291329 291505 303280 313941 247164 302801 317559 313320 319924 317234 325357 325591 325764  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409 297674 297908 298081 272836 275384 285034 264574 269152 308330 308564 308803 287925 293193 281416 291505 291742 303280 314175 314393 314568 302801 303038 317721 311551 313320 317234 325996 326168  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614 298280 272836 285034 228113 264574 269152 309042 275586 287925 281416 291329 303280 314786 247164 317883 313320 320128 317234 326367 326598 326770  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409 298453 298687 272836 275384 285034 264574 269152 309252 309486 309725 287925 281416 291505 291742 303280 315020 315238 247164 302801 303038 318045 311551 313320 317234 327001 327173  for test set: 18 50 55 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052 267142 267287 229394 274745 262728 270670 298832 298969 302119 295003 300221 327296 327441 252381  for test set: 26 38 58 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968 267501 262088 283496 283710 290417 278900 299169 299378 286354 315492 279823 295649 320358 320542 312913 327640 248253  for test set: 27 52 54 
+added new src cut with arcs: 215599 215734 215928 216096 225898 226073 213663 214090 254913 255073 255241 224683 259751 245909 251269 259202 283901 290587 218868 280231 254046 302279 309933 306068 318222 320712 327809  for test set: 29 36 48 
+added new src cut with arcs: 216254 216388 216580 216747 226932 227106 213663 214090 255449 255607 255774 224683 259918 215928 245909 251269 255073 259202 284092 290755 218868 280231 254046 302437 310141 290587 306068 318397 320880 327976 320712  for test set: 29 47 48 
+num src cuts added: 27
+fixing. lower bound used: 961.934
+num vars: 135963
+DUALS: -0,19.8191,17.7437,10.4734,9.22864,24.154,9.22637,9.29555,11.3019,20.9284,21.9271,31.3082,7.60619,14.4514,24.5584,16.4628,15.6445,6.78761,19.7079,12.927,35.5266,26.3727,21.0324,16.5243,30.3717,20.6017,7.22864,11.2288,24.9205,15.4628,11.3711,39.1733,20.3591,18.4379,6.83845,11.5274,30.2364,23.2319,23.2161,13.9897,12.8348,23.4534,19.6922,22.5453,12.6571,14.0826,11.4512,22.9971,17.8554,9.60984,21.0774,8.55897,11.2288,19.94,23.0095,23.4307,36.6445,22.0796,15.8856,39.5969,
+fixed path dual: 4.77136
+cap dual [7]: -1.65749
+cap dual [8]: -3.65979
+cap dual [11]: -0.850718
+cap dual [14]: -0.236966
+cap dual [25]: -1.90145
+cap dual [30]: -0.390398
+cap dual [31]: -2.5243
+cap dual [39]: -3.14928
+cap dual [40]: -0.619771
+cap dual [41]: -0.0661818
+cap dual [49]: -4.91451
+cap dual [50]: -0.091731
+cap dual [52]: -0.266532
+cap dual [57]: -1
+src dual [329]: -0.998347
+src dual [348]: -0.241013
+src dual [349]: -0.149282
+src dual [381]: -0.430689
+src dual [390]: -0.384071
+src dual [393]: -0.751565
+src dual [395]: -1.05471e-15
+src dual [403]: -5.32907e-15
+src dual [406]: -0.850718
+lp dual value: 963.981
+STATS - lpIterations[22] lagIterations[25] sspIterations[375] numSeparations[119] numCuts[467] compileTime[3] sspSolveTime[48] lpSolveTime[320] lb[963.981] ub[968] numArcs: [326941] numFixed: [191271] time: [3518]
+no rcc cuts found
+added new src cut with arcs: 246989 247164 247343 209719 245075 256613 215052 253732 269507 269680 269844 209924 277428 277627 277804 268409 277205 293392 293626 275384 299706 228113 269152 305005 305239 275586 299566 291329 291742 312020 303038 304606 269318 311551 322624 322799 328357 322026  for test set: 3 44 50 
+added new src cut with arcs: 218657 218868 219088 319080 319268 271148 271602 306068 258224 280231 328568 256941  for test set: 5 20 36 
+added new src cut with arcs: 219860 220068 220285 319426 319612 218657 271148 271602 306068 219088 258224 280231 319080 319268 328777 218868 256941  for test set: 5 36 37 
+added new src cut with arcs: 229054 229271 229394 229559 299919 300098 300221 261871 294406 306402 267142 310354 215175 312185 243199 252381 236253 319718 286571 328990 329115 329332  for test set: 7 11 26 
+added new src cut with arcs: 229738 229881 230097 230313 230528 243199 243390 221976 222385 251595 251738 251968 252159 257665 237009 261475 261654 261871 270224 229271 278683 286141 286354 286571 294189 294406 300474 300685 310565 299919 312415 310354 323189 323406 329543 329758 329933  for test set: 8 19 35 
+added new src cut with arcs: 211308 211402 211567 211715 211826 230919 231066 231214 237651 237802 243928 248375 257790 262728 262848 230806 270518 270670 262580 279329 286925 294855 295003 301213 301360 301480 306708 306832 301094 323714 323862 323982 294709 317069 330089 316433  for test set: 9 31 39 
+added new src cut with arcs: 211943 212106 212252 212378 231325 231471 211567 237951 211308 231214 244052 244177 237802 230919 252282 211715 262994 270820 262728 270670 295149 301597 295003 301213 310834 316553 324128 323862  for test set: 10 31 58 
+added new src cut with arcs: 221420 221534 211402 231591 231737 211567 238097 238245 221160 244433 237802 248599 230657 252536 248375 263147 263266 230806 270965 262580 279443 279594 287100 295302 295447 279023 301733 301879 301998 306983 300823 301094 310981 306556 312657 300972 316760 316915 317069 237504 262458 312537 324312 324431 294709 330243 330381 323714  for test set: 12 39 40 
+added new src cut with arcs: 221763 221976 222178 222385 222552 238454 238659 238821 238996 244686 244886 237173 237355 248774 236802 252792 252976 230097 230313 258001 237009 242032 243803 263481 262088 279823 280038 287311 278900 295649 295860 286354 312913 324632 248253 330583  for test set: 13 27 52 
+added new src cut with arcs: 222760 222977 223204 258224 258404 215928 219088 242032 263716 221763 251269 271148 271407 271602 280231 280458 256941 235318 312913 330791 218868 252792  for test set: 15 20 29 
+added new src cut with arcs: 223412 223629 223855 258624 258804 215928 219088 242032 263949 221763 251269 258224 271783 272040 272232 280649 280875 271602 256941 271148 280231 235318 271407 312913 330999 218868 252792  for test set: 15 29 37 
+added new src cut with arcs: 212521 212723 212941 231936 232122 232340 239173 239335 209924 249001 249186 234896 245075 253141 228334 264114 264353 264574 272418 210145 245316 281052 281251 281416 287465 287704 287925 260614 296059 296232 296397 296583 285034 228113 307193 307432 275586 291329 291505 303280 313099 313320 302801 317234 324760 324959 331185 331406 322026  for test set: 16 24 51 
+added new src cut with arcs: 213082 213284 213502 232539 232723 232941 212521 239497 209924 232122 249411 249594 234896 245075 253304 249001 264737 264976 265195 249186 272602 210145 245316 253141 281615 281778 288164 288383 260614 296782 296945 297129 228334 285034 228113 264574 307671 275586 287925 296583 272418 281416 291329 303280 313504 313723 264114 317397 313099 313320 325158 331590 331809 296397 322026  for test set: 16 49 51 
+added new src cut with arcs: 245075 245316 215052 228334 249001 253506 265433 265651 234896 272836 273008 209924 210145 281977 282139 288621 288839 260614 297328 297501 285034 228113 264574 269152 307881 308120 275586 287925 281416 291329 291505 303280 313941 247164 302801 317559 313320 319924 317234 325357 325591 325764 332027 322026 322799  for test set: 18 24 44 
+added new src cut with arcs: 253506 253732 253876 234896 247164 249001 209719 215052 228334 265889 266107 273197 273429 273601 210145 245316 246989 282362 282524 289077 289295 260614 268409 297674 297908 298081 272836 275384 285034 264574 269152 308330 308564 308803 287925 293193 281416 291505 291742 303280 314175 314393 314568 302801 303038 317721 311551 313320 317234 325996 326168 332262 332480 322799 325591  for test set: 18 25 50 
+added new src cut with arcs: 245503 245742 215052 228334 245075 249001 253506 266345 266563 234896 273832 274004 209924 210145 245316 282723 282885 289533 289751 260614 298280 272836 285034 228113 264574 269152 309042 275586 287925 281416 291329 303280 314786 247164 317883 313320 320128 317234 326367 326598 326770 332698 322026 322799 325591  for test set: 18 44 49 
+added new src cut with arcs: 209719 215052 228334 249001 253506 266801 267019 234896 253732 274193 274424 274596 210145 245316 246989 283108 283270 289989 290207 260614 268409 298453 298687 272836 275384 285034 264574 269152 309252 309486 309725 287925 281416 291505 291742 303280 315020 315238 247164 302801 303038 318045 311551 313320 317234 327001 327173 332932 333150 322799 325591  for test set: 18 50 55 
+added new src cut with arcs: 215175 215320 215440 212378 231214 211715 244052 267142 267287 229394 274745 262728 270670 298832 298969 302119 295003 300221 327296 327441 252381 323862  for test set: 26 38 58 
+added new src cut with arcs: 224909 225120 225320 225525 225690 240614 240818 240979 241153 221763 221976 246162 246361 222385 237173 237355 249768 222552 236802 254300 254528 254705 222178 230097 230313 259584 237009 242032 243803 251968 267501 262088 283496 283710 290417 278900 299169 299378 286354 315492 279823 295649 320358 320542 312913 327640 248253 333350 252792  for test set: 27 52 54 
+num src cuts added: 19
+fixing. lower bound used: 960.51
