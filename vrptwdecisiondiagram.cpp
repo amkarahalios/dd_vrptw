@@ -1284,21 +1284,10 @@ void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
   // clear src relaxed arcs
   clearRelaxedSrcs();
 
-  for (int index=0; index<cliqueCuts.size(); ++index)
+  std::vector<int> longestPathDown(nodes.size(), 0);
+  if (cliqueCuts.size() > 0)
   {
-    std::map<int,std::set<int>> counterArcIndices;
-    auto largestSet = cliqueCuts[index];
-    int layer = averageRouteLength;
-
-    // calculate min times visiting C for each node, Down and Up
-    std::vector<int> shortestPathDown(nodes.size(), INF);
-    shortestPathDown[rootNodeIndex] = 0;
-    std::vector<int> shortestPathUp(nodes.size(), INF);
-    shortestPathUp[terminalNodeIndex] = 0;
-
     // when counter not used, need to calculate longest path down
-    std::vector<int> longestPathDown(nodes.size(), INF);
-    longestPathDown[rootNodeIndex] = 0;
     if (vrptw.counterType == VRPTWCounterType::NO_USE_COUNTER)
     {
       for (auto capNodeIndices : nodeOrdering)
@@ -1307,8 +1296,13 @@ void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
         {
           for (int arcIndex : nodes[nodeIndex].outArcs)
           {
+            // NOTE(TODO) Ensure no conflict with separated out ones
             int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
             int toNodeIndex = arcs[arcIndex].toNodeIndex;
+            if ((fromNodeIndex == 0) && (toNodeIndex == 0))
+            {
+              longestPathDown[toNodeIndex] = INF;
+            }
 
             int possibleNewLongest = longestPathDown[fromNodeIndex] + 1;
             if (possibleNewLongest > longestPathDown[toNodeIndex])
@@ -1319,6 +1313,19 @@ void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
         }
       }
     }
+  }
+
+  int layer = averageRouteLength;
+  for (int index=0; index<cliqueCuts.size(); ++index)
+  {
+    std::map<int,std::set<int>> counterArcIndices;
+    auto largestSet = cliqueCuts[index];
+
+    // calculate min times visiting C for each node, Down and Up
+    std::vector<int> shortestPathDown(nodes.size(), INF);
+    shortestPathDown[rootNodeIndex] = 0;
+    std::vector<int> shortestPathUp(nodes.size(), INF);
+    shortestPathUp[terminalNodeIndex] = 0;
 
     for (auto capNodeIndices : nodeOrdering)
     {
@@ -1378,12 +1385,6 @@ void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
     auto arcSet = counterArcIndices[layer];
     for (int arcIndex : arcSet)
     {
-      // check if part of separated
-      if (std::find(cliqueCutSeparatedArcs[index].begin(), cliqueCutSeparatedArcs[index].end(), arcIndex) != cliqueCutSeparatedArcs[index].end())
-      {
-        continue;
-      }
-
       int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
       int toNodeIndex = arcs[arcIndex].toNodeIndex;
       int minNumVisited = shortestPathDown[fromNodeIndex] + shortestPathUp[toNodeIndex];
@@ -1398,19 +1399,21 @@ void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
       if (minNumVisited >= 4)
       {
         coeff = 2;
+        bestLayerCoeffs.push_back(coeff);
+        bestLayerArcs.push_back(arcIndex);
       }
       else if (minNumVisited > 1)
       {
         coeff = 1;
+        bestLayerCoeffs.push_back(coeff);
+        bestLayerArcs.push_back(arcIndex);
       }
-
-      bestLayerCoeffs.push_back(coeff);
-      bestLayerArcs.push_back(arcIndex);
-      std::cout << "strengthen src " << index << "by adding arc: " << arcIndex << std::endl;
+      //std::cout << "strengthen src " << index << " by adding arc: " << arcIndex << std::endl;
     }
 
     cliqueCutRelaxedArcs[index] = bestLayerArcs;
     cliqueCutRelaxedCoeffs[index] = bestLayerCoeffs;
+    std::cout << "strengthened cut " << index << " with " << bestLayerArcs.size() << " arcs" << std::endl;
   }
 };
 
