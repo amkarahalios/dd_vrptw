@@ -12,7 +12,7 @@
 #include <fstream>
 #include <sstream>
 
-const long INF = 1e10;
+const long INF = 1e9;
 
 enum ProblemType
 {

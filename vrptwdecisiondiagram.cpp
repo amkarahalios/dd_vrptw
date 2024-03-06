@@ -851,13 +851,13 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
       VRPTWArc& arc = arcs[arcIndex];
       if (solveType == LPSolveType::LPSolver)
       {
-        arc.coeff = arc.coeff + capDuals[capCutIndex];
-        arc.cijPi = arc.cijPi + capDuals[capCutIndex];
+        arc.coeff = arc.coeff - capDuals[capCutIndex];
+        arc.cijPi = arc.cijPi - capDuals[capCutIndex];
       }
       else
       {
-        arc.coeff = arc.coeff - capDuals[capCutIndex];
-        arc.cijPi = arc.cijPi - capDuals[capCutIndex];
+        arc.coeff = arc.coeff + capDuals[capCutIndex];
+        arc.cijPi = arc.cijPi + capDuals[capCutIndex];
       }
     }
   }
@@ -888,13 +888,13 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
         VRPTWArc& arc = arcs[arcIndex];
         if (solveType == LPSolveType::LPSolver)
         {
-          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
         }
         else
         {
-          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
         }
       }
  
@@ -908,13 +908,13 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
         VRPTWArc& arc = arcs[arcIndex];
         if (solveType == LPSolveType::LPSolver)
         {
-          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
         }
         else
         {
-          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
         }
       }
     }
@@ -2120,15 +2120,18 @@ double VRPTWDecisionDiagram::getDualObjectiveValue(const std::vector<double>& la
 
   for (int dualIndex=0; dualIndex<cliqueCuts.size(); ++dualIndex)
   {
-    SRCType srcType = cliqueCutTypes[dualIndex];
-    int rhs = getSRCRHS(srcType);
-    if (solveType == LPSolveType::LPSolver)
+    if (isCliqueCutActive(dualIndex))
     {
-      lowerBound += srcDuals[dualIndex] * rhs;
-    }
-    else
-    {
-      lowerBound -= srcDuals[dualIndex] * rhs;
+      SRCType srcType = cliqueCutTypes[dualIndex];
+      int rhs = getSRCRHS(srcType);
+      if (solveType == LPSolveType::LPSolver)
+      {
+        lowerBound += srcDuals[dualIndex] * rhs;
+      }
+      else
+      {
+        lowerBound -= srcDuals[dualIndex] * rhs;
+      }
     }
   }
   lowerBound = lowerBound + fixedPathDual*vrptw.numVehicles;

@@ -397,7 +397,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         {
           if (params.useVariableFixing)
           {
-            repairMultipliers(lambda, fixedPathDual, mu, combDuals, srcDuals, LPSolveType::LAGSolver);
+            repairMultipliers(lambda, fixedPathDual, mu, combDuals, srcDuals, LPSolveType::LPSolver);
             percentArcsFixed = routeDD.fixArcs(lambda, fixedPathDual, mu, combDuals, srcDuals, params.lpSolveType);
           }
         }
@@ -411,12 +411,11 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       }
 
       // TODO(akarahal) store best duals for arc fixing better
-      /*
       if (params.useVariableFixing)
       {
+        repairMultipliers(bestLambdaArcFixing, bestFixedPathDualFixing, bestMuArcFixing, bestCombArcFixing, bestSrcArcFixing, LPSolveType::LAGSolver);
         routeDD.fixArcs(bestLambdaArcFixing, bestFixedPathDualFixing, bestMuArcFixing, bestCombArcFixing, bestSrcArcFixing, params.lpSolveType);
       }
-      */
 
       if (lpFlowType == FlowType::LP)
       {
@@ -515,6 +514,10 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         }
 
         addSRCCuts(srcDuals);
+ 
+        bestMuArcFixing.resize(mu.size());
+        bestCombArcFixing.resize(combDuals.size());
+        bestSrcArcFixing.resize(srcDuals.size());
       }
 
       bool stopFindingInfeasibilities = false;
@@ -1000,7 +1003,10 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
 
   // alphaFactor=1 but is kept from previous idea to half step size when no progress
   alpha = alpha * alphaFactor;
-  //std::cout << "alpha: " << alpha << std::endl;
+  std::cout << "alpha: " << alpha << std::endl;
+  std::cout << "psiStar: " << psiStar << std::endl;
+  std::cout << "lagLB: " << lagrangeanLowerBound << std::endl;
+  std::cout << "||gamma||^2: " << normGammaSquared << std::endl;
 
   DBG(printMultipliers(lambda, mu, srcDuals);)
 
@@ -1060,6 +1066,8 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
       }
     }
   }
+ 
+  // TODO(akarhal) same for SRC - remove if too small for too long
 };
 
 bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals)
@@ -1103,9 +1111,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       double percentFixed = 0.0;
       if (params.useVariableFixing && (bestLambdaPercentFixed > 0.001))
       {
-        std::vector<double> emptyComb;
-        std::vector<double> emptySrc;
-        routeDD.fixArcs(bestLambdaArcFixing, bestFixedPathDualFixing, bestMuArcFixing, emptyComb, emptySrc, params.lpSolveType);
+        repairMultipliers(bestLambdaArcFixing, bestFixedPathDualFixing, bestMuArcFixing, bestCombArcFixing, bestSrcArcFixing, LPSolveType::LAGSolver);
+        routeDD.fixArcs(bestLambdaArcFixing, bestFixedPathDualFixing, bestMuArcFixing, bestCombArcFixing, bestSrcArcFixing, LPSolveType::LAGSolver);
       }
 
       int notMuSSPSeconds = 0;
@@ -1234,6 +1241,31 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       routeDD.decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, params.maxS, DecompositionReason::DECOMPOSE);
       if (params.useCuts)
       {
+        // use weighting 95% previous, 5% current
+        double alpha = 0.05;
+        int firstNonZeroIndex = INF;
+        for (int flowIndex=0; flowIndex<xDecompositionFlows.size(); ++flowIndex)
+        {
+          double newFlow = (1 - alpha) * xDecompositionFlows[flowIndex];
+          if (newFlow > 0.0001)
+          {
+            xDecompositionFlows[flowIndex] = (1 - alpha) * xDecompositionFlows[flowIndex];
+            firstNonZeroIndex = std::min(firstNonZeroIndex, flowIndex);
+          }
+          else
+          {
+            xDecompositionFlows[flowIndex] = 0;
+          }
+        }
+
+        // erase any 0 flow if too small
+        if ((firstNonZeroIndex > 0) && (firstNonZeroIndex < INF))
+        {
+          xDecompositions.erase(xDecompositions.begin(), xDecompositions.begin() + firstNonZeroIndex);
+          xDecompositionArcs.erase(xDecompositionArcs.begin(), xDecompositionArcs.begin() + firstNonZeroIndex);
+          xDecompositionFlows.erase(xDecompositionFlows.begin(), xDecompositionFlows.begin() + firstNonZeroIndex);
+        }
+
         for (int index=0; index<decomposedRoutes.size(); ++index)
         {
           auto route = decomposedRoutes[index];
@@ -1242,13 +1274,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
           {
             xDecompositions.push_back(route);
             xDecompositionArcs.push_back(routeArcs);
-
-            // adjust flows
-            double alpha = 0.05;
-            for (int flowIndex=0; flowIndex<xDecompositionFlows.size(); ++flowIndex)
-            {
-              xDecompositionFlows[flowIndex] = (1 - alpha) * xDecompositionFlows[flowIndex];
-            }
             xDecompositionFlows.push_back(alpha);
           }
         }
@@ -1300,6 +1325,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       {
         if (params.useVariableFixing)
         {
+          repairMultipliers(repairedLambda, fixedPathDual, mu, combDuals, srcDuals, LPSolveType::LAGSolver);
           percentFixed = routeDD.fixArcs(repairedLambda, fixedPathDual, mu, combDuals, srcDuals, params.lpSolveType);
           std::cout << "percent fixed: " << percentFixed << std::endl;
         }
@@ -1316,14 +1342,15 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
           {
             bestMuArcFixing[index] = mu[index];
           }
+          for (int index=0; index<combDuals.size(); ++index)
+          {
+            bestCombArcFixing[index] = combDuals[index];
+          }
+          for (int index=0; index<srcDuals.size(); ++index)
+          {
+            bestSrcArcFixing[index] = srcDuals[index];
+          }
         }
-
-        double checkLambdaLB = 0.0;
-        for (double dual : repairedLambda)
-        {
-          checkLambdaLB += dual;
-        }
-        DBG(std::cout << "check lb sum lambda: " << checkLambdaLB << std::endl;)
       }
       else
       {
@@ -1442,6 +1469,33 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         }
       }
       xDecompositionArcs = newXDecompositionArcs;
+
+      double totalFlow = 0;
+      std::vector<double> flowByVertex(vrptw.numLocations, 0);
+      for (int index=0; index<xDecompositionFlows.size(); ++index)
+      {
+        double flow = xDecompositionFlows[index];
+        totalFlow += flow;
+        auto route = xDecompositions[index];
+        std::cout << "route with flow " << flow << " : ";
+        for (int loc : route)
+        {
+          flowByVertex[loc] += flow;
+          std::cout << loc << ",";
+        }
+        std::cout << " ";
+        auto routeArcs = xDecompositionArcs[index];
+        for (int arcIndex : routeArcs)
+        {
+          std::cout << arcIndex << ",";
+        }
+        std::cout << std::endl;
+      }
+      std::cout << "total flow: " << totalFlow << std::endl;
+      for (int index=0; index<vrptw.numLocations; ++index)
+      {
+        std::cout << "loc: " << index << " flow: " << flowByVertex[index] << std::endl;
+      }
       int numSrcAdded = routeDD.findSRC3s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
       numSrcAdded += routeDD.findSRC4s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
       if (numSrcAdded > 0)
@@ -1453,6 +1507,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
 
       mu.resize(routeDD.getNumCapCuts());
       bestMuArcFixing.resize(mu.size());
+      bestCombArcFixing.resize(combDuals.size());
+      bestSrcArcFixing.resize(srcDuals.size());
       cutTooSmallCounters.resize(mu.size());
 
       xDecompositions.clear();
@@ -1471,9 +1527,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       std::vector<double> rccArcFlows;
       convertArcIndicesForVRPTWSep(xDecompositionFlows, xDecompositions, edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
       addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded);
-      mu.resize(routeDD.getNumCapCuts());
-      bestMuArcFixing.resize(mu.size());
-      cutTooSmallCounters.resize(mu.size());
 
       // Strengthened Combs
       //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
@@ -1497,6 +1550,34 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         }
       }
       xDecompositionArcs = newXDecompositionArcs;
+
+      double totalFlow = 0;
+      std::vector<double> flowByVertex(vrptw.numLocations, 0);
+      for (int index=0; index<xDecompositionFlows.size(); ++index)
+      {
+        double flow = xDecompositionFlows[index];
+        totalFlow += flow;
+        auto route = xDecompositions[index];
+        std::cout << "route with flow " << flow << " : ";
+        for (int loc : route)
+        {
+          flowByVertex[loc] += flow;
+          std::cout << loc << ",";
+        }
+        std::cout << " ";
+        auto routeArcs = xDecompositionArcs[index];
+        for (int arcIndex : routeArcs)
+        {
+          std::cout << arcIndex << ",";
+        }
+        std::cout << std::endl;
+      }
+      std::cout << "total flow: " << totalFlow << std::endl;
+      for (int index=0; index<vrptw.numLocations; ++index)
+      {
+        std::cout << "loc: " << index << " flow: " << flowByVertex[index] << std::endl;
+      }
+
       int numSrcAdded = routeDD.findSRC3s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
       numSrcAdded += routeDD.findSRC4s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
       if (numSrcAdded > 0)
@@ -1505,6 +1586,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         stats.numCuts += numSrcAdded;
       }
       addSRCCuts(srcDuals);
+ 
+      mu.resize(routeDD.getNumCapCuts());
+      bestMuArcFixing.resize(mu.size());
+      bestCombArcFixing.resize(combDuals.size());
+      bestSrcArcFixing.resize(srcDuals.size());
+      cutTooSmallCounters.resize(mu.size());
 
       xDecompositions.clear();
       xDecompositionArcs.clear();
