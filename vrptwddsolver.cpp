@@ -1442,11 +1442,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         }
       }
       xDecompositionArcs = newXDecompositionArcs;
-      int numAdded = routeDD.findSRC3s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
-      if (numAdded > 0)
+      int numSrcAdded = routeDD.findSRC3s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
+      numSrcAdded += routeDD.findSRC4s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
+      if (numSrcAdded > 0)
       {
         cutAdded = true;
-        stats.numCuts = stats.numCuts + numAdded;
+        stats.numCuts += numSrcAdded;
       }
       addSRCCuts(srcDuals);
 
@@ -1455,6 +1456,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
       cutTooSmallCounters.resize(mu.size());
 
       xDecompositions.clear();
+      xDecompositionArcs.clear();
       xDecompositionFlows.clear();
     }
 
@@ -1495,15 +1497,17 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         }
       }
       xDecompositionArcs = newXDecompositionArcs;
-      bool srcAdded = routeDD.findSRC3s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
-      if (srcAdded)
+      int numSrcAdded = routeDD.findSRC3s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
+      numSrcAdded += routeDD.findSRC4s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
+      if (numSrcAdded > 0)
       {
         cutAdded = true;
-        ++stats.numCuts;
+        stats.numCuts += numSrcAdded;
       }
       addSRCCuts(srcDuals);
 
       xDecompositions.clear();
+      xDecompositionArcs.clear();
       xDecompositionFlows.clear();
     }
     infeasibleRoutes.clear();
