@@ -504,7 +504,10 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
 
         // currently adding by full separation, can strengthen with all up / all down
         //routeDD.print();
-        numSrcAdded = routeDD.findSRCs(decomposedRoutes, decomposedArcs, routeFlows);
+        numSrcAdded = routeDD.findSRC3s(decomposedRoutes, decomposedArcs, routeFlows, 10);
+        numSrcAdded += routeDD.findSRC4s(decomposedRoutes, decomposedArcs, routeFlows, 10);
+        numSrcAdded += routeDD.findSRC5V1s(decomposedRoutes, decomposedArcs, routeFlows, 10);
+        numSrcAdded += routeDD.findSRC5V2s(decomposedRoutes, decomposedArcs, routeFlows, 10);
         if (numSrcAdded > 0)
         {
           cutAdded = true;
@@ -958,7 +961,9 @@ void VRPTWDDSolver::updateMultipliers(std::vector<double>& lambda, std::vector<d
   for (int i=0; i<srcDuals.size(); ++i)
   {
     int gammaIndex = i + vrptw.numLocations + mu.size();
-    gamma[gammaIndex] = -1 + cliqueCutValues[i];
+    SRCType srcType = routeDD.getSRCType(i);
+    int rhs = routeDD.getSRCRHS(srcType);
+    gamma[gammaIndex] = (-1*rhs) + cliqueCutValues[i];
     if ((srcDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
     {
       continue;
@@ -1437,7 +1442,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         }
       }
       xDecompositionArcs = newXDecompositionArcs;
-      int numAdded = routeDD.findSRCs(xDecompositions, xDecompositionArcs, xDecompositionFlows);
+      int numAdded = routeDD.findSRC3s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
       if (numAdded > 0)
       {
         cutAdded = true;
@@ -1490,7 +1495,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(std::vector<double>& lambda, doubl
         }
       }
       xDecompositionArcs = newXDecompositionArcs;
-      bool srcAdded = routeDD.findSRCs(xDecompositions, xDecompositionArcs, xDecompositionFlows);
+      bool srcAdded = routeDD.findSRC3s(xDecompositions, xDecompositionArcs, xDecompositionFlows, 10);
       if (srcAdded)
       {
         cutAdded = true;

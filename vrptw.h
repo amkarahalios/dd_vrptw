@@ -83,6 +83,14 @@ enum AllowMultipleVisits
   NO = 1
 };
 
+enum SRCType
+{
+  SRC3 = 0,
+  SRC4 = 1,
+  SRC5V1 = 2,
+  SRC5V2 = 2
+};
+
 enum ShortestPathMode
 {
   UPDATE_POTENTIALS = 0,

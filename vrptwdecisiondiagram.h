@@ -190,8 +190,10 @@ class VRPTWDecisionDiagram
     void getCliqueCutValues(std::vector<double>& cliqueCutValues);
     void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
     bool areNodesConnected(int nodeIndex1, int nodeIndex2);
-    //void findSRCThree(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
-    int findSRCs(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& stepSizes);
+    int findSRC3s(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& routeFlows, int limit);
+    int findSRC4s(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& routeFlows, int limit);
+    int findSRC5V1s(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& routeFlows, int limit);
+    int findSRC5V2s(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& routeFlows, int limit);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
                                    std::vector<double>& edgeFlow,
@@ -263,7 +265,9 @@ class VRPTWDecisionDiagram
     int getNumCombCuts() const { return combRHS.size(); }
 
     int getRCCCoeff(std::vector<int> route, int rccIndex);
-    int getSRCCoeff(std::vector<int> route, const std::set<int>& cutSet);
+    int getSRCCoeff(int numTimesVisited, SRCType srcType);
+    SRCType getSRCType(int index) { return cliqueCutTypes[index]; }
+    int getSRCRHS(SRCType srcType);
     void clearRelaxedSrcs();
 
   private:
@@ -276,6 +280,15 @@ class VRPTWDecisionDiagram
     void removeArc(int arcIndex);
     void setupNgSets(int s);
  
+    double getSRCFlowViolation(const std::vector<std::vector<int>>& decomposition, const std::vector<double>& routeFlows, const std::set<int>& cutSet, SRCType srcType);
+    void getSRCArcsAndCoeffs(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& bestLayerArcs, std::vector<int>& bestLayerCoeffs);
+    bool checkExistingCliqueCuts(const std::set<int>& testSet, std::vector<int>& bestArcSet, std::vector<int>& bestCoeffs, SRCType srcType);
+    int getNumTimesSetVisited(std::vector<int> route, const std::set<int>& cutSet);
+    int getSRC3Coeff(int numTimesVisited);
+    int getSRC4Coeff(int numTimesVisited);
+    int getSRC5V1Coeff(int numTimesVisited);
+    int getSRC5V2Coeff(int numTimesVisited);
+
     VRPTW vrptw;
     VRPTWDDParameters params;
     std::vector<VRPTWNode> nodes;
@@ -313,6 +326,7 @@ class VRPTWDecisionDiagram
     std::vector<std::vector<int>> cliqueCutSeparatedCoeffs;
     std::vector<std::vector<int>> cliqueCutRelaxedArcs;
     std::vector<std::vector<int>> cliqueCutRelaxedCoeffs;
+    std::vector<SRCType> cliqueCutTypes;
     std::vector<bool> cliqueCutActive;
     int separatedFeasibleRouteCounter;
 
