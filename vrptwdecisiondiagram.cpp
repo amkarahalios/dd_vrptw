@@ -834,47 +834,50 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangean(const std::vector
   }
 }
 
-void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(const std::vector<double>& lambda, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType)
+void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(const Dual& dual, LPSolveType solveType)
 {
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
   {
     VRPTWArc& arc = arcs[arcIndex];
-    arc.coeff = arc.distance - lambda[arc.location];
-    arc.cijPi = arc.distance - lambda[arc.location];
+    arc.coeff = arc.distance - dual.lambda[arc.location];
+    arc.cijPi = arc.distance - dual.lambda[arc.location];
   }
 
   // use duals for size as we may have added more cuts, but are using previous solution
-  for (int capCutIndex=0; capCutIndex<capDuals.size(); ++capCutIndex)
+  for (int capCutIndex=0; capCutIndex<dual.capDuals.size(); ++capCutIndex)
   {
-    for (int arcIndex : capCutSetArcs[capCutIndex])
+    if (isCapCutActive(capCutIndex))
     {
-      VRPTWArc& arc = arcs[arcIndex];
-      if (solveType == LPSolveType::LPSolver)
+      for (int arcIndex : capCutSetArcs[capCutIndex])
       {
-        arc.coeff = arc.coeff - capDuals[capCutIndex];
-        arc.cijPi = arc.cijPi - capDuals[capCutIndex];
-      }
-      else
-      {
-        arc.coeff = arc.coeff + capDuals[capCutIndex];
-        arc.cijPi = arc.cijPi + capDuals[capCutIndex];
+        VRPTWArc& arc = arcs[arcIndex];
+        if (solveType == LPSolveType::LPSolver)
+        {
+          arc.coeff = arc.coeff - dual.capDuals[capCutIndex];
+          arc.cijPi = arc.cijPi - dual.capDuals[capCutIndex];
+        }
+        else
+        {
+          arc.coeff = arc.coeff + dual.capDuals[capCutIndex];
+          arc.cijPi = arc.cijPi + dual.capDuals[capCutIndex];
+        }
       }
     }
   }
 
   // use duals for combs
-  for (int combIndex=0; combIndex<combDuals.size(); ++combIndex)
+  for (int combIndex=0; combIndex<dual.combDuals.size(); ++combIndex)
   {
     for (int arcIndex : combCutArcs[combIndex])
     {
       VRPTWArc& arc = arcs[arcIndex];
-      arc.coeff = arc.coeff - combDuals[combIndex];
-      arc.cijPi = arc.cijPi - combDuals[combIndex];
+      arc.coeff = arc.coeff - dual.combDuals[combIndex];
+      arc.cijPi = arc.cijPi - dual.combDuals[combIndex];
     }
   }
 
   // use duals for src
-  for (int cliqueCutIndex=0; cliqueCutIndex<srcDuals.size(); ++cliqueCutIndex)
+  for (int cliqueCutIndex=0; cliqueCutIndex<dual.srcDuals.size(); ++cliqueCutIndex)
   {
     if (isCliqueCutActive(cliqueCutIndex))
     {
@@ -888,13 +891,13 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
         VRPTWArc& arc = arcs[arcIndex];
         if (solveType == LPSolveType::LPSolver)
         {
-          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff - dual.srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi - dual.srcDuals[cliqueCutIndex]*coeff;
         }
         else
         {
-          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff + dual.srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi + dual.srcDuals[cliqueCutIndex]*coeff;
         }
       }
  
@@ -908,19 +911,15 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
         VRPTWArc& arc = arcs[arcIndex];
         if (solveType == LPSolveType::LPSolver)
         {
-          arc.coeff = arc.coeff - srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi - srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff - dual.srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi - dual.srcDuals[cliqueCutIndex]*coeff;
         }
         else
         {
-          arc.coeff = arc.coeff + srcDuals[cliqueCutIndex]*coeff;
-          arc.cijPi = arc.cijPi + srcDuals[cliqueCutIndex]*coeff;
+          arc.coeff = arc.coeff + dual.srcDuals[cliqueCutIndex]*coeff;
+          arc.cijPi = arc.cijPi + dual.srcDuals[cliqueCutIndex]*coeff;
         }
       }
-    }
-    else
-    {
-      srcDuals[cliqueCutIndex] = 0.0;
     }
   }
 }
@@ -930,6 +929,19 @@ void VRPTWDecisionDiagram::getNumberOfTimesLocationsCovered(std::unordered_map<i
   for (const VRPTWArc& arc : arcs)
   {
     locationsCovered[arc.location] += arc.decompositionFlow;
+  }
+};
+
+void VRPTWDecisionDiagram::getNumberOfTimesLocationsCoveredRoutes(const Primal& primal, std::unordered_map<int,double>& locationsCovered)
+{
+  for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
+  {
+    double flow = primal.xDecompositionFlows[index];
+    auto route = primal.xDecompositions[index];
+    for (int loc : route)
+    {
+      locationsCovered[loc] += flow;
+    }
   }
 };
 
@@ -947,7 +959,41 @@ void VRPTWDecisionDiagram::getCutSetValues(std::vector<double>& cutValues)
   }
 };
 
+void VRPTWDecisionDiagram::getCutSetValuesRoutes(const Primal& primal, std::vector<double>& cutValues)
+{
+  cutValues.clear();
+  for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
+  {
+    double cutSetValue = 0.0;
+
+    for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
+    {
+      double flow = primal.xDecompositionFlows[index];
+      auto route = primal.xDecompositions[index];
+      int coeff = getRCCCoeff(route, capCutIndex);
+      cutSetValue += (flow * coeff);
+    }
+
+    cutValues.push_back(cutSetValue);
+  }
+};
+
 void VRPTWDecisionDiagram::getCombValues(std::vector<double>& combValues)
+{
+  combValues.clear();
+  for (int combIndex=0; combIndex<teeths.size(); ++combIndex)
+  {
+    double combValue = 0.0;
+    for (int arcIndex : combCutArcs[combIndex])
+    {
+      combValue += arcs[arcIndex].heuristicFlow;
+    }
+    combValues.push_back(combValue);
+  }
+};
+
+// fix this one
+void VRPTWDecisionDiagram::getCombValuesRoutes(const Primal& primal, std::vector<double>& combValues)
 {
   combValues.clear();
   for (int combIndex=0; combIndex<teeths.size(); ++combIndex)
@@ -989,6 +1035,42 @@ void VRPTWDecisionDiagram::getCliqueCutValues(std::vector<double>& cliqueCutValu
       }
 
       cliqueCutValues.push_back(value);
+    }
+    else
+    {
+      cliqueCutValues.push_back(0);
+    }
+  }
+}
+
+void VRPTWDecisionDiagram::getCliqueCutValuesRoutes(const Primal& primal, std::vector<double>& cliqueCutValues)
+{
+  cliqueCutValues.clear();
+  for (int cliqueCutIndex=0; cliqueCutIndex<cliqueCuts.size(); ++cliqueCutIndex)
+  {
+    if (isCliqueCutActive(cliqueCutIndex))
+    {
+      auto cutSet = cliqueCuts[cliqueCutIndex];
+      auto srcType = cliqueCutTypes[cliqueCutIndex];
+      double feasibleRoutesFlow = 0.0;
+      for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
+      {
+        auto route = primal.xDecompositions[index];
+        double flow = primal.xDecompositionFlows[index];
+        int numTimesVisited = getNumTimesSetVisited(route, cutSet);
+        int srcCoeff = getSRCCoeff(numTimesVisited, srcType);
+        if (isRouteFeasible(route) && (srcCoeff > 0))
+        {
+          double coeffTimesFlow = srcCoeff * flow;
+          feasibleRoutesFlow = feasibleRoutesFlow + coeffTimesFlow;
+        }
+      }
+
+      cliqueCutValues.push_back(feasibleRoutesFlow);
+    }
+    else
+    {
+      cliqueCutValues.push_back(0);
     }
   }
 }
@@ -1129,17 +1211,17 @@ int VRPTWDecisionDiagram::getSRCRHS(SRCType srcType)
   return 0;
 };
 
-double VRPTWDecisionDiagram::getSRCFlowViolation(const std::vector<std::vector<int>>& decomposition, const std::vector<double>& routeFlows, const std::set<int>& cutSet, SRCType srcType)
+double VRPTWDecisionDiagram::getSRCFlowViolation(const Primal& primal, const std::set<int>& cutSet, SRCType srcType)
 {
   double feasibleRoutesFlow = 0.0;
-  for (int index=0; index<decomposition.size(); ++index)
+  for (int index=0; index<primal.xDecompositions.size(); ++index)
   {
-    auto route = decomposition[index];
+    auto route = primal.xDecompositions[index];
     int numTimesVisited = getNumTimesSetVisited(route, cutSet);
     int srcCoeff = getSRCCoeff(numTimesVisited, srcType);
     if (isRouteFeasible(route) && (srcCoeff > 0))
     {
-      double coeffTimesFlow = srcCoeff * routeFlows[index];
+      double coeffTimesFlow = srcCoeff * primal.xDecompositionFlows[index];
       feasibleRoutesFlow = feasibleRoutesFlow + coeffTimesFlow;
     }
   }
@@ -1150,13 +1232,13 @@ double VRPTWDecisionDiagram::getSRCFlowViolation(const std::vector<std::vector<i
   return violation;
 };
 
-void VRPTWDecisionDiagram::getSRCArcsAndCoeffs(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& bestLayerArcs, std::vector<int>& bestLayerCoeffs)
+void VRPTWDecisionDiagram::getSRCArcsAndCoeffs(const Primal& primal, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& bestLayerArcs, std::vector<int>& bestLayerCoeffs)
 {
-  for (int index=0; index<decompositionArcs.size(); ++index)
+  for (int index=0; index<primal.xDecompositionArcs.size(); ++index)
   {
     // remove route from DD
-    auto routeArcs = decompositionArcs[index];
-    auto route = decomposition[index];
+    auto routeArcs = primal.xDecompositionArcs[index];
+    auto route = primal.xDecompositions[index];
     if (isRouteFeasible(route))
     {
       int numTimesVisited = getNumTimesSetVisited(route, cutSet);
@@ -1240,7 +1322,7 @@ bool VRPTWDecisionDiagram::checkExistingCliqueCuts(const std::set<int>& testSet,
   return false;
 };
 
-int VRPTWDecisionDiagram::findSRC3s(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& routeFlows, int limit)
+int VRPTWDecisionDiagram::findSRC3s(const Primal& primal, int limit)
 {
   int numAdded = 0;
   for (int i=1; i<vrptw.numLocations-2; ++i)
@@ -1251,13 +1333,13 @@ int VRPTWDecisionDiagram::findSRC3s(const std::vector<std::vector<int>>& decompo
       {
         std::set<int> testSet = {i,j,k};
 
-        double violation = getSRCFlowViolation(decomposition, routeFlows, testSet, SRCType::SRC3);
+        double violation = getSRCFlowViolation(primal, testSet, SRCType::SRC3);
         if (violation > 0.1)
         {
           ++numAdded;
           std::vector<int> bestLayerArcs;
           std::vector<int> bestLayerCoeffs;
-          getSRCArcsAndCoeffs(decomposition, decompositionArcs, testSet, SRCType::SRC3, bestLayerArcs, bestLayerCoeffs);
+          getSRCArcsAndCoeffs(primal, testSet, SRCType::SRC3, bestLayerArcs, bestLayerCoeffs);
           checkExistingCliqueCuts(testSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC3);
 
           std::vector<int> emptyVector;
@@ -1295,7 +1377,7 @@ int VRPTWDecisionDiagram::findSRC3s(const std::vector<std::vector<int>>& decompo
   return numAdded;
 }
 
-int VRPTWDecisionDiagram::findSRC4s(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& routeFlows, int limit)
+int VRPTWDecisionDiagram::findSRC4s(const Primal& primal, int limit)
 {
   int numAdded = 0;
 
@@ -1312,13 +1394,13 @@ int VRPTWDecisionDiagram::findSRC4s(const std::vector<std::vector<int>>& decompo
         if (cutSet.find(location) == cutSet.end())
         {
           cutSet.insert(location);
-          double violation = getSRCFlowViolation(decomposition, routeFlows, cutSet, SRCType::SRC4);
+          double violation = getSRCFlowViolation(primal, cutSet, SRCType::SRC4);
           if (violation > 0.1)
           {
             ++numAdded;
             std::vector<int> bestLayerArcs;
             std::vector<int> bestLayerCoeffs;
-            getSRCArcsAndCoeffs(decomposition, decompositionArcs, cutSet, SRCType::SRC4, bestLayerArcs, bestLayerCoeffs);
+            getSRCArcsAndCoeffs(primal, cutSet, SRCType::SRC4, bestLayerArcs, bestLayerCoeffs);
             checkExistingCliqueCuts(cutSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC4);
 
             std::vector<int> emptyVector;
@@ -1357,7 +1439,7 @@ int VRPTWDecisionDiagram::findSRC4s(const std::vector<std::vector<int>>& decompo
   return numAdded;
 };
 
-int VRPTWDecisionDiagram::findSRC5V1s(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& routeFlows, int limit)
+int VRPTWDecisionDiagram::findSRC5V1s(const Primal& primal, int limit)
 {
   int numAdded = 0;
 
@@ -1374,13 +1456,13 @@ int VRPTWDecisionDiagram::findSRC5V1s(const std::vector<std::vector<int>>& decom
         if (cutSet.find(location) == cutSet.end())
         {
           cutSet.insert(location);
-          double violation = getSRCFlowViolation(decomposition, routeFlows, cutSet, SRCType::SRC5V1);
+          double violation = getSRCFlowViolation(primal, cutSet, SRCType::SRC5V1);
           if (violation > 0.1)
           {
             ++numAdded;
             std::vector<int> bestLayerArcs;
             std::vector<int> bestLayerCoeffs;
-            getSRCArcsAndCoeffs(decomposition, decompositionArcs, cutSet, SRCType::SRC5V1, bestLayerArcs, bestLayerCoeffs);
+            getSRCArcsAndCoeffs(primal, cutSet, SRCType::SRC5V1, bestLayerArcs, bestLayerCoeffs);
             checkExistingCliqueCuts(cutSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC5V1);
 
             std::vector<int> emptyVector;
@@ -1419,7 +1501,7 @@ int VRPTWDecisionDiagram::findSRC5V1s(const std::vector<std::vector<int>>& decom
   return numAdded;
 };
 
-int VRPTWDecisionDiagram::findSRC5V2s(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& routeFlows, int limit)
+int VRPTWDecisionDiagram::findSRC5V2s(const Primal& primal, int limit)
 {
   int numAdded = 0;
 
@@ -1436,13 +1518,13 @@ int VRPTWDecisionDiagram::findSRC5V2s(const std::vector<std::vector<int>>& decom
         if (cutSet.find(location) == cutSet.end())
         {
           cutSet.insert(location);
-          double violation = getSRCFlowViolation(decomposition, routeFlows, cutSet, SRCType::SRC5V2);
+          double violation = getSRCFlowViolation(primal, cutSet, SRCType::SRC5V2);
           if (violation > 0.1)
           {
             ++numAdded;
             std::vector<int> bestLayerArcs;
             std::vector<int> bestLayerCoeffs;
-            getSRCArcsAndCoeffs(decomposition, decompositionArcs, cutSet, SRCType::SRC5V2, bestLayerArcs, bestLayerCoeffs);
+            getSRCArcsAndCoeffs(primal, cutSet, SRCType::SRC5V2, bestLayerArcs, bestLayerCoeffs);
             checkExistingCliqueCuts(cutSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC5V2);
 
             std::vector<int> emptyVector;
@@ -1785,7 +1867,7 @@ void VRPTWDecisionDiagram::initializeColumnsByLPDecomp()
 // can we merge nodes to reduce problem size?
 // can we warm start with a solution? dual solution?
 // can we reduce memory?
-double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, double& fixedPathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals)
+double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, Dual& duals)
 {
   // setup model
   IloEnv env;
@@ -1906,13 +1988,20 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
     // RCC - rounded capacity cuts, might even need to use for IPs
     for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
     {
-      IloExpr cutSetSum(env);
-      for (int arcIndex : capCutSetArcs[capCutIndex])
+      if (isCapCutActive(capCutIndex))
       {
-        cutSetSum += x[arcIndex];
-      }
+        IloExpr cutSetSum(env);
+        for (int arcIndex : capCutSetArcs[capCutIndex])
+        {
+          cutSetSum += x[arcIndex];
+        }
 
-      capConstraints.add(cutSetSum <= capCutSetsRHS[capCutIndex]);
+        capConstraints.add(cutSetSum <= capCutSetsRHS[capCutIndex]);
+      }
+      else
+      {
+        capConstraints.add(x[0] <= 1);
+      }
     }
     flowModel.add(capConstraints);
 
@@ -1979,7 +2068,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   // x is var[i], dj[i] reduced cost, pi[i] specifes starting dual for rng[i]
   //solver.setVectors(x, dj, var, slack, pi, rng)
   IloNumArray startDuals(env);
-  for (auto dual : duals)
+  for (auto dual : duals.lambda)
   {
     startDuals.add(dual);
   }
@@ -2016,7 +2105,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
         solver.getDuals(lpDuals, coverConstraints);
         for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
         {
-          duals[dualIndex] = lpDuals[dualIndex];
+          duals.lambda[dualIndex] = lpDuals[dualIndex];
           dualValue += lpDuals[dualIndex];
         }
         std::cout << "DUALS: ";
@@ -2031,50 +2120,50 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       {
         IloNumArray fixedPathDualFromLP(env);
         solver.getDuals(fixedPathDualFromLP, fixedPathConstraint);
-        fixedPathDual = fixedPathDualFromLP[0];
-        std::cout << "fixed path dual: " << fixedPathDual << std::endl;
+        duals.fixedPathDual = fixedPathDualFromLP[0];
+        std::cout << "fixed path dual: " << duals.fixedPathDual << std::endl;
       }
 
       IloNumArray lpCapDuals(env);
       solver.getDuals(lpCapDuals, capConstraints);
-      capDuals.resize(capCutSets.size());
+      duals.capDuals.resize(capCutSets.size());
       for (int dualIndex=0; dualIndex<capCutSets.size(); ++dualIndex)
       {
-        capDuals[dualIndex] = lpCapDuals[dualIndex];
+        duals.capDuals[dualIndex] = lpCapDuals[dualIndex];
         dualValue += (lpCapDuals[dualIndex] * capCutSetsRHS[dualIndex]);
-        if (capDuals[dualIndex] < 0)
+        if (duals.capDuals[dualIndex] < 0)
         {
-          std::cout << "cap dual [" << dualIndex << "]: " << capDuals[dualIndex] << std::endl;
+          std::cout << "cap dual [" << dualIndex << "]: " << duals.capDuals[dualIndex] << std::endl;
         }
       }
  
       IloNumArray lpCombDuals(env);
       solver.getDuals(lpCombDuals, combConstraints);
-      combDuals.resize(teeths.size());
+      duals.combDuals.resize(teeths.size());
       for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
       {
-        combDuals[dualIndex] = lpCombDuals[dualIndex];
+        duals.combDuals[dualIndex] = lpCombDuals[dualIndex];
         dualValue += lpCombDuals[dualIndex];
       }
       for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
       {
-        std::cout << "comb dual [" << dualIndex << "]: " << combDuals[dualIndex] << std::endl;
+        std::cout << "comb dual [" << dualIndex << "]: " << duals.combDuals[dualIndex] << std::endl;
       }
 
       IloNumArray lpSrcDuals(env);
       solver.getDuals(lpSrcDuals, srcConstraints);
-      srcDuals.resize(cliqueCuts.size());
+      duals.srcDuals.resize(cliqueCuts.size());
       for (int dualIndex=0; dualIndex<cliqueCuts.size(); ++dualIndex)
       {
-        srcDuals[dualIndex] = lpSrcDuals[dualIndex];
-        if (srcDuals[dualIndex] < 0)
+        duals.srcDuals[dualIndex] = lpSrcDuals[dualIndex];
+        if (duals.srcDuals[dualIndex] < 0)
         {
-          std::cout << "src dual [" << dualIndex << "]: " << srcDuals[dualIndex] << std::endl;
+          std::cout << "src dual [" << dualIndex << "]: " << duals.srcDuals[dualIndex] << std::endl;
         }
         dualValue += lpSrcDuals[dualIndex];
       }
 
-      dualValue = dualValue + fixedPathDual*vrptw.numVehicles;
+      dualValue = dualValue + duals.fixedPathDual*vrptw.numVehicles;
       std::cout << "lp dual value: " << dualValue << std::endl;
     }
 
@@ -2093,29 +2182,32 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   return 0;
 };
 
-double VRPTWDecisionDiagram::getDualObjectiveValue(const std::vector<double>& lambda, double fixedPathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType)
+double VRPTWDecisionDiagram::getDualObjectiveValue(const Dual& dual, LPSolveType solveType)
 {
   double lowerBound = 0.0;
   for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
   {
-    lowerBound += lambda[dualIndex];
+    lowerBound += dual.lambda[dualIndex];
   }
 
   for (int dualIndex=0; dualIndex<capCutSets.size(); ++dualIndex)
   {
-    if (solveType == LPSolveType::LPSolver)
+    if (isCapCutActive(dualIndex))
     {
-      lowerBound += (capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
-    }
-    else
-    {
-      lowerBound += (-1 * capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+      if (solveType == LPSolveType::LPSolver)
+      {
+        lowerBound += (dual.capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+      }
+      else
+      {
+        lowerBound += (-1 * dual.capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+      }
     }
   }
 
   for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
   {
-    lowerBound += combDuals[dualIndex];
+    lowerBound += dual.combDuals[dualIndex];
   }
 
   for (int dualIndex=0; dualIndex<cliqueCuts.size(); ++dualIndex)
@@ -2126,26 +2218,26 @@ double VRPTWDecisionDiagram::getDualObjectiveValue(const std::vector<double>& la
       int rhs = getSRCRHS(srcType);
       if (solveType == LPSolveType::LPSolver)
       {
-        lowerBound += srcDuals[dualIndex] * rhs;
+        lowerBound += dual.srcDuals[dualIndex] * rhs;
       }
       else
       {
-        lowerBound -= srcDuals[dualIndex] * rhs;
+        lowerBound -= dual.srcDuals[dualIndex] * rhs;
       }
     }
   }
-  lowerBound = lowerBound + fixedPathDual*vrptw.numVehicles;
+  lowerBound = lowerBound + dual.fixedPathDual*vrptw.numVehicles;
 
   return lowerBound;
 }
 
-double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double fixedPathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType)
+double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType)
 {
   // get value of dual
-  double lowerBound = getDualObjectiveValue(lambda, fixedPathDual, capDuals, combDuals, srcDuals, solveType);
+  double lowerBound = getDualObjectiveValue(dual, solveType);
   std::cout << "fixing. lower bound used: " << lowerBound << std::endl;
 
-  setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(lambda, capDuals, combDuals, srcDuals, solveType);
+  setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(dual, solveType);
 
   std::vector<double> shortestPathDown(nodes.size(), INF);
   shortestPathDown[rootNodeIndex] = 0;
@@ -2210,7 +2302,7 @@ double VRPTWDecisionDiagram::fixArcs(const std::vector<double>& lambda, double f
   {
     // fix arcs based on lb + rc > ub
     const VRPTWArc& arcToCheck = arcs[arcIndex];
-    double bestPossibleReducedCost = shortestPathDown[arcToCheck.fromNodeIndex] + shortestPathUp[arcToCheck.toNodeIndex] + arcToCheck.coeff - fixedPathDual;
+    double bestPossibleReducedCost = shortestPathDown[arcToCheck.fromNodeIndex] + shortestPathUp[arcToCheck.toNodeIndex] + arcToCheck.coeff - dual.fixedPathDual;
 
     // fix arcs based on allDown
     // make sure we don't remove edge case for src cuts special feasible routes that start with 0 0
@@ -2474,7 +2566,7 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
       bool arcWithFlowFound = false;
       for (int arcIndex : nodes[currentNodeIndex].outArcs)
       {
-        if (arcs[arcIndex].decompositionFlow > 0.00001)
+        if (arcs[arcIndex].decompositionFlow > 0.0000001)
         {
           arcWithFlowFound = true;
           currentNodeIndex = arcs[arcIndex].toNodeIndex;
@@ -3407,7 +3499,7 @@ void VRPTWDecisionDiagram::dijkstraWithBatchProc(std::vector<int>& treeByParentA
   DBG(print();)
 }
 
-double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& shortestPathLength)
+double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& shortestPathLength)
 {
   // start potentials and flows at 0
   for (VRPTWNode& node : nodes)
@@ -3426,7 +3518,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>
   std::vector<int> treeByParentArcs;
   treeByParentArcs.resize(nodes.size());
   std::vector<int> shortestPathByArc;
-  setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(duals, capDuals, combDuals, srcDuals, LPSolveType::LAGSolver);
+  setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(dual, LPSolveType::LAGSolver);
   shortestPathLength = computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc);
   // NOTE: when fixing arcs, if there is no path to terminal, no paths exist
   if (shortestPathLength == INF)
@@ -3578,10 +3670,10 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const std::vector<double>
   return createSolutionFromReverseArcsAndResetWang(clippedArcs, shortestPathsByArc);
 };
 
-bool VRPTWDecisionDiagram::checkFeasibleDual(const std::vector<double>& lambda, const std::vector<double>& rccDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType)
+bool VRPTWDecisionDiagram::checkFeasibleDual(const Dual& dual, LPSolveType solveType)
 {
   // get shortest path
-  setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(lambda, rccDuals, combDuals, srcDuals, solveType);
+  setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(dual, solveType);
   std::vector<int> emptyRoute;
   double shortestPathDistance = computeShortestPathBFS(ShortestPathMode::SHORTEST_PATH, emptyRoute);
 
@@ -3863,6 +3955,11 @@ void VRPTWDecisionDiagram::addCombCutTeeth(const std::vector<std::set<int>>& tee
 bool VRPTWDecisionDiagram::isCliqueCutActive(int index)
 {
   return cliqueCutActive[index];
+};
+
+bool VRPTWDecisionDiagram::isCapCutActive(int index)
+{
+  return capCutActive[index];
 };
 
 int VRPTWDecisionDiagram::getRCCCoeff(std::vector<int> route, int rccIndex)

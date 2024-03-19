@@ -65,57 +65,71 @@ class VRPTWDDSolver
     void addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::vector<int>& rccArcs, int maxNumCuts, bool& cutAdded);
     void addRCCs(const std::vector<std::vector<int>>& routes, bool& cutAdded);
     void addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeHead, std::vector<double>& edgeFlow, bool& cutAdded);
-    void convertArcIndicesForVRPTWSep(const std::vector<double>& routeFlows,
-                                     const std::vector<std::vector<int>>& decomposedRoutes,
-                                     std::vector<int>& edgeTail,
-                                     std::vector<int>& edgeHead,
-                                     std::vector<double>& edgeFlow,
-                                     std::vector<int>& rccArcs,
-                                     std::vector<double>& rccArcFlows);
+    void convertArcIndicesForVRPTWSep(const Primal& primal,
+                                      std::vector<int>& edgeTail,
+                                      std::vector<int>& edgeHead,
+                                      std::vector<double>& edgeFlow,
+                                      std::vector<int>& rccArcs,
+                                      std::vector<double>& rccArcFlows);
 
 
   private:
     void addSRCCuts(std::vector<double>& srcDuals);
 
-    bool solveLP(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
-    bool solveIP(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
+    bool solveLP(Dual& duals);
+    bool solveIP(Dual& duals);
     void addColumn();
     void initializeColumns();
     bool solvePricingProblem(std::vector<double>& lambda);
-    bool solveLPCG(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
-    bool solveLagrangeanRelaxation(std::vector<double>& lambda, double& fixedPathDual, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& muSRC);
+    bool solveLPCG(Dual& duals);
+    bool solveLagrangeanRelaxation(Dual& duals);
+    bool solveLagrangeanRelaxationVolumeAlgorithm(Dual& duals);
 
-    void updateMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& combDuals, std::vector<double>& srcDuals, double lagrangeanLowerBound, int iteration);
-    void printMultipliers(std::vector<double>& lambda, std::vector<double>& mu, std::vector<double>& srcDuals);
-    void repairMultipliers(std::vector<double>& repairedLambda, double& repairedFixedPathDual, std::vector<double>& repairedMu, std::vector<double>& repairedCombDuals, std::vector<double>& repairedSrcDuals, LPSolveType solveType);
+    void updateMultipliers(Dual& duals, double lagrangeanLowerBound, int iteration);
+    void updateMultipliersVolumeAlgorithm(Dual& duals, Primal& primal, double lagrangeanLowerBound, int iteration);
+    void printMultipliers(Dual& duals);
+    void repairMultipliers(Dual& repairedDual, LPSolveType lpSolveType);
+    void resizeMultipliers(const Dual& dual1, Dual& dual2);
+ 
+    void constructNextPrimal(double alpha, const std::vector<std::vector<int>>& decomposedRoutes, const std::vector<std::vector<int>>& decomposedRouteArcs, Primal& primal);
+    void getGradient(const Primal& primal, const Dual& dual, std::vector<double>& gradient);
+    double calculateTwoNorm(const std::vector<double>& gradient);
+    double calculateDotProduct(const std::vector<double>& vector1, const std::vector<double>& vector2);
 
     VRPTW vrptw;
     VRPTWDecisionDiagram routeDD;
     VRPTWDDParameters params;
     std::vector<std::vector<int>> bestSolution;
 
-    std::vector<double> bestLambdaArcFixing;
-    std::vector<double> bestMuArcFixing;
-    std::vector<double> bestCombArcFixing;
-    std::vector<double> bestSrcArcFixing;
-    double bestFixedPathDualFixing;
-    double bestLambdaPercentFixed;
-    std::vector<double> bestLambda;
+    // for arc fixing
+    Dual bestDualArcFixing;
+    double bestDualArcFixingPercent;
 
-    std::vector<double> previousLambdaMomentum;
-    double alphaFactor;
-    std::vector<std::vector<double>> lambdaStore;
-    std::vector<double> singlePathStore;
-    std::vector<double> lambdaLowerBoundStore;
+    // for subgradient descent / volume algorithm
+    Dual bestDual;
+    double bestDualValue;
+    std::vector<double> previousGradient;
 
+    // for volume algorithm
+    double stepSizeMultiplier;
+    int stepSizeMultiplierIteration;
+    int stepSizeMultiplierIterationCutoff;
+    double alphaLowerBound;
+    int alphaLowerBoundIteration;
+    double alphaLowerBoundCheckValue;
+    double targetLowerBound;
+
+    // for primal
+    Primal primal;
+
+    // for cuts
     int Dim = 100;
     double epsForIntegrality = 0.0001;
-    int lambdaStoreSize = 10;
     CnstrMgrPointer MyCutsCMP;
     CnstrMgrPointer MyOldCutsCMP;
 
+    // used to deactivate cap cuts
     std::vector<int> cutTooSmallCounters;
-    std::set<int> deactivatedCuts;
 
     DDStats stats;
 };
