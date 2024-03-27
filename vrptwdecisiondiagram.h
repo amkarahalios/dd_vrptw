@@ -208,7 +208,8 @@ class VRPTWDecisionDiagram
     {
       return (fixedArcs.find(arcIndex) == fixedArcs.end()) && (removedArcs.find(arcIndex) == removedArcs.end());
     }
-    std::pair<int,int> getFromAndToLocations(int arcIndex) { return std::make_pair(nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited,arcs[arcIndex].location); }
+
+   std::pair<int,int> getFromAndToLocations(int arcIndex) { return std::make_pair(nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited,arcs[arcIndex].location); }
 
     // compilation
     void compileExactFukasawa(int s);
@@ -233,16 +234,17 @@ class VRPTWDecisionDiagram
     void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
     bool areNodesConnected(int nodeIndex1, int nodeIndex2);
 
-    int findSRC3s(const Primal& primal, int limit);
-    int findSRC4s(const Primal& primal, int limit);
-    int findSRC5V1s(const Primal& primal, int limit);
-    int findSRC5V2s(const Primal& primal, int limit);
+    int findSRC3s(const Primal& primal, int limit, std::vector<double>& violations);
+    int findSRC4s(const Primal& primal, int limit, std::vector<double>& violations);
+    int findSRC5V1s(const Primal& primal, int limit, std::vector<double>& violations);
+    int findSRC5V2s(const Primal& primal, int limit, std::vector<double>& violations);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
                                    std::vector<double>& edgeFlow,
                                    std::vector<int>& rccArcs,
                                    std::vector<double>& rccArcFlows);
     void strengthenSRCs(int layer);
+    void getFeasiblePrimalIndices(const Primal& primal, std::vector<int>& feasibleIndices);
 
     // can be used for col gen or ssp, allows negative weights unlike dijkstra
     double computeShortestPathBFS(ShortestPathMode mode, std::vector<int>& routeByLocation);
@@ -264,6 +266,7 @@ class VRPTWDecisionDiagram
     void separateInfeasibleRoute(const std::vector<int>& routeArcs, int maxS);
     int separateFeasibleRoute(const std::vector<int>& routeArcs);
     bool isRouteFeasible(const std::vector<int>& route);
+    void repairRoute(const std::vector<int>& route, std::vector<int>& feasibleRoute, std::vector<int>& feasibleRouteArcs);
 
     // min cost flow for lagrangean
     void runDijkstra(ShortestPathMode mode, std::vector<int>& shortestPathByArc);
@@ -325,7 +328,7 @@ class VRPTWDecisionDiagram
     void removeArc(int arcIndex);
     void setupNgSets(int s);
  
-    double getSRCFlowViolation(const Primal& primal, const std::set<int>& cutSet, SRCType srcType);
+    double getSRCFlowViolation(const Primal& primal, const std::vector<int>& primalFeasibleIndices, const std::set<int>& cutSet, SRCType srcType);
     void getSRCArcsAndCoeffs(const Primal& primal, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& bestLayerArcs, std::vector<int>& bestLayerCoeffs);
     bool checkExistingCliqueCuts(const std::set<int>& testSet, std::vector<int>& bestArcSet, std::vector<int>& bestCoeffs, SRCType srcType);
     int getNumTimesSetVisited(std::vector<int> route, const std::set<int>& cutSet);

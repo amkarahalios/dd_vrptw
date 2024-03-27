@@ -1,7 +1,7 @@
 #include "vrptwddsolver.h"
 #include <math.h>
 
-VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _params), params(_params)
+VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _params), params(_params), phaseType(PhaseType::INITIAL_DUAL)
 {
   for (int location=0; location<vrptw.numLocations; ++location)
   {
@@ -35,7 +35,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "num arcs to change to LAG: " << params.numArcsToChangeToLAG << std::endl;
   std::cout << "num lag iters to cut: " << params.numLagItersForCuts << std::endl;
   std::cout << "num cuts lag: " << params.numLagCuts << std::endl;
-  std::cout << "cut phase: " << params.cutPhase << std::endl;
   std::cout << "deactivate cut value threshold: " << params.deactivateCutValueThreshold << std::endl;
   std::cout << "deactivate cut iter threshold: " << params.deactivateCutIterThreshold << std::endl;
   std::cout << "momentum beta: " << params.momentumBeta << std::endl;
@@ -48,11 +47,13 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   }
   stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
 
+  muPercentImproved = 0.001;
+
   bestDualArcFixingPercent = 0.0;
   bestDualValue = 0.0;
   stepSizeMultiplier = 1.0;
   stepSizeMultiplierIteration = 0;
-  stepSizeMultiplierIterationCutoff = 5;
+  stepSizeMultiplierIterationCutoff = 20;
   alphaLowerBound = 0.1;
   alphaLowerBoundIteration = 0;
   alphaLowerBoundCheckValue = 0;
@@ -62,7 +63,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   CMGR_CreateCMgr(&MyOldCutsCMP,Dim);
 };
 
-void VRPTWDDSolver::convertArcIndicesForVRPTWSep(const Primal& primal,
+void VRPTWDDSolver::convertArcIndicesForVRPTWSep(const Primal& currPrimal,
                                                 std::vector<int>& edgeTail,
                                                 std::vector<int>& edgeHead,
                                                 std::vector<double>& edgeFlow,
@@ -70,10 +71,10 @@ void VRPTWDDSolver::convertArcIndicesForVRPTWSep(const Primal& primal,
                                                 std::vector<double>& rccArcFlows)
 {
   std::map<std::pair<int,int>,double> edgeFlows;
-  for (int routeIndex=0; routeIndex<primal.xDecompositionArcs.size(); ++routeIndex)
+  for (int routeIndex=0; routeIndex<currPrimal.xDecompositionArcs.size(); ++routeIndex)
   {
-    auto route = primal.xDecompositions[routeIndex];
-    auto routeArcs = primal.xDecompositionArcs[routeIndex];
+    auto route = currPrimal.xDecompositions[routeIndex];
+    auto routeArcs = currPrimal.xDecompositionArcs[routeIndex];
     // Note: Could check and only use feasible if we want
     for (int arcIndex : routeArcs)
     {
@@ -82,15 +83,15 @@ void VRPTWDDSolver::convertArcIndicesForVRPTWSep(const Primal& primal,
       int nextLoc = (fromAndToIndices.second == 0) ? vrptw.numLocations : fromAndToIndices.second;
       if (currLoc < nextLoc)
       {
-        edgeFlows[std::make_pair(currLoc,nextLoc)] = edgeFlows[std::make_pair(currLoc,nextLoc)] + primal.xDecompositionFlows[routeIndex];
+        edgeFlows[std::make_pair(currLoc,nextLoc)] = edgeFlows[std::make_pair(currLoc,nextLoc)] + currPrimal.xDecompositionFlows[routeIndex];
       }
       else
       {
-        edgeFlows[std::make_pair(nextLoc,currLoc)] = edgeFlows[std::make_pair(nextLoc,currLoc)] + primal.xDecompositionFlows[routeIndex];
+        edgeFlows[std::make_pair(nextLoc,currLoc)] = edgeFlows[std::make_pair(nextLoc,currLoc)] + currPrimal.xDecompositionFlows[routeIndex];
       }
 
       rccArcs.push_back(arcIndex);
-      rccArcFlows.push_back(primal.xDecompositionFlows[routeIndex]);
+      rccArcFlows.push_back(currPrimal.xDecompositionFlows[routeIndex]);
     }
   }
 
@@ -106,7 +107,7 @@ void VRPTWDDSolver::convertArcIndicesForVRPTWSep(const Primal& primal,
   }
 };
 
-void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::vector<int>& rccArcs, int maxNumCuts, bool& cutAdded)
+void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::vector<int>& rccArcs, int maxNumCuts, bool& cutAdded, Dual& dual)
 {
   // Rounded Capacity Cuts
   char integerAndFeas = '0';
@@ -182,6 +183,8 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
       routeDD.addCapCutSet(cutSet, rccArcs, RHS, params.lpSolveType);
       stats.numCuts = stats.numCuts + 1;
       //}
+
+      dual.capDuals.push_back(maxViolation);
     }
 
     for (int cutIndex=0; cutIndex<numCuts; ++cutIndex)
@@ -289,11 +292,13 @@ void VRPTWDDSolver::addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeH
   }
 }
 
-void VRPTWDDSolver::addSRCCuts(std::vector<double>& srcDuals)
+void VRPTWDDSolver::addSRCCuts(std::vector<double>& srcDuals, const std::vector<double>& violations)
 {
+  int newViolationIndex = 0;
   for (int index=srcDuals.size(); index<routeDD.getNumCliqueCuts(); ++index)
   {
-    srcDuals.push_back(0);
+    srcDuals.push_back(violations[newViolationIndex]);
+    ++newViolationIndex;
   }
 }
 
@@ -303,6 +308,32 @@ void VRPTWDDSolver::resizeMultipliers(const Dual& dual1, Dual& dual2)
   dual2.capDuals.resize(dual1.capDuals.size());
   dual2.combDuals.resize(dual1.combDuals.size());
   dual2.srcDuals.resize(dual1.srcDuals.size());
+}
+
+void VRPTWDDSolver::initializeDual(Dual& dual)
+{
+  dual.lambda.resize(vrptw.numLocations);
+
+  dual.lambda[0] = 0;
+  for (int location=1; location<vrptw.numLocations; ++location)
+  {
+    if ((vrptw.fixedNumPaths == FixedNumPaths::FIXED_NUM_PATHS) && (vrptw.numVehicles == 1))
+    {
+      if (vrptw.instanceUpperBound < INF)
+      {
+        double splitUpperBound = vrptw.instanceUpperBound * 1.0 / vrptw.numLocations;
+        dual.lambda[location] = splitUpperBound;
+      }
+      else
+      {
+        dual.lambda[location] = 0;
+      }
+    }
+    else
+    {
+      dual.lambda[location] = 2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
+    }
+  }
 }
 
 bool VRPTWDDSolver::solve(bool shouldSolveIP)
@@ -316,26 +347,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
   bool lpFlowType = FlowType::LP;
 
   Dual dual;
-  dual.lambda.push_back(0);
-  for (int location=1; location<vrptw.numLocations; ++location)
-  {
-    if ((vrptw.fixedNumPaths == FixedNumPaths::FIXED_NUM_PATHS) && (vrptw.numVehicles == 1))
-    {
-      if (vrptw.instanceUpperBound < INF)
-      {
-        double splitUpperBound = vrptw.instanceUpperBound * 1.0 / vrptw.numLocations;
-        dual.lambda.push_back(splitUpperBound);
-      }
-      else
-      {
-        dual.lambda.push_back(0);
-      }
-    }
-    else
-    {
-      dual.lambda.push_back(2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity);
-    }
-  }
+  initializeDual(dual);
 
   // so arc fixing does not try to use IP achieved lb
   bestDual.lambda.resize(dual.lambda.size());
@@ -422,7 +434,6 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
     {
       bool cutAdded = false;
       int numSrcAdded = 0;
-      Primal primal;
       std::vector<std::vector<int>> decomposedRoutes;
       std::vector<std::vector<int>> decomposedArcs;
       std::vector<double> routeFlows;
@@ -437,7 +448,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         std::vector<int> rccArcs;
         std::vector<double> rccArcFlows;
         routeDD.convertSolutionForVRPTWSep(edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
-        addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, 100, cutAdded);
+        addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, 100, cutAdded, dual);
         dual.capDuals.resize(routeDD.getNumCapCuts());
 
         // Subset Row Cuts
@@ -453,17 +464,18 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
 
         // currently adding by full separation, can strengthen with all up / all down
         //routeDD.print();
-        numSrcAdded = routeDD.findSRC3s(primal, 10);
-        numSrcAdded += routeDD.findSRC4s(primal, 10);
-        numSrcAdded += routeDD.findSRC5V1s(primal, 10);
-        numSrcAdded += routeDD.findSRC5V2s(primal, 10);
+        std::vector<double> violations;
+        numSrcAdded = routeDD.findSRC3s(primal, 10, violations);
+        numSrcAdded += routeDD.findSRC4s(primal, 10, violations);
+        numSrcAdded += routeDD.findSRC5V1s(primal, 10, violations);
+        numSrcAdded += routeDD.findSRC5V2s(primal, 10, violations);
         if (numSrcAdded > 0)
         {
           cutAdded = true;
           stats.numCuts = stats.numCuts + numSrcAdded;
         }
 
-        addSRCCuts(dual.srcDuals);
+        addSRCCuts(dual.srcDuals, violations);
 
         resizeMultipliers(dual, bestDual);
         resizeMultipliers(dual, bestDualArcFixing);
@@ -532,14 +544,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         std::cout << "no more separations possible" << std::endl;
       }
 
-      // only add cuts after LP solved
-      if ((infeasibilities.size() == 0) && !params.useCuts && params.cutPhase)
-      {
-        std::cout << "no more separations" << std::endl;
-        std::cout << "begin to use cuts" << std::endl;
-        params.useCuts = true;
-      }
-      else if (!cutAdded && (infeasibilities.size() == 0))
+      if (!cutAdded && (infeasibilities.size() == 0))
       {
         std::cout << "no more separations or cuts possible" << std::endl;
         if (stats.lowerBound != stats.upperBound)
@@ -970,12 +975,6 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
   for (int i=1; i<vrptw.numLocations; ++i)
   {
     dual.lambda[i] = std::max(0.0, dual.lambda[i] + alpha * gamma[i]);
-
-    // beta for momentum / heavy ball method
-    if (params.cutPhase && (stats.lpIterations > 1))
-    {
-      dual.lambda[i] = std::max(0.0, dual.lambda[i]);
-    }
   }
 
   // same for mu
@@ -988,10 +987,6 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
   for (int i=0; i<dual.srcDuals.size(); ++i)
   {
     dual.srcDuals[i] = std::max(0.0, dual.srcDuals[i] + alpha * gamma[i+vrptw.numLocations+dual.capDuals.size()]);
-    if (dual.srcDuals[i] > 0.00001)
-    {
-      std::cout << "src dual[" << i << "] " << dual.srcDuals[i] << std::endl;
-    }
   }
 
   // same for combs
@@ -1028,18 +1023,18 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
 // Subgradient Descent
 bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
 {
-  stats.lpIterations = stats.lpIterations + 1;
   bool shouldTerminate = false;
   int kappaIterations = 100;
-  double muPercentImproved = 0.001;
   int lastMuImprovedIteration = 0;
   double muLowerBound = 0.0;
   double currIterLowerBound = 0.0;
   int numLagIterations = 0;
 
+  primal = Primal();
   std::vector<std::vector<int>> infeasibleRoutes;
-  stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
 
+  stats.lpIterations = stats.lpIterations + 1;
+  stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
   while (!shouldTerminate)
   {
     while (!shouldTerminate && (infeasibleRoutes.size() < params.infeasibleRoutesBatchSize))
@@ -1296,12 +1291,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
         infeasibleRoutes.clear();
       }
 
-      // stop separating after first lag termination
-      if (params.cutPhase && (stats.lpIterations > 1))
-      {
-        infeasibleRoutes.clear();
-      }
-
       for (auto infeasibleRouteToSeparate : infeasibleRoutes)
       {
         // when separating changes, can use locations to re-find the route
@@ -1316,151 +1305,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
     // Cuts
     if (!shouldTerminate && (params.numLagItersForCuts != 0) && (stats.numLagIterations % params.numLagItersForCuts == 0))
     {
-      // Rounded Capacity Cuts
-      bool cutAdded = false;
-      std::vector<int> edgeTail;
-      std::vector<int> edgeHead;
-      std::vector<double> edgeFlow;
-      std::vector<int> rccArcs;
-      std::vector<double> rccArcFlows;
-      convertArcIndicesForVRPTWSep(primal, edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
-      addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded);
-
-      // Subset Row Cuts
-      std::vector<std::vector<int>> newXDecompositionArcs;
-      for (int index=0; index<primal.xDecompositionArcs.size(); ++index)
-      {
-        auto decompositionArcs = primal.xDecompositionArcs[index];
-        if (!routeDD.doesRouteExistByArcs(decompositionArcs))
-        {
-          std::vector<int> updatedRouteArcs;
-          auto route = primal.xDecompositions[index];
-          routeDD.doesRouteExistByLocations(route, updatedRouteArcs);
-          newXDecompositionArcs.push_back(updatedRouteArcs);
-        }
-        else
-        {
-          newXDecompositionArcs.push_back(decompositionArcs);
-        }
-      }
-      primal.xDecompositionArcs = newXDecompositionArcs;
-
-      double totalFlow = 0;
-      std::vector<double> flowByVertex(vrptw.numLocations, 0);
-      for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
-      {
-        double flow = primal.xDecompositionFlows[index];
-        totalFlow += flow;
-        auto route = primal.xDecompositions[index];
-        std::cout << "route with flow " << flow << " : ";
-        for (int loc : route)
-        {
-          flowByVertex[loc] += flow;
-          std::cout << loc << ",";
-        }
-        std::cout << " ";
-        auto routeArcs = primal.xDecompositionArcs[index];
-        for (int arcIndex : routeArcs)
-        {
-          std::cout << arcIndex << ",";
-        }
-        std::cout << std::endl;
-      }
-      std::cout << "total flow: " << totalFlow << std::endl;
-      for (int index=0; index<vrptw.numLocations; ++index)
-      {
-        std::cout << "loc: " << index << " flow: " << flowByVertex[index] << std::endl;
-      }
-      int numSrcAdded = routeDD.findSRC3s(primal, 10);
-      numSrcAdded += routeDD.findSRC4s(primal, 10);
-      if (numSrcAdded > 0)
-      {
-        cutAdded = true;
-        stats.numCuts += numSrcAdded;
-      }
-      addSRCCuts(dual.srcDuals);
-
-      dual.capDuals.resize(routeDD.getNumCapCuts());
-      resizeMultipliers(dual, bestDual);
-      resizeMultipliers(dual, bestDualArcFixing);
-      cutTooSmallCounters.resize(dual.capDuals.size());
+      addCutsUsingCurrentPrimal(dual);
     }
 
-    if (shouldTerminate && params.useCuts && (!params.cutPhase || (stats.lpIterations > 1)))
+    if (shouldTerminate && params.useCuts)
     {
-      // Rounded Capacity Cuts
-      bool cutAdded = false;
-      std::vector<int> edgeTail;
-      std::vector<int> edgeHead;
-      std::vector<double> edgeFlow;
-      std::vector<int> rccArcs;
-      std::vector<double> rccArcFlows;
-      convertArcIndicesForVRPTWSep(primal, edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
-      addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded);
-
-      // Strengthened Combs
-      //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
-      //combDuals.resize(routeDD.getNumCombCuts());
-
-      // Subset Row Cuts
-      std::vector<std::vector<int>> newXDecompositionArcs;
-      for (int index=0; index<primal.xDecompositionArcs.size(); ++index)
-      {
-        auto decompositionArcs = primal.xDecompositionArcs[index];
-        if (!routeDD.doesRouteExistByArcs(decompositionArcs))
-        {
-          std::vector<int> updatedRouteArcs;
-          auto route = primal.xDecompositions[index];
-          routeDD.doesRouteExistByLocations(route, updatedRouteArcs);
-          newXDecompositionArcs.push_back(updatedRouteArcs);
-        }
-        else
-        {
-          newXDecompositionArcs.push_back(decompositionArcs);
-        }
-      }
-      primal.xDecompositionArcs = newXDecompositionArcs;
-
-      double totalFlow = 0;
-      std::vector<double> flowByVertex(vrptw.numLocations, 0);
-      for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
-      {
-        double flow = primal.xDecompositionFlows[index];
-        totalFlow += flow;
-        auto route = primal.xDecompositions[index];
-        std::cout << "route with flow " << flow << " : ";
-        for (int loc : route)
-        {
-          flowByVertex[loc] += flow;
-          std::cout << loc << ",";
-        }
-        std::cout << " ";
-        auto routeArcs = primal.xDecompositionArcs[index];
-        for (int arcIndex : routeArcs)
-        {
-          std::cout << arcIndex << ",";
-        }
-        std::cout << std::endl;
-      }
-      std::cout << "total flow: " << totalFlow << std::endl;
-      for (int index=0; index<vrptw.numLocations; ++index)
-      {
-        std::cout << "loc: " << index << " flow: " << flowByVertex[index] << std::endl;
-      }
-
-      int numSrcAdded = routeDD.findSRC3s(primal, 10);
-      numSrcAdded += routeDD.findSRC4s(primal, 10);
-      if (numSrcAdded > 0)
-      {
-        cutAdded = true;
-        stats.numCuts += numSrcAdded;
-      }
-      addSRCCuts(dual.srcDuals);
- 
-      dual.capDuals.resize(routeDD.getNumCapCuts());
-      resizeMultipliers(dual, bestDualArcFixing);
-      resizeMultipliers(dual, bestDual);
-      cutTooSmallCounters.resize(dual.capDuals.size());
+      addCutsUsingCurrentPrimal(dual);
     }
     infeasibleRoutes.clear();
   }
@@ -1474,20 +1324,21 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
 // Use red, yellow, green iterations that update step size dynamically
 bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
 {
-  stats.lpIterations = stats.lpIterations + 1;
   bool shouldTerminate = false;
   int kappaIterations = 100;
-  double muPercentImproved = 0.001;
   int lastMuImprovedIteration = 0;
   double muLowerBound = 0.0;
   double currIterLowerBound = 0.0;
   int numLagIterations = 0;
 
+  std::vector<std::vector<int>> infeasibleRoutesByArc;
+  stats.lpIterations = stats.lpIterations + 1;
   std::vector<std::vector<int>> infeasibleRoutes;
+
   stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
   while (!shouldTerminate)
   {
-    while (!shouldTerminate && (infeasibleRoutes.size() < params.infeasibleRoutesBatchSize))
+    while (!shouldTerminate && (infeasibleRoutesByArc.size() < params.infeasibleRoutesBatchSize))
     {
       ++stats.numLagIterations;
       ++numLagIterations;
@@ -1514,7 +1365,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       stats.millisecondsSolvingSSP = stats.millisecondsSolvingSSP + sspSolveTime;
 
       // Impute the dual bound value and value of fixedPathDual
-      // dTx - lambda_T(Ax - b), so add sum of lambdas
       double dualBoundWithoutFixedPathDual = 0.0;
       for (int index=0; index<dual.lambda.size(); ++index)
       {
@@ -1522,21 +1372,18 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
         dualBoundWithoutFixedPathDual += dual.lambda[index];
       }
 
-      // - mu_T(-Cx + r) because capCuts are Cx <= r (not >=)
       for (int index=0; index<dual.capDuals.size(); ++index)
       {
         lagrangeanLowerBound += dual.capDuals[index] * routeDD.getCapCutSetRHS(index) * -1;
         dualBoundWithoutFixedPathDual += dual.capDuals[index] * routeDD.getCapCutSetRHS(index) * -1;
       }
  
-      // - combDual_T(Ax - RHS)
       for (int index=0; index<dual.combDuals.size(); ++index)
       {
         lagrangeanLowerBound += (dual.combDuals[index] * routeDD.getCombCutRHS(index));
         dualBoundWithoutFixedPathDual += (dual.combDuals[index] * routeDD.getCombCutRHS(index));
       }
 
-      // - src_Duals_T(-Cx + r) because srcDuals are Cx <= r (not >=)
       for (int index=0; index<dual.srcDuals.size(); ++index)
       {
         lagrangeanLowerBound += dual.srcDuals[index] * -1;
@@ -1554,7 +1401,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
         dual.fixedPathDual = 0.0;
       }
 
-      // Keep track of best-known so far
+      // Keep track of best-known solution
       if (currIterLowerBound < lagrangeanLowerBound)
       {
         if (((1 + muPercentImproved) * muLowerBound) < lagrangeanLowerBound)
@@ -1565,11 +1412,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
         currIterLowerBound = lagrangeanLowerBound;
       }
 
+      // Update step sizes
       bool isImproved = false;
-      if (stats.lowerBound < lagrangeanLowerBound)
+      if (bestDualValue < lagrangeanLowerBound)
       {
         isImproved = true;
-        stats.lowerBound = lagrangeanLowerBound;
+        stats.lowerBound = std::max(stats.lowerBound, lagrangeanLowerBound);
         stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
         printMultipliers(dual);
 
@@ -1598,7 +1446,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
         }
  
         ++alphaLowerBoundIteration;
-        if (alphaLowerBoundIteration == 20)
+        if (alphaLowerBoundIteration == 100)
         {
           alphaLowerBoundIteration = 0;
           alphaLowerBound = alphaLowerBound / 2.0;
@@ -1635,48 +1483,53 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       double alphaTry = alphaLowerBound / 10;
       double bestAlpha = alphaTry;
       double bestAlphaValue = INF;
-      while (alphaTry < alphaLowerBound)
+      if (!primal.xDecompositionFlows.empty())
       {
-        Primal nextPrimal(primal);
-        constructNextPrimal(alphaTry, decomposedRoutes, decomposedArcs, nextPrimal);
-
-        std::vector<double> gradient;
-        getGradient(nextPrimal, dual, gradient);
-
-        double alphaValue = calculateTwoNorm(gradient);
-        if (alphaValue < bestAlphaValue)
+        while (alphaTry < alphaLowerBound)
         {
-          bestAlphaValue = alphaValue;
-          bestAlpha = alphaTry;
-          previousGradient = gradient;
+          Primal nextPrimal(primal);
+          constructNextPrimal(alphaTry, decomposedRoutes, decomposedArcs, nextPrimal);
+
+          std::vector<double> gradient;
+          getGradient(nextPrimal, dual, gradient);
+
+          double alphaValue = calculateTwoNorm(gradient);
+          if (alphaValue < bestAlphaValue)
+          {
+            bestAlphaValue = alphaValue;
+            bestAlpha = alphaTry;
+            previousGradient = gradient;
+          }
+          alphaTry = std::min(alphaTry + (alphaLowerBound / 10), alphaLowerBound);
         }
-        alphaTry = std::min(alphaTry + (alphaLowerBound / 10), alphaLowerBound);
+      }
+      else
+      {
+        bestAlpha = 1.0;
       }
       std::cout << "best alpha: " << bestAlpha << std::endl;
-      std::cout << "best alpha value: " << bestAlphaValue << std::endl;
 
       Primal nextPrimal(primal);
       constructNextPrimal(bestAlpha, decomposedRoutes, decomposedArcs, nextPrimal);
       primal = nextPrimal;
 
-      // calculate v^{t} = 1 - Ax_{bar}
-      // use pi_{bar} + s*v^{t}
+      // Update dual
       updateMultipliersVolumeAlgorithm(dual, primal, lagrangeanLowerBound, stats.numLagIterations);
 
       // Check for infeasibilities
-      if (params.maxS > 1)
+      if (phaseType == PhaseType::SEPARATION)
       {
         bool infeasibleRouteFound = true;
         while (infeasibleRouteFound)
         {
-          std::vector<int> infeasibleRoute;
+          std::vector<int> infeasibleRouteByArcs;
           std::vector<double> flows;
           std::vector<std::vector<int>> routes;
-          std::vector<std::vector<int>> decomposedArcs;
-          routeDD.decomposeRoutes(infeasibleRoute, flows, routes, decomposedArcs, params.maxS, DecompositionReason::SEPARATE);
-          if (!infeasibleRoute.empty())
+          std::vector<std::vector<int>> separationDecomposedArcs;
+          routeDD.decomposeRoutes(infeasibleRouteByArcs, flows, routes, separationDecomposedArcs, params.maxS, DecompositionReason::SEPARATE);
+          if (!infeasibleRouteByArcs.empty())
           {
-            infeasibleRoutes.push_back(infeasibleRoute);
+            infeasibleRoutesByArc.push_back(infeasibleRouteByArcs);
           }
           else
           {
@@ -1696,9 +1549,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
         shouldTerminate = true;
       }
 
-      // Repair dual to be feasible if necessary and maintain best dual for arc fixing
-      // use repaired lambda as a copy of lambda for now
-      // should fix after decomposing in case we fix an arc that is in the current solution
+      // Repair Dual
       if (isDualFeasible & (vrptw.fixedNumPaths != FixedNumPaths::FIXED_NUM_PATHS))
       {
         if (params.useVariableFixing)
@@ -1723,9 +1574,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
           double repairedBound = routeDD.getDualObjectiveValue(repairedDual, LPSolveType::LAGSolver);
 
           DBG(std::cout << "repaired lb: " << repairedBound << std::endl;)
-          if (stats.lowerBound < repairedBound)
+          if (bestDualValue < repairedBound)
           {
-            stats.lowerBound = repairedBound;
+            stats.lowerBound = std::max(stats.lowerBound, repairedBound);
             stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
             printMultipliers(repairedDual);
 
@@ -1754,27 +1605,21 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
     }
 
     // Separations
-    if ((params.maxS > 1) && !shouldTerminate)
+    if ((phaseType == PhaseType::SEPARATION) && !shouldTerminate)
     {
       // delay lagrangean separations to try to keep DD small
       if (stats.numLagIterations < params.lagIterationDelayToStartSeparating)
       {
-        infeasibleRoutes.clear();
+        infeasibleRoutesByArc.clear();
       }
 
-      // stop separating after first lag termination
-      if (params.cutPhase && (stats.lpIterations > 1))
-      {
-        infeasibleRoutes.clear();
-      }
-
-      for (auto infeasibleRouteToSeparate : infeasibleRoutes)
+      for (auto infeasibleRouteToSeparateByArc : infeasibleRoutesByArc)
       {
         // when separating changes, can use locations to re-find the route
-        if (routeDD.doesRouteExistByArcs(infeasibleRouteToSeparate))
+        if (routeDD.doesRouteExistByArcs(infeasibleRouteToSeparateByArc))
         {
           stats.numSeparations = stats.numSeparations + 1;
-          routeDD.separateInfeasibleRoute(infeasibleRouteToSeparate, params.maxS);
+          routeDD.separateInfeasibleRoute(infeasibleRouteToSeparateByArc, params.maxS);
         }
       }
     }
@@ -1782,169 +1627,86 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
     // Cuts
     if (!shouldTerminate && (params.numLagItersForCuts != 0) && (stats.numLagIterations % params.numLagItersForCuts == 0))
     {
-      // Rounded Capacity Cuts
-      bool cutAdded = false;
-      std::vector<int> edgeTail;
-      std::vector<int> edgeHead;
-      std::vector<double> edgeFlow;
-      std::vector<int> rccArcs;
-      std::vector<double> rccArcFlows;
-      convertArcIndicesForVRPTWSep(primal, edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
-      addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded);
-
-      // Subset Row Cuts
-      std::vector<std::vector<int>> newXDecompositionArcs;
-      for (int index=0; index<primal.xDecompositionArcs.size(); ++index)
-      {
-        auto decompositionArcs = primal.xDecompositionArcs[index];
-        if (!routeDD.doesRouteExistByArcs(decompositionArcs))
-        {
-          std::vector<int> updatedRouteArcs;
-          auto route = primal.xDecompositions[index];
-          routeDD.doesRouteExistByLocations(route, updatedRouteArcs);
-          newXDecompositionArcs.push_back(updatedRouteArcs);
-        }
-        else
-        {
-          newXDecompositionArcs.push_back(decompositionArcs);
-        }
-      }
-      primal.xDecompositionArcs = newXDecompositionArcs;
-
-      double totalFlow = 0;
-      std::vector<double> flowByVertex(vrptw.numLocations, 0);
-      for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
-      {
-        double flow = primal.xDecompositionFlows[index];
-        totalFlow += flow;
-        auto route = primal.xDecompositions[index];
-        std::cout << "route with flow " << flow << " : ";
-        for (int loc : route)
-        {
-          flowByVertex[loc] += flow;
-          std::cout << loc << ",";
-        }
-        std::cout << " ";
-        auto routeArcs = primal.xDecompositionArcs[index];
-        for (int arcIndex : routeArcs)
-        {
-          std::cout << arcIndex << ",";
-        }
-        std::cout << std::endl;
-      }
-      std::cout << "total flow: " << totalFlow << std::endl;
-      for (int index=0; index<vrptw.numLocations; ++index)
-      {
-        std::cout << "loc: " << index << " flow: " << flowByVertex[index] << std::endl;
-      }
-      int numSrcAdded = routeDD.findSRC3s(primal, 10);
-      numSrcAdded += routeDD.findSRC4s(primal, 10);
-      if (numSrcAdded > 0)
-      {
-        cutAdded = true;
-        stats.numCuts += numSrcAdded;
-      }
-      addSRCCuts(dual.srcDuals);
-
-      dual.capDuals.resize(routeDD.getNumCapCuts());
-      resizeMultipliers(dual, bestDual);
-      resizeMultipliers(dual, bestDualArcFixing);
-      cutTooSmallCounters.resize(dual.capDuals.size());
-      //primal = Primal();
+      addCutsUsingCurrentPrimal(dual);
     }
 
-    if (shouldTerminate && params.useCuts && (!params.cutPhase || (stats.lpIterations > 1)))
+    if (shouldTerminate && params.useCuts)
     {
-      // Rounded Capacity Cuts
-      bool cutAdded = false;
-      std::vector<int> edgeTail;
-      std::vector<int> edgeHead;
-      std::vector<double> edgeFlow;
-      std::vector<int> rccArcs;
-      std::vector<double> rccArcFlows;
-      convertArcIndicesForVRPTWSep(primal, edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
-      addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded);
-
-      // Strengthened Combs
-      //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
-      //combDuals.resize(routeDD.getNumCombCuts());
-
-      // Subset Row Cuts
-      std::vector<std::vector<int>> newXDecompositionArcs;
-      for (int index=0; index<primal.xDecompositionArcs.size(); ++index)
-      {
-        auto decompositionArcs = primal.xDecompositionArcs[index];
-        if (!routeDD.doesRouteExistByArcs(decompositionArcs))
-        {
-          std::vector<int> updatedRouteArcs;
-          auto route = primal.xDecompositions[index];
-          routeDD.doesRouteExistByLocations(route, updatedRouteArcs);
-          newXDecompositionArcs.push_back(updatedRouteArcs);
-        }
-        else
-        {
-          newXDecompositionArcs.push_back(decompositionArcs);
-        }
-      }
-      primal.xDecompositionArcs = newXDecompositionArcs;
-
-      double totalFlow = 0;
-      std::vector<double> flowByVertex(vrptw.numLocations, 0);
-      for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
-      {
-        double flow = primal.xDecompositionFlows[index];
-        totalFlow += flow;
-        auto route = primal.xDecompositions[index];
-        std::cout << "route with flow " << flow << " : ";
-        for (int loc : route)
-        {
-          flowByVertex[loc] += flow;
-          std::cout << loc << ",";
-        }
-        std::cout << " ";
-        auto routeArcs = primal.xDecompositionArcs[index];
-        for (int arcIndex : routeArcs)
-        {
-          std::cout << arcIndex << ",";
-        }
-        std::cout << std::endl;
-      }
-      std::cout << "total flow: " << totalFlow << std::endl;
-      for (int index=0; index<vrptw.numLocations; ++index)
-      {
-        std::cout << "loc: " << index << " flow: " << flowByVertex[index] << std::endl;
-      }
-
-      int numSrcAdded = routeDD.findSRC3s(primal, 10);
-      numSrcAdded += routeDD.findSRC4s(primal, 10);
-      if (numSrcAdded > 0)
-      {
-        cutAdded = true;
-        stats.numCuts += numSrcAdded;
-      }
-      addSRCCuts(dual.srcDuals);
- 
-      dual.capDuals.resize(routeDD.getNumCapCuts());
-      resizeMultipliers(dual, bestDual);
-      resizeMultipliers(dual, bestDualArcFixing);
-      cutTooSmallCounters.resize(dual.capDuals.size());
-      //primal = Primal();
+      addCutsUsingCurrentPrimal(dual);
     }
-    infeasibleRoutes.clear();
+
+    // Phase changes
+    if (shouldTerminate)
+    {
+      if (phaseType == PhaseType::INITIAL_DUAL)
+      {
+        std::cout << "start separation phase" << std::endl;
+        phaseType = PhaseType::SEPARATION;
+      }
+      else if (phaseType == PhaseType::SEPARATION)
+      {
+        std::cout << "start robust primal phase" << std::endl;
+        phaseType = PhaseType::ROBUST_PRIMAL;
+
+        // fresh primal and use primal to add cuts
+        primal = Primal();
+        params.useCuts = true;
+      }
+      else if (phaseType == PhaseType::ROBUST_PRIMAL)
+      {
+        std::cout << "start robust cut dual phase" << std::endl;
+        phaseType = PhaseType::ROBUST_CUT_DUALS;
+
+        // fresh step sizes and duals
+        stepSizeMultiplier = 1.0;
+        stepSizeMultiplierIteration = 0;
+        stepSizeMultiplierIterationCutoff = 20;
+        alphaLowerBound = 0.1;
+        alphaLowerBoundIteration = 0;
+        alphaLowerBoundCheckValue = 0;
+        bestDualValue = 0.0;
+        muPercentImproved = muPercentImproved / 2.0;
+
+        initializeDual(dual);
+        params.useCuts = false;
+      }
+      else if (phaseType == PhaseType::ROBUST_CUT_DUALS)
+      {
+        std::cout << "start nonrobust primal phase" << std::endl;
+        phaseType = PhaseType::NONROBUST_PRIMAL;
+        params.useCuts = true;
+      }
+      else if (phaseType == PhaseType::NONROBUST_PRIMAL)
+      {
+        std::cout << "start nonrobust cut dual phase" << std::endl;
+        phaseType = PhaseType::NONROBUST_CUT_DUALS;
+
+        // fresh step sizes and duals
+        /*
+        stepSizeMultiplier = 1.0;
+        stepSizeMultiplierIteration = 0;
+        stepSizeMultiplierIterationCutoff = 20;
+        alphaLowerBound = 0.1;
+        alphaLowerBoundIteration = 0;
+        alphaLowerBoundCheckValue = 0;
+        bestDualValue = 0.0;
+        muPercentImproved = muPercentImproved / 2.0;
+
+        initializeDual(dual);
+        */
+        params.useCuts = false;
+      }
+      else if (phaseType == PhaseType::NONROBUST_CUT_DUALS)
+      {
+        std::cout << "continue nonrobust cut dual phase" << std::endl;
+      }
+    }
+
+    infeasibleRoutesByArc.clear();
   }
 
   return true;
 }
-
-/*
-  // erase any 0 flow if too small
-  if ((firstNonZeroIndex > 0) && (firstNonZeroIndex < INF))
-  {
-    nextPrimal.xDecompositions.erase(nextPrimal.xDecompositions.begin(), nextPrimal.xDecompositions.begin() + firstNonZeroIndex);
-    nextPrimal.xDecompositionArcs.erase(nextPrimal.xDecompositionArcs.begin(), nextPrimal.xDecompositionArcs.begin() + firstNonZeroIndex);
-    nextPrimal.xDecompositionFlows.erase(nextPrimal.xDecompositionFlows.begin(), nextPrimal.xDecompositionFlows.begin() + firstNonZeroIndex);
-  }
-*/
 
 void VRPTWDDSolver::constructNextPrimal(double alphaTry, const std::vector<std::vector<int>>& decomposedRoutes, const std::vector<std::vector<int>>& decomposedRouteArcs, Primal& nextPrimal)
 {
@@ -1953,13 +1715,62 @@ void VRPTWDDSolver::constructNextPrimal(double alphaTry, const std::vector<std::
     nextPrimal.xDecompositionFlows[flowIndex] = (1 - alphaTry) * nextPrimal.xDecompositionFlows[flowIndex];
   }
 
+  // add feasible versions if infeasible
   for (int index=0; index<decomposedRoutes.size(); ++index)
   {
     auto route = decomposedRoutes[index];
-    auto routeArcs = decomposedRouteArcs[index];
-    nextPrimal.xDecompositions.push_back(route);
-    nextPrimal.xDecompositionArcs.push_back(routeArcs);
-    nextPrimal.xDecompositionFlows.push_back(alphaTry);
+
+    // check to add flow to current set of routes
+    bool alreadyExists = false;
+    for (int currIndex=0; currIndex<nextPrimal.xDecompositionFlows.size(); ++currIndex)
+    {
+      if (route == nextPrimal.xDecompositions[currIndex])
+      {
+        nextPrimal.xDecompositionFlows[currIndex] += alphaTry;
+        alreadyExists = true;
+        break;
+      }
+    }
+
+    // for infeasible routes, add relevant / closests feasible route
+    if (!alreadyExists)
+    {
+      //if (routeDD.isRouteFeasible(route))
+      //{
+      auto routeArcs = decomposedRouteArcs[index];
+      nextPrimal.xDecompositions.push_back(route);
+      nextPrimal.xDecompositionArcs.push_back(routeArcs);
+      nextPrimal.xDecompositionFlows.push_back(alphaTry);
+      //}
+      /*
+      else
+      {
+        // repair route and then add
+        std::vector<int> feasibleRoute;
+        std::vector<int> feasibleRouteArcs;
+        routeDD.repairRoute(route, feasibleRoute, feasibleRouteArcs);
+
+        // check to add flow to current set of routes
+        bool repairAlreadyExists = false;
+        for (int currIndex=0; currIndex<nextPrimal.xDecompositionFlows.size(); ++currIndex)
+        {
+          if (feasibleRoute == nextPrimal.xDecompositions[currIndex])
+          {
+            nextPrimal.xDecompositionFlows[currIndex] += alphaTry;
+            repairAlreadyExists = true;
+            break;
+          }
+        }
+
+        if (!repairAlreadyExists)
+        {
+          nextPrimal.xDecompositions.push_back(feasibleRoute);
+          nextPrimal.xDecompositionArcs.push_back(feasibleRouteArcs);
+          nextPrimal.xDecompositionFlows.push_back(alphaTry);
+        }
+      }
+      */
+    }
   }
 };
 
@@ -1985,20 +1796,20 @@ double VRPTWDDSolver::calculateDotProduct(const std::vector<double>& vector1, co
   return total;
 };
 
-void VRPTWDDSolver::getGradient(const Primal& primal, const Dual& dual, std::vector<double>& gradient)
+void VRPTWDDSolver::getGradient(const Primal& currPrimal, const Dual& dual, std::vector<double>& gradient)
 {
   // get values of LHS for all dualized inequalities
   std::unordered_map<int,double> locationsCovered;
-  routeDD.getNumberOfTimesLocationsCoveredRoutes(primal, locationsCovered);
+  routeDD.getNumberOfTimesLocationsCoveredRoutes(currPrimal, locationsCovered);
 
   std::vector<double> cutValues;
-  routeDD.getCutSetValuesRoutes(primal, cutValues);
+  routeDD.getCutSetValuesRoutes(currPrimal, cutValues);
  
   std::vector<double> combValues;
-  routeDD.getCombValuesRoutes(primal, combValues);
+  routeDD.getCombValuesRoutes(currPrimal, combValues);
 
   std::vector<double> cliqueCutValues;
-  routeDD.getCliqueCutValuesRoutes(primal, cliqueCutValues);
+  routeDD.getCliqueCutValuesRoutes(currPrimal, cliqueCutValues);
 
   // gradient_(k) = b - Ax_(k)
   gradient.resize(vrptw.numLocations + dual.capDuals.size() + dual.srcDuals.size() + dual.combDuals.size(), 0);
@@ -2037,20 +1848,20 @@ void VRPTWDDSolver::getGradient(const Primal& primal, const Dual& dual, std::vec
   }
 };
 
-void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal, double lagrangeanLowerBound, int iteration)
+void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPrimal, double lagrangeanLowerBound, int iteration)
 {
   // get values of LHS for all dualized inequalities
   std::unordered_map<int,double> locationsCovered;
-  routeDD.getNumberOfTimesLocationsCoveredRoutes(primal, locationsCovered);
+  routeDD.getNumberOfTimesLocationsCoveredRoutes(currPrimal, locationsCovered);
 
   std::vector<double> cutValues;
-  routeDD.getCutSetValuesRoutes(primal, cutValues);
+  routeDD.getCutSetValuesRoutes(currPrimal, cutValues);
  
   std::vector<double> combValues;
-  routeDD.getCombValuesRoutes(primal, combValues);
+  routeDD.getCombValuesRoutes(currPrimal, combValues);
 
   std::vector<double> cliqueCutValues;
-  routeDD.getCliqueCutValuesRoutes(primal, cliqueCutValues);
+  routeDD.getCliqueCutValuesRoutes(currPrimal, cliqueCutValues);
 
   // gamma_(k) = b - Ax_(k)
   // Beasley - when multiplier is already 0 and step direction is negative, don't include in ||gamma||^2
@@ -2059,7 +1870,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal,
   for (int i=1; i<vrptw.numLocations; ++i)
   {
     gamma[i] = 1 - locationsCovered[i];
-    if ((dual.lambda[i] <= 0.000001) && (gamma[i] <= 0))
+    if ((bestDual.lambda[i] <= 0.000001) && (gamma[i] <= 0))
     {
       continue;
     }
@@ -2070,6 +1881,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal,
   }
 
   // cap cuts are in the form Cx <= r so change to -Cx >= -r
+  // scale down to RHS 1 like the other constraints
   for (int i=0; i<dual.capDuals.size(); ++i)
   {
     int gammaIndex = i + vrptw.numLocations;
@@ -2077,7 +1889,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal,
     {
       gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
 
-      if ((dual.capDuals[i] <= 0.1) && (gamma[gammaIndex] <= 0))
+      if ((bestDual.capDuals[i] <= 0.1) && (gamma[gammaIndex] <= 0))
       {
         continue;
       }
@@ -2088,7 +1900,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal,
     }
     else
     {
-      dual.capDuals[i] = 0;
+      bestDual.capDuals[i] = 0;
       gamma[gammaIndex] = 0;
     }
   }
@@ -2101,7 +1913,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal,
     int rhs = routeDD.getSRCRHS(srcType);
     gamma[gammaIndex] = (-1*rhs) + cliqueCutValues[i];
 
-    if ((dual.srcDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
+    if ((bestDual.srcDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
     {
       continue;
     }
@@ -2115,7 +1927,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal,
   {
     int gammaIndex = i + vrptw.numLocations + dual.capDuals.size() + dual.srcDuals.size();
     gamma[gammaIndex] = routeDD.getCombCutRHS(i) - combValues[i];
-    if ((dual.combDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
+    if ((bestDual.combDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
     {
       continue;
     }
@@ -2138,6 +1950,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal,
   std::cout << "||gamma||^2: " << normGammaSquared << std::endl;
 
   printMultipliers(dual);
+  printMultipliers(bestDual);
 
   // lambda_(k+1) = lambda_(k) + alpha_(k) * gamma_(k)
   for (int i=1; i<vrptw.numLocations; ++i)
@@ -2155,10 +1968,6 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal,
   for (int i=0; i<dual.srcDuals.size(); ++i)
   {
     dual.srcDuals[i] = std::max(0.0, bestDual.srcDuals[i] + alpha * gamma[i+vrptw.numLocations+dual.capDuals.size()]);
-    if (dual.srcDuals[i] > 0.00001)
-    {
-      std::cout << "src dual[" << i << "] " << dual.srcDuals[i] << std::endl;
-    }
   }
 
   // same for combs
@@ -2189,5 +1998,77 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& primal,
     }
   }
  
-  // TODO(akarhal) same for SRC - remove if too small for too long
+  // TODO(akarhal) do the same for SRC - remove if too small for too long
+};
+
+bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
+{
+  // Rounded Capacity Cuts
+  bool cutAdded = false;
+  std::vector<int> edgeTail;
+  std::vector<int> edgeHead;
+  std::vector<double> edgeFlow;
+  std::vector<int> rccArcs;
+  std::vector<double> rccArcFlows;
+  if ((phaseType == PhaseType::ROBUST_PRIMAL) || (phaseType == PhaseType::NONROBUST_PRIMAL))
+  {
+    convertArcIndicesForVRPTWSep(primal, edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
+    addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, params.numLagCuts, cutAdded, dual);
+
+    // Strengthened Combs
+    //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
+    //combDuals.resize(routeDD.getNumCombCuts());
+  }
+
+  // Subset Row Cuts
+  double totalFlow = 0;
+  std::vector<double> flowByVertex(vrptw.numLocations, 0);
+  for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
+  {
+    double flow = primal.xDecompositionFlows[index];
+    totalFlow += flow;
+    auto route = primal.xDecompositions[index];
+    std::cout << "route with flow " << flow << " : ";
+    for (int loc : route)
+    {
+      flowByVertex[loc] += flow;
+      std::cout << loc << ",";
+    }
+    std::cout << " ";
+    auto routeArcs = primal.xDecompositionArcs[index];
+    for (int arcIndex : routeArcs)
+    {
+      std::cout << arcIndex << ",";
+    }
+    std::cout << std::endl;
+  }
+  std::cout << "total flow: " << totalFlow << std::endl;
+  for (int index=0; index<vrptw.numLocations; ++index)
+  {
+    std::cout << "loc: " << index << " flow: " << flowByVertex[index] << std::endl;
+  }
+
+  if (phaseType == PhaseType::NONROBUST_PRIMAL)
+  {
+    std::vector<double> violations;
+    std::cout << "finding src3s" << std::endl;
+    int numSrc3Added = routeDD.findSRC3s(primal, 2, violations);
+    std::cout << "finding src4s" << std::endl;
+    int numSrc4Added = routeDD.findSRC4s(primal, 1, violations);
+
+    int numSrcAdded = numSrc3Added + numSrc4Added;
+    if (numSrcAdded > 0)
+    {
+      cutAdded = true;
+      stats.numCuts += numSrcAdded;
+      std::cout << "adding src cuts" << std::endl;
+      addSRCCuts(dual.srcDuals, violations);
+    }
+  }
+
+  resizeMultipliers(dual, bestDual);
+  resizeMultipliers(dual, bestDualArcFixing);
+  cutTooSmallCounters.resize(dual.capDuals.size());
+
+  return cutAdded;
 };

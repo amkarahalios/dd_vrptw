@@ -11,6 +11,16 @@
 #include "capsep.h"
 #include "combsep.h"
 
+enum PhaseType
+{
+  INITIAL_DUAL = 0,
+  SEPARATION = 1,
+  ROBUST_PRIMAL = 2,
+  ROBUST_CUT_DUALS = 3,
+  NONROBUST_PRIMAL = 4,
+  NONROBUST_CUT_DUALS = 5
+};
+
 struct DDStats
 {
   public:
@@ -62,8 +72,7 @@ class VRPTWDDSolver
     DDStats getStats() { return stats; }
 
     // public for testing purpose only
-    void addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::vector<int>& rccArcs, int maxNumCuts, bool& cutAdded);
-    void addRCCs(const std::vector<std::vector<int>>& routes, bool& cutAdded);
+    void addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::vector<int>& rccArcs, int maxNumCuts, bool& cutAdded, Dual& dual);
     void addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeHead, std::vector<double>& edgeFlow, bool& cutAdded);
     void convertArcIndicesForVRPTWSep(const Primal& primal,
                                       std::vector<int>& edgeTail,
@@ -74,16 +83,20 @@ class VRPTWDDSolver
 
 
   private:
-    void addSRCCuts(std::vector<double>& srcDuals);
+    bool addCutsUsingCurrentPrimal(Dual& duals);
+    void addSRCCuts(std::vector<double>& srcDuals, const std::vector<double>& violations);
 
     bool solveLP(Dual& duals);
     bool solveIP(Dual& duals);
+
+    void initializeDual(Dual& dual);
+    bool solveLagrangeanRelaxation(Dual& duals);
+    bool solveLagrangeanRelaxationVolumeAlgorithm(Dual& duals);
+
     void addColumn();
     void initializeColumns();
     bool solvePricingProblem(std::vector<double>& lambda);
     bool solveLPCG(Dual& duals);
-    bool solveLagrangeanRelaxation(Dual& duals);
-    bool solveLagrangeanRelaxationVolumeAlgorithm(Dual& duals);
 
     void updateMultipliers(Dual& duals, double lagrangeanLowerBound, int iteration);
     void updateMultipliersVolumeAlgorithm(Dual& duals, Primal& primal, double lagrangeanLowerBound, int iteration);
@@ -100,6 +113,8 @@ class VRPTWDDSolver
     VRPTWDecisionDiagram routeDD;
     VRPTWDDParameters params;
     std::vector<std::vector<int>> bestSolution;
+    PhaseType phaseType;
+    double muPercentImproved;
 
     // for arc fixing
     Dual bestDualArcFixing;
