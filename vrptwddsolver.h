@@ -143,8 +143,9 @@ class VRPTWDDSolver
     CnstrMgrPointer MyCutsCMP;
     CnstrMgrPointer MyOldCutsCMP;
 
-    // used to deactivate cap cuts
-    std::vector<int> cutTooSmallCounters;
+    // used to deactivate cuts
+    std::vector<int> capCutTooSmallCounters;
+    std::vector<int> cliqueCutTooSmallCounters;
 
     DDStats stats;
 };

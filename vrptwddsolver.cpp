@@ -1002,22 +1002,42 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
     {
       if (dual.capDuals[muIndex] < params.deactivateCutValueThreshold)
       {
-        cutTooSmallCounters[muIndex] = cutTooSmallCounters[muIndex] + 1;
-        if (cutTooSmallCounters[muIndex] > params.deactivateCutIterThreshold)
+        capCutTooSmallCounters[muIndex] = capCutTooSmallCounters[muIndex] + 1;
+        if (capCutTooSmallCounters[muIndex] > params.deactivateCutIterThreshold)
         {
-          std::cout << "deactivated cut at index: " << muIndex << std::endl;
+          std::cout << "deactivated cap cut at index: " << muIndex << std::endl;
           routeDD.deactivateCapCut(muIndex);
           stats.numCuts = stats.numCuts - 1;
         }
       }
       else
       {
-        cutTooSmallCounters[muIndex] = 0;
+        capCutTooSmallCounters[muIndex] = 0;
       }
     }
   }
  
-  // TODO(akarhal) same for SRC - remove if too small for too long
+  // remove if too small for too long
+  for (int srcIndex=0; srcIndex<dual.srcDuals.size(); ++srcIndex)
+  {
+    if (routeDD.isCliqueCutActive(srcIndex))
+    {
+      if (dual.srcDuals[srcIndex] < params.deactivateCutValueThreshold)
+      {
+        cliqueCutTooSmallCounters[srcIndex] = cliqueCutTooSmallCounters[srcIndex] + 1;
+        if (cliqueCutTooSmallCounters[srcIndex] > params.deactivateCutIterThreshold)
+        {
+          std::cout << "deactivated src cut at index: " << srcIndex << std::endl;
+          routeDD.deactivateCliqueCut(srcIndex);
+          stats.numCuts = stats.numCuts - 1;
+        }
+      }
+      else
+      {
+        cliqueCutTooSmallCounters[srcIndex] = 0;
+      }
+    }
+  }
 };
 
 // Subgradient Descent
@@ -1427,7 +1447,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
         stepSizeMultiplierIteration = 0;
         if (lagrangeanLowerBound > 0.95 * targetLowerBound)
         {
-          targetLowerBound = lagrangeanLowerBound * 1.05;
+          targetLowerBound = std::min(lagrangeanLowerBound * 1.05, stats.upperBound);
         }
 
         alphaLowerBoundIteration = 0;
@@ -1581,7 +1601,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
             printMultipliers(repairedDual);
 
             bestDual = repairedDual;
-            bestDualValue = stats.lowerBound;
+            bestDualValue = repairedBound;
           }
 
           percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver);
@@ -1658,16 +1678,21 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
         phaseType = PhaseType::ROBUST_CUT_DUALS;
 
         // fresh step sizes and duals
+        /*
         stepSizeMultiplier = 1.0;
         stepSizeMultiplierIteration = 0;
-        stepSizeMultiplierIterationCutoff = 20;
+        stepSizeMultiplierIterationCutoff = 100;
         alphaLowerBound = 0.1;
         alphaLowerBoundIteration = 0;
         alphaLowerBoundCheckValue = 0;
-        bestDualValue = 0.0;
-        muPercentImproved = muPercentImproved / 2.0;
 
         initializeDual(dual);
+        repairMultipliers(dual, LPSolveType::LAGSolver);
+        bestDual = dual;
+        bestDualValue = routeDD.getDualObjectiveValue(bestDual, LPSolveType::LAGSolver);
+        targetLowerBound = bestDualValue * 1.05;
+        */
+
         params.useCuts = false;
       }
       else if (phaseType == PhaseType::ROBUST_CUT_DUALS)
@@ -1698,7 +1723,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       }
       else if (phaseType == PhaseType::NONROBUST_CUT_DUALS)
       {
-        std::cout << "continue nonrobust cut dual phase" << std::endl;
+        std::cout << "start nonrobust primal phase again" << std::endl;
+        phaseType = PhaseType::NONROBUST_PRIMAL;
+        params.useCuts = true;
       }
     }
 
@@ -1942,7 +1969,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
     std::cout << index << ":" << gamma[index] << std::endl;
   }
 
-  double alpha = stepSizeMultiplier * (targetLowerBound - stats.lowerBound) / normGammaSquared;
+  double alpha = stepSizeMultiplier * (targetLowerBound - bestDualValue) / normGammaSquared;
   std::cout << "alpha: " << alpha << std::endl;
   std::cout << "lagLB: " << lagrangeanLowerBound << std::endl;
   std::cout << "stepSizeMultiplier: " << stepSizeMultiplier << std::endl;
@@ -1983,8 +2010,8 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
     {
       if (dual.capDuals[muIndex] < params.deactivateCutValueThreshold)
       {
-        cutTooSmallCounters[muIndex] = cutTooSmallCounters[muIndex] + 1;
-        if (cutTooSmallCounters[muIndex] > params.deactivateCutIterThreshold)
+        capCutTooSmallCounters[muIndex] = capCutTooSmallCounters[muIndex] + 1;
+        if (capCutTooSmallCounters[muIndex] > params.deactivateCutIterThreshold)
         {
           std::cout << "deactivated cut at index: " << muIndex << std::endl;
           routeDD.deactivateCapCut(muIndex);
@@ -1993,12 +2020,32 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
       }
       else
       {
-        cutTooSmallCounters[muIndex] = 0;
+        capCutTooSmallCounters[muIndex] = 0;
       }
     }
   }
  
-  // TODO(akarhal) do the same for SRC - remove if too small for too long
+  // remove if too small for too long
+  for (int srcIndex=0; srcIndex<dual.srcDuals.size(); ++srcIndex)
+  {
+    if (routeDD.isCliqueCutActive(srcIndex))
+    {
+      if (dual.srcDuals[srcIndex] < params.deactivateCutValueThreshold)
+      {
+        cliqueCutTooSmallCounters[srcIndex] = cliqueCutTooSmallCounters[srcIndex] + 1;
+        if (cliqueCutTooSmallCounters[srcIndex] > params.deactivateCutIterThreshold)
+        {
+          std::cout << "deactivated src cut at index: " << srcIndex << std::endl;
+          routeDD.deactivateCliqueCut(srcIndex);
+          stats.numCuts = stats.numCuts - 1;
+        }
+      }
+      else
+      {
+        cliqueCutTooSmallCounters[srcIndex] = 0;
+      }
+    }
+  }
 };
 
 bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
@@ -2063,12 +2110,22 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
       stats.numCuts += numSrcAdded;
       std::cout << "adding src cuts" << std::endl;
       addSRCCuts(dual.srcDuals, violations);
+
+      // strengthen src using average route length
+      int averageRouteLength = 0;
+      for (int index=0; index<primal.xDecompositions.size(); ++index)
+      {
+        averageRouteLength += primal.xDecompositions[index].size();
+      }
+      averageRouteLength = averageRouteLength / primal.xDecompositions.size();
+      routeDD.strengthenSRCs(averageRouteLength);
     }
   }
 
   resizeMultipliers(dual, bestDual);
   resizeMultipliers(dual, bestDualArcFixing);
-  cutTooSmallCounters.resize(dual.capDuals.size());
+  capCutTooSmallCounters.resize(dual.capDuals.size());
+  cliqueCutTooSmallCounters.resize(dual.srcDuals.size());
 
   return cutAdded;
 };

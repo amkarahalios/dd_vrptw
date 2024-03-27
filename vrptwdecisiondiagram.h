@@ -306,6 +306,7 @@ class VRPTWDecisionDiagram
     bool isCapCutActive(int index);
     void deactivateCapCut(int index) { capCutActive[index] = false; }
     bool isCliqueCutActive(int index);
+    void deactivateCliqueCut(int index) { cliqueCutActive[index] = false; }
 
     void addCombCutTeeth(const std::vector<std::set<int>>& teeth);
     void addCombCutRHS(const double& rhs) { combRHS.push_back(rhs); }
