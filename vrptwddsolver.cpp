@@ -1936,17 +1936,25 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
   for (int i=0; i<dual.srcDuals.size(); ++i)
   {
     int gammaIndex = i + vrptw.numLocations + dual.capDuals.size();
-    SRCType srcType = routeDD.getSRCType(i);
-    int rhs = routeDD.getSRCRHS(srcType);
-    gamma[gammaIndex] = (-1*rhs) + cliqueCutValues[i];
-
-    if ((bestDual.srcDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
+    if (routeDD.isCliqueCutActive(i))
     {
-      continue;
+      SRCType srcType = routeDD.getSRCType(i);
+      int rhs = routeDD.getSRCRHS(srcType);
+      gamma[gammaIndex] = (-1*rhs) + cliqueCutValues[i];
+
+      if ((bestDual.srcDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
+      {
+        continue;
+      }
+      else
+      {
+        normGammaSquared += std::pow(gamma[gammaIndex], 2);
+      }
     }
     else
     {
-      normGammaSquared += std::pow(gamma[gammaIndex], 2);
+      bestDual.srcDuals[i] = 0;
+      gamma[gammaIndex] = 0;
     }
   }
 

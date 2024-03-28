@@ -1662,6 +1662,11 @@ void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
   int layer = averageRouteLength;
   for (int index=0; index<cliqueCuts.size(); ++index)
   {
+    if (!isCliqueCutActive(index))
+    {
+      continue;
+    }
+
     std::map<int,std::set<int>> counterArcIndices;
     auto largestSet = cliqueCuts[index];
 
