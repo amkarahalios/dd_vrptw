@@ -299,6 +299,7 @@ class VRPTWDecisionDiagram
 
     // for cuts
     void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, LPSolveType solveType);
+    std::vector<int> getCapCutSet(int index) const { return capCutSets[index]; }
     int getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
     int getNumCapCuts() const { return capCutSetsRHS.size(); }
 

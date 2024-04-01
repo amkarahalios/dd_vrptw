@@ -156,33 +156,33 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
       double RHS = MyCutsCMP->CPL[cutIndex]->RHS;
       std::cout << "<= " << RHS << std::endl;
 
-      // ensure we don't add families all together, as this negatively affects subgradient descent
-      /*
-      bool inFamily = false;
-      for (int index=0; index<cutSets.size(); ++index)
+      // do not add same cut if encountered twice
+      // could also ensure we don't add families all together, as this negatively affects subgradient descent
+      bool alreadyExists = false;
+      for (int index=0; index<routeDD.getNumCapCuts(); ++index)
       {
-        if (deactivatedCuts.find(index) == deactivatedCuts.end())
+        if (routeDD.isCapCutActive(index))
         {
-          auto referenceCutSet = cutSets[index];
-          if (std::includes(cutSet.begin(), cutSet.end(), referenceCutSet.begin(), referenceCutSet.end()) || std::includes(referenceCutSet.begin(), referenceCutSet.end(), cutSet.begin(), cutSet.end()))
+          auto existingCutSet = routeDD.getCapCutSet(index);
+          if (std::set<int>(cutSet.begin(), cutSet.end()) == std::set<int>(existingCutSet.begin(), existingCutSet.end()))
           {
-            inFamily = true;
+            alreadyExists = true;
+            break;
           }
         }
       }
 
-      if (inFamily)
+      if (alreadyExists)
       {
-        std::cout << "nested set, do not add" << std::endl;
+        std::cout << "rcc already exists, do not add" << std::endl;
       }
-      */
-      //else
-      //{
-      std::set<int> cutSetAsSet(cutSet.begin(), cutSet.end());
-      cutSets.push_back(cutSetAsSet);
-      routeDD.addCapCutSet(cutSet, rccArcs, RHS, params.lpSolveType);
-      stats.numCuts = stats.numCuts + 1;
-      //}
+      else
+      {
+        std::set<int> cutSetAsSet(cutSet.begin(), cutSet.end());
+        cutSets.push_back(cutSetAsSet);
+        routeDD.addCapCutSet(cutSet, rccArcs, RHS, params.lpSolveType);
+        stats.numCuts = stats.numCuts + 1;
+      }
 
       dual.capDuals.push_back(maxViolation);
     }
@@ -1600,6 +1600,11 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
             stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
             printMultipliers(repairedDual);
 
+            if (repairedBound > 0.95 * targetLowerBound)
+            {
+              targetLowerBound = std::min(repairedBound * 1.05, stats.upperBound);
+            }
+
             bestDual = repairedDual;
             bestDualValue = repairedBound;
           }
@@ -1656,6 +1661,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
     }
 
     // Phase changes
+    // TODO(akarahal) consider going back to separation phase
     if (shouldTerminate)
     {
       if (phaseType == PhaseType::INITIAL_DUAL)
@@ -1668,8 +1674,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
         std::cout << "start robust primal phase" << std::endl;
         phaseType = PhaseType::ROBUST_PRIMAL;
 
-        // fresh primal and use primal to add cuts
-        primal = Primal();
+        // first time, use fresh primal and use primal to add cuts
+        if (stats.lpIterations < 4)
+        {
+          primal = Primal();
+        }
+
         params.useCuts = true;
       }
       else if (phaseType == PhaseType::ROBUST_PRIMAL)
@@ -1723,9 +1733,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       }
       else if (phaseType == PhaseType::NONROBUST_CUT_DUALS)
       {
-        std::cout << "start nonrobust primal phase again" << std::endl;
-        phaseType = PhaseType::NONROBUST_PRIMAL;
-        params.useCuts = true;
+        std::cout << "start separation phase again" << std::endl;
+        phaseType = PhaseType::SEPARATION;
+        //phaseType = PhaseType::NONROBUST_PRIMAL;
+        //params.useCuts = true;
       }
     }
 
