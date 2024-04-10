@@ -24,7 +24,7 @@ enum PhaseType
 struct DDStats
 {
   public:
-    DDStats() : lpIterations(0), numLagIterations(0), numLagIterationsWithResets(0), numSSPIterations(0), numSeparations(0), millisecondsCompiling(0), millisecondsSolvingSSP(0), millisecondsSolvingLP(0), lowerBound(0), upperBound(INF), numCuts(0)
+    DDStats() : lpIterations(0), numLagIterations(0), numLagIterationsWithResets(0), numSSPIterations(0), numSeparations(0), millisecondsCompiling(0), millisecondsSolvingSSP(0), millisecondsSolvingLP(0), millisecondsRepairingLAG(0), millisecondsFindingCuts(0), lowerBound(0), upperBound(INF), numCuts(0)
     {
       startTime = std::chrono::high_resolution_clock::now();
     };
@@ -37,6 +37,19 @@ struct DDStats
       std::cout << "] compileTime[" << int(millisecondsCompiling / 1000);
       std::cout << "] sspSolveTime[" << int(millisecondsSolvingSSP / 1000);
       std::cout << "] lpSolveTime[" << int(millisecondsSolvingLP / 1000);
+      std::cout << "] lb[" << lowerBound << "] ub[" << upperBound << "]";
+      std::cout << " numArcs: [" << ddNumArcs << "]";
+      std::cout << " numFixed: [" << ddNumFixedArcs << "]";
+      std::cout << " time: [" << getNumSeconds() << "]" << std::endl;
+
+      std::cout << "STATS1 - lpIterations[" << lpIterations << "] lagIterations[";
+      std::cout << numLagIterations << "] sspIterations[" << numSSPIterations;
+      std::cout << "] numSeparations[" << numSeparations << "] numCuts[" << numCuts;
+      std::cout << "] compileTime[" << int(millisecondsCompiling / 1000);
+      std::cout << "] sspSolveTime[" << int(millisecondsSolvingSSP / 1000);
+      std::cout << "] lpSolveTime[" << int(millisecondsSolvingLP / 1000);
+      std::cout << "] repairTime[" << int(millisecondsRepairingLAG / 1000);
+      std::cout << "] cutsTime[" << int(millisecondsFindingCuts/ 1000);
       std::cout << "] lb[" << lowerBound << "] ub[" << upperBound << "]";
       std::cout << " numArcs: [" << ddNumArcs << "]";
       std::cout << " numFixed: [" << ddNumFixedArcs << "]";
@@ -57,7 +70,11 @@ struct DDStats
     float millisecondsCompiling;
     float millisecondsSolvingSSP;
     float millisecondsSolvingLP;
+
+    float millisecondsRepairingLAG;
+    float millisecondsFindingCuts;
     std::chrono::high_resolution_clock::time_point startTime;
+
     double lowerBound;
     double upperBound;
     int numCuts;

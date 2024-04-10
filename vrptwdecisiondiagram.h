@@ -268,6 +268,11 @@ class VRPTWDecisionDiagram
     bool isRouteFeasible(const std::vector<int>& route);
     void repairRoute(const std::vector<int>& route, std::vector<int>& feasibleRoute, std::vector<int>& feasibleRouteArcs);
 
+    // merge methods
+    void findMergeNodesReducedCost(const Dual& dual, LPSolveType solveType, double limitToMerge);
+    bool canMergeNodes(int nodeIndex1, int nodeIndex2);
+    void mergeNodes(int nodeIndex1, int nodeIndex2);
+
     // min cost flow for lagrangean
     void runDijkstra(ShortestPathMode mode, std::vector<int>& shortestPathByArc);
     int reverseArc(int arcIndex);

@@ -2296,6 +2296,176 @@ double VRPTWDecisionDiagram::getDualObjectiveValue(const Dual& dual, LPSolveType
   return lowerBound;
 }
 
+void VRPTWDecisionDiagram::findMergeNodesReducedCost(const Dual& dual, LPSolveType solveType, double limitToMerge)
+{
+  std::cout << "merge nodes" << std::endl;
+
+  setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(dual, solveType);
+
+  // check over nodes for merge opportunities
+  bool keepChecking = true;
+  while (keepChecking)
+  {
+    std::vector<double> shortestPathDown(nodes.size(), INF);
+    shortestPathDown[rootNodeIndex] = 0;
+    std::vector<double> shortestPathUp(nodes.size(), INF);
+    shortestPathUp[terminalNodeIndex] = 0;
+    std::vector<std::set<int>> allVisitedDown(nodes.size());
+    std::vector<bool> nodeSeen(nodes.size(), false);
+
+    // dp to find shortest path down
+    for (auto capNodeIndices : nodeOrdering)
+    {
+      for (int nodeIndex : capNodeIndices.second)
+      {
+        for (int arcIndex : nodes[nodeIndex].outArcs)
+        {
+          int toNodeIndex = arcs[arcIndex].toNodeIndex;
+
+          double distanceFromNode = shortestPathDown[nodeIndex] + arcs[arcIndex].coeff;
+          if (distanceFromNode < shortestPathDown[toNodeIndex])
+          {
+            shortestPathDown[toNodeIndex] = distanceFromNode;
+          }
+
+          int location = arcs[arcIndex].location;
+          if (nodeSeen[toNodeIndex])
+          {
+            std::set<int> intersection;
+            std::set<int> allDownCurrNode = allVisitedDown[nodeIndex];
+            allDownCurrNode.insert(location);
+            std::set_intersection(allVisitedDown[toNodeIndex].begin(), allVisitedDown[toNodeIndex].end(), allDownCurrNode.begin(), allDownCurrNode.end(), std::inserter(intersection,intersection.begin()));
+            allVisitedDown[toNodeIndex] = intersection;
+          }
+          else
+          {
+            allVisitedDown[toNodeIndex] = allVisitedDown[nodeIndex];
+            allVisitedDown[toNodeIndex].insert(location);
+            nodeSeen[toNodeIndex] = true;
+          }
+        }
+      }
+    }
+
+    // dp to find shortest path up
+    for (auto it=nodeOrdering.rbegin(); it!=nodeOrdering.rend(); ++it)
+    {
+      for (int nodeIndex : it->second)
+      {
+        for (int arcIndex : nodes[nodeIndex].inArcs)
+        {
+          int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
+
+          double distanceFromNode = shortestPathUp[nodeIndex] + arcs[arcIndex].coeff;
+          if (distanceFromNode < shortestPathUp[fromNodeIndex])
+          {
+            shortestPathUp[fromNodeIndex] = distanceFromNode;
+          }
+        }
+      }
+    }
+
+    // check all pairs for big enough (up + down) and compatible merging
+    std::vector<int> nodesToCheck;
+    for (int nodeIndex1=0; nodeIndex1<nodes.size(); ++nodeIndex1)
+    {
+      double upPlusDown1 = shortestPathUp[nodeIndex1] + shortestPathDown[nodeIndex1];
+      if ((upPlusDown1 > limitToMerge) && (shortestPathUp[nodeIndex1] < INF) && (shortestPathDown[nodeIndex1] < INF))
+      {
+        nodesToCheck.push_back(nodeIndex1);
+      }
+    }
+    
+    keepChecking = false;
+    for (int nodeIndexToCheck1=0; nodeIndexToCheck1<nodesToCheck.size(); ++nodeIndexToCheck1)
+    {
+      int nodeIndex1 = nodesToCheck[nodeIndexToCheck1];
+      for (int nodeIndexToCheck2=nodeIndexToCheck1+1; nodeIndexToCheck2<nodesToCheck.size(); ++nodeIndexToCheck2)
+      {
+        int nodeIndex2 = nodesToCheck[nodeIndexToCheck2];
+        double down1up2 = shortestPathDown[nodeIndex1] + shortestPathUp[nodeIndex2];
+        double down2up1 = shortestPathDown[nodeIndex2] + shortestPathUp[nodeIndex1];
+        if ((down1up2 > limitToMerge) && (down2up1 > limitToMerge))
+        {
+          if (canMergeNodes(nodeIndex1, nodeIndex2))
+          {
+            mergeNodes(nodeIndex1, nodeIndex2);
+            std::cout << "merged: " << nodeIndex1 << " and " << nodeIndex2 << std::endl;
+            keepChecking = true;
+          }
+        }
+
+        if (keepChecking)
+        {
+          break;
+        }
+      }
+ 
+      if (keepChecking)
+      {
+        break;
+      }
+    }
+  }
+}
+
+bool VRPTWDecisionDiagram::canMergeNodes(int nodeIndex1, int nodeIndex2)
+{
+  const VRPTWNodeState& state1 = nodes[nodeIndex1].state;
+  const VRPTWNodeState& state2 = nodes[nodeIndex2].state;
+
+  if (state1.lastVisited != state2.lastVisited)
+  {
+    return false;
+  }
+
+  // check for DAG to be maintained
+  if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
+  {
+    if (state1.counter != state2.counter)
+    {
+      return false;
+    }
+  }
+  else
+  {
+    for (int arcIndex : nodes[nodeIndex2].inArcs)
+    {
+      if (nodes[arcs[arcIndex].fromNodeIndex].state.capacity >= state1.capacity)
+      {
+        return false;
+      }
+    }
+  }
+
+  if (state1.capacity > state2.capacity)
+  {
+    return false;
+  }
+ 
+  if (state1.timeWithMultiplier > state2.timeWithMultiplier)
+  {
+    return false;
+  }
+
+  if (!std::includes(state2.visited.begin(), state2.visited.end(),
+                     state1.visited.begin(), state1.visited.end()))
+  {
+    return false;
+  }
+
+  return true;
+}
+
+void VRPTWDecisionDiagram::mergeNodes(int nodeIndex1, int nodeIndex2)
+{
+  // move all in arcs from nodeIndex2 to nodeIndex1
+  for (int arcIndex : nodes[nodeIndex2].inArcs)
+  {
+    moveArc(arcIndex, nodeIndex1);
+  }
+}
+
 double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType)
 {
   // get value of dual
@@ -2363,11 +2533,20 @@ double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType)
     }
   }
 
+  std::set<double> setToCheck;
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
   {
     // fix arcs based on lb + rc > ub
     const VRPTWArc& arcToCheck = arcs[arcIndex];
     double bestPossibleReducedCost = shortestPathDown[arcToCheck.fromNodeIndex] + shortestPathUp[arcToCheck.toNodeIndex] + arcToCheck.coeff - dual.fixedPathDual;
+    /*
+    if (lowerBound > 12000)
+    {
+      //std::cout << "spd: " << shortestPathDown[arcToCheck.fromNodeIndex] << " spu: " << shortestPathUp[arcToCheck.toNodeIndex] << " arc: " << arcToCheck.coeff << std::endl;
+      //std::cout << "total: " << bestPossibleReducedCost << std::endl;
+      setToCheck.insert(bestPossibleReducedCost);
+    }
+    */
 
     // fix arcs based on allDown
     // make sure we don't remove edge case for src cuts special feasible routes that start with 0 0
@@ -2409,6 +2588,14 @@ double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType)
       }
     }
   }
+
+/*
+  for (double d : setToCheck)
+  {
+    std::cout << d << ",";
+  }
+  std::cout << std::endl;
+*/
 
   DBG(std::cout << "number of fixed arcs: " << fixedArcs.size() << std::endl;
   std::cout << "percent fixed arcs: " << getPercentFixedArcs() << std::endl;)
@@ -3658,7 +3845,9 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::ve
     {
       DBG(std::cout << "find multi path" << std::endl;)
       findMultiPath(newPathArcIndex, treeByParentArcs, shortestPathByArc);
-      if ((evaluateRouteCost(shortestPathByArc) >= -0.000000001) && (vrptw.fixedNumPaths == FixedNumPaths::FLEXIBLE_NUM_PATHS))
+      double currRouteCost = evaluateRouteCost(shortestPathByArc);
+      //std::cout << "r: " << currRouteCost << std::endl;
+      if ((currRouteCost >= -0.000000001) && (vrptw.fixedNumPaths == FixedNumPaths::FLEXIBLE_NUM_PATHS))
       {
         break;
       }
@@ -3739,7 +3928,9 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::ve
       }
       DBG(std::cout << "finish shortest path update" << std::endl;)
 
-      if ((evaluateRouteCost(shortestPathByArc) >= -0.000000001) && (vrptw.fixedNumPaths == FixedNumPaths::FLEXIBLE_NUM_PATHS))
+      double currRouteCost = evaluateRouteCost(shortestPathByArc);
+      //std::cout << "r: " << currRouteCost << std::endl;
+      if ((currRouteCost >= -0.000000001) && (vrptw.fixedNumPaths == FixedNumPaths::FLEXIBLE_NUM_PATHS))
       {
         break;
       }

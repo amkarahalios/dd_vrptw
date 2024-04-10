@@ -441,6 +441,8 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       // do cuts first in case separations mess up dd structure
       if (params.useCuts && (lpFlowType == FlowType::LP))
       {
+        auto startTime = std::chrono::high_resolution_clock::now();
+
         // RCC - rounded capacity cuts
         std::vector<int> edgeTail;
         std::vector<int> edgeHead;
@@ -450,6 +452,10 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         routeDD.convertSolutionForVRPTWSep(edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
         addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, 100, cutAdded, dual);
         dual.capDuals.resize(routeDD.getNumCapCuts());
+ 
+        // Strengthened Combs
+        //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
+        //combDuals.resize(routeDD.getNumCombCuts());
 
         // Subset Row Cuts
         std::vector<int> infeasibleRoute;
@@ -479,6 +485,10 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
 
         resizeMultipliers(dual, bestDual);
         resizeMultipliers(dual, bestDualArcFixing);
+ 
+        auto endTime = std::chrono::high_resolution_clock::now();
+        auto totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+        stats.millisecondsFindingCuts += totalTime;
       }
 
       bool stopFindingInfeasibilities = false;
@@ -752,6 +762,7 @@ bool VRPTWDDSolver::solveLPCG(Dual& duals)
 
 void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
 {
+  auto startTime = std::chrono::high_resolution_clock::now();
   routeDD.clearRelaxedSrcs();
 
   while (true)
@@ -801,6 +812,10 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
       }
     }
   }
+ 
+  auto endTime = std::chrono::high_resolution_clock::now();
+  auto totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+  stats.millisecondsRepairingLAG += totalTime;
 };
 
 void VRPTWDDSolver::printMultipliers(Dual& dual)
@@ -1443,6 +1458,13 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
 
         bestDual = dual;
         bestDualValue = lagrangeanLowerBound;
+        double percentGap = (stats.upperBound - bestDualValue) * 100.0 / stats.upperBound;
+        if (percentGap < 10)
+        {
+          double limitToMerge = (stats.upperBound - bestDualValue) / 2.0;
+          //routeDD.findMergeNodesReducedCost(bestDual, LPSolveType::LAGSolver, limitToMerge);
+          //stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
+        }
 
         stepSizeMultiplierIteration = 0;
         if (lagrangeanLowerBound > 0.95 * targetLowerBound)
@@ -1600,13 +1622,20 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
             stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
             printMultipliers(repairedDual);
 
+            bestDual = repairedDual;
+            bestDualValue = repairedBound;
+            double percentGap = (stats.upperBound - bestDualValue) * 100.0 / stats.upperBound;
+            if (percentGap < 10)
+            {
+              double limitToMerge = (stats.upperBound - bestDualValue) / 2.0;
+              //routeDD.findMergeNodesReducedCost(bestDual, LPSolveType::LAGSolver, limitToMerge);
+              //stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
+            }
+
             if (repairedBound > 0.95 * targetLowerBound)
             {
               targetLowerBound = std::min(repairedBound * 1.05, stats.upperBound);
             }
-
-            bestDual = repairedDual;
-            bestDualValue = repairedBound;
           }
 
           percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver);
@@ -1707,9 +1736,17 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       }
       else if (phaseType == PhaseType::ROBUST_CUT_DUALS)
       {
-        std::cout << "start nonrobust primal phase" << std::endl;
-        phaseType = PhaseType::NONROBUST_PRIMAL;
-        params.useCuts = true;
+        if ((stats.upperBound - stats.lowerBound) * 100.0 / stats.upperBound < 4)
+        {
+          std::cout << "start nonrobust primal phase" << std::endl;
+          phaseType = PhaseType::NONROBUST_PRIMAL;
+          params.useCuts = true;
+        }
+        else
+        {
+          std::cout << "start separation phase again" << std::endl;
+          phaseType = PhaseType::SEPARATION;
+        }
       }
       else if (phaseType == PhaseType::NONROBUST_PRIMAL)
       {
@@ -2069,6 +2106,8 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
 
 bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
 {
+  auto startTime = std::chrono::high_resolution_clock::now();
+
   // Rounded Capacity Cuts
   bool cutAdded = false;
   std::vector<int> edgeTail;
@@ -2145,6 +2184,10 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
   resizeMultipliers(dual, bestDualArcFixing);
   capCutTooSmallCounters.resize(dual.capDuals.size());
   cliqueCutTooSmallCounters.resize(dual.srcDuals.size());
+
+  auto endTime = std::chrono::high_resolution_clock::now();
+  auto totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
+  stats.millisecondsFindingCuts += totalTime;
 
   return cutAdded;
 };
