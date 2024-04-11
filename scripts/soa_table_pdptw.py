@@ -343,7 +343,7 @@ baldacci_bounds = {
 "LC1_10_1.pdp":(42488.7,42488.7,79.5),
 "LC1_10_5.pdp":(42477.4,42477.4,118.7),
 "LR1_10_1.pdp":(56744.9,56744.9,233.1),
-"LC1_10_5.pdp":(52536.3,52901.3,4068.8),
+"LR1_10_5.pdp":(52536.3,52901.3,4068.8),
 "LRC1_10_1.pdp":(48398.8,48666.5,2533.3),
 "LRC1_10_5.pdp":(38177.8,49287.1,1650.3)
 }
@@ -355,7 +355,7 @@ colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([
 #colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] size: \[([0-9]+)\] time: \[([0-9]+)\]")
 
 logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
-test_set = ["pdp_200_LAG_NG2_upper_bound_counter", "pdp_400_LAG_NG2_upper_bound_counter", "pdp_600_LAG_NG1", "pdptw800_LAG_NG1", "pdptw1000_LAG_NG1"]
+test_set = ["pdp_200_LAG_NG2_upper_bound_counter", "pdp_400_LAG_NG2_upper_bound_counter", "pdp_600_LAG_NG2_upper_bound_counter", "pdptw800_LAG_NG2_upper_bound_counter", "pdptw1000_LAG_NG2_upper_bound_counter"]
 
 instances = []
 base_instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/"
@@ -460,7 +460,7 @@ num_printed = 0
 for i, row in table_results_df.iterrows():
   instance = row['instance']
 
-  baldacci_compare = False
+  baldacci_compare = True
   if baldacci_compare:
     if instance not in baldacci_bounds.keys():
       continue
@@ -551,7 +551,7 @@ for i, row in table_results_df.iterrows():
 
   if baldacci_compare:
     if (lb_value != '-') and (baldacci_lb != '-') and (lb_value > baldacci_lb):
-      print(f"{instance_name} & {instance_upper_bounds[instance]} & & {baldacci_lb} & {baldacci_ub} & {baldacci_time} & & {vrpsolver_lb} & {vrpsolver_time} & & \\textbf\u007b{lb_value}\u007d & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+      print(f"{instance_name} & {instance_upper_bounds[instance]} & & {baldacci_lb} & {baldacci_ub} & {baldacci_time} & & {vrpsolver_lb} & {vrpsolver_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
     else:
       print(f"{instance_name} & {instance_upper_bounds[instance]} & & {baldacci_lb} & {baldacci_ub} & {baldacci_time} & & {vrpsolver_lb} & {vrpsolver_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
   else:
