@@ -12,7 +12,7 @@
 #include <fstream>
 #include <sstream>
 
-const long INF = 1e10;
+const long INF = 1e9;
 
 enum ProblemType
 {
@@ -35,7 +35,7 @@ enum CircuitOrPath
   PATH = 1
 };
 
-enum InitialStateSpace
+enum StateSpace
 {
   NG = 0,
   Q = 1
@@ -83,6 +83,14 @@ enum AllowMultipleVisits
   NO = 1
 };
 
+enum SRCType
+{
+  SRC3 = 0,
+  SRC4 = 1,
+  SRC5V1 = 2,
+  SRC5V2 = 2
+};
+
 enum ShortestPathMode
 {
   UPDATE_POTENTIALS = 0,
@@ -109,31 +117,21 @@ enum VRPTWTimeWindowType
 
 struct VRPTWDDParameters
 {
-  LPSolveType lpSolveType;
-  InitialStateSpace initialStateSpace;
-  int s;
-  int maxS;
-  bool useCuts;
-  bool useVariableFixing;
-  bool useMuSSP;
   int timeoutSeconds;
 
-  int infeasibleRoutesBatchSize;
-  double lagIterationDelayToStartSeparating;
-  double lagOptimalityGapToStartRepairing;
-  double percentFixedToChangeToCPLEX;
-  int numArcsToChangeToCPLEX;
-  int numArcsToChangeToLAG;
-  int numLagItersForCuts;
-  int numLagCuts;
-  bool cutPhase;
+  LPSolveType lpSolveType;
+  StateSpace stateSpace;
+  int ngSetSize;
+  bool changeToLP;
 
-  double deactivateCutValueThreshold;
-  int deactivateCutIterThreshold;
-  double momentumBeta;
-  double stallAlphaFactor;
+  bool useVariableFixing;
+  bool useMuSSP;
+  bool repairDuals;
 
-  int bucketsPerVertex;
+  bool useRobustCuts;
+  bool useNonRobustCuts;
+  bool useVolumeAlgorithm;
+  bool usePhases;
 };
 
 struct VRPTWSolution

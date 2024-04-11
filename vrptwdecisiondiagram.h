@@ -9,6 +9,42 @@
 
 #include "vrptw.h"
 
+struct Dual
+{
+  public:
+    Dual() {}
+    Dual(Dual& dual)
+    {
+      lambda = dual.lambda;
+      capDuals = dual.capDuals;
+      combDuals = dual.combDuals;
+      srcDuals = dual.srcDuals;
+      fixedPathDual = dual.fixedPathDual;
+    }
+
+    std::vector<double> lambda;
+    std::vector<double> capDuals;
+    std::vector<double> combDuals;
+    std::vector<double> srcDuals;
+    double fixedPathDual;
+};
+
+struct Primal
+{
+  public:
+    Primal() {}
+    Primal(Primal& primal)
+    {
+      xDecompositions = primal.xDecompositions;
+      xDecompositionArcs = primal.xDecompositionArcs;
+      xDecompositionFlows = primal.xDecompositionFlows;
+    }
+
+    std::vector<std::vector<int>> xDecompositions;
+    std::vector<std::vector<int>> xDecompositionArcs;
+    std::vector<double> xDecompositionFlows;
+};
+
 struct VRPTWNodeState
 {
   VRPTWNodeState(int _counter, int _capacity, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited) : counter(_counter), capacity(_capacity), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited), srcCount(0) {};
@@ -172,7 +208,8 @@ class VRPTWDecisionDiagram
     {
       return (fixedArcs.find(arcIndex) == fixedArcs.end()) && (removedArcs.find(arcIndex) == removedArcs.end());
     }
-    std::pair<int,int> getFromAndToLocations(int arcIndex) { return std::make_pair(nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited,arcs[arcIndex].location); }
+
+   std::pair<int,int> getFromAndToLocations(int arcIndex) { return std::make_pair(nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited,arcs[arcIndex].location); }
 
     // compilation
     void compileExactFukasawa(int s);
@@ -181,23 +218,33 @@ class VRPTWDecisionDiagram
     // set arc coeffs to different values
     void setCoeffsAsDistances();
     void setCoeffsAsDistancesMinusLagrangean(const std::vector<double>& lambda);
-    void setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(const std::vector<double>& lambda, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
+    void setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(const Dual& dual, LPSolveType lpSolveType);
 
     // arc aggregation calculations
     void getNumberOfTimesLocationsCovered(std::unordered_map<int,double>& locationsCovered);
     void getCutSetValues(std::vector<double>& cutValues);
     void getCombValues(std::vector<double>& combValues);
     void getCliqueCutValues(std::vector<double>& cliqueCutValues);
+
+    void getNumberOfTimesLocationsCoveredRoutes(const Primal& primal, std::unordered_map<int,double>& locationsCovered);
+    void getCutSetValuesRoutes(const Primal& primal, std::vector<double>& cutValues);
+    void getCombValuesRoutes(const Primal& primal, std::vector<double>& combValues);
+    void getCliqueCutValuesRoutes(const Primal& primal, std::vector<double>& cliqueCutValues);
+
     void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
     bool areNodesConnected(int nodeIndex1, int nodeIndex2);
-    //void findSRCThree(const std::vector<std::set<int>>& decomposition, const std::vector<double>& stepSizes, bool& cutAdded);
-    int findSRCs(const std::vector<std::vector<int>>& decomposition, const std::vector<std::vector<int>>& decompositionArcs, const std::vector<double>& stepSizes);
+
+    int findSRC3s(const Primal& primal, int limit, std::vector<double>& violations);
+    int findSRC4s(const Primal& primal, int limit, std::vector<double>& violations);
+    int findSRC5V1s(const Primal& primal, int limit, std::vector<double>& violations);
+    int findSRC5V2s(const Primal& primal, int limit, std::vector<double>& violations);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
                                    std::vector<double>& edgeFlow,
                                    std::vector<int>& rccArcs,
                                    std::vector<double>& rccArcFlows);
     void strengthenSRCs(int layer);
+    void getFeasiblePrimalIndices(const Primal& primal, std::vector<int>& feasibleIndices);
 
     // can be used for col gen or ssp, allows negative weights unlike dijkstra
     double computeShortestPathBFS(ShortestPathMode mode, std::vector<int>& routeByLocation);
@@ -206,19 +253,25 @@ class VRPTWDecisionDiagram
 
     // network flow for lp/ip
     void initializeColumnsByLPDecomp();
-    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, std::vector<double>& duals, double& singlePathDual, std::vector<double>& capDuals, std::vector<double>& combDuals, std::vector<double>& srcDuals);
-    double getDualObjectiveValue(const std::vector<double>& lambda, double fixedPathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
-    double fixArcs(const std::vector<double>& lambda, double singlePathDual, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
+    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, Dual& dual);
+    double getDualObjectiveValue(const Dual& dual, LPSolveType lpSolveType);
+    double fixArcs(const Dual& dual, LPSolveType lpSolveType);
 
     // primal heuristic and separation methods
     void primalHeuristic(std::vector<std::vector<int>>& routesByLocation);
     bool doesRouteExistByArcs(const std::vector<int>& routeArcs) const;
     bool doesRouteExistByLocations(const std::vector<int>& routeByLocation, std::vector<int>& routeArcs) const;
-    void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, int maxS, DecompositionReason dr);
+    void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, DecompositionReason dr);
     void getSolutionArcs(std::set<int>& solutionArcs);
-    void separateInfeasibleRoute(const std::vector<int>& routeArcs, int maxS);
+    void separateInfeasibleRoute(const std::vector<int>& routeArcs);
     int separateFeasibleRoute(const std::vector<int>& routeArcs);
     bool isRouteFeasible(const std::vector<int>& route);
+    void repairRoute(const std::vector<int>& route, std::vector<int>& feasibleRoute, std::vector<int>& feasibleRouteArcs);
+
+    // merge methods
+    void findMergeNodesReducedCost(const Dual& dual, LPSolveType solveType, double limitToMerge);
+    bool canMergeNodes(int nodeIndex1, int nodeIndex2);
+    void mergeNodes(int nodeIndex1, int nodeIndex2);
 
     // min cost flow for lagrangean
     void runDijkstra(ShortestPathMode mode, std::vector<int>& shortestPathByArc);
@@ -236,8 +289,8 @@ class VRPTWDecisionDiagram
     double createSolutionFromReverseArcsAndResetWang(const std::set<int>& clippedArcs, const std::vector<std::vector<int>>& shortestPathsByArc);
     void updateResidualGraphWang(const std::vector<int>& shortestPathByArc, std::vector<int>& treeByParentArc);
     void dijkstraWithBatchProc(std::vector<int>& treeByParentArcs, std::vector<std::vector<int>>& treeByChildArcs, std::set<int>& nodesToUpdate);
-    double solveMinCostFlowModelWang(const std::vector<double>& duals, const std::vector<double>& capDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& shortestPathLength);
-    bool checkFeasibleDual(const std::vector<double>& lambda, const std::vector<double>& rccDuals, const std::vector<double>& combDuals, std::vector<double>& srcDuals, LPSolveType solveType);
+    double solveMinCostFlowModelWang(const Dual& dual, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& shortestPathLength);
+    bool checkFeasibleDual(const Dual& dual, LPSolveType lpSolveType);
     void getLocationsOnArcPaths(const std::vector<std::vector<int>>& shortestPathsByArc, std::set<int>& locations);
 
     // for testing
@@ -251,11 +304,15 @@ class VRPTWDecisionDiagram
 
     // for cuts
     void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, LPSolveType solveType);
+    std::vector<int> getCapCutSet(int index) const { return capCutSets[index]; }
     int getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
     int getNumCapCuts() const { return capCutSetsRHS.size(); }
 
     int getNumCliqueCuts() const { return cliqueCuts.size(); }
+    bool isCapCutActive(int index);
+    void deactivateCapCut(int index) { capCutActive[index] = false; }
     bool isCliqueCutActive(int index);
+    void deactivateCliqueCut(int index) { cliqueCutActive[index] = false; }
 
     void addCombCutTeeth(const std::vector<std::set<int>>& teeth);
     void addCombCutRHS(const double& rhs) { combRHS.push_back(rhs); }
@@ -263,7 +320,9 @@ class VRPTWDecisionDiagram
     int getNumCombCuts() const { return combRHS.size(); }
 
     int getRCCCoeff(std::vector<int> route, int rccIndex);
-    int getSRCCoeff(std::vector<int> route, const std::set<int>& cutSet);
+    int getSRCCoeff(int numTimesVisited, SRCType srcType);
+    SRCType getSRCType(int index) { return cliqueCutTypes[index]; }
+    int getSRCRHS(SRCType srcType);
     void clearRelaxedSrcs();
 
   private:
@@ -276,6 +335,15 @@ class VRPTWDecisionDiagram
     void removeArc(int arcIndex);
     void setupNgSets(int s);
  
+    double getSRCFlowViolation(const Primal& primal, const std::vector<int>& primalFeasibleIndices, const std::set<int>& cutSet, SRCType srcType);
+    void getSRCArcsAndCoeffs(const Primal& primal, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& bestLayerArcs, std::vector<int>& bestLayerCoeffs);
+    bool checkExistingCliqueCuts(const std::set<int>& testSet, std::vector<int>& bestArcSet, std::vector<int>& bestCoeffs, SRCType srcType);
+    int getNumTimesSetVisited(std::vector<int> route, const std::set<int>& cutSet);
+    int getSRC3Coeff(int numTimesVisited);
+    int getSRC4Coeff(int numTimesVisited);
+    int getSRC5V1Coeff(int numTimesVisited);
+    int getSRC5V2Coeff(int numTimesVisited);
+
     VRPTW vrptw;
     VRPTWDDParameters params;
     std::vector<VRPTWNode> nodes;
@@ -306,6 +374,7 @@ class VRPTWDecisionDiagram
     std::vector<double> capCutSetsRHS;
     std::vector<std::vector<std::vector<int>>> capCutSetRoutes;
     std::vector<std::vector<int>> capCutSetArcs;
+    std::vector<bool> capCutActive;
 
     // Clique Cuts (SRC)
     std::vector<std::set<int>> cliqueCuts;
@@ -313,6 +382,7 @@ class VRPTWDecisionDiagram
     std::vector<std::vector<int>> cliqueCutSeparatedCoeffs;
     std::vector<std::vector<int>> cliqueCutRelaxedArcs;
     std::vector<std::vector<int>> cliqueCutRelaxedCoeffs;
+    std::vector<SRCType> cliqueCutTypes;
     std::vector<bool> cliqueCutActive;
     int separatedFeasibleRouteCounter;
 

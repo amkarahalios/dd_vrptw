@@ -10,7 +10,7 @@ if [ $# -ne 3 ]; then
   exit 2
 fi
 
-OUTPUT_DIR=$HOME/dd_vrptw/logs/$1_$3/
+OUTPUT_DIR=$HOME/dd_vrptw/new_logs/$1_$3/
 mkdir -p $OUTPUT_DIR
 
 FILES=$HOME/dd_vrptw/instances/$1/*
