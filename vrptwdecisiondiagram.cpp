@@ -113,30 +113,15 @@ void VRPTWArc::print() const
 VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDParameters _params) : vrptw(_vrptw), params(_params)
 {
   // default time and capacity step sizes
-  if (params.bucketsPerVertex <= 0)
+  capacityStepSize = 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()));
+  if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
   {
-    capacityStepSize = 1 * (*std::min_element(vrptw.demands.begin()+1, vrptw.demands.end()));
-    if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
-    {
-      capacityStepSize = 1;
-    }
-
-    if (vrptw.capacityDiscretization != 0)
-    {
-      capacityStepSize = vrptw.capacityDiscretization;
-    }
+    capacityStepSize = 1;
   }
-  else
+
+  if (vrptw.capacityDiscretization != 0)
   {
-    if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
-    {
-      capacityStepSize = 1;
-    }
-    else
-    {
-      double bucketStepSize1 = vrptw.capacity * 1.0 / std::sqrt(params.bucketsPerVertex);
-      capacityStepSize = bucketStepSize1;
-    }
+    capacityStepSize = vrptw.capacityDiscretization;
   }
 
   setTimeStepSize();
@@ -146,24 +131,7 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
 void VRPTWDecisionDiagram::setTimeStepSize()
 {
   // default time and capacity step sizes
-  if (params.bucketsPerVertex <= 0)
-  {
     timeStepSize = vrptw.timeStateMultiplier * vrptw.timeStateDiscretization;
-  }
-  else
-  {
-    if (vrptw.vrptwCapacityType == NO_RELAX_CAPACITY)
-    {
-      double bucketStepSize = (vrptw.endTimes[0] - vrptw.startTimes[0]) * 1.0 / params.bucketsPerVertex;
-      timeStepSize = vrptw.timeStateMultiplier * bucketStepSize;
-    }
-    else
-    {
-      double bucketStepSize = (vrptw.endTimes[0] - vrptw.startTimes[0]) * 1.0 / std::sqrt(params.bucketsPerVertex);
-      timeStepSize = vrptw.timeStateMultiplier * bucketStepSize;
-
-    }
-  }
 };
 
 void VRPTWDecisionDiagram::updateTimeStateMultiplierByTen()
@@ -992,17 +960,40 @@ void VRPTWDecisionDiagram::getCombValues(std::vector<double>& combValues)
   }
 };
 
-// fix this one
 void VRPTWDecisionDiagram::getCombValuesRoutes(const Primal& primal, std::vector<double>& combValues)
 {
   combValues.clear();
   for (int combIndex=0; combIndex<teeths.size(); ++combIndex)
   {
     double combValue = 0.0;
-    for (int arcIndex : combCutArcs[combIndex])
+
+    auto teeth = teeths[combIndex];
+    for (auto tooth : teeth)
     {
-      combValue += arcs[arcIndex].heuristicFlow;
+      for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
+      {
+        double flow = primal.xDecompositionFlows[index];
+        auto route = primal.xDecompositions[index];
+
+        int fromLoc = route[0];
+        int coeff = 0;
+        for (int routeIndex=1; routeIndex<route.size(); ++routeIndex)
+        {
+          int toLoc = route[routeIndex];
+          bool fromLocInSet = (std::find(tooth.begin(), tooth.end(), fromLoc) != tooth.end());
+          bool toLocInSet = (std::find(tooth.begin(), tooth.end(), toLoc) != tooth.end());
+          if ((fromLocInSet && !toLocInSet) || (!fromLocInSet && toLocInSet))
+          {
+            coeff += 1;
+          }
+
+          fromLoc = toLoc;
+        }
+
+        combValue += (flow * coeff);
+      }
     }
+
     combValues.push_back(combValue);
   }
 };
@@ -2781,7 +2772,7 @@ bool VRPTWDecisionDiagram::doesRouteExistByLocations(const std::vector<int>& rou
   return true;
 };
 
-void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, int maxS, DecompositionReason decompositionReason)
+void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, DecompositionReason decompositionReason)
 {
   // store decomposition flows to restore after
   std::vector<double> decompositionFlows;
@@ -2898,7 +2889,7 @@ void VRPTWDecisionDiagram::getSolutionArcs(std::set<int>& solutionArcs)
   }
 };
 
-void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& routeArcs, int maxS)
+void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& routeArcs)
 {
   // clear fixed arcs when dd changes
   for (int arcIndex : fixedArcs)

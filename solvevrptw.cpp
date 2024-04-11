@@ -47,15 +47,15 @@ int main(int argc, char** argv)
       return -1;
     }
 
-    std::string initialStateSpaceString = argv[4];
-    InitialStateSpace initialStateSpace = InitialStateSpace::NG;
-    if (initialStateSpaceString == "NG")
+    std::string stateSpaceString = argv[4];
+    StateSpace stateSpace = StateSpace::NG;
+    if (stateSpaceString == "NG")
     {
-      initialStateSpace = InitialStateSpace::NG;
+      stateSpace = StateSpace::NG;
     }
-    else if (initialStateSpaceString == "Q")
+    else if (stateSpaceString == "Q")
     {
-      initialStateSpace = InitialStateSpace::Q;
+      stateSpace = StateSpace::Q;
     }
     else
     {
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
     int s = std::stoi(sValue);
 
     VRPTWDDParameters params;
-    VRPTWColGen colGenModel(vrptw, params, pricingProblemType, initialStateSpace, s);
+    VRPTWColGen colGenModel(vrptw, params, pricingProblemType, stateSpace, s);
     bool solved = colGenModel.solve();
   }
   else if (solverName == "COL_ELIM")
@@ -87,6 +87,10 @@ int main(int argc, char** argv)
         {
           if (lineIndex == 0)
           {
+            params.timeoutSeconds = std::stoi(paramValueString);
+          }
+          else if (lineIndex == 2)
+          {
             if (paramValueString == "LAG")
             {
               params.lpSolveType = LPSolveType::LAGSolver;
@@ -95,43 +99,43 @@ int main(int argc, char** argv)
             {
               params.lpSolveType = LPSolveType::LPSolver;
             }
-            else
+            else if (paramValueString == "LAG-LP")
             {
-              return -1;
-            }
-          }
-          else if (lineIndex == 1)
-          {
-            if (paramValueString == "NG")
-            {
-              params.initialStateSpace = InitialStateSpace::NG;
-            }
-            else if (paramValueString == "Q")
-            {
-              params.initialStateSpace = InitialStateSpace::Q;
+              params.lpSolveType = LPSolveType::LPSolver;
             }
             else
             {
               return -1;
             }
-          }
-          else if (lineIndex == 2)
-          {
-            params.s = std::stoi(paramValueString);
           }
           else if (lineIndex == 3)
           {
-            params.maxS = std::stoi(paramValueString);
+            if (paramValueString == "NG")
+            {
+              params.stateSpace = StateSpace::NG;
+            }
+            else if (paramValueString == "Q")
+            {
+              params.stateSpace = StateSpace::Q;
+            }
+            else
+            {
+              return -1;
+            }
           }
           else if (lineIndex == 4)
           {
-            params.useCuts = false;
-            if (paramValueString == "Y")
-            {
-              params.useCuts = true;
-            }
+            params.ngSetSize = std::stoi(paramValueString);
           }
           else if (lineIndex == 5)
+          {
+            params.changeToLP = false;
+            if (paramValueString == "Y")
+            {
+              params.changeToLP = true;
+            }
+          }
+          else if (lineIndex == 7)
           {
             params.useVariableFixing = false;
             if (paramValueString == "Y")
@@ -139,7 +143,7 @@ int main(int argc, char** argv)
               params.useVariableFixing = true;
             }
           }
-          else if (lineIndex == 6)
+          else if (lineIndex == 8)
           {
             params.useMuSSP = false;
             if (paramValueString == "Y")
@@ -147,69 +151,45 @@ int main(int argc, char** argv)
               params.useMuSSP = true;
             }
           }
-          else if (lineIndex == 7)
-          {
-            params.timeoutSeconds = std::stoi(paramValueString);
-          }
-          else if (lineIndex == 8)
-          {
-            params.infeasibleRoutesBatchSize = std::stoi(paramValueString);
-          }
           else if (lineIndex == 9)
           {
-            params.lagIterationDelayToStartSeparating = std::stod(paramValueString);
-          }
-          else if (lineIndex == 10)
-          {
-            params.lagOptimalityGapToStartRepairing = std::stod(paramValueString);
+            params.repairDuals = false;
+            if (paramValueString == "Y")
+            {
+              params.repairDuals = true;
+            }
           }
           else if (lineIndex == 11)
           {
-            params.percentFixedToChangeToCPLEX = std::stod(paramValueString);
+            params.useRobustCuts = false;
+            if (paramValueString == "Y")
+            {
+              params.useRobustCuts = true;
+            }
           }
           else if (lineIndex == 12)
           {
-            params.numArcsToChangeToCPLEX = std::stoi(paramValueString);
+            params.useNonRobustCuts = false;
+            if (paramValueString == "Y")
+            {
+              params.useNonRobustCuts = true;
+            }
           }
           else if (lineIndex == 13)
           {
-            params.numArcsToChangeToLAG = std::stoi(paramValueString);
+            params.useVolumeAlgorithm = false;
+            if (paramValueString == "Y")
+            {
+              params.useVolumeAlgorithm = true;
+            }
           }
           else if (lineIndex == 14)
           {
-            params.numLagItersForCuts = std::stoi(paramValueString);
-          }
-          else if (lineIndex == 15)
-          {
-            params.numLagCuts = std::stoi(paramValueString);
-          }
-          else if (lineIndex == 16)
-          {
-            params.cutPhase = false;
+            params.usePhases = false;
             if (paramValueString == "Y")
             {
-              params.cutPhase = true;
+              params.usePhases = true;
             }
-          }
-          else if (lineIndex == 17)
-          {
-            params.deactivateCutValueThreshold = std::stod(paramValueString);
-          }
-          else if (lineIndex == 18)
-          {
-            params.deactivateCutIterThreshold = std::stoi(paramValueString);
-          }
-          else if (lineIndex == 19)
-          {
-            params.momentumBeta = std::stod(paramValueString);
-          }
-          else if (lineIndex == 20)
-          {
-            params.stallAlphaFactor = std::stod(paramValueString);
-          }
-          else if (lineIndex == 21)
-          {
-            params.bucketsPerVertex = std::stoi(paramValueString);
           }
         }
         wordIndex = wordIndex + 1;

@@ -151,6 +151,15 @@ class VRPTWDDSolver
     double alphaLowerBoundCheckValue;
     double targetLowerBound;
 
+    // static params
+    int infeasibleRoutesBatchSize;
+    double deactivateCutValueThreshold;
+    int deactivateCutIterThreshold;
+    double lagOptimalityGapToStartRepairing;
+    double percentFixedToChangeToCPLEX;
+    int numArcsToChangeToCPLEX;
+    int numLagCuts;
+
     // for primal
     Primal primal;
 

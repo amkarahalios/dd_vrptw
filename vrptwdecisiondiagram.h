@@ -261,9 +261,9 @@ class VRPTWDecisionDiagram
     void primalHeuristic(std::vector<std::vector<int>>& routesByLocation);
     bool doesRouteExistByArcs(const std::vector<int>& routeArcs) const;
     bool doesRouteExistByLocations(const std::vector<int>& routeByLocation, std::vector<int>& routeArcs) const;
-    void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, int maxS, DecompositionReason dr);
+    void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, DecompositionReason dr);
     void getSolutionArcs(std::set<int>& solutionArcs);
-    void separateInfeasibleRoute(const std::vector<int>& routeArcs, int maxS);
+    void separateInfeasibleRoute(const std::vector<int>& routeArcs);
     int separateFeasibleRoute(const std::vector<int>& routeArcs);
     bool isRouteFeasible(const std::vector<int>& route);
     void repairRoute(const std::vector<int>& route, std::vector<int>& feasibleRoute, std::vector<int>& feasibleRouteArcs);
