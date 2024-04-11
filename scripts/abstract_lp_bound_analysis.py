@@ -113,7 +113,7 @@ colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([
 #colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] size: \[([0-9]+)\] time: \[([0-9]+)\]")
 
 logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
-test_set = ["CVRP_LAG_NG2_src_phase", "CVRP_LAG_NG2_rcc_phase"]
+test_set = ["CVRP_LAG_NG2_src_phase", "CVRP_LAG_NG2_rcc_phase", "CVRP_LAG_NG2_src_phase_strengthen"]
 
 instances = []
 instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/CVRP/"
@@ -176,7 +176,8 @@ print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
 for instance in instances:
   if (instance, "CVRP_LAG_NG2_rcc_phase") in instances_to_lp_opt:
     instance_df = table_results_df[table_results_df['instance'] == instance]
-    src_df = instance_df[instance_df['test'] == "CVRP_LAG_NG2_src_phase"]
+    #src_df = instance_df[instance_df['test'] == "CVRP_LAG_NG2_src_phase"]
+    src_df = instance_df[instance_df['test'] == "CVRP_LAG_NG2_src_phase_strengthen"]
     rcc_df = instance_df[instance_df['test'] == "CVRP_LAG_NG2_rcc_phase"]
     src_lb = src_df['lb'].values[0]
     rcc_lb = rcc_df['lb'].values[0]
