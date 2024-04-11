@@ -159,6 +159,7 @@ class VRPTWDDSolver
     double percentFixedToChangeToCPLEX;
     int numArcsToChangeToCPLEX;
     int numLagCuts;
+    int kappaIterations;
 
     // for primal
     Primal primal;

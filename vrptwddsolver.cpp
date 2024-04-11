@@ -31,16 +31,18 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   infeasibleRoutesBatchSize = 1;
   deactivateCutValueThreshold = 0.01;
   deactivateCutIterThreshold = 25;
-  lagOptimalityGapToStartRepairing = 10;
+  lagOptimalityGapToStartRepairing = 25;
   percentFixedToChangeToCPLEX = 97.5;
   numArcsToChangeToCPLEX = 100000;
   numLagCuts = 5;
+  kappaIterations = 40;
   std::cout << "batch size for lag: " << infeasibleRoutesBatchSize << std::endl;
   std::cout << "deactivate cut value threshold: " << deactivateCutValueThreshold << std::endl;
   std::cout << "deactivate cut iter threshold: " << deactivateCutIterThreshold << std::endl;
   std::cout << "lag optimality gap to start repairing: " << lagOptimalityGapToStartRepairing << std::endl;
   std::cout << "percent arcs fixed to change to CPLEX: " << percentFixedToChangeToCPLEX << std::endl;
   std::cout << "number arcs fixed to change to CPLEX: " << numArcsToChangeToCPLEX << std::endl;
+  std::cout << "kappa iterations: " << kappaIterations << std::endl;
 
   muPercentImproved = 0.001;
 
@@ -1077,7 +1079,6 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
 bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
 {
   bool shouldTerminate = false;
-  int kappaIterations = 100;
   int lastMuImprovedIteration = 0;
   double muLowerBound = 0.0;
   double currIterLowerBound = 0.0;
@@ -1375,7 +1376,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
 bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
 {
   bool shouldTerminate = false;
-  int kappaIterations = 100;
   int lastMuImprovedIteration = 0;
   double muLowerBound = 0.0;
   double currIterLowerBound = 0.0;
