@@ -35,7 +35,14 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   percentFixedToChangeToCPLEX = 97.5;
   numArcsToChangeToCPLEX = 100000;
   numLagCuts = 5;
-  kappaIterations = 40;
+  if (params.usePhases)
+  {
+    kappaIterations = 10;
+  }
+  else
+  {
+    kappaIterations = 100;
+  }
   std::cout << "batch size for lag: " << infeasibleRoutesBatchSize << std::endl;
   std::cout << "deactivate cut value threshold: " << deactivateCutValueThreshold << std::endl;
   std::cout << "deactivate cut iter threshold: " << deactivateCutIterThreshold << std::endl;
@@ -908,24 +915,6 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
     {
       gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
 
-      // problem: even with one cut introduced, the RHS - cutValues can be huge
-      // problem cont: so the mu goes up a bunch, then back to 0, then up a bunch, etc.
-      // idea: cap the gradient size
-      /*
-      double gammaCap = 1.0;
-      std::cout << "rhs: " << routeDD.getCapCutSetRHS(i) << " cuts: " << cutValues[i] << std::endl;
-      if ((gamma[gammaIndex] > 0) && (gamma[gammaIndex] > gammaCap))
-      {
-        gamma[gammaIndex] = std::min(gamma[gammaIndex], gammaCap);
-        std::cout << "gamma for mu index " << i << " capped to " << gamma[gammaIndex] << std::endl;
-      }
-      else if ((gamma[gammaIndex] < 0) && (gamma[gammaIndex] < -1 * gammaCap))
-      {
-        gamma[gammaIndex] = std::max(gamma[gammaIndex], -1 * gammaCap);
-        std::cout << "gamma for mu index " << i << " capped to " << gamma[gammaIndex] << std::endl;
-      }
-      */
-
       if ((dual.capDuals[i] <= 0.1) && (gamma[gammaIndex] <= 0))
       {
         continue;
@@ -949,23 +938,6 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
     SRCType srcType = routeDD.getSRCType(i);
     int rhs = routeDD.getSRCRHS(srcType);
     gamma[gammaIndex] = (-1*rhs) + cliqueCutValues[i];
-
-    // problem: even with one cut introduced, the RHS - cutValues can be huge
-    // problem cont: so the mu goes up a bunch, then back to 0, then up a bunch, etc.
-    // idea: cap the gradient size
-    /*
-    double gammaCap = 1.0;
-    if ((gamma[gammaIndex] > 0) && (gamma[gammaIndex] > gammaCap))
-    {
-      gamma[gammaIndex] = std::min(gamma[gammaIndex], gammaCap);
-      std::cout << "gamma for src index " << i << " capped to " << gamma[gammaIndex] << std::endl;
-    }
-    else if ((gamma[gammaIndex] < 0) && (gamma[gammaIndex] < gammaCap))
-    {
-      gamma[gammaIndex] = std::max(gamma[gammaIndex], -1 * gammaCap);
-      std::cout << "gamma for src index " << i << " capped to " << gamma[gammaIndex] << std::endl;
-    }
-    */
 
     if ((dual.srcDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
     {
@@ -1100,7 +1072,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
       // Arc fixing
       bool isDualFeasible = false;
       double minReducedCost = 0.0;
-      Dual repairedDual(repairedDual);
+      Dual repairedDual(dual);
       double percentFixed = 0.0;
       if (params.useVariableFixing && (bestDualArcFixingPercent > 0.001))
       {
@@ -1716,6 +1688,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       {
         std::cout << "start separation phase" << std::endl;
         phaseType = PhaseType::SEPARATION;
+        kappaIterations = 30;
       }
       else if (phaseType == PhaseType::SEPARATION)
       {
