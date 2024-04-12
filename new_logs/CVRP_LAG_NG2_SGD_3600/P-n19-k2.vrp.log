@@ -1,0 +1,274 @@
+fixed number of vehicles
+capacity: 160
+instance upper bound: 212
+route length upper bound: 19
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+deactivate cut value threshold: 0.01
+deactivate cut iter threshold: 25
+lag optimality gap to start repairing: 25
+percent arcs fixed to change to CPLEX: 97.5
+number arcs fixed to change to CPLEX: 100000
+kappa iterations: 100
+var fixing: 1
+muSSP: 1
+repairDuals: 1
+robustCuts: 1
+nonRobustCuts: 1
+volume algo: 0
+phases: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[212] numArcs: [69318] numFixed: [0] time: [1]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] lb[0] ub[212] numArcs: [69318] numFixed: [0] time: [1]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[212] numArcs: [69318] numFixed: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] lb[0] ub[212] numArcs: [69318] numFixed: [0] time: [1]
+fixed path dual: 22.0125
+STATS - lpIterations[1] lagIterations[1] sspIterations[2] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[142.413] ub[212] numArcs: [69314] numFixed: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[2] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] lb[142.413] ub[212] numArcs: [69314] numFixed: [0] time: [1]
+lambda: 0,3.325,7.125,6.6,6.325,3.1625,4.65,4.125,11.2,5.6,2.1,2.45,5.25,7.3625,4.125,10.4,8.2875,3.3,3,
+mu: 
+srcDuals: 
+alpha: 0.440633
+psiStar: 149.463
+lagLB: 142.413
+||gamma||^2: 16
+switching from LAG to LP solver
+route with flow 0.05 : 0,1,0, 0,64785,
+route with flow 0.05 : 0,6,0, 5,64790,
+total flow: 0.1
+loc: 0 flow: 0.2
+loc: 1 flow: 0.05
+loc: 2 flow: 0
+loc: 3 flow: 0
+loc: 4 flow: 0
+loc: 5 flow: 0
+loc: 6 flow: 0.05
+loc: 7 flow: 0
+loc: 8 flow: 0
+loc: 9 flow: 0
+loc: 10 flow: 0
+loc: 11 flow: 0
+loc: 12 flow: 0
+loc: 13 flow: 0
+loc: 14 flow: 0
+loc: 15 flow: 0
+loc: 16 flow: 0
+loc: 17 flow: 0
+loc: 18 flow: 0
+fixing. lower bound used: 0
+num vars: 69048
+DUALS: -0,10,13.3659,9,16,6.17073,14.5366,9.68293,19,14.5122,7,12,13,18.1951,11,18.0244,16,17,6.68293,
+fixed path dual: -15
+lp dual value: 201.171
+STATS - lpIterations[2] lagIterations[1] sspIterations[2] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[7] lb[201.171] ub[212] numArcs: [69314] numFixed: [270] time: [9]
+STATS1 - lpIterations[2] lagIterations[1] sspIterations[2] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[7] repairTime[0] cutsTime[0] lb[201.171] ub[212] numArcs: [69314] numFixed: [270] time: [9]
+checking cuts, max violation: 0.97561, num cuts: 1
+new capacity cutset: 2 5 6 7 9 13 15 18 <= 6
+no comb cuts found
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+fixing. lower bound used: 0
+num vars: 69498
+DUALS: -0,7.08333,15.875,7.79167,10.9375,13.7083,14.875,14.7083,12.0833,21.125,7.79167,14.5625,11.7917,21.0417,5.16667,22.2917,11.2083,16.4583,13.7083,
+fixed path dual: 9.125
+cap dual [0]: -8.79167
+lp dual value: 207.708
+STATS - lpIterations[3] lagIterations[1] sspIterations[2] numSeparations[11] numCuts[1] compileTime[1] sspSolveTime[0] lpSolveTime[14] lb[207.708] ub[212] numArcs: [69780] numFixed: [286] time: [17]
+STATS1 - lpIterations[3] lagIterations[1] sspIterations[2] numSeparations[11] numCuts[1] compileTime[1] sspSolveTime[0] lpSolveTime[14] repairTime[0] cutsTime[0] lb[207.708] ub[212] numArcs: [69780] numFixed: [286] time: [17]
+checking cuts, max violation: 0.375, num cuts: 5
+new capacity cutset: 1 3 4 6 8 10 11 12 14 16 17 <= 9
+new capacity cutset: 4 11 14 <= 2
+new capacity cutset: 3 5 7 8 9 13 15 16 17 18 <= 8
+new capacity cutset: 2 3 5 7 8 9 13 15 16 17 18 <= 9
+new capacity cutset: 2 3 5 7 8 9 13 15 16 17 <= 8
+max violation: 1.25
+new strengthened comb with 3 teeth
+handle: 17,3,10,12,
+tooth: 17,3,16,8,
+tooth: 1,10,0,6,
+tooth: 12,14,11,4,
+>= 12
+new strengthened comb with 3 teeth
+handle: 17,3,10,12,14,
+tooth: 17,3,16,8,
+tooth: 11,14,4,
+tooth: 1,10,0,6,
+>= 12
+new strengthened comb with 3 teeth
+handle: 8,2,7,
+tooth: 8,16,17,3,
+tooth: 7,9,0,18,15,5,13,
+tooth: 2,6,0,1,10,4,11,14,12,
+>= 14
+new strengthened comb with 3 teeth
+handle: 8,7,2,9,
+tooth: 8,16,17,3,
+tooth: 9,15,0,7,18,5,13,
+tooth: 2,6,0,1,10,4,11,14,12,
+>= 14
+new strengthened comb with 5 teeth
+handle: 17,3,8,10,12,
+tooth: 8,16,
+tooth: 17,3,16,
+tooth: 1,10,0,6,
+tooth: 12,14,11,4,
+tooth: 2,8,7,9,15,13,5,6,18,
+>= 20
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+fixing. lower bound used: 205.254
+fixing. lower bound used: 0
+num vars: 2156
+DUALS: -0,10,38.3333,25.8333,19.6667,35,19.1667,37.6667,31.5,42.8333,11.3333,23.5,-0,48.3333,26.6667,37.8333,35.1667,35.5,36.5,
+fixed path dual: -26.5
+cap dual [0]: -10.3333
+cap dual [1]: -1.33333
+cap dual [2]: -8.5
+cap dual [4]: -18.8333
+comb dual [0]: -0
+comb dual [1]: -0
+comb dual [2]: -0
+comb dual [3]: -0
+comb dual [4]: 0.5
+lp dual value: 201.833
+STATS - lpIterations[4] lagIterations[1] sspIterations[2] numSeparations[18] numCuts[11] compileTime[1] sspSolveTime[0] lpSolveTime[15] lb[211.333] ub[212] numArcs: [70134] numFixed: [67982] time: [26]
+STATS1 - lpIterations[4] lagIterations[1] sspIterations[2] numSeparations[18] numCuts[11] compileTime[1] sspSolveTime[0] lpSolveTime[15] repairTime[0] cutsTime[6] lb[211.333] ub[212] numArcs: [70134] numFixed: [67982] time: [26]
+checking cuts, max violation: 0.333333, num cuts: 2
+new capacity cutset: 1 3 4 8 9 10 11 12 14 16 17 <= 9
+new capacity cutset: 2 5 7 8 9 13 15 16 17 18 <= 8
+max violation: 1.33333
+new strengthened comb with 3 teeth
+handle: 3,10,17,
+tooth: 16,8,17,9,13,15,5,7,2,18,
+tooth: 3,12,
+tooth: 1,10,0,6,
+>= 14
+new strengthened comb with 3 teeth
+handle: 3,10,12,17,
+tooth: 14,11,4,12,
+tooth: 16,8,17,
+tooth: 1,10,0,6,
+>= 12
+new strengthened comb with 3 teeth
+handle: 2,13,15,5,7,16,8,9,
+tooth: 13,15,5,18,
+tooth: 16,8,17,
+tooth: 2,6,0,
+>= 12
+new strengthened comb with 3 teeth
+handle: 7,9,13,15,5,
+tooth: 13,15,5,18,
+tooth: 2,7,0,6,
+tooth: 16,8,9,
+>= 12
+new strengthened comb with 3 teeth
+handle: 12,3,17,
+tooth: 14,11,4,12,
+tooth: 16,8,17,9,13,15,5,7,2,18,
+tooth: 3,10,
+>= 12
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+fixing. lower bound used: 149.33
+fixing. lower bound used: 0
+num vars: 69313
+DUALS: -0,12.0526,24.4211,14.2632,18.6754,22.9474,21.1053,23.9474,21.0029,31.4737,9.94152,21.0468,11.3713,32.8421,14.4737,31.2105,21.731,20.9942,20.7632,
+fixed path dual: -17.5263
+cap dual [0]: -11.2105
+cap dual [1]: -1.31287
+cap dual [2]: -5.42105
+cap dual [3]: -2.89474
+cap dual [4]: -0.289474
+cap dual [5]: -2.18421
+comb dual [0]: -0
+comb dual [1]: -0
+comb dual [2]: -0
+comb dual [3]: -0
+comb dual [4]: -0
+comb dual [5]: -0
+comb dual [6]: -0
+comb dual [7]: -0
+comb dual [8]: -0
+comb dual [9]: 0.394737
+lp dual value: 206.447
+WARNING possible - lower bound not monotonically increasing, but this can happen!
+STATS - lpIterations[5] lagIterations[1] sspIterations[2] numSeparations[20] numCuts[18] compileTime[1] sspSolveTime[0] lpSolveTime[39] lb[210.789] ub[212] numArcs: [70246] numFixed: [937] time: [57]
+STATS1 - lpIterations[5] lagIterations[1] sspIterations[2] numSeparations[20] numCuts[18] compileTime[1] sspSolveTime[0] lpSolveTime[39] repairTime[1] cutsTime[11] lb[210.789] ub[212] numArcs: [70246] numFixed: [937] time: [57]
+checking cuts, max violation: 0.210526, num cuts: 3
+new capacity cutset: 5 9 13 15 <= 3
+new capacity cutset: 1 2 3 4 8 10 11 12 14 16 17 <= 9
+new capacity cutset: 1 3 4 7 8 10 11 12 14 16 17 <= 9
+max violation: 0.210526
+new strengthened comb with 3 teeth
+handle: 12,10,16,17,3,
+tooth: 16,17,3,8,
+tooth: 14,11,4,12,
+tooth: 1,10,0,6,2,18,7,
+>= 12
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+fixing. lower bound used: 205.923
+fixing. lower bound used: 0
+num vars: 3942
+DUALS: -0,11.875,25.75,13.0625,17.9375,22.9375,20.3125,23.9375,22.5,30.6875,10.8125,19.5,13.5625,32.875,12.75,28.5625,6,35.4375,22.9375,
+fixed path dual: -19.4375
+cap dual [0]: -10
+cap dual [1]: -0.5
+cap dual [2]: -3.4375
+cap dual [3]: -1.5625
+cap dual [7]: -4
+cap dual [9]: -0.9375
+comb dual [0]: -0
+comb dual [1]: -0
+comb dual [2]: -0
+comb dual [3]: -0
+comb dual [4]: -0
+comb dual [5]: -0
+comb dual [6]: -0
+comb dual [7]: -0
+comb dual [8]: -0
+comb dual [9]: -0
+comb dual [10]: 0.3125
+lp dual value: 208.563
+STATS - lpIterations[6] lagIterations[1] sspIterations[2] numSeparations[30] numCuts[22] compileTime[1] sspSolveTime[0] lpSolveTime[41] lb[212] ub[212] numArcs: [70650] numFixed: [66712] time: [63]
+STATS1 - lpIterations[6] lagIterations[1] sspIterations[2] numSeparations[30] numCuts[22] compileTime[1] sspSolveTime[0] lpSolveTime[41] repairTime[2] cutsTime[13] lb[212] ub[212] numArcs: [70650] numFixed: [66712] time: [63]
+integral solution - no cut added
+no comb cuts found
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+num src cuts added: 0
+routes: 
+flow {1}: 0 4 11 14 12 3 17 16 8 6 
+flow {1}: 0 18 5 13 15 9 7 2 10 1 
+flow {1}: 0 4 11 14 12 3 17 16 8 6 
+flow {1}: 0 18 5 13 15 9 7 2 10 1 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+fixing. lower bound used: 208.561
+fixing. lower bound used: 0
+solving IP
+num vars: 1542
+STATS - lpIterations[7] lagIterations[1] sspIterations[2] numSeparations[30] numCuts[22] compileTime[1] sspSolveTime[0] lpSolveTime[42] lb[212] ub[212] numArcs: [70650] numFixed: [69112] time: [65]
+STATS1 - lpIterations[7] lagIterations[1] sspIterations[2] numSeparations[30] numCuts[22] compileTime[1] sspSolveTime[0] lpSolveTime[42] repairTime[3] cutsTime[13] lb[212] ub[212] numArcs: [70650] numFixed: [69112] time: [65]
+routes: 
+flow {1}: 0 4 11 14 12 3 17 16 8 6 
+flow {1}: 0 18 5 13 15 9 7 2 10 1 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[7] lagIterations[1] sspIterations[2] numSeparations[30] numCuts[22] compileTime[1] sspSolveTime[0] lpSolveTime[42] lb[212] ub[212] numArcs: [70650] numFixed: [69112] time: [65]
+STATS1 - lpIterations[7] lagIterations[1] sspIterations[2] numSeparations[30] numCuts[22] compileTime[1] sspSolveTime[0] lpSolveTime[42] repairTime[3] cutsTime[13] lb[212] ub[212] numArcs: [70650] numFixed: [69112] time: [65]
+finished solving - complete
+time elapsed: 65
