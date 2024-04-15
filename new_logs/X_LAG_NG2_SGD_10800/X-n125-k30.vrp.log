@@ -1,0 +1,629 @@
+flexible number of vehicles
+capacity: 188
+instance upper bound: 55539
+route length upper bound: 125
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+deactivate cut value threshold: 0.01
+deactivate cut iter threshold: 25
+lag optimality gap to start repairing: 25
+percent arcs fixed to change to CPLEX: 97.5
+number arcs fixed to change to CPLEX: 100000
+kappa iterations: 100
+var fixing: 1
+muSSP: 1
+repairDuals: 1
+robustCuts: 1
+nonRobustCuts: 1
+volume algo: 0
+phases: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[40] sspSolveTime[0] lpSolveTime[0] lb[0] ub[55539] numArcs: [2471787] numFixed: [0] time: [40]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[40] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] lb[0] ub[55539] numArcs: [2471787] numFixed: [0] time: [40]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[40] sspSolveTime[0] lpSolveTime[0] lb[0] ub[55539] numArcs: [2471787] numFixed: [0] time: [40]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[40] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] lb[0] ub[55539] numArcs: [2471787] numFixed: [0] time: [40]
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[40] sspSolveTime[0] lpSolveTime[0] lb[50633.7] ub[55539] numArcs: [2471787] numFixed: [0] time: [41]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[40] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] lb[50633.7] ub[55539] numArcs: [2471787] numFixed: [0] time: [41]
+lambda: 0,342.809,57.7872,457.383,317.234,715.638,220.447,328.138,882.447,42.0745,935,136.117,1151,94.4681,213.043,236.936,37.3936,124.606,997.319,426.064,164.766,822.777,116.553,190.979,268.723,112.223,320.681,467.83,381.957,341.33,232.447,474.894,814.989,710.585,25.0532,1169.15,62.0426,1099,503.66,628.67,203.543,539.894,135.426,274.245,123.543,1074.31,75.2128,416.596,512.713,82.8936,371,117.968,180.638,655.319,51.5957,91.1489,395.16,785.638,52.234,261.191,433.191,481.511,240.383,406.277,72.5319,306.213,128.681,333.085,61.6596,814.234,8.74468,974.043,505.5,715.447,73.6596,1003.57,244.787,327.149,47.0426,317.234,201.723,278.128,330.638,749.202,16.4681,279.33,358.521,433.5,453.5,362.681,121.277,703.245,126.596,338.649,387.277,76.0851,457.819,107.043,812.447,1166.28,741.277,434.298,504.596,1054.13,56.4362,415.362,586.17,490.83,138.351,366.128,794.319,537.628,924.043,757.872,370.298,432.5,302.702,153.362,73.6489,581.957,1127,392.074,627.032,57.8723,410.106,
+mu: 
+srcDuals: 
+alpha: 20.7159
+psiStar: 53140.3
+lagLB: 50633.7
+||gamma||^2: 121
+fixing. lower bound used: 50609.8
+percent fixed: 0.0296951
+updating best lambda arc fixing
+fixing. lower bound used: 50609.8
+alpha: 0.142068
+psiStar: 53115.8
+lagLB: 49502.4
+||gamma||^2: 25434
+STATS - lpIterations[1] lagIterations[2] sspIterations[68] numSeparations[0] numCuts[0] compileTime[40] sspSolveTime[183] lpSolveTime[0] lb[52732] ub[55539] numArcs: [2470787] numFixed: [1467] time: [268]
+STATS1 - lpIterations[1] lagIterations[2] sspIterations[68] numSeparations[0] numCuts[0] compileTime[40] sspSolveTime[183] lpSolveTime[0] repairTime[9] cutsTime[0] lb[52732] ub[55539] numArcs: [2470787] numFixed: [1467] time: [268]
+lambda: 0,360.541,66.9956,478.241,336.529,715.78,233.491,344.166,903.305,62.5062,955.858,156.975,1171.86,115.184,233.616,257.226,58.2516,144.612,1018.18,446.496,184.914,843.635,136.985,211.837,289.581,132.797,341.539,488.546,402.531,361.619,253.021,495.752,835.847,710.727,35.9664,1189.72,81.3377,1119.86,524.518,649.528,224.258,560.467,156.283,295.103,144.116,1095.02,92.9452,437.312,533.429,103.609,391.574,138.826,201.212,676.177,62.9351,110.444,416.018,806.496,71.6713,281.481,454.049,502.369,261.099,426.424,87.5651,326.929,149.113,353.375,82.0913,835.092,29.4605,994.474,526.074,736.305,94.3754,1024.43,265.645,342.608,65.3433,334.54,221.303,298.986,351.496,770.06,35.9053,300.046,379.379,454.358,474.358,383.539,142.135,724.103,147.454,359.507,407.992,95.6644,478.677,127.758,833.163,1187.13,762.135,454.445,525.17,1074.7,76.7258,436.22,607.028,510.125,159.209,386.701,815.177,558.486,944.9,758.014,391.156,453.358,323.418,173.936,94.2227,602.389,1147.86,412.08,647.89,78.3041,429.402,
+mu: 
+srcDuals: 
+fixing. lower bound used: 52732
+percent fixed: 0.0742078
+updating best lambda arc fixing
+fixing. lower bound used: 52732
+alpha: 0.804487
+psiStar: 55291.8
+lagLB: 51104.4
+||gamma||^2: 5205
+STATS - lpIterations[1] lagIterations[3] sspIterations[127] numSeparations[54] numCuts[0] compileTime[40] sspSolveTime[299] lpSolveTime[0] lb[52746.6] ub[55539] numArcs: [2490285] numFixed: [1103] time: [425]
+STATS1 - lpIterations[1] lagIterations[3] sspIterations[127] numSeparations[54] numCuts[0] compileTime[40] sspSolveTime[299] lpSolveTime[0] repairTime[18] cutsTime[0] lb[52746.6] ub[55539] numArcs: [2490285] numFixed: [1103] time: [425]
+lambda: 0,345.256,64.5821,479.045,322.048,716.585,233.491,328.076,904.109,45.612,956.662,157.779,1172.66,114.379,232.812,256.421,59.056,140.589,1018.98,430.406,181.696,844.439,133.767,212.641,290.386,131.993,342.343,488.546,398.509,359.206,253.021,496.556,836.652,711.532,36.7709,1188.92,72.4884,1120.66,525.322,650.333,221.845,555.64,157.088,295.907,143.312,1095.02,78.4644,434.898,533.429,103.609,390.769,139.631,200.408,676.982,54.8903,103.204,416.822,807.301,61.213,269.414,454.854,503.173,261.099,420.793,73.8888,325.32,149.113,351.766,80.4823,835.896,30.265,993.67,524.465,737.109,95.1799,1025.24,266.45,329.736,53.276,316.842,208.431,299.79,352.301,770.865,31.0784,300.046,380.184,455.162,475.162,384.343,142.939,724.907,148.258,360.311,406.383,90.8375,479.482,128.563,833.967,1187.94,762.939,450.423,524.365,1073.9,75.1169,437.024,607.833,495.644,160.013,385.092,815.982,559.29,945.705,758.819,391.96,454.162,323.418,172.327,92.6138,599.976,1148.66,411.276,648.694,76.6951,427.793,
+mu: 
+srcDuals: 
+fixing. lower bound used: 52746.6
+percent fixed: 0.0639426
+fixing. lower bound used: 52732
+alpha: 2.87166
+psiStar: 55282.5
+lagLB: 52419.4
+||gamma||^2: 997
+fixing. lower bound used: 52694.9
+percent fixed: 0.063696
+fixing. lower bound used: 52732
+alpha: 2.23211
+psiStar: 55258.3
+lagLB: 52579.8
+||gamma||^2: 1200
+fixing. lower bound used: 52708.8
+percent fixed: 0.0636324
+fixing. lower bound used: 52732
+alpha: 20.0419
+psiStar: 55234.7
+lagLB: 52709.4
+||gamma||^2: 126
+fixing. lower bound used: 52716
+percent fixed: 0.0635432
+fixing. lower bound used: 52732
+alpha: 0.230628
+psiStar: 55211.4
+lagLB: 45096.8
+||gamma||^2: 43857
+STATS - lpIterations[1] lagIterations[7] sspIterations[277] numSeparations[114] numCuts[0] compileTime[40] sspSolveTime[717] lpSolveTime[0] lb[53718.5] ub[55539] numArcs: [2504600] numFixed: [1103] time: [1002]
+STATS1 - lpIterations[1] lagIterations[7] sspIterations[277] numSeparations[114] numCuts[0] compileTime[40] sspSolveTime[717] lpSolveTime[0] repairTime[43] cutsTime[0] lb[53718.5] ub[55539] numArcs: [2504600] numFixed: [1103] time: [1002]
+lambda: 0,368.787,59.2525,503.96,341.324,741.269,240.409,351.607,929.255,67.0676,981.808,182.925,1197.81,138.833,249.029,276.642,83.9711,155.423,1044.36,454.86,184.433,869.815,140.634,237.787,315.762,126.74,367.72,513.461,421.192,363.558,238.082,521.932,857.103,727.288,42.3792,1168.47,81.9514,1145.58,550.237,674.556,234.455,546.326,180.389,321.053,141.442,1117.3,101.765,428.456,558.574,128.063,406.756,164.546,219.705,692.046,59.2424,114.281,442.198,831.985,73.57,285.104,480,528.088,246.161,445.477,88.8051,349.543,167.718,328.093,80.9138,856.117,40.6506,1009.51,509.407,762.255,101.546,1045.69,291.826,350.627,62.2615,338.297,227.58,321.015,377.677,796.241,35.5566,305.149,405.329,480.539,499.155,408.566,166.009,750.053,169.253,385.688,414.299,102.652,504.858,117.764,857.96,1213.32,788.085,469.134,547.279,1053.45,91.5211,461.709,633.209,508.842,185.159,403.111,840.897,584.666,971.081,783.734,417.337,477.924,347.641,137.346,92.621,612.943,1169.34,430.447,673.148,59.4307,421.689,
+mu: 
+srcDuals: 
+fixing. lower bound used: 53718.5
+percent fixed: 0.189062
+updating best lambda arc fixing
+fixing. lower bound used: 53718.5
+alpha: 1.11949
+psiStar: 56205.5
+lagLB: 48268.3
+||gamma||^2: 7090
+fixing. lower bound used: 53705.5
+percent fixed: 0.192505
+updating best lambda arc fixing
+fixing. lower bound used: 53705.5
+alpha: 2.57905
+psiStar: 56182.7
+lagLB: 52582.3
+||gamma||^2: 1396
+fixing. lower bound used: 53700.2
+percent fixed: 0.198088
+updating best lambda arc fixing
+fixing. lower bound used: 53700.2
+alpha: 15.5158
+psiStar: 56160.3
+lagLB: 53351.9
+||gamma||^2: 181
+fixing. lower bound used: 53517.3
+percent fixed: 0.194051
+fixing. lower bound used: 53700.2
+alpha: 0.196838
+psiStar: 56138.3
+lagLB: 49346.8
+||gamma||^2: 34503
+STATS - lpIterations[1] lagIterations[11] sspIterations[555] numSeparations[269] numCuts[0] compileTime[40] sspSolveTime[1145] lpSolveTime[0] lb[53824.3] ub[55539] numArcs: [2546585] numFixed: [4549] time: [1614]
+STATS1 - lpIterations[1] lagIterations[11] sspIterations[555] numSeparations[269] numCuts[0] compileTime[40] sspSolveTime[1145] lpSolveTime[0] repairTime[89] cutsTime[0] lb[53824.3] ub[55539] numArcs: [2546585] numFixed: [4549] time: [1614]
+lambda: 0,358.69,49.5941,514.121,329.634,715.974,237.028,342.568,942.388,40.6971,984.584,171.305,1178.79,128.213,256.693,265.389,67.8728,144.896,1063.57,434.087,183.399,889.03,129.155,253.303,334.976,136.921,387.131,524.769,408.139,359.847,255.587,541.147,834.387,638.81,32.8642,1187.48,81.4129,1126.56,528.641,644.443,227.938,556.487,157.036,338.225,141.036,1115.63,92.9307,430.682,543.059,133.881,382.466,172.271,212.493,625.743,59.4095,120.664,461.216,809.269,66.6977,260.972,442.887,539.315,264.256,443.487,72.1878,344.662,152.662,343.412,82.2461,834.323,40.5391,1002.1,524.726,781.666,108.18,1008.58,311.237,340.476,59.9848,335.052,217.628,323.634,396.694,815.258,0,323.244,424.741,437.887,496.124,404.22,111.864,765.765,141.422,404.705,418.711,96.7915,523.875,130.389,857.025,1232.73,806.376,462.252,541.001,1072.46,66.9355,468.314,652.62,509.359,203.254,408.868,852.517,604.078,990.492,733.685,405.716,466.574,330.21,155.441,105.598,601.298,1131.11,435.289,684.375,69.1978,426.691,
+mu: 
+srcDuals: 
+fixing. lower bound used: 53824.3
+percent fixed: 0.307744
+updating best lambda arc fixing
+fixing. lower bound used: 53824.3
+alpha: 0.99888
+psiStar: 56227.1
+lagLB: 51490.4
+||gamma||^2: 4742
+fixing. lower bound used: 53803.4
+percent fixed: 0.308289
+updating best lambda arc fixing
+fixing. lower bound used: 53803.4
+alpha: 2.19952
+psiStar: 56205.9
+lagLB: 53344.3
+||gamma||^2: 1301
+fixing. lower bound used: 53780.4
+percent fixed: 0.285612
+fixing. lower bound used: 53803.4
+alpha: 10.4177
+psiStar: 56185
+lagLB: 53580.5
+||gamma||^2: 250
+fixing. lower bound used: 53668.9
+percent fixed: 0.289235
+fixing. lower bound used: 53803.4
+alpha: 0.810763
+psiStar: 56164.5
+lagLB: 52264.7
+||gamma||^2: 4810
+STATS - lpIterations[1] lagIterations[15] sspIterations[766] numSeparations[392] numCuts[0] compileTime[40] sspSolveTime[1399] lpSolveTime[0] lb[53868.3] ub[55539] numArcs: [2577362] numFixed: [7103] time: [2046]
+STATS1 - lpIterations[1] lagIterations[15] sspIterations[766] numSeparations[392] numCuts[0] compileTime[40] sspSolveTime[1399] lpSolveTime[0] repairTime[125] cutsTime[0] lb[53868.3] ub[55539] numArcs: [2577362] numFixed: [7103] time: [2046]
+lambda: 0,346.756,48.6165,498.306,322.048,729.59,235.24,328.664,955.194,54.3132,997.389,185.732,1191.6,127.598,250.899,219.736,76.6243,100.242,1073.95,447.703,178.139,902.646,104.192,255.314,348.404,131.518,401.558,506.295,404.534,355.258,253.354,531.54,848.814,653.237,33.1318,1195.89,67.002,1138.55,543.067,638.034,198.576,553.444,158.926,348.598,137.616,1113.4,81.8071,426.514,554.865,104.853,385.665,144.85,212.693,640.17,49.3295,107.136,448.41,802.861,63.3093,273.589,457.314,523.311,274.673,421.779,69.069,321.088,132.028,342.989,77.0617,841.731,36.5436,1004.5,526.503,793.893,94.1453,1023,325.664,326.325,62.555,318.962,215.239,310.553,382.89,826.487,6.36391,323.632,439.167,452.314,467.705,374.801,124.669,779.382,139.258,391.9,414.933,88.1313,511.07,119.786,856.414,1247.15,799.968,448.799,548.408,1080.87,70.7236,441.893,667.047,502.146,215.06,399.034,839.712,618.504,1004.11,748.112,420.143,437.156,238.462,166.437,97.4307,602.699,1145.54,424.022,663.972,65.1831,422.593,
+mu: 
+srcDuals: 
+fixing. lower bound used: 53868.3
+percent fixed: 0.388106
+updating best lambda arc fixing
+fixing. lower bound used: 53868.3
+alpha: 6.64347
+psiStar: 56190.2
+lagLB: 53579.3
+||gamma||^2: 393
+fixing. lower bound used: 53830
+percent fixed: 0.392599
+updating best lambda arc fixing
+fixing. lower bound used: 53830
+alpha: 1.18183
+psiStar: 56170.4
+lagLB: 53367.1
+||gamma||^2: 2372
+fixing. lower bound used: 53776.6
+percent fixed: 0.341012
+fixing. lower bound used: 53830
+alpha: 18.6363
+psiStar: 56150.9
+lagLB: 53746.8
+||gamma||^2: 129
+fixing. lower bound used: 53773.3
+percent fixed: 0.340182
+fixing. lower bound used: 53830
+alpha: 0.677482
+psiStar: 56131.7
+lagLB: 47156.4
+||gamma||^2: 13248
+STATS - lpIterations[1] lagIterations[19] sspIterations[949] numSeparations[457] numCuts[0] compileTime[40] sspSolveTime[1686] lpSolveTime[0] lb[54199.4] ub[55539] numArcs: [2591625] numFixed: [8470] time: [2514]
+STATS1 - lpIterations[1] lagIterations[19] sspIterations[949] numSeparations[457] numCuts[0] compileTime[40] sspSolveTime[1686] lpSolveTime[0] repairTime[159] cutsTime[0] lb[54199.4] ub[55539] numArcs: [2591625] numFixed: [8470] time: [2514]
+lambda: 0,353.57,69.6583,523.585,341.735,705.492,228.161,336.833,931.773,58.6806,1015.85,206.773,1165.81,129.008,257.818,246.198,91.915,126.704,1073.83,452.748,169.351,928.43,129.976,278.734,371.825,127.252,428.697,523.46,404.421,360.435,252.06,519.043,873.92,680.376,34.1823,1169.43,77.5654,1112.77,493.298,661.108,225.037,563.909,172.861,367.622,147.577,1119.25,87.2668,442.339,530.767,124.886,393.49,169.957,222.149,667.309,50.4409,113.13,474.872,827.29,62.5195,271.86,446.503,507.095,274.561,439.434,68.0165,347.549,157.812,335.556,74.482,854.228,35.2284,991.777,512.426,819.678,90.3084,1048.11,349.762,335.172,37.7795,324.421,219.737,321.448,406.311,850.585,16.6039,332.915,465.629,476.743,492.134,399.231,113.858,789.846,157.936,379.403,421.304,86.1597,498.573,119.336,842.337,1274.29,825.074,463.743,561.583,1055.09,38.0714,466.322,691.145,500.001,227.053,396.454,828.396,645.644,1023.93,774.574,443.217,461.585,265.601,163.788,105.645,595.943,1171.32,415.911,651.475,72.9379,411.782,
+mu: 
+srcDuals: 
+fixing. lower bound used: 54199.4
+percent fixed: 1.40551
+updating best lambda arc fixing
+fixing. lower bound used: 54199.4
+alpha: 1.10787
+psiStar: 56457.7
+lagLB: 51960.9
+||gamma||^2: 4059
+STATS - lpIterations[1] lagIterations[20] sspIterations[1042] numSeparations[519] numCuts[0] compileTime[40] sspSolveTime[1786] lpSolveTime[0] lb[54217.1] ub[55539] numArcs: [2605978] numFixed: [36424] time: [2667]
+STATS1 - lpIterations[1] lagIterations[20] sspIterations[1042] numSeparations[519] numCuts[0] compileTime[40] sspSolveTime[1786] lpSolveTime[0] repairTime[173] cutsTime[0] lb[54217.1] ub[55539] numArcs: [2605978] numFixed: [36424] time: [2667]
+lambda: 0,351.354,66.3347,522.478,317.362,704.385,228.161,333.509,932.881,52.0333,1013.64,186.832,1166.92,127.9,254.495,246.198,80.8363,126.704,1072.73,439.453,166.027,926.214,114.466,276.519,369.609,123.928,429.805,511.273,403.314,359.327,246.521,520.15,871.704,681.484,34.1823,1170.54,64.271,1113.88,494.406,655.569,207.311,555.046,163.998,358.759,140.93,1118.14,85.051,432.369,530.767,122.671,392.382,167.741,214.394,668.417,49.333,102.051,473.764,822.858,54.7644,269.644,447.611,507.095,272.345,429.463,66.9086,330.931,156.704,335.556,72.2662,853.12,34.1206,992.885,511.318,818.57,89.2005,1047,347.546,331.848,37.7795,318.882,199.796,309.261,404.095,850.585,12.1724,325.16,463.413,462.341,488.811,395.907,113.858,785.415,146.857,380.51,414.656,82.836,499.681,118.228,841.229,1275.4,823.967,455.988,558.26,1056.19,39.1793,464.106,687.821,494.462,224.838,393.131,829.504,646.751,1023.93,775.681,429.923,457.154,266.709,163.788,101.214,594.835,1169.11,412.588,652.583,66.2906,412.89,
+mu: 
+srcDuals: 
+fixing. lower bound used: 54217.1
+percent fixed: 1.53104
+updating best lambda arc fixing
+fixing. lower bound used: 54217.1
+alpha: 7.79927
+psiStar: 56457.5
+lagLB: 53509.3
+||gamma||^2: 378
+fixing. lower bound used: 54105.4
+percent fixed: 1.5335
+updating best lambda arc fixing
+fixing. lower bound used: 54105.4
+alpha: 1.79786
+psiStar: 56439.1
+lagLB: 53605.7
+||gamma||^2: 1576
+fixing. lower bound used: 53976.9
+percent fixed: 1.0183
+fixing. lower bound used: 54105.4
+alpha: 20.0265
+psiStar: 56421
+lagLB: 53937.7
+||gamma||^2: 124
+fixing. lower bound used: 53941.8
+percent fixed: 1.01656
+fixing. lower bound used: 54105.4
+alpha: 0.9358
+psiStar: 56403.2
+lagLB: 46247
+||gamma||^2: 10853
+STATS - lpIterations[1] lagIterations[24] sspIterations[1236] numSeparations[575] numCuts[0] compileTime[40] sspSolveTime[2143] lpSolveTime[0] lb[54655.7] ub[55539] numArcs: [2617314] numFixed: [26917] time: [3222]
+STATS1 - lpIterations[1] lagIterations[24] sspIterations[1236] numSeparations[575] numCuts[0] compileTime[40] sspSolveTime[2143] lpSolveTime[0] repairTime[211] cutsTime[0] lb[54655.7] ub[55539] numArcs: [2617314] numFixed: [26917] time: [3222]
+lambda: 0,356.021,60.347,528.703,329.353,734.008,231.088,341.131,961.569,50.1347,996.465,196.804,1195.61,126.477,244.186,272.152,93.3026,147.264,1063.35,449.646,178.181,923.705,128.55,279.075,373.963,131.83,460.364,509.7,423.012,357.753,263.338,549.774,849.88,668.395,30.5596,1199.23,68.7017,1142.57,524.965,651.188,222.11,566.248,174.593,346.579,130.621,1123.43,88.7823,432.291,556.648,118.29,400.432,173.031,197.222,654.392,50.8798,108.59,479.99,819.413,59.7443,277.029,477.235,489.802,291.034,433.032,77.5034,344.646,172.66,353.637,68.5926,866.209,35.431,1018.77,523.472,831.659,86.0711,1051.36,345.037,338.059,59.0547,327.992,208.043,319.856,402.521,840.155,15.3475,330.984,477.438,480.735,491.293,399.325,142.546,781.034,163.38,409.198,415.441,81.7229,528.368,122.585,855.254,1305.96,836.12,464.546,570.413,1085.82,67.8671,468.46,678.449,505.664,234.331,405.49,859.128,677.311,1037.02,799.69,446.445,459.636,296.333,178.807,97.3929,606.989,1158.8,424.741,643.089,60.0382,438.918,
+mu: 
+srcDuals: 
+fixing. lower bound used: 54655.7
+percent fixed: 17.4439
+updating best lambda arc fixing
+fixing. lower bound used: 54655.7
+alpha: 1.58447
+psiStar: 56841.9
+lagLB: 52169.3
+||gamma||^2: 2949
+fixing. lower bound used: 54646.4
+percent fixed: 17.6121
+updating best lambda arc fixing
+fixing. lower bound used: 54646.4
+alpha: 8.94033
+psiStar: 56824.5
+lagLB: 53981.5
+||gamma||^2: 318
+fixing. lower bound used: 54515.8
+percent fixed: 16.9627
+fixing. lower bound used: 54646.4
+alpha: 0.850875
+psiStar: 56807.5
+lagLB: 53074.7
+||gamma||^2: 4387
+fixing. lower bound used: 54248.8
+percent fixed: 16.959
+fixing. lower bound used: 54646.4
+alpha: 17.7682
+psiStar: 56790.7
+lagLB: 54161
+||gamma||^2: 148
+fixing. lower bound used: 54200
+percent fixed: 16.9488
+fixing. lower bound used: 54646.4
+alpha: 0.142279
+psiStar: 56774.1
+lagLB: 48081.3
+||gamma||^2: 61097
+fixing. lower bound used: 54455.4
+percent fixed: 16.957
+fixing. lower bound used: 54646.4
+alpha: 1.18088
+psiStar: 56757.8
+lagLB: 50378.7
+||gamma||^2: 5402
+fixing. lower bound used: 54441.6
+percent fixed: 16.9561
+fixing. lower bound used: 54646.4
+alpha: 2.62209
+psiStar: 56741.8
+lagLB: 53133.8
+||gamma||^2: 1376
+fixing. lower bound used: 54425.3
+percent fixed: 16.9427
+fixing. lower bound used: 54646.4
+alpha: 11.1399
+psiStar: 56726
+lagLB: 54085.8
+||gamma||^2: 237
+fixing. lower bound used: 54288.9
+percent fixed: 16.9427
+fixing. lower bound used: 54646.4
+alpha: 0.743124
+psiStar: 56710.4
+lagLB: 52580.1
+||gamma||^2: 5558
+fixing. lower bound used: 54272
+percent fixed: 16.9431
+fixing. lower bound used: 54646.4
+alpha: 9.36306
+psiStar: 56695.1
+lagLB: 54026.6
+||gamma||^2: 285
+fixing. lower bound used: 54229.4
+percent fixed: 16.9234
+fixing. lower bound used: 54646.4
+alpha: 0.911664
+psiStar: 56680
+lagLB: 53231.1
+||gamma||^2: 3783
+fixing. lower bound used: 54147.6
+percent fixed: 16.9215
+fixing. lower bound used: 54646.4
+alpha: 18.7844
+psiStar: 56665.1
+lagLB: 54035.2
+||gamma||^2: 140
+fixing. lower bound used: 54120.1
+percent fixed: 16.9136
+fixing. lower bound used: 54646.4
+alpha: 0.0597234
+psiStar: 56650.4
+lagLB: 44279.4
+||gamma||^2: 207139
+fixing. lower bound used: 54367.9
+percent fixed: 16.911
+fixing. lower bound used: 54646.4
+alpha: 0.756916
+psiStar: 56635.9
+lagLB: 49567.1
+||gamma||^2: 9339
+fixing. lower bound used: 54386.5
+percent fixed: 16.9257
+fixing. lower bound used: 54646.4
+alpha: 1.58607
+psiStar: 56621.7
+lagLB: 53178.3
+||gamma||^2: 2171
+fixing. lower bound used: 54414.2
+percent fixed: 16.9309
+fixing. lower bound used: 54646.4
+alpha: 12.6732
+psiStar: 56607.7
+lagLB: 54073
+||gamma||^2: 200
+fixing. lower bound used: 54319.1
+percent fixed: 16.9278
+fixing. lower bound used: 54646.4
+alpha: 0.751085
+psiStar: 56593.8
+lagLB: 51633.6
+||gamma||^2: 6604
+fixing. lower bound used: 54362.7
+percent fixed: 16.9267
+fixing. lower bound used: 54646.4
+alpha: 3.08434
+psiStar: 56580.2
+lagLB: 53841.3
+||gamma||^2: 888
+fixing. lower bound used: 54340
+percent fixed: 16.9147
+fixing. lower bound used: 54646.4
+alpha: 13.0669
+psiStar: 56566.7
+lagLB: 54227.7
+||gamma||^2: 179
+fixing. lower bound used: 54266.4
+percent fixed: 16.9169
+fixing. lower bound used: 54646.4
+alpha: 0.218373
+psiStar: 56553.4
+lagLB: 51796.6
+||gamma||^2: 21783
+fixing. lower bound used: 54529
+percent fixed: 16.9158
+fixing. lower bound used: 54646.4
+alpha: 1.27548
+psiStar: 56540.3
+lagLB: 53243.2
+||gamma||^2: 2585
+fixing. lower bound used: 54534.9
+percent fixed: 16.9037
+fixing. lower bound used: 54646.4
+alpha: 10.6824
+psiStar: 56527.4
+lagLB: 54380.3
+||gamma||^2: 201
+fixing. lower bound used: 54489.5
+percent fixed: 16.9045
+fixing. lower bound used: 54646.4
+alpha: 0.206044
+psiStar: 56514.7
+lagLB: 51858.5
+||gamma||^2: 22598
+fixing. lower bound used: 54557.3
+percent fixed: 16.9516
+fixing. lower bound used: 54646.4
+alpha: 1.19967
+psiStar: 56502.1
+lagLB: 53098.7
+||gamma||^2: 2837
+fixing. lower bound used: 54553.3
+percent fixed: 16.931
+fixing. lower bound used: 54646.4
+alpha: 7.02726
+psiStar: 56489.7
+lagLB: 54156.7
+||gamma||^2: 332
+fixing. lower bound used: 54451.6
+percent fixed: 16.8786
+fixing. lower bound used: 54646.4
+alpha: 0.966257
+psiStar: 56477.5
+lagLB: 53833.8
+||gamma||^2: 2736
+fixing. lower bound used: 54428.2
+percent fixed: 16.8779
+fixing. lower bound used: 54646.4
+alpha: 16.8225
+psiStar: 56465.5
+lagLB: 54379.5
+||gamma||^2: 124
+fixing. lower bound used: 54396.6
+percent fixed: 16.8746
+fixing. lower bound used: 54646.4
+alpha: 0.056155
+psiStar: 56453.6
+lagLB: 44110
+||gamma||^2: 219812
+STATS - lpIterations[1] lagIterations[52] sspIterations[2949] numSeparations[1194] numCuts[0] compileTime[40] sspSolveTime[4441] lpSolveTime[0] lb[54763.2] ub[55539] numArcs: [2743604] numFixed: [466462] time: [7274]
+STATS1 - lpIterations[1] lagIterations[52] sspIterations[2949] numSeparations[1194] numCuts[0] compileTime[40] sspSolveTime[4441] lpSolveTime[0] repairTime[477] cutsTime[0] lb[54763.2] ub[55539] numArcs: [2743604] numFixed: [466462] time: [7274]
+lambda: 0,364.126,68.8417,524.615,340.013,736.812,255.237,347.563,954.93,66.3107,1019.91,200.927,1194.42,140.019,254.801,237.509,50.7882,133.752,1064.71,457.062,178.486,930.61,141.292,260.447,387.194,140.076,604.828,519.054,422.854,357.376,237.726,521.913,871.078,703.817,42.9335,1170.46,86.8773,1140.64,522.229,651.537,226.38,568.275,178.143,327.564,158.455,1073.53,104.368,445.428,544.799,134.645,367.463,178.156,210.792,686.658,57.2717,125.122,482.962,825.153,79.501,297.652,488.812,502.522,271.512,433.165,79.6818,343.338,143.162,350.824,84.2732,866.451,54.309,1000.76,532.243,841.937,100.341,1048.67,337.435,351.189,73.4076,342.624,224.4,329.714,384.439,864.59,21.0745,313.904,443.203,491.357,489.34,397.428,142.693,771.203,169.158,351.872,432.655,81.5378,551.621,139.443,852.127,1318.35,835.219,467.334,553.201,1067.63,86.4073,472.894,671.49,511.003,241.269,399.812,872.576,723.277,991.917,794.68,472.504,469.85,310.478,172.996,102.236,607.092,1167.72,432.448,679.45,83.8837,437,
+mu: 
+srcDuals: 
+fixing. lower bound used: 54763.2
+percent fixed: 28.5551
+updating best lambda arc fixing
+fixing. lower bound used: 54763.2
+alpha: 0.503313
+psiStar: 56552.8
+lagLB: 48554.2
+||gamma||^2: 15892
+STATS - lpIterations[1] lagIterations[53] sspIterations[3064] numSeparations[1266] numCuts[0] compileTime[40] sspSolveTime[4708] lpSolveTime[0] lb[54769.3] ub[55539] numArcs: [2760030] numFixed: [794504] time: [7627]
+STATS1 - lpIterations[1] lagIterations[53] sspIterations[3064] numSeparations[1266] numCuts[0] compileTime[40] sspSolveTime[4708] lpSolveTime[0] repairTime[494] cutsTime[0] lb[54769.3] ub[55539] numArcs: [2760030] numFixed: [794504] time: [7627]
+lambda: 0,355.066,63.8086,524.615,330.45,736.308,236.111,341.523,954.93,57.2511,1018.9,198.411,1193.92,135.489,251.781,237.509,50.7882,133.249,1064.71,454.042,177.479,929.604,137.769,259.441,386.187,138.567,605.331,516.537,419.834,356.37,237.726,521.913,870.575,702.811,33.3706,1170.46,75.3011,1140.13,522.229,649.02,223.36,564.249,176.634,327.564,148.892,1073.53,93.2948,441.904,544.799,131.625,367.463,177.653,208.275,684.141,54.7552,115.56,482.962,824.65,69.4348,270.473,488.309,502.018,271.512,431.152,76.6619,340.822,142.659,349.314,80.75,865.444,23.6069,999.756,531.236,841.434,92.7915,1047.66,336.931,343.64,64.8512,327.525,217.354,329.211,384.439,863.584,18.558,313.904,443.203,489.343,488.333,396.421,142.19,771.203,167.648,352.375,430.139,79.5246,551.621,127.364,851.12,1318.85,833.709,464.315,553.201,1068.13,84.394,471.887,671.994,506.976,239.256,398.805,871.066,723.78,992.42,794.177,469.987,468.843,310.478,171.989,101.732,606.085,1167.21,429.932,678.946,72.3075,437,
+mu: 
+srcDuals: 
+fixing. lower bound used: 54769.3
+percent fixed: 29.2263
+updating best lambda arc fixing
+fixing. lower bound used: 54769.3
+alpha: 0.931067
+psiStar: 56547.6
+lagLB: 51891.3
+||gamma||^2: 5001
+STATS - lpIterations[1] lagIterations[54] sspIterations[3172] numSeparations[1320] numCuts[0] compileTime[40] sspSolveTime[4801] lpSolveTime[0] lb[54788.5] ub[55539] numArcs: [2771716] numFixed: [813719] time: [7802]
+STATS1 - lpIterations[1] lagIterations[54] sspIterations[3172] numSeparations[1320] numCuts[0] compileTime[40] sspSolveTime[4801] lpSolveTime[0] repairTime[509] cutsTime[0] lb[54788.5] ub[55539] numArcs: [2771716] numFixed: [813719] time: [7802]
+lambda: 0,351.342,63.8086,524.615,326.726,735.377,236.111,333.143,953.999,47.0093,1015.17,176.996,1192.99,132.696,248.988,237.509,50.7882,133.249,1064.71,439.145,174.686,928.672,123.803,256.648,383.394,129.256,606.262,510.02,414.247,355.439,237.726,522.844,869.644,700.949,33.3706,1170.46,71.5768,1139.2,522.229,645.296,209.394,558.663,167.323,327.564,144.237,1074.46,89.5705,425.145,544.799,128.832,367.463,175.791,205.482,679.486,51.0309,108.111,482.031,823.719,66.6416,265.818,486.447,501.087,271.512,429.289,71.0755,337.097,142.659,346.521,70.5083,861.72,23.6069,996.963,527.512,840.502,88.1361,1045.8,336,330.605,56.4716,324.732,214.56,318.969,383.508,861.721,14.8337,313.904,443.203,472.584,486.471,394.559,139.396,771.203,147.164,353.306,417.104,76.7314,551.621,125.502,847.396,1319.79,830.916,455.935,551.339,1069.07,81.6008,470.025,672.925,498.597,236.463,391.357,868.273,724.711,993.351,794.177,452.297,466.981,310.478,171.058,92.4218,604.223,1166.28,423.414,678.015,67.6521,435.138,
+mu: 
+srcDuals: 
+fixing. lower bound used: 54788.5
+percent fixed: 31.0231
+updating best lambda arc fixing
+fixing. lower bound used: 54788.5
+alpha: 3.19848
+psiStar: 56555.9
+lagLB: 53920.3
+||gamma||^2: 824
+fixing. lower bound used: 54744.7
+percent fixed: 30.9671
+fixing. lower bound used: 54788.5
+alpha: 15.0544
+psiStar: 56544.5
+lagLB: 54482.1
+||gamma||^2: 137
+fixing. lower bound used: 54557.8
+percent fixed: 30.9647
+fixing. lower bound used: 54788.5
+alpha: 0.435757
+psiStar: 56533.4
+lagLB: 50641.9
+||gamma||^2: 13520
+fixing. lower bound used: 54697.2
+percent fixed: 30.9673
+fixing. lower bound used: 54788.5
+alpha: 1.23026
+psiStar: 56522.3
+lagLB: 52971.8
+||gamma||^2: 2886
+fixing. lower bound used: 54705.9
+percent fixed: 30.9581
+fixing. lower bound used: 54788.5
+alpha: 6.91873
+psiStar: 56511.4
+lagLB: 54283.6
+||gamma||^2: 322
+fixing. lower bound used: 54621.6
+percent fixed: 30.9656
+fixing. lower bound used: 54788.5
+alpha: 1.16635
+psiStar: 56500.6
+lagLB: 53945.2
+||gamma||^2: 2191
+fixing. lower bound used: 54576.2
+percent fixed: 30.963
+fixing. lower bound used: 54788.5
+alpha: 16.5596
+psiStar: 56490
+lagLB: 54552.5
+||gamma||^2: 117
+fixing. lower bound used: 54561.9
+percent fixed: 30.9742
+fixing. lower bound used: 54788.5
+alpha: 0.324176
+psiStar: 56479.5
+lagLB: 47977
+||gamma||^2: 26228
+STATS - lpIterations[1] lagIterations[62] sspIterations[3661] numSeparations[1446] numCuts[0] compileTime[40] sspSolveTime[5413] lpSolveTime[0] lb[54970.3] ub[55539] numArcs: [2795213] numFixed: [872082] time: [8999]
+STATS1 - lpIterations[1] lagIterations[62] sspIterations[3661] numSeparations[1446] numCuts[0] compileTime[40] sspSolveTime[5413] lpSolveTime[0] repairTime[588] cutsTime[0] lb[54970.3] ub[55539] numArcs: [2795213] numFixed: [872082] time: [8999]
+lambda: 0,364.034,61.9902,525.43,335.31,731.652,233.353,348.383,949.051,64.0103,999.725,197.43,1198.39,135.394,248.917,257.888,70.3677,138.618,1056.67,455.407,169.332,918.088,131.318,233.912,363.491,137.539,642.241,514.116,409.36,367.821,234.227,551.905,858.623,702.609,34.5338,1165.06,72.5494,1144.6,549.624,643.11,211.221,568.094,178.787,346.161,143.517,1117.36,105.525,441.042,546.248,106.398,398.633,180.002,222.13,684.662,46.001,113.378,451.763,831.128,69.2094,281.496,491.306,506.831,268.077,432.934,83.6427,343.759,154.583,356.263,81.2849,858.289,39.0039,1016.01,525.795,829.565,95.9939,1035.28,338.709,347.383,62.9071,329.261,217.177,323.93,372.471,864.591,17.8207,320.14,471.614,493.667,490.034,398.446,144.816,771.31,158.961,370.125,424.898,89.2052,558.647,132.823,849.106,1338.38,833.02,461.5,552.675,1063.66,86.9648,473.912,700.43,508.766,224.227,400.591,872.41,760.366,1028.68,772.45,473.379,470.544,328.588,179.115,97.1917,604.663,1152.89,427.167,685.425,82.5458,435.938,
+mu: 
+srcDuals: 
+fixing. lower bound used: 54970.3
+percent fixed: 47.4221
+updating best lambda arc fixing
+fixing. lower bound used: 54970.3
+alpha: 0.803664
+psiStar: 56656.5
+lagLB: 51128.9
+||gamma||^2: 6878
+fixing. lower bound used: 54942.4
+percent fixed: 47.4385
+updating best lambda arc fixing
+fixing. lower bound used: 54942.4
+alpha: 1.86237
+psiStar: 56646.2
+lagLB: 53664.6
+||gamma||^2: 1601
+fixing. lower bound used: 54941.3
+percent fixed: 45.4374
+fixing. lower bound used: 54942.4
+alpha: 11.5631
+psiStar: 56636.1
+lagLB: 54531.6
+||gamma||^2: 182
+fixing. lower bound used: 54816.3
+percent fixed: 45.266
+fixing. lower bound used: 54942.4
+alpha: 0.466932
+psiStar: 56626
+lagLB: 51544.9
+||gamma||^2: 10882
+fixing. lower bound used: 54708.5
+percent fixed: 45.2741
+fixing. lower bound used: 54942.4
+alpha: 1.48418
+psiStar: 56616.1
+lagLB: 53610.7
+||gamma||^2: 2025
+fixing. lower bound used: 54701.7
+percent fixed: 45.2698
+fixing. lower bound used: 54942.4
+alpha: 13.3816
+psiStar: 56606.3
+lagLB: 54492
+||gamma||^2: 158
+fixing. lower bound used: 54579.5
+percent fixed: 45.2728
+fixing. lower bound used: 54942.4
+alpha: 0.31837
+psiStar: 56596.6
+lagLB: 50619.3
+||gamma||^2: 18775
+fixing. lower bound used: 54797.5
+percent fixed: 45.2803
+fixing. lower bound used: 54942.4
+alpha: 1.27956
+psiStar: 56587.1
+lagLB: 52697.2
+||gamma||^2: 3040
+fixing. lower bound used: 54810.5
+percent fixed: 45.2639
+fixing. lower bound used: 54942.4
+alpha: 7.20196
+psiStar: 56577.6
+lagLB: 54640.3
+||gamma||^2: 269
+fixing. lower bound used: 54782.1
+percent fixed: 45.2629
+fixing. lower bound used: 54942.4
+alpha: 1.19538
+psiStar: 56568.3
+lagLB: 53767.5
+||gamma||^2: 2343
+fixing. lower bound used: 54591.7
+percent fixed: 45.2593
+fixing. lower bound used: 54942.4
+alpha: 13.643
+psiStar: 56559
+lagLB: 54471.7
+||gamma||^2: 153
+fixing. lower bound used: 54557
+percent fixed: 45.2724
+fixing. lower bound used: 54942.4
+alpha: 0.830032
+psiStar: 56549.9
+lagLB: 50884.1
+||gamma||^2: 6826
+fixing. lower bound used: 54611.3
+percent fixed: 45.2812
+fixing. lower bound used: 54942.4
