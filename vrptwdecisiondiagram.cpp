@@ -1260,16 +1260,21 @@ void VRPTWDecisionDiagram::getSRCArcsAndCoeffs(const Primal& primal, const std::
     std::cout << "start route" << std::endl;
     for (int loc : route)
     {
-      std::cout << " " << loc << std::endl;
+      std::cout << " " << loc;
     }
+    std::cout << std::endl;
     std::cout << "start route arcs" << std::endl;
     for (int ai : routeArcs)
     {
-      std::cout << " " << ai << std::endl;
+      std::cout << " " << ai;
     }
+    std::cout << std::endl;
     */
+
     int numTimesVisited = getNumTimesSetVisited(route, cutSet);
+    //std::cout << "visited: " << numTimesVisited << std::endl;
     int srcCoeff = getSRCCoeff(numTimesVisited, srcType);
+    //std::cout << "coeff: " << srcCoeff << std::endl;
     if ((srcCoeff > 0) && isRouteFeasible(route))
     {
       if (doesRouteExistByArcs(routeArcs))
@@ -1278,36 +1283,57 @@ void VRPTWDecisionDiagram::getSRCArcsAndCoeffs(const Primal& primal, const std::
         if ((stateSrcCount > 0) && (stateSrcCount % 2 == 0))
         {
           //std::cout << "existing arcs, already separated" << std::endl;
-          bestLayerArcs.push_back(routeArcs.back());
-          bestLayerCoeffs.push_back(srcCoeff);
+          int arcToAdd = routeArcs.back();
+          if (std::find(bestLayerArcs.begin(), bestLayerArcs.end(), arcToAdd) == bestLayerArcs.end())
+          {
+            bestLayerArcs.push_back(arcToAdd);
+            bestLayerCoeffs.push_back(srcCoeff);
+          }
         }
         else
         {
           //std::cout << "separated existing" << std::endl;
           int newEndArc = separateFeasibleRoute(routeArcs);
-          bestLayerArcs.push_back(newEndArc);
-          bestLayerCoeffs.push_back(srcCoeff);
+          if (std::find(bestLayerArcs.begin(), bestLayerArcs.end(), newEndArc) == bestLayerArcs.end())
+          {
+            //std::cout << "add arc: " << newEndArc << std::endl;
+            bestLayerArcs.push_back(newEndArc);
+            bestLayerCoeffs.push_back(srcCoeff);
+          }
         }
       }
       else
       {
         std::vector<int> updatedRouteArcs;
         bool isTrue = doesRouteExistByLocations(route, updatedRouteArcs);
+        if (!isTrue)
+        {
+          std::cout << "route does not exist!?" << std::endl;
+        }
 
         // check if already separated
         int stateSrcCount = nodes[arcs[updatedRouteArcs[0]].toNodeIndex].state.srcCount;
         if ((stateSrcCount > 0) && (stateSrcCount % 2 == 0))
         {
           //std::cout << "new found arcs, already separated" << std::endl;
-          bestLayerArcs.push_back(updatedRouteArcs.back());
-          bestLayerCoeffs.push_back(srcCoeff);
+          int arcToAdd = updatedRouteArcs.back();
+          if (std::find(bestLayerArcs.begin(), bestLayerArcs.end(), arcToAdd) == bestLayerArcs.end())
+          {
+            //std::cout << "add arc: " << arcToAdd << std::endl;
+            bestLayerArcs.push_back(arcToAdd);
+            bestLayerCoeffs.push_back(srcCoeff);
+          }
         }
         else
         {
           //std::cout << "separate new found arcs" << std::endl;
           int newEndArc = separateFeasibleRoute(updatedRouteArcs);
-          bestLayerArcs.push_back(newEndArc);
-          bestLayerCoeffs.push_back(srcCoeff);
+          if (std::find(bestLayerArcs.begin(), bestLayerArcs.end(), newEndArc) == bestLayerArcs.end())
+          {
+            //std::cout << "add arc: " << newEndArc << std::endl;
+            bestLayerArcs.push_back(newEndArc);
+            bestLayerCoeffs.push_back(srcCoeff);
+          }
         }
       }
     }
@@ -1382,30 +1408,33 @@ int VRPTWDecisionDiagram::findSRC3s(const Primal& primal, int limit, std::vector
           std::vector<int> bestLayerArcs;
           std::vector<int> bestLayerCoeffs;
           getSRCArcsAndCoeffs(primal, testSet, SRCType::SRC3, bestLayerArcs, bestLayerCoeffs);
-          checkExistingCliqueCuts(testSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC3);
-
-          std::vector<int> emptyVector;
-          std::cout << "added new src3 cut with arcs: ";
-          cliqueCuts.push_back(testSet);
-          cliqueCutActive.push_back(true);
-          cliqueCutTypes.push_back(SRCType::SRC3);
-          cliqueCutSeparatedArcs.push_back(bestLayerArcs);
-          cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
-          cliqueCutRelaxedArcs.push_back(emptyVector);
-          cliqueCutRelaxedCoeffs.push_back(emptyVector);
-          for (int a : bestLayerArcs)
+          bool alreadyExists = checkExistingCliqueCuts(testSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC3);
+          if (!alreadyExists)
           {
-            std::cout << a << " ";
+            std::vector<int> emptyVector;
+            std::cout << "added new src3 cut with arcs: ";
+            cliqueCuts.push_back(testSet);
+            cliqueCutActive.push_back(true);
+            cliqueCutTypes.push_back(SRCType::SRC3);
+            cliqueCutSeparatedArcs.push_back(bestLayerArcs);
+            cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
+            cliqueCutRelaxedArcs.push_back(emptyVector);
+            cliqueCutRelaxedCoeffs.push_back(emptyVector);
+            for (int a : bestLayerArcs)
+            {
+              std::cout << a << " ";
+            }
+
+            std::cout << " for test set: ";
+            for (int loc : testSet)
+            {
+              std::cout << loc << " ";
+            }
+            std::cout << std::endl;
+
+            std::cout << "violation: " << violation << std::endl;
           }
 
-          std::cout << " for test set: ";
-          for (int loc : testSet)
-          {
-            std::cout << loc << " ";
-          }
-          std::cout << std::endl;
-
-          std::cout << "violation: " << violation << std::endl;
           if (numAdded == limit)
           {
             return limit;
@@ -1415,7 +1444,7 @@ int VRPTWDecisionDiagram::findSRC3s(const Primal& primal, int limit, std::vector
     }
   }
 
-  std::cout << "num src cuts added: " << numAdded << std::endl;
+  std::cout << "num src3 cuts added: " << numAdded << std::endl;
   return numAdded;
 }
 
@@ -1446,30 +1475,33 @@ int VRPTWDecisionDiagram::findSRC4s(const Primal& primal, int limit, std::vector
             std::vector<int> bestLayerArcs;
             std::vector<int> bestLayerCoeffs;
             getSRCArcsAndCoeffs(primal, cutSet, SRCType::SRC4, bestLayerArcs, bestLayerCoeffs);
-            checkExistingCliqueCuts(cutSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC4);
-
-            std::vector<int> emptyVector;
-            std::cout << "added new src4 cut with arcs: ";
-            cliqueCuts.push_back(cutSet);
-            cliqueCutActive.push_back(true);
-            cliqueCutTypes.push_back(SRCType::SRC4);
-            cliqueCutSeparatedArcs.push_back(bestLayerArcs);
-            cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
-            cliqueCutRelaxedArcs.push_back(emptyVector);
-            cliqueCutRelaxedCoeffs.push_back(emptyVector);
-            for (int a : bestLayerArcs)
+            bool alreadyExists = checkExistingCliqueCuts(cutSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC4);
+            if (!alreadyExists)
             {
-              std::cout << a << " ";
+              std::vector<int> emptyVector;
+              std::cout << "added new src4 cut with arcs: ";
+              cliqueCuts.push_back(cutSet);
+              cliqueCutActive.push_back(true);
+              cliqueCutTypes.push_back(SRCType::SRC4);
+              cliqueCutSeparatedArcs.push_back(bestLayerArcs);
+              cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
+              cliqueCutRelaxedArcs.push_back(emptyVector);
+              cliqueCutRelaxedCoeffs.push_back(emptyVector);
+              for (int a : bestLayerArcs)
+              {
+                std::cout << a << " ";
+              }
+
+              std::cout << " for cut set: ";
+              for (int loc : cutSet)
+              {
+                std::cout << loc << " ";
+              }
+              std::cout << std::endl;
+
+              std::cout << "violation: " << violation << std::endl;
             }
 
-            std::cout << " for cut set: ";
-            for (int loc : cutSet)
-            {
-              std::cout << loc << " ";
-            }
-            std::cout << std::endl;
-
-            std::cout << "violation: " << violation << std::endl;
             if (numAdded == limit)
             {
               return limit;
@@ -1480,7 +1512,7 @@ int VRPTWDecisionDiagram::findSRC4s(const Primal& primal, int limit, std::vector
     }
   }
 
-  std::cout << "num src cuts added: " << numAdded << std::endl;
+  std::cout << "num src4 cuts added: " << numAdded << std::endl;
   return numAdded;
 };
 
@@ -1511,30 +1543,33 @@ int VRPTWDecisionDiagram::findSRC5V1s(const Primal& primal, int limit, std::vect
             std::vector<int> bestLayerArcs;
             std::vector<int> bestLayerCoeffs;
             getSRCArcsAndCoeffs(primal, cutSet, SRCType::SRC5V1, bestLayerArcs, bestLayerCoeffs);
-            checkExistingCliqueCuts(cutSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC5V1);
-
-            std::vector<int> emptyVector;
-            std::cout << "added new src5v1 cut with arcs: ";
-            cliqueCuts.push_back(cutSet);
-            cliqueCutActive.push_back(true);
-            cliqueCutTypes.push_back(SRCType::SRC5V1);
-            cliqueCutSeparatedArcs.push_back(bestLayerArcs);
-            cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
-            cliqueCutRelaxedArcs.push_back(emptyVector);
-            cliqueCutRelaxedCoeffs.push_back(emptyVector);
-            for (int a : bestLayerArcs)
+            bool alreadyExists = checkExistingCliqueCuts(cutSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC5V1);
+            if (!alreadyExists)
             {
-              std::cout << a << " ";
-            }
+              std::vector<int> emptyVector;
+              std::cout << "added new src5v1 cut with arcs: ";
+              cliqueCuts.push_back(cutSet);
+              cliqueCutActive.push_back(true);
+              cliqueCutTypes.push_back(SRCType::SRC5V1);
+              cliqueCutSeparatedArcs.push_back(bestLayerArcs);
+              cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
+              cliqueCutRelaxedArcs.push_back(emptyVector);
+              cliqueCutRelaxedCoeffs.push_back(emptyVector);
+              for (int a : bestLayerArcs)
+              {
+                std::cout << a << " ";
+              }
 
-            std::cout << " for cut set: ";
-            for (int loc : cutSet)
-            {
-              std::cout << loc << " ";
+              std::cout << " for cut set: ";
+              for (int loc : cutSet)
+              {
+                std::cout << loc << " ";
+              }
+              std::cout << std::endl;
+
+              std::cout << "violation: " << violation << std::endl;
             }
-            std::cout << std::endl;
  
-            std::cout << "violation: " << violation << std::endl;
             if (numAdded == limit)
             {
               return limit;
@@ -1545,7 +1580,7 @@ int VRPTWDecisionDiagram::findSRC5V1s(const Primal& primal, int limit, std::vect
     }
   }
 
-  std::cout << "num src cuts added: " << numAdded << std::endl;
+  std::cout << "num src5V1 cuts added: " << numAdded << std::endl;
   return numAdded;
 };
 
@@ -1576,30 +1611,33 @@ int VRPTWDecisionDiagram::findSRC5V2s(const Primal& primal, int limit, std::vect
             std::vector<int> bestLayerArcs;
             std::vector<int> bestLayerCoeffs;
             getSRCArcsAndCoeffs(primal, cutSet, SRCType::SRC5V2, bestLayerArcs, bestLayerCoeffs);
-            checkExistingCliqueCuts(cutSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC5V2);
-
-            std::vector<int> emptyVector;
-            std::cout << "added new src5v2 cut with arcs: ";
-            cliqueCuts.push_back(cutSet);
-            cliqueCutActive.push_back(true);
-            cliqueCutTypes.push_back(SRCType::SRC5V2);
-            cliqueCutSeparatedArcs.push_back(bestLayerArcs);
-            cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
-            cliqueCutRelaxedArcs.push_back(emptyVector);
-            cliqueCutRelaxedCoeffs.push_back(emptyVector);
-            for (int a : bestLayerArcs)
+            bool alreadyExists = checkExistingCliqueCuts(cutSet, bestLayerArcs, bestLayerCoeffs, SRCType::SRC5V2);
+            if (!alreadyExists)
             {
-              std::cout << a << " ";
+              std::vector<int> emptyVector;
+              std::cout << "added new src5v2 cut with arcs: ";
+              cliqueCuts.push_back(cutSet);
+              cliqueCutActive.push_back(true);
+              cliqueCutTypes.push_back(SRCType::SRC5V2);
+              cliqueCutSeparatedArcs.push_back(bestLayerArcs);
+              cliqueCutSeparatedCoeffs.push_back(bestLayerCoeffs);
+              cliqueCutRelaxedArcs.push_back(emptyVector);
+              cliqueCutRelaxedCoeffs.push_back(emptyVector);
+              for (int a : bestLayerArcs)
+              {
+                std::cout << a << " ";
+              }
+
+              std::cout << " for cut set: ";
+              for (int loc : cutSet)
+              {
+                std::cout << loc << " ";
+              }
+              std::cout << std::endl;
+
+              std::cout << "violation: " << violation << std::endl;
             }
 
-            std::cout << " for cut set: ";
-            for (int loc : cutSet)
-            {
-              std::cout << loc << " ";
-            }
-            std::cout << std::endl;
- 
-            std::cout << "violation: " << violation << std::endl;
             if (numAdded == limit)
             {
               return limit;
@@ -1610,7 +1648,7 @@ int VRPTWDecisionDiagram::findSRC5V2s(const Primal& primal, int limit, std::vect
     }
   }
 
-  std::cout << "num src cuts added: " << numAdded << std::endl;
+  std::cout << "num src5V2 cuts added: " << numAdded << std::endl;
   return numAdded;
 };
 
@@ -2740,6 +2778,9 @@ bool VRPTWDecisionDiagram::doesRouteExistByArcs(const std::vector<int>& routeArc
 
 bool VRPTWDecisionDiagram::doesRouteExistByLocations(const std::vector<int>& routeLocations, std::vector<int>& routeArcs) const
 {
+  // check regular r-t paths
+  bool regularPathExists = true;
+
   int routeIndex = 0;
   if (routeLocations[0] == 0)
   {
@@ -2763,10 +2804,67 @@ bool VRPTWDecisionDiagram::doesRouteExistByLocations(const std::vector<int>& rou
 
     if (!nextLocationPossible)
     {
-      return false;
+      regularPathExists = false;
+      break;
     }
 
     routeIndex = routeIndex + 1;
+  }
+
+  // check all special 0-starting SRC paths
+  bool specialSRCPathExists = false;
+  for (int arcIndex : nodes[rootNodeIndex].outArcs)
+  {
+    routeArcs.clear();
+    routeArcs.push_back(arcIndex);
+    if (arcs[arcIndex].location == 0)
+    {
+      // check special SRC arc
+      int routeIndex = 0;
+      if (routeLocations[0] == 0)
+      {
+        routeIndex = 1;
+      }
+
+      int currNodeIndex = arcs[arcIndex].toNodeIndex;
+      while (currNodeIndex != terminalNodeIndex)
+      {
+        bool nextLocationPossible = false;
+        for (int arcIndex : nodes[currNodeIndex].outArcs)
+        {
+          if (arcs[arcIndex].location == routeLocations[routeIndex])
+          {
+            routeArcs.push_back(arcIndex);
+            currNodeIndex = arcs[arcIndex].toNodeIndex;
+            nextLocationPossible = true;
+            break;
+          }
+        }
+
+        if (!nextLocationPossible)
+        {
+          break;
+        }
+
+        routeIndex = routeIndex + 1;
+        if (routeIndex == routeLocations.size())
+        {
+          specialSRCPathExists = true;
+          break;
+        }
+      }
+    }
+
+    if (specialSRCPathExists)
+    {
+      break;
+    }
+  }
+
+  if (!regularPathExists && !specialSRCPathExists)
+  {
+    routeArcs.clear();
+    return false;
   }
 
   return true;
@@ -3022,13 +3120,12 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
 
 int VRPTWDecisionDiagram::separateFeasibleRoute(const std::vector<int>& routeArcs)
 {
-/*
   std::cout << "separating feasible route:" << std::endl;
   for (int index=0; index<routeArcs.size(); ++index)
   {
     std::cout << "arc: " << routeArcs[index] << " loc: " << arcs[routeArcs[index]].location << std::endl;
   }
-*/
+
   // clear fixed arcs when dd changes
   for (int arcIndex : fixedArcs)
   {

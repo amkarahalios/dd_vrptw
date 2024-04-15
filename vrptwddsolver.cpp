@@ -72,6 +72,15 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "volume algo: " << params.useVolumeAlgorithm << std::endl;
   std::cout << "phases: " << params.usePhases << std::endl;
 
+  if (params.usePhases)
+  {
+    phaseType = PhaseType::INITIAL_DUAL;
+  }
+  else
+  {
+    phaseType = PhaseType::SEPARATION;
+  }
+
   CMGR_CreateCMgr(&MyCutsCMP,Dim);
   CMGR_CreateCMgr(&MyOldCutsCMP,Dim);
 
@@ -475,7 +484,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           routeDD.convertSolutionForVRPTWSep(edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
           addRCCs(edgeTail, edgeHead, edgeFlow, rccArcs, 100, cutAdded, dual);
           dual.capDuals.resize(routeDD.getNumCapCuts());
-   
+
           // Strengthened Combs
           addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
           dual.combDuals.resize(routeDD.getNumCombCuts());
@@ -495,12 +504,12 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           averageRouteLength = averageRouteLength / numRoutesInAverage;
 
           // currently adding by full separation, can strengthen with all up / all down
-          //routeDD.print();
           std::vector<double> violations;
-          numSrcAdded = routeDD.findSRC3s(primal, 10, violations);
-          numSrcAdded += routeDD.findSRC4s(primal, 10, violations);
-          numSrcAdded += routeDD.findSRC5V1s(primal, 10, violations);
-          numSrcAdded += routeDD.findSRC5V2s(primal, 10, violations);
+          numSrcAdded = routeDD.findSRC3s(primal, 100, violations);
+          numSrcAdded += routeDD.findSRC4s(primal, 100, violations);
+          numSrcAdded += routeDD.findSRC5V1s(primal, 100, violations);
+          numSrcAdded += routeDD.findSRC5V2s(primal, 100, violations);
+
           if (numSrcAdded > 0)
           {
             cutAdded = true;
