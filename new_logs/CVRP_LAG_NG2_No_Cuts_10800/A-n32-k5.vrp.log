@@ -17,8 +17,8 @@ kappa iterations: 10
 var fixing: 1
 muSSP: 1
 repairDuals: 1
-robustCuts: 1
-nonRobustCuts: 1
+robustCuts: 0
+nonRobustCuts: 0
 volume algo: 1
 phases: 1
 STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[784] numArcs: [128907] numFixed: [0] time: [2]
@@ -295,59 +295,14 @@ fixing. lower bound used: 666.986
 percent fixed: 22.447
 updating best lambda arc fixing
 switching from LAG to LP solver
-route with flow 0.6561 : 0,13,17,31,19,17,21,0, 12,4856,28785,44984,87788,117766,128699,
-route with flow 0.81 : 0,16,1,12,16,30,0, 15,6387,32074,69731,102962,128205,
-route with flow 0.6561 : 0,21,17,31,19,17,13,0, 20,2649,22513,37871,80472,113556,128553,
-route with flow 0.6561 : 0,26,13,21,31,19,17,13,26,0, 25,73,6496,21418,36129,78643,112331,123732,128900,
-route with flow 0.9 : 0,30,0, 29,123925,
-route with flow 0.1539 : 0,12,1,16,30,0, 11,9271,37248,70040,127089,
-route with flow 0.2439 : 0,24,27,0, 23,12743,124986,
-route with flow 0.3439 : 0,27,24,27,0, 26,8224,43871,126226,
-route with flow 0.19 : 0,6,2,23,2,23,2,3,14,0, 5,2604,25317,39686,76995,92611,120685,123620,128895,
-route with flow 0.19 : 0,14,3,2,23,2,23,2,6,0, 13,123,1500,20962,34577,71596,87183,118503,128738,
-route with flow 0.1 : 0,3,2,23,2,23,2,6,0, 2,542,16691,29525,66109,81696,115761,128647,
-route with flow 0.1 : 0,26,3,2,23,2,23,2,6,0, 25,63,1140,19539,32893,69767,85354,117676,128710,
-total flow: 5
-loc: 0 flow: 10
-loc: 1 flow: 0.9639
-loc: 2 flow: 1.74
-loc: 3 flow: 0.58
-loc: 4 flow: 0
-loc: 5 flow: 0
-loc: 6 flow: 0.58
-loc: 7 flow: 0
-loc: 8 flow: 0
-loc: 9 flow: 0
-loc: 10 flow: 0
-loc: 11 flow: 0
-loc: 12 flow: 0.9639
-loc: 13 flow: 2.6244
-loc: 14 flow: 0.38
-loc: 15 flow: 0
-loc: 16 flow: 1.7739
-loc: 17 flow: 3.2805
-loc: 18 flow: 0
-loc: 19 flow: 1.9683
-loc: 20 flow: 0
-loc: 21 flow: 1.9683
-loc: 22 flow: 0
-loc: 23 flow: 1.16
-loc: 24 flow: 0.5878
-loc: 25 flow: 0
-loc: 26 flow: 1.4122
-loc: 27 flow: 0.9317
-loc: 28 flow: 0
-loc: 29 flow: 0
-loc: 30 flow: 1.8639
-loc: 31 flow: 1.9683
 start separation phase
 fixing. lower bound used: 666.986
 num vars: 99918
 DUALS: -0,14.3602,33.5161,24.4516,34.0161,10.9839,18.4032,14,10.7581,36.6129,23.9355,41.2581,14.9194,19,3,41.9839,9.36022,27,10.7581,34.5591,17.9355,18.0806,15.9032,10.7581,21.9194,44.0484,0,9,28.7581,10.1129,3.91935,14.2796,
 fixed path dual: 28.0806
 lp dual value: 757.995
-STATS - lpIterations[2] lagIterations[5] sspIterations[25] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[8] lb[757.995] ub[784] numArcs: [128830] numFixed: [28989] time: [20]
-STATS1 - lpIterations[2] lagIterations[5] sspIterations[25] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[8] repairTime[0] cutsTime[0] lb[757.995] ub[784] numArcs: [128830] numFixed: [28989] time: [20]
+STATS - lpIterations[2] lagIterations[5] sspIterations[25] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[9] lb[757.995] ub[784] numArcs: [128830] numFixed: [28989] time: [21]
+STATS1 - lpIterations[2] lagIterations[5] sspIterations[25] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[9] repairTime[0] cutsTime[0] lb[757.995] ub[784] numArcs: [128830] numFixed: [28989] time: [21]
 max violation: 0.83871
 new strengthened comb with 3 teeth
 handle: 15,29,10,
@@ -392,8 +347,8 @@ fixed path dual: 29
 comb dual [0]: 0.114697
 comb dual [1]: -0
 lp dual value: 758.848
-STATS - lpIterations[3] lagIterations[5] sspIterations[25] numSeparations[10] numCuts[2] compileTime[2] sspSolveTime[1] lpSolveTime[18] lb[760.339] ub[784] numArcs: [129718] numFixed: [28950] time: [37]
-STATS1 - lpIterations[3] lagIterations[5] sspIterations[25] numSeparations[10] numCuts[2] compileTime[2] sspSolveTime[1] lpSolveTime[18] repairTime[0] cutsTime[5] lb[760.339] ub[784] numArcs: [129718] numFixed: [28950] time: [37]
+STATS - lpIterations[3] lagIterations[5] sspIterations[25] numSeparations[10] numCuts[2] compileTime[2] sspSolveTime[1] lpSolveTime[18] lb[760.339] ub[784] numArcs: [129718] numFixed: [28950] time: [38]
+STATS1 - lpIterations[3] lagIterations[5] sspIterations[25] numSeparations[10] numCuts[2] compileTime[2] sspSolveTime[1] lpSolveTime[18] repairTime[0] cutsTime[6] lb[760.339] ub[784] numArcs: [129718] numFixed: [28950] time: [38]
 max violation: 0.478649
 new strengthened comb with 3 teeth
 handle: 10,15,29,
@@ -454,8 +409,8 @@ comb dual [2]: -0
 comb dual [3]: -0
 comb dual [4]: -0
 lp dual value: 762.026
-STATS - lpIterations[4] lagIterations[5] sspIterations[25] numSeparations[23] numCuts[5] compileTime[2] sspSolveTime[1] lpSolveTime[21] lb[763.922] ub[784] numArcs: [130621] numFixed: [114626] time: [50]
-STATS1 - lpIterations[4] lagIterations[5] sspIterations[25] numSeparations[23] numCuts[5] compileTime[2] sspSolveTime[1] lpSolveTime[21] repairTime[0] cutsTime[13] lb[763.922] ub[784] numArcs: [130621] numFixed: [114626] time: [50]
+STATS - lpIterations[4] lagIterations[5] sspIterations[25] numSeparations[23] numCuts[5] compileTime[2] sspSolveTime[1] lpSolveTime[22] lb[763.922] ub[784] numArcs: [130621] numFixed: [114626] time: [52]
+STATS1 - lpIterations[4] lagIterations[5] sspIterations[25] numSeparations[23] numCuts[5] compileTime[2] sspSolveTime[1] lpSolveTime[22] repairTime[0] cutsTime[13] lb[763.922] ub[784] numArcs: [130621] numFixed: [114626] time: [52]
 max violation: 0.671329
 new strengthened comb with 3 teeth
 handle: 1,12,16,
@@ -519,8 +474,8 @@ comb dual [5]: -0
 comb dual [6]: 1.3814
 comb dual [7]: 2.29252
 lp dual value: 717.181
-STATS - lpIterations[5] lagIterations[5] sspIterations[25] numSeparations[36] numCuts[8] compileTime[2] sspSolveTime[1] lpSolveTime[25] lb[765.882] ub[784] numArcs: [131625] numFixed: [117711] time: [68]
-STATS1 - lpIterations[5] lagIterations[5] sspIterations[25] numSeparations[36] numCuts[8] compileTime[2] sspSolveTime[1] lpSolveTime[25] repairTime[1] cutsTime[24] lb[765.882] ub[784] numArcs: [131625] numFixed: [117711] time: [68]
+STATS - lpIterations[5] lagIterations[5] sspIterations[25] numSeparations[36] numCuts[8] compileTime[2] sspSolveTime[1] lpSolveTime[25] lb[765.882] ub[784] numArcs: [131625] numFixed: [117711] time: [70]
+STATS1 - lpIterations[5] lagIterations[5] sspIterations[25] numSeparations[36] numCuts[8] compileTime[2] sspSolveTime[1] lpSolveTime[25] repairTime[1] cutsTime[24] lb[765.882] ub[784] numArcs: [131625] numFixed: [117711] time: [70]
 no comb cuts found
 num src3 cuts added: 0
 num src4 cuts added: 0
@@ -572,8 +527,8 @@ comb dual [5]: -0
 comb dual [6]: 0.474602
 comb dual [7]: 2.5283
 lp dual value: 722.655
-STATS - lpIterations[6] lagIterations[5] sspIterations[25] numSeparations[52] numCuts[8] compileTime[2] sspSolveTime[1] lpSolveTime[35] lb[767.737] ub[784] numArcs: [132867] numFixed: [57203] time: [82]
-STATS1 - lpIterations[6] lagIterations[5] sspIterations[25] numSeparations[52] numCuts[8] compileTime[2] sspSolveTime[1] lpSolveTime[35] repairTime[2] cutsTime[24] lb[767.737] ub[784] numArcs: [132867] numFixed: [57203] time: [82]
+STATS - lpIterations[6] lagIterations[5] sspIterations[25] numSeparations[52] numCuts[8] compileTime[2] sspSolveTime[1] lpSolveTime[36] lb[767.737] ub[784] numArcs: [132867] numFixed: [57203] time: [84]
+STATS1 - lpIterations[6] lagIterations[5] sspIterations[25] numSeparations[52] numCuts[8] compileTime[2] sspSolveTime[1] lpSolveTime[36] repairTime[2] cutsTime[25] lb[767.737] ub[784] numArcs: [132867] numFixed: [57203] time: [84]
 max violation: 0.0869033
 new strengthened comb with 3 teeth
 handle: 8,9,11,
@@ -632,8 +587,8 @@ comb dual [6]: 0.408632
 comb dual [7]: 2.63327
 comb dual [8]: 0.743431
 lp dual value: 716.598
-STATS - lpIterations[7] lagIterations[5] sspIterations[25] numSeparations[68] numCuts[9] compileTime[2] sspSolveTime[1] lpSolveTime[44] lb[768.072] ub[784] numArcs: [133735] numFixed: [66645] time: [96]
-STATS1 - lpIterations[7] lagIterations[5] sspIterations[25] numSeparations[68] numCuts[9] compileTime[2] sspSolveTime[1] lpSolveTime[44] repairTime[2] cutsTime[25] lb[768.072] ub[784] numArcs: [133735] numFixed: [66645] time: [96]
+STATS - lpIterations[7] lagIterations[5] sspIterations[25] numSeparations[68] numCuts[9] compileTime[2] sspSolveTime[1] lpSolveTime[46] lb[768.072] ub[784] numArcs: [133735] numFixed: [66645] time: [98]
+STATS1 - lpIterations[7] lagIterations[5] sspIterations[25] numSeparations[68] numCuts[9] compileTime[2] sspSolveTime[1] lpSolveTime[46] repairTime[2] cutsTime[26] lb[768.072] ub[784] numArcs: [133735] numFixed: [66645] time: [98]
 max violation: 0.313901
 new strengthened comb with 3 teeth
 handle: 5,10,15,22,25,29,
@@ -689,8 +644,8 @@ comb dual [7]: 2.32353
 comb dual [8]: 0.0892857
 comb dual [9]: -0
 lp dual value: 715.331
-STATS - lpIterations[8] lagIterations[5] sspIterations[25] numSeparations[82] numCuts[10] compileTime[2] sspSolveTime[1] lpSolveTime[56] lb[768.894] ub[784] numArcs: [134433] numFixed: [58411] time: [115]
-STATS1 - lpIterations[8] lagIterations[5] sspIterations[25] numSeparations[82] numCuts[10] compileTime[2] sspSolveTime[1] lpSolveTime[56] repairTime[3] cutsTime[29] lb[768.894] ub[784] numArcs: [134433] numFixed: [58411] time: [115]
+STATS - lpIterations[8] lagIterations[5] sspIterations[25] numSeparations[82] numCuts[10] compileTime[2] sspSolveTime[1] lpSolveTime[59] lb[768.894] ub[784] numArcs: [134433] numFixed: [58411] time: [119]
+STATS1 - lpIterations[8] lagIterations[5] sspIterations[25] numSeparations[82] numCuts[10] compileTime[2] sspSolveTime[1] lpSolveTime[59] repairTime[3] cutsTime[30] lb[768.894] ub[784] numArcs: [134433] numFixed: [58411] time: [119]
 max violation: 0.144608
 new strengthened comb with 3 teeth
 handle: 11,4,8,9,
@@ -752,8 +707,8 @@ comb dual [9]: 5.15143e-14
 comb dual [10]: 0.321149
 comb dual [11]: 0.241514
 lp dual value: 710.11
-STATS - lpIterations[9] lagIterations[5] sspIterations[25] numSeparations[95] numCuts[12] compileTime[2] sspSolveTime[1] lpSolveTime[71] lb[769.499] ub[784] numArcs: [135139] numFixed: [55992] time: [136]
-STATS1 - lpIterations[9] lagIterations[5] sspIterations[25] numSeparations[95] numCuts[12] compileTime[2] sspSolveTime[1] lpSolveTime[71] repairTime[4] cutsTime[32] lb[769.499] ub[784] numArcs: [135139] numFixed: [55992] time: [136]
+STATS - lpIterations[9] lagIterations[5] sspIterations[25] numSeparations[95] numCuts[12] compileTime[2] sspSolveTime[1] lpSolveTime[74] lb[769.499] ub[784] numArcs: [135139] numFixed: [55992] time: [141]
+STATS1 - lpIterations[9] lagIterations[5] sspIterations[25] numSeparations[95] numCuts[12] compileTime[2] sspSolveTime[1] lpSolveTime[74] repairTime[4] cutsTime[33] lb[769.499] ub[784] numArcs: [135139] numFixed: [55992] time: [141]
 no comb cuts found
 num src3 cuts added: 0
 num src4 cuts added: 0
@@ -803,8 +758,8 @@ comb dual [9]: -0
 comb dual [10]: 0.236674
 comb dual [11]: -0
 lp dual value: 703.813
-STATS - lpIterations[10] lagIterations[5] sspIterations[25] numSeparations[108] numCuts[12] compileTime[2] sspSolveTime[1] lpSolveTime[86] lb[769.936] ub[784] numArcs: [136162] numFixed: [49213] time: [156]
-STATS1 - lpIterations[10] lagIterations[5] sspIterations[25] numSeparations[108] numCuts[12] compileTime[2] sspSolveTime[1] lpSolveTime[86] repairTime[5] cutsTime[32] lb[769.936] ub[784] numArcs: [136162] numFixed: [49213] time: [156]
+STATS - lpIterations[10] lagIterations[5] sspIterations[25] numSeparations[108] numCuts[12] compileTime[2] sspSolveTime[1] lpSolveTime[90] lb[769.936] ub[784] numArcs: [136162] numFixed: [49213] time: [161]
+STATS1 - lpIterations[10] lagIterations[5] sspIterations[25] numSeparations[108] numCuts[12] compileTime[2] sspSolveTime[1] lpSolveTime[90] repairTime[5] cutsTime[33] lb[769.936] ub[784] numArcs: [136162] numFixed: [49213] time: [161]
 max violation: 1.03625
 new strengthened comb with 3 teeth
 handle: 9,15,22,29,
@@ -857,8 +812,8 @@ comb dual [10]: -0
 comb dual [11]: 7.99361e-15
 comb dual [12]: 2.77306
 lp dual value: 668.088
-STATS - lpIterations[11] lagIterations[5] sspIterations[25] numSeparations[119] numCuts[13] compileTime[2] sspSolveTime[1] lpSolveTime[106] lb[771.091] ub[784] numArcs: [136733] numFixed: [41420] time: [182]
-STATS1 - lpIterations[11] lagIterations[5] sspIterations[25] numSeparations[119] numCuts[13] compileTime[2] sspSolveTime[1] lpSolveTime[106] repairTime[6] cutsTime[35] lb[771.091] ub[784] numArcs: [136733] numFixed: [41420] time: [182]
+STATS - lpIterations[11] lagIterations[5] sspIterations[25] numSeparations[119] numCuts[13] compileTime[2] sspSolveTime[1] lpSolveTime[112] lb[771.091] ub[784] numArcs: [136733] numFixed: [41420] time: [190]
+STATS1 - lpIterations[11] lagIterations[5] sspIterations[25] numSeparations[119] numCuts[13] compileTime[2] sspSolveTime[1] lpSolveTime[112] repairTime[6] cutsTime[36] lb[771.091] ub[784] numArcs: [136733] numFixed: [41420] time: [190]
 max violation: 0.5
 new strengthened comb with 3 teeth
 handle: 15,22,29,
@@ -936,8 +891,8 @@ comb dual [15]: 0.911218
 comb dual [16]: -0
 comb dual [17]: 0.421341
 lp dual value: 656.638
-STATS - lpIterations[12] lagIterations[5] sspIterations[25] numSeparations[128] numCuts[18] compileTime[2] sspSolveTime[1] lpSolveTime[133] lb[772.119] ub[784] numArcs: [137061] numFixed: [31508] time: [226]
-STATS1 - lpIterations[12] lagIterations[5] sspIterations[25] numSeparations[128] numCuts[18] compileTime[2] sspSolveTime[1] lpSolveTime[133] repairTime[7] cutsTime[48] lb[772.119] ub[784] numArcs: [137061] numFixed: [31508] time: [226]
+STATS - lpIterations[12] lagIterations[5] sspIterations[25] numSeparations[128] numCuts[18] compileTime[2] sspSolveTime[1] lpSolveTime[141] lb[772.119] ub[784] numArcs: [137061] numFixed: [31508] time: [236]
+STATS1 - lpIterations[12] lagIterations[5] sspIterations[25] numSeparations[128] numCuts[18] compileTime[2] sspSolveTime[1] lpSolveTime[141] repairTime[7] cutsTime[49] lb[772.119] ub[784] numArcs: [137061] numFixed: [31508] time: [236]
 max violation: 0.224361
 new strengthened comb with 3 teeth
 handle: 29,5,25,
@@ -998,8 +953,8 @@ comb dual [16]: 0.0841898
 comb dual [17]: -0
 comb dual [18]: 0.691811
 lp dual value: 647.211
-STATS - lpIterations[13] lagIterations[5] sspIterations[25] numSeparations[140] numCuts[19] compileTime[2] sspSolveTime[1] lpSolveTime[163] lb[772.28] ub[784] numArcs: [137709] numFixed: [31732] time: [264]
-STATS1 - lpIterations[13] lagIterations[5] sspIterations[25] numSeparations[140] numCuts[19] compileTime[2] sspSolveTime[1] lpSolveTime[163] repairTime[9] cutsTime[51] lb[772.28] ub[784] numArcs: [137709] numFixed: [31732] time: [264]
+STATS - lpIterations[13] lagIterations[5] sspIterations[25] numSeparations[140] numCuts[19] compileTime[2] sspSolveTime[1] lpSolveTime[169] lb[772.28] ub[784] numArcs: [137709] numFixed: [31732] time: [272]
+STATS1 - lpIterations[13] lagIterations[5] sspIterations[25] numSeparations[140] numCuts[19] compileTime[2] sspSolveTime[1] lpSolveTime[169] repairTime[9] cutsTime[52] lb[772.28] ub[784] numArcs: [137709] numFixed: [31732] time: [272]
 max violation: 0.224571
 new strengthened comb with 3 teeth
 handle: 10,29,15,
@@ -1061,8 +1016,8 @@ comb dual [17]: -0
 comb dual [18]: -0
 comb dual [19]: 0.616873
 lp dual value: 650.818
-STATS - lpIterations[14] lagIterations[5] sspIterations[25] numSeparations[152] numCuts[20] compileTime[2] sspSolveTime[1] lpSolveTime[193] lb[772.555] ub[784] numArcs: [138186] numFixed: [31922] time: [302]
-STATS1 - lpIterations[14] lagIterations[5] sspIterations[25] numSeparations[152] numCuts[20] compileTime[2] sspSolveTime[1] lpSolveTime[193] repairTime[11] cutsTime[54] lb[772.555] ub[784] numArcs: [138186] numFixed: [31922] time: [302]
+STATS - lpIterations[14] lagIterations[5] sspIterations[25] numSeparations[152] numCuts[20] compileTime[2] sspSolveTime[1] lpSolveTime[199] lb[772.555] ub[784] numArcs: [138186] numFixed: [31922] time: [310]
+STATS1 - lpIterations[14] lagIterations[5] sspIterations[25] numSeparations[152] numCuts[20] compileTime[2] sspSolveTime[1] lpSolveTime[199] repairTime[10] cutsTime[54] lb[772.555] ub[784] numArcs: [138186] numFixed: [31922] time: [310]
 max violation: 0.709817
 new strengthened comb with 3 teeth
 handle: 10,15,22,
@@ -1139,8 +1094,8 @@ comb dual [20]: 0.284931
 comb dual [21]: 0.815069
 comb dual [22]: -0
 lp dual value: 642.784
-STATS - lpIterations[15] lagIterations[5] sspIterations[25] numSeparations[164] numCuts[23] compileTime[2] sspSolveTime[1] lpSolveTime[229] lb[773.16] ub[784] numArcs: [138673] numFixed: [32065] time: [353]
-STATS1 - lpIterations[15] lagIterations[5] sspIterations[25] numSeparations[164] numCuts[23] compileTime[2] sspSolveTime[1] lpSolveTime[229] repairTime[12] cutsTime[64] lb[773.16] ub[784] numArcs: [138673] numFixed: [32065] time: [353]
+STATS - lpIterations[15] lagIterations[5] sspIterations[25] numSeparations[164] numCuts[23] compileTime[2] sspSolveTime[1] lpSolveTime[234] lb[773.16] ub[784] numArcs: [138673] numFixed: [32065] time: [361]
+STATS1 - lpIterations[15] lagIterations[5] sspIterations[25] numSeparations[164] numCuts[23] compileTime[2] sspSolveTime[1] lpSolveTime[234] repairTime[12] cutsTime[64] lb[773.16] ub[784] numArcs: [138673] numFixed: [32065] time: [361]
 max violation: 0.314687
 new strengthened comb with 3 teeth
 handle: 10,15,22,
@@ -1230,8 +1185,8 @@ comb dual [23]: 0.154399
 comb dual [24]: 0.117884
 comb dual [25]: 0.0618171
 lp dual value: 641.405
-STATS - lpIterations[16] lagIterations[5] sspIterations[25] numSeparations[181] numCuts[26] compileTime[2] sspSolveTime[1] lpSolveTime[269] lb[773.43] ub[784] numArcs: [139394] numFixed: [32260] time: [406]
-STATS1 - lpIterations[16] lagIterations[5] sspIterations[25] numSeparations[181] numCuts[26] compileTime[2] sspSolveTime[1] lpSolveTime[269] repairTime[14] cutsTime[71] lb[773.43] ub[784] numArcs: [139394] numFixed: [32260] time: [406]
+STATS - lpIterations[16] lagIterations[5] sspIterations[25] numSeparations[181] numCuts[26] compileTime[2] sspSolveTime[1] lpSolveTime[273] lb[773.43] ub[784] numArcs: [139394] numFixed: [32260] time: [413]
+STATS1 - lpIterations[16] lagIterations[5] sspIterations[25] numSeparations[181] numCuts[26] compileTime[2] sspSolveTime[1] lpSolveTime[273] repairTime[14] cutsTime[72] lb[773.43] ub[784] numArcs: [139394] numFixed: [32260] time: [413]
 max violation: 0.190742
 new strengthened comb with 3 teeth
 handle: 12,1,16,
@@ -1310,8 +1265,8 @@ comb dual [24]: 0.825252
 comb dual [25]: -0
 comb dual [26]: 0.972578
 lp dual value: 635.625
-STATS - lpIterations[17] lagIterations[5] sspIterations[25] numSeparations[198] numCuts[27] compileTime[2] sspSolveTime[1] lpSolveTime[308] lb[773.795] ub[784] numArcs: [140138] numFixed: [32573] time: [458]
-STATS1 - lpIterations[17] lagIterations[5] sspIterations[25] numSeparations[198] numCuts[27] compileTime[2] sspSolveTime[1] lpSolveTime[308] repairTime[17] cutsTime[76] lb[773.795] ub[784] numArcs: [140138] numFixed: [32573] time: [458]
+STATS - lpIterations[17] lagIterations[5] sspIterations[25] numSeparations[198] numCuts[27] compileTime[2] sspSolveTime[1] lpSolveTime[311] lb[773.795] ub[784] numArcs: [140138] numFixed: [32573] time: [463]
+STATS1 - lpIterations[17] lagIterations[5] sspIterations[25] numSeparations[198] numCuts[27] compileTime[2] sspSolveTime[1] lpSolveTime[311] repairTime[17] cutsTime[78] lb[773.795] ub[784] numArcs: [140138] numFixed: [32573] time: [463]
 no comb cuts found
 num src3 cuts added: 0
 num src4 cuts added: 0
@@ -1382,8 +1337,8 @@ comb dual [24]: 0.639772
 comb dual [25]: -0
 comb dual [26]: 1.01308
 lp dual value: 635.916
-STATS - lpIterations[18] lagIterations[5] sspIterations[25] numSeparations[214] numCuts[27] compileTime[2] sspSolveTime[1] lpSolveTime[346] lb[773.906] ub[784] numArcs: [140861] numFixed: [32875] time: [501]
-STATS1 - lpIterations[18] lagIterations[5] sspIterations[25] numSeparations[214] numCuts[27] compileTime[2] sspSolveTime[1] lpSolveTime[346] repairTime[19] cutsTime[77] lb[773.906] ub[784] numArcs: [140861] numFixed: [32875] time: [501]
+STATS - lpIterations[18] lagIterations[5] sspIterations[25] numSeparations[214] numCuts[27] compileTime[2] sspSolveTime[1] lpSolveTime[348] lb[773.906] ub[784] numArcs: [140861] numFixed: [32875] time: [506]
+STATS1 - lpIterations[18] lagIterations[5] sspIterations[25] numSeparations[214] numCuts[27] compileTime[2] sspSolveTime[1] lpSolveTime[348] repairTime[19] cutsTime[78] lb[773.906] ub[784] numArcs: [140861] numFixed: [32875] time: [506]
 max violation: 0.196783
 new strengthened comb with 3 teeth
 handle: 3,2,6,
@@ -1461,8 +1416,8 @@ comb dual [25]: -0
 comb dual [26]: 1.09143
 comb dual [27]: -0
 lp dual value: 638.936
-STATS - lpIterations[19] lagIterations[5] sspIterations[25] numSeparations[230] numCuts[28] compileTime[2] sspSolveTime[1] lpSolveTime[388] lb[773.962] ub[784] numArcs: [141424] numFixed: [33023] time: [554]
-STATS1 - lpIterations[19] lagIterations[5] sspIterations[25] numSeparations[230] numCuts[28] compileTime[2] sspSolveTime[1] lpSolveTime[388] repairTime[21] cutsTime[82] lb[773.962] ub[784] numArcs: [141424] numFixed: [33023] time: [554]
+STATS - lpIterations[19] lagIterations[5] sspIterations[25] numSeparations[230] numCuts[28] compileTime[2] sspSolveTime[1] lpSolveTime[393] lb[773.962] ub[784] numArcs: [141424] numFixed: [33023] time: [561]
+STATS1 - lpIterations[19] lagIterations[5] sspIterations[25] numSeparations[230] numCuts[28] compileTime[2] sspSolveTime[1] lpSolveTime[393] repairTime[20] cutsTime[83] lb[773.962] ub[784] numArcs: [141424] numFixed: [33023] time: [561]
 no comb cuts found
 num src3 cuts added: 0
 num src4 cuts added: 0
@@ -1532,8 +1487,8 @@ comb dual [25]: 0.0584357
 comb dual [26]: 0.798545
 comb dual [27]: -1.77636e-15
 lp dual value: 635.621
-STATS - lpIterations[20] lagIterations[5] sspIterations[25] numSeparations[245] numCuts[28] compileTime[2] sspSolveTime[1] lpSolveTime[431] lb[774.049] ub[784] numArcs: [141919] numFixed: [33161] time: [603]
-STATS1 - lpIterations[20] lagIterations[5] sspIterations[25] numSeparations[245] numCuts[28] compileTime[2] sspSolveTime[1] lpSolveTime[431] repairTime[23] cutsTime[82] lb[774.049] ub[784] numArcs: [141919] numFixed: [33161] time: [603]
+STATS - lpIterations[20] lagIterations[5] sspIterations[25] numSeparations[245] numCuts[28] compileTime[2] sspSolveTime[1] lpSolveTime[436] lb[774.049] ub[784] numArcs: [141919] numFixed: [33161] time: [611]
+STATS1 - lpIterations[20] lagIterations[5] sspIterations[25] numSeparations[245] numCuts[28] compileTime[2] sspSolveTime[1] lpSolveTime[436] repairTime[23] cutsTime[83] lb[774.049] ub[784] numArcs: [141919] numFixed: [33161] time: [611]
 max violation: 0.260725
 new strengthened comb with 3 teeth
 handle: 25,29,10,15,
@@ -1619,8 +1574,8 @@ comb dual [27]: -0
 comb dual [28]: -0
 comb dual [29]: 0.188089
 lp dual value: 641.635
-STATS - lpIterations[21] lagIterations[5] sspIterations[25] numSeparations[261] numCuts[30] compileTime[2] sspSolveTime[1] lpSolveTime[479] lb[774.918] ub[784] numArcs: [142535] numFixed: [33327] time: [668]
-STATS1 - lpIterations[21] lagIterations[5] sspIterations[25] numSeparations[261] numCuts[30] compileTime[2] sspSolveTime[1] lpSolveTime[479] repairTime[26] cutsTime[93] lb[774.918] ub[784] numArcs: [142535] numFixed: [33327] time: [668]
+STATS - lpIterations[21] lagIterations[5] sspIterations[25] numSeparations[261] numCuts[30] compileTime[2] sspSolveTime[1] lpSolveTime[482] lb[774.918] ub[784] numArcs: [142535] numFixed: [33327] time: [675]
+STATS1 - lpIterations[21] lagIterations[5] sspIterations[25] numSeparations[261] numCuts[30] compileTime[2] sspSolveTime[1] lpSolveTime[482] repairTime[25] cutsTime[94] lb[774.918] ub[784] numArcs: [142535] numFixed: [33327] time: [675]
 max violation: 0.0744039
 new strengthened comb with 3 teeth
 handle: 11,4,8,9,18,
@@ -1714,8 +1669,8 @@ comb dual [29]: 0.824115
 comb dual [30]: -0
 comb dual [31]: -0
 lp dual value: 625.98
-STATS - lpIterations[22] lagIterations[5] sspIterations[25] numSeparations[280] numCuts[32] compileTime[2] sspSolveTime[1] lpSolveTime[528] lb[775.236] ub[784] numArcs: [143626] numFixed: [33598] time: [730]
-STATS1 - lpIterations[22] lagIterations[5] sspIterations[25] numSeparations[280] numCuts[32] compileTime[2] sspSolveTime[1] lpSolveTime[528] repairTime[29] cutsTime[97] lb[775.236] ub[784] numArcs: [143626] numFixed: [33598] time: [730]
+STATS - lpIterations[22] lagIterations[5] sspIterations[25] numSeparations[280] numCuts[32] compileTime[2] sspSolveTime[1] lpSolveTime[532] lb[775.236] ub[784] numArcs: [143626] numFixed: [33598] time: [737]
+STATS1 - lpIterations[22] lagIterations[5] sspIterations[25] numSeparations[280] numCuts[32] compileTime[2] sspSolveTime[1] lpSolveTime[532] repairTime[28] cutsTime[99] lb[775.236] ub[784] numArcs: [143626] numFixed: [33598] time: [737]
 max violation: 0.271038
 new strengthened comb with 3 teeth
 handle: 7,1,16,12,
@@ -1804,8 +1759,8 @@ comb dual [30]: -0
 comb dual [31]: -0
 comb dual [32]: 0.447412
 lp dual value: 619.389
-STATS - lpIterations[23] lagIterations[5] sspIterations[25] numSeparations[299] numCuts[33] compileTime[2] sspSolveTime[1] lpSolveTime[584] lb[775.528] ub[784] numArcs: [144608] numFixed: [33864] time: [796]
-STATS1 - lpIterations[23] lagIterations[5] sspIterations[25] numSeparations[299] numCuts[33] compileTime[2] sspSolveTime[1] lpSolveTime[584] repairTime[31] cutsTime[101] lb[775.528] ub[784] numArcs: [144608] numFixed: [33864] time: [796]
+STATS - lpIterations[23] lagIterations[5] sspIterations[25] numSeparations[299] numCuts[33] compileTime[2] sspSolveTime[1] lpSolveTime[589] lb[775.528] ub[784] numArcs: [144608] numFixed: [33864] time: [805]
+STATS1 - lpIterations[23] lagIterations[5] sspIterations[25] numSeparations[299] numCuts[33] compileTime[2] sspSolveTime[1] lpSolveTime[589] repairTime[31] cutsTime[102] lb[775.528] ub[784] numArcs: [144608] numFixed: [33864] time: [805]
 no comb cuts found
 num src3 cuts added: 0
 num src4 cuts added: 0
@@ -1882,8 +1837,8 @@ comb dual [30]: -0
 comb dual [31]: -0
 comb dual [32]: 0.729176
 lp dual value: 614.777
-STATS - lpIterations[24] lagIterations[5] sspIterations[25] numSeparations[315] numCuts[33] compileTime[2] sspSolveTime[1] lpSolveTime[632] lb[775.715] ub[784] numArcs: [145299] numFixed: [34089] time: [852]
-STATS1 - lpIterations[24] lagIterations[5] sspIterations[25] numSeparations[315] numCuts[33] compileTime[2] sspSolveTime[1] lpSolveTime[632] repairTime[34] cutsTime[101] lb[775.715] ub[784] numArcs: [145299] numFixed: [34089] time: [852]
+STATS - lpIterations[24] lagIterations[5] sspIterations[25] numSeparations[315] numCuts[33] compileTime[2] sspSolveTime[1] lpSolveTime[639] lb[775.715] ub[784] numArcs: [145299] numFixed: [34089] time: [862]
+STATS1 - lpIterations[24] lagIterations[5] sspIterations[25] numSeparations[315] numCuts[33] compileTime[2] sspSolveTime[1] lpSolveTime[639] repairTime[34] cutsTime[102] lb[775.715] ub[784] numArcs: [145299] numFixed: [34089] time: [862]
 max violation: 0.127205
 new strengthened comb with 3 teeth
 handle: 11,4,8,9,18,
@@ -1963,8 +1918,8 @@ comb dual [31]: -0
 comb dual [32]: 0.862022
 comb dual [33]: 0.257294
 lp dual value: 607.619
-STATS - lpIterations[25] lagIterations[5] sspIterations[25] numSeparations[329] numCuts[34] compileTime[2] sspSolveTime[1] lpSolveTime[688] lb[775.762] ub[784] numArcs: [145821] numFixed: [34187] time: [917]
-STATS1 - lpIterations[25] lagIterations[5] sspIterations[25] numSeparations[329] numCuts[34] compileTime[2] sspSolveTime[1] lpSolveTime[688] repairTime[37] cutsTime[103] lb[775.762] ub[784] numArcs: [145821] numFixed: [34187] time: [917]
+STATS - lpIterations[25] lagIterations[5] sspIterations[25] numSeparations[329] numCuts[34] compileTime[2] sspSolveTime[1] lpSolveTime[693] lb[775.762] ub[784] numArcs: [145821] numFixed: [34187] time: [926]
+STATS1 - lpIterations[25] lagIterations[5] sspIterations[25] numSeparations[329] numCuts[34] compileTime[2] sspSolveTime[1] lpSolveTime[693] repairTime[36] cutsTime[105] lb[775.762] ub[784] numArcs: [145821] numFixed: [34187] time: [926]
 no comb cuts found
 num src3 cuts added: 0
 num src4 cuts added: 0
@@ -2042,8 +1997,8 @@ comb dual [31]: -0
 comb dual [32]: 0.954969
 comb dual [33]: -0
 lp dual value: 610.581
-STATS - lpIterations[26] lagIterations[5] sspIterations[25] numSeparations[345] numCuts[34] compileTime[2] sspSolveTime[1] lpSolveTime[735] lb[775.984] ub[784] numArcs: [146617] numFixed: [34734] time: [972]
-STATS1 - lpIterations[26] lagIterations[5] sspIterations[25] numSeparations[345] numCuts[34] compileTime[2] sspSolveTime[1] lpSolveTime[735] repairTime[40] cutsTime[103] lb[775.984] ub[784] numArcs: [146617] numFixed: [34734] time: [972]
+STATS - lpIterations[26] lagIterations[5] sspIterations[25] numSeparations[345] numCuts[34] compileTime[2] sspSolveTime[1] lpSolveTime[739] lb[775.984] ub[784] numArcs: [146617] numFixed: [34734] time: [980]
+STATS1 - lpIterations[26] lagIterations[5] sspIterations[25] numSeparations[345] numCuts[34] compileTime[2] sspSolveTime[1] lpSolveTime[739] repairTime[39] cutsTime[105] lb[775.984] ub[784] numArcs: [146617] numFixed: [34734] time: [980]
 max violation: 0.850109
 new strengthened comb with 3 teeth
 handle: 7,31,19,17,13,26,
@@ -2122,8 +2077,8 @@ comb dual [32]: 0.662756
 comb dual [33]: -0
 comb dual [34]: 0.168622
 lp dual value: 609.432
-STATS - lpIterations[27] lagIterations[5] sspIterations[25] numSeparations[358] numCuts[35] compileTime[2] sspSolveTime[1] lpSolveTime[787] lb[776.082] ub[784] numArcs: [147053] numFixed: [34886] time: [1034]
-STATS1 - lpIterations[27] lagIterations[5] sspIterations[25] numSeparations[358] numCuts[35] compileTime[2] sspSolveTime[1] lpSolveTime[787] repairTime[43] cutsTime[107] lb[776.082] ub[784] numArcs: [147053] numFixed: [34886] time: [1034]
+STATS - lpIterations[27] lagIterations[5] sspIterations[25] numSeparations[358] numCuts[35] compileTime[2] sspSolveTime[1] lpSolveTime[789] lb[776.082] ub[784] numArcs: [147053] numFixed: [34886] time: [1040]
+STATS1 - lpIterations[27] lagIterations[5] sspIterations[25] numSeparations[358] numCuts[35] compileTime[2] sspSolveTime[1] lpSolveTime[789] repairTime[42] cutsTime[108] lb[776.082] ub[784] numArcs: [147053] numFixed: [34886] time: [1040]
 no comb cuts found
 num src3 cuts added: 0
 num src4 cuts added: 0
@@ -2194,8 +2149,8 @@ comb dual [32]: 0.640873
 comb dual [33]: 0.0522271
 comb dual [34]: 0.179563
 lp dual value: 608.625
-STATS - lpIterations[28] lagIterations[5] sspIterations[25] numSeparations[370] numCuts[35] compileTime[2] sspSolveTime[1] lpSolveTime[839] lb[776.168] ub[784] numArcs: [147491] numFixed: [35070] time: [1094]
-STATS1 - lpIterations[28] lagIterations[5] sspIterations[25] numSeparations[370] numCuts[35] compileTime[2] sspSolveTime[1] lpSolveTime[839] repairTime[45] cutsTime[107] lb[776.168] ub[784] numArcs: [147491] numFixed: [35070] time: [1094]
+STATS - lpIterations[28] lagIterations[5] sspIterations[25] numSeparations[370] numCuts[35] compileTime[2] sspSolveTime[1] lpSolveTime[842] lb[776.168] ub[784] numArcs: [147491] numFixed: [35070] time: [1100]
+STATS1 - lpIterations[28] lagIterations[5] sspIterations[25] numSeparations[370] numCuts[35] compileTime[2] sspSolveTime[1] lpSolveTime[842] repairTime[45] cutsTime[108] lb[776.168] ub[784] numArcs: [147491] numFixed: [35070] time: [1100]
 max violation: 0.534847
 new strengthened comb with 3 teeth
 handle: 29,10,15,
@@ -2294,8 +2249,8 @@ comb dual [36]: -0
 comb dual [37]: -0
 comb dual [38]: -0
 lp dual value: 615.011
-STATS - lpIterations[29] lagIterations[5] sspIterations[25] numSeparations[382] numCuts[39] compileTime[2] sspSolveTime[1] lpSolveTime[892] lb[776.65] ub[784] numArcs: [148070] numFixed: [35281] time: [1169]
-STATS1 - lpIterations[29] lagIterations[5] sspIterations[25] numSeparations[382] numCuts[39] compileTime[2] sspSolveTime[1] lpSolveTime[892] repairTime[48] cutsTime[122] lb[776.65] ub[784] numArcs: [148070] numFixed: [35281] time: [1169]
+STATS - lpIterations[29] lagIterations[5] sspIterations[25] numSeparations[382] numCuts[39] compileTime[2] sspSolveTime[1] lpSolveTime[895] lb[776.65] ub[784] numArcs: [148070] numFixed: [35281] time: [1176]
+STATS1 - lpIterations[29] lagIterations[5] sspIterations[25] numSeparations[382] numCuts[39] compileTime[2] sspSolveTime[1] lpSolveTime[895] repairTime[47] cutsTime[124] lb[776.65] ub[784] numArcs: [148070] numFixed: [35281] time: [1176]
 max violation: 0.0851656
 new strengthened comb with 3 teeth
 handle: 8,9,11,18,
@@ -2383,8 +2338,8 @@ comb dual [37]: -0
 comb dual [38]: 0.0801974
 comb dual [39]: 0.228569
 lp dual value: 612.726
-STATS - lpIterations[30] lagIterations[5] sspIterations[25] numSeparations[397] numCuts[40] compileTime[2] sspSolveTime[1] lpSolveTime[946] lb[776.699] ub[784] numArcs: [148753] numFixed: [35444] time: [1234]
-STATS1 - lpIterations[30] lagIterations[5] sspIterations[25] numSeparations[397] numCuts[40] compileTime[2] sspSolveTime[1] lpSolveTime[946] repairTime[52] cutsTime[124] lb[776.699] ub[784] numArcs: [148753] numFixed: [35444] time: [1234]
+STATS - lpIterations[30] lagIterations[5] sspIterations[25] numSeparations[397] numCuts[40] compileTime[2] sspSolveTime[1] lpSolveTime[951] lb[776.699] ub[784] numArcs: [148753] numFixed: [35444] time: [1243]
+STATS1 - lpIterations[30] lagIterations[5] sspIterations[25] numSeparations[397] numCuts[40] compileTime[2] sspSolveTime[1] lpSolveTime[951] repairTime[51] cutsTime[126] lb[776.699] ub[784] numArcs: [148753] numFixed: [35444] time: [1243]
 no comb cuts found
 num src3 cuts added: 0
 num src4 cuts added: 0
@@ -2425,167 +2380,3 @@ separating route locations: 26 21 31 19 17 13 7 26
 fixing. lower bound used: 612.723
 fixing. lower bound used: 666.986
 num vars: 113932
-DUALS: -0,9.86864,30.316,17.3131,33.5926,12.8598,14.0987,7.72343,12.8814,24.6954,8.117,31.1061,15.9625,12.5896,2.45852,17.7536,5.15906,24.8232,6.6468,34.8232,14.87,12.7536,8.79227,12.8814,17.7132,37.6388,-0,14.5163,23.5797,7.37871,-0,13.9116,
-fixed path dual: 22.6767
-comb dual [0]: -0
-comb dual [1]: -0
-comb dual [2]: -0
-comb dual [3]: -0
-comb dual [4]: -0
-comb dual [5]: -0
-comb dual [6]: -0
-comb dual [7]: 1.94092
-comb dual [8]: -0
-comb dual [9]: -0
-comb dual [10]: -0
-comb dual [11]: 0.516123
-comb dual [12]: 4.06026
-comb dual [13]: -0
-comb dual [14]: -0
-comb dual [15]: 0.173998
-comb dual [16]: -0
-comb dual [17]: -0
-comb dual [18]: 0.260148
-comb dual [19]: -0
-comb dual [20]: -0
-comb dual [21]: -0
-comb dual [22]: -0
-comb dual [23]: 0.291872
-comb dual [24]: -0
-comb dual [25]: -0
-comb dual [26]: 0.427394
-comb dual [27]: -0
-comb dual [28]: -0
-comb dual [29]: 1.04691
-comb dual [30]: -0
-comb dual [31]: -0
-comb dual [32]: 0.581989
-comb dual [33]: -0
-comb dual [34]: 0.418011
-comb dual [35]: 1.22619
-comb dual [36]: -0
-comb dual [37]: -0
-comb dual [38]: -0
-comb dual [39]: 0.156192
-lp dual value: 611.308
-STATS - lpIterations[31] lagIterations[5] sspIterations[25] numSeparations[413] numCuts[40] compileTime[2] sspSolveTime[1] lpSolveTime[1001] lb[776.836] ub[784] numArcs: [149566] numFixed: [35693] time: [1297]
-STATS1 - lpIterations[31] lagIterations[5] sspIterations[25] numSeparations[413] numCuts[40] compileTime[2] sspSolveTime[1] lpSolveTime[1001] repairTime[56] cutsTime[124] lb[776.836] ub[784] numArcs: [149566] numFixed: [35693] time: [1297]
-no comb cuts found
-num src3 cuts added: 0
-num src4 cuts added: 0
-num src5V1 cuts added: 0
-num src5V2 cuts added: 0
-separating route arcs: 6 4792 24057 34694 71596 87183 
-separating route locations: 7 13 3 2 23 2 
-separating route arcs: 19 1053 4506 129106 129134 136935 91003 93189 100228 
-separating route locations: 20 5 25 10 9 8 18 22 9 
-separating route arcs: 19 1053 4510 131850 134657 134686 57507 91937 103806 105808 
-separating route locations: 20 5 29 22 9 11 4 8 18 9 
-separating route arcs: 19 1072 130121 147769 75109 
-separating route locations: 20 25 5 15 25 
-separating route arcs: 19 1072 130139 140522 142864 80629 
-separating route locations: 20 25 29 10 15 29 
-separating route arcs: 19 1076 129329 134774 134803 23511 
-separating route locations: 20 29 9 22 18 22 
-separating route arcs: 24 12775 16384 27744 
-separating route locations: 25 29 10 25 
-separating route arcs: 28 105 130213 130250 138072 79947 
-separating route locations: 29 15 10 25 5 25 
-separating route arcs: 23 12719 146333 146362 72668 
-separating route locations: 24 2 23 3 2 
-separating route arcs: 13 141 149249 149280 32481 66350 94061 105498 107462 
-separating route locations: 14 22 9 11 4 28 8 18 9 
-separating route arcs: 25 74 146617 146645 146675 147934 59865 
-separating route locations: 26 14 6 2 23 3 2 
-separating route arcs: 25 74 146625 147964 4329 35209 75138 
-separating route locations: 26 14 29 10 25 15 25 
-separating route arcs: 25 74 146640 3233 7905 37106 
-separating route locations: 26 14 23 3 2 23 
-separating route arcs: 25 77 9408 45753 68644 
-separating route locations: 26 17 19 21 19 
-separating route arcs: 25 81 149570 25491 67740 85224 
-separating route locations: 26 21 17 19 31 21 
-separating route arcs: 25 73 148075 148103 48640 
-separating route locations: 26 13 17 31 17 
-fixing. lower bound used: 611.303
-fixing. lower bound used: 666.986
-num vars: 114425
-DUALS: -0,10.5796,30.4973,16.9651,33.957,13.8061,14.9574,8.70376,13.3398,25.4677,7.94042,31.1276,16.1518,12.8758,1.81481,18.22,5,25.241,6.81492,35.0212,15.2324,12.7516,8.3464,13.3398,17.8206,38.0146,-0,13.8206,24.3112,7.6159,-0,13.5106,
-fixed path dual: 23.6347
-comb dual [0]: -0
-comb dual [1]: -0
-comb dual [2]: -0
-comb dual [3]: -0
-comb dual [4]: -0
-comb dual [5]: -0
-comb dual [6]: -0
-comb dual [7]: 2.28687
-comb dual [8]: -0
-comb dual [9]: -0
-comb dual [10]: -0
-comb dual [11]: 0.315748
-comb dual [12]: 3.57916
-comb dual [13]: -0
-comb dual [14]: -0
-comb dual [15]: 0.0413784
-comb dual [16]: -0
-comb dual [17]: -0
-comb dual [18]: -0
-comb dual [19]: -0
-comb dual [20]: -0
-comb dual [21]: -0
-comb dual [22]: -0
-comb dual [23]: 0.366028
-comb dual [24]: -0
-comb dual [25]: -0
-comb dual [26]: 0.5621
-comb dual [27]: -0
-comb dual [28]: -0
-comb dual [29]: 0.862007
-comb dual [30]: -0
-comb dual [31]: -0
-comb dual [32]: 0.362007
-comb dual [33]: -0
-comb dual [34]: 0.637993
-comb dual [35]: 1.3471
-comb dual [36]: -0
-comb dual [37]: -0
-comb dual [38]: -0
-comb dual [39]: 0.276845
-lp dual value: 622.056
-STATS - lpIterations[32] lagIterations[5] sspIterations[25] numSeparations[429] numCuts[40] compileTime[2] sspSolveTime[1] lpSolveTime[1056] lb[777.042] ub[784] numArcs: [150312] numFixed: [35946] time: [1362]
-STATS1 - lpIterations[32] lagIterations[5] sspIterations[25] numSeparations[429] numCuts[40] compileTime[2] sspSolveTime[1] lpSolveTime[1056] repairTime[61] cutsTime[124] lb[777.042] ub[784] numArcs: [150312] numFixed: [35946] time: [1362]
-no comb cuts found
-num src3 cuts added: 0
-num src4 cuts added: 0
-num src5V1 cuts added: 0
-num src5V2 cuts added: 0
-separating route arcs: 4 774 129901 129935 129973 80288 
-separating route locations: 5 25 10 15 29 10 
-separating route arcs: 4 774 129901 129945 134576 78767 
-separating route locations: 5 25 10 29 15 25 
-separating route arcs: 19 1053 4506 129111 131794 138530 108096 114241 
-separating route locations: 20 5 25 15 29 9 22 29 
-separating route arcs: 19 1053 4510 131850 134657 134685 146095 68481 102930 120937 
-separating route locations: 20 5 29 22 9 8 11 4 28 8 
-separating route arcs: 19 1058 129196 36906 41878 
-separating route locations: 20 10 25 29 10 
-separating route arcs: 19 1063 145589 62140 76289 
-separating route locations: 20 15 25 5 25 
-separating route arcs: 28 100 129468 136647 24722 26705 33135 
-separating route locations: 29 10 9 8 18 22 9 
-separating route arcs: 28 112 131211 131241 135778 135808 76371 78545 
-separating route locations: 29 22 9 11 4 8 18 9 
-separating route arcs: 29 3614 5507 31989 64536 
-separating route locations: 30 26 12 16 12 
-separating route arcs: 25 72 131567 141536 68242 102767 
-separating route locations: 26 12 16 7 1 12 
-separating route arcs: 25 74 146640 150165 26943 
-separating route locations: 26 14 23 2 23 
-separating route arcs: 25 76 133819 24293 60534 76150 
-separating route locations: 26 16 6 2 23 2 
-separating route arcs: 26 8206 24293 60534 76150 
-separating route locations: 27 6 2 23 2 
-fixing. lower bound used: 622.053
-fixing. lower bound used: 666.986
-num vars: 114864
