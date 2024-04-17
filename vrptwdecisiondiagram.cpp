@@ -1308,7 +1308,7 @@ void VRPTWDecisionDiagram::getSRCArcsAndCoeffs(const Primal& primal, const std::
         bool isTrue = doesRouteExistByLocations(route, updatedRouteArcs);
         if (!isTrue)
         {
-          std::cout << "route does not exist!?" << std::endl;
+          std::cout << "ERORR - route does not exist!?" << std::endl;
         }
 
         // check if already separated
@@ -1892,7 +1892,7 @@ double VRPTWDecisionDiagram::computeShortestPathBFS(ShortestPathMode mode, std::
   return nodes[terminalNodeIndex].shortestPathDistance;
 };
 
-double VRPTWDecisionDiagram::computeShortestPathBFSWang(std::vector<int>& treeByParentArcs, std::vector<int>& routeByArc)
+double VRPTWDecisionDiagram::computeShortestPathBFSWang(std::vector<int>& treeByParentArcs, std::vector<int>& routeByArc, double& maxShortestPath)
 {
   // setup data structures to store shortestpaths and the path itself
   for (VRPTWNode& node : nodes)
@@ -1900,6 +1900,9 @@ double VRPTWDecisionDiagram::computeShortestPathBFSWang(std::vector<int>& treeBy
     node.shortestPathDistance = INF;
   }
   nodes[rootNodeIndex].shortestPathDistance = 0.0;
+
+  // keep track to guide arc fixing / repair process
+  maxShortestPath = 0;
 
   std::vector<int> priorNodeForShortestPath;
   std::vector<int> priorLocationForShortestPath;
@@ -1922,6 +1925,10 @@ double VRPTWDecisionDiagram::computeShortestPathBFSWang(std::vector<int>& treeBy
           priorNodeForShortestPath[toNodeIndex] = nodeIndex;
           treeByParentArcs[toNodeIndex] = arcIndex;
           nodes[toNodeIndex].shortestPathDistance = distanceFromNode;
+          if (distanceFromNode < vrptw.instanceUpperBound)
+          {
+            maxShortestPath = std::max(maxShortestPath, distanceFromNode);
+          }
         }
       }
     }
@@ -3874,7 +3881,7 @@ void VRPTWDecisionDiagram::dijkstraWithBatchProc(std::vector<int>& treeByParentA
   DBG(print();)
 }
 
-double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& shortestPathLength)
+double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& shortestPathLength, double& longestShortestPathLength)
 {
   // start potentials and flows at 0
   for (VRPTWNode& node : nodes)
@@ -3894,7 +3901,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::ve
   treeByParentArcs.resize(nodes.size());
   std::vector<int> shortestPathByArc;
   setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(dual, LPSolveType::LAGSolver);
-  shortestPathLength = computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc);
+  shortestPathLength = computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc, longestShortestPathLength);
   // NOTE: when fixing arcs, if there is no path to terminal, no paths exist
   if (shortestPathLength == INF)
   {

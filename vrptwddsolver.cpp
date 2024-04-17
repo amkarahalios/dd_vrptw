@@ -31,7 +31,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   infeasibleRoutesBatchSize = 1;
   deactivateCutValueThreshold = 0.01;
   deactivateCutIterThreshold = 25;
-  lagOptimalityGapToStartRepairing = 25;
   percentFixedToChangeToCPLEX = 97.5;
   numArcsToChangeToCPLEX = 100000;
   numLagCuts = 5;
@@ -46,7 +45,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "batch size for lag: " << infeasibleRoutesBatchSize << std::endl;
   std::cout << "deactivate cut value threshold: " << deactivateCutValueThreshold << std::endl;
   std::cout << "deactivate cut iter threshold: " << deactivateCutIterThreshold << std::endl;
-  std::cout << "lag optimality gap to start repairing: " << lagOptimalityGapToStartRepairing << std::endl;
   std::cout << "percent arcs fixed to change to CPLEX: " << percentFixedToChangeToCPLEX << std::endl;
   std::cout << "number arcs fixed to change to CPLEX: " << numArcsToChangeToCPLEX << std::endl;
   std::cout << "kappa iterations: " << kappaIterations << std::endl;
@@ -393,7 +391,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           if (params.useVariableFixing)
           {
             //std::cout << "initial value: " << routeDD.getDualObjectiveValue(dual, LPSolveType::LPSolver) << std::endl;
-            repairMultipliers(dual, LPSolveType::LPSolver);
+            //repairMultipliers(dual, LPSolveType::LPSolver);
             percentArcsFixed = routeDD.fixArcs(dual, LPSolveType::LPSolver);
           }
         }
@@ -409,7 +407,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       // TODO(akarahal) store best duals for arc fixing better
       if (params.useVariableFixing)
       {
-        repairMultipliers(bestDualArcFixing, LPSolveType::LAGSolver);
+        //repairMultipliers(bestDualArcFixing, LPSolveType::LAGSolver);
         routeDD.fixArcs(bestDualArcFixing, LPSolveType::LAGSolver);
       }
 
@@ -473,7 +471,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       // do cuts first in case separations mess up dd structure
       if (lpFlowType == FlowType::LP)
       {
-        auto startTime = std::chrono::high_resolution_clock::now();
+        auto startTimeCut = std::chrono::high_resolution_clock::now();
 
         if (params.useRobustCuts)
         {
@@ -534,9 +532,9 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         resizeMultipliers(dual, bestDual);
         resizeMultipliers(dual, bestDualArcFixing);
  
-        auto endTime = std::chrono::high_resolution_clock::now();
-        auto totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
-        stats.millisecondsFindingCuts += totalTime;
+        auto endTimeCut = std::chrono::high_resolution_clock::now();
+        auto totalTimeCut = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeCut - startTimeCut).count();
+        stats.millisecondsFindingCuts += totalTimeCut;
       }
 
       bool stopFindingInfeasibilities = false;
@@ -817,7 +815,7 @@ bool VRPTWDDSolver::solveLPCG(Dual& duals)
 
 void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
 {
-  auto startTime = std::chrono::high_resolution_clock::now();
+  auto startTimeRepair = std::chrono::high_resolution_clock::now();
   routeDD.clearRelaxedSrcs();
 
   while (true)
@@ -827,7 +825,8 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
     std::vector<int> treeByParentArcs;
     treeByParentArcs.resize(routeDD.getNodes().size());
     std::vector<int> shortestPathByArc;
-    double shortestPathLength = routeDD.computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc);
+    double longestShortestPathLength = 0;
+    double shortestPathLength = routeDD.computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc, longestShortestPathLength);
     shortestPathLength = shortestPathLength - repairedDual.fixedPathDual;
     if (shortestPathLength >= 0)
     {
@@ -868,9 +867,9 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
     }
   }
  
-  auto endTime = std::chrono::high_resolution_clock::now();
-  auto totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
-  stats.millisecondsRepairingLAG += totalTime;
+  auto endTimeRepair = std::chrono::high_resolution_clock::now();
+  auto totalTimeRepair = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeRepair - startTimeRepair).count();
+  stats.millisecondsRepairingLAG += totalTimeRepair;
 };
 
 void VRPTWDDSolver::printMultipliers(Dual& dual)
@@ -1099,12 +1098,14 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
 
       // Arc fixing
       bool isDualFeasible = false;
+      bool tryArcFixingOrRepair = false;
+      double longestShortestPathLength = 0;
       double minReducedCost = 0.0;
       Dual repairedDual(dual);
       double percentFixed = 0.0;
       if (params.useVariableFixing && (bestDualArcFixingPercent > 0.001))
       {
-        repairMultipliers(bestDualArcFixing, LPSolveType::LAGSolver);
+        //repairMultipliers(bestDualArcFixing, LPSolveType::LAGSolver);
         routeDD.fixArcs(bestDualArcFixing, LPSolveType::LAGSolver);
       }
 
@@ -1126,11 +1127,18 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
         isDualFeasible = false;
       }
 
-      double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(dual, shortestPaths, isDualFeasible, minReducedCost);
+      double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(dual, shortestPaths, isDualFeasible, minReducedCost, longestShortestPathLength);
       stats.numSSPIterations = stats.numSSPIterations + shortestPaths.size();
       auto endMuSSPTime = std::chrono::high_resolution_clock::now();
       auto sspSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endMuSSPTime - startSSPTime).count();
       stats.millisecondsSolvingSSP = stats.millisecondsSolvingSSP + sspSolveTime;
+
+      // Heuristic for trying arc fixing or repair
+      if (stats.lowerBound + longestShortestPathLength > stats.upperBound)
+      {
+        std::cout << "try arc fixing based on heuristic lspl: " << longestShortestPathLength << std::endl;
+        tryArcFixingOrRepair = true;
+      }
 
       // Test that SSP and muSSP get the same values
       if (!params.useMuSSP)
@@ -1294,9 +1302,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
       // should fix after decomposing in case we fix an arc that is in the current solution
       if (isDualFeasible)
       {
-        if (params.useVariableFixing)
+        if (params.useVariableFixing && tryArcFixingOrRepair)
         {
-          repairMultipliers(repairedDual, LPSolveType::LAGSolver);
+          //repairMultipliers(repairedDual, LPSolveType::LAGSolver);
           percentFixed = routeDD.fixArcs(repairedDual, params.lpSolveType);
           std::cout << "percent fixed: " << percentFixed << std::endl;
         }
@@ -1311,7 +1319,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
       {
         if (params.repairDuals)
         {
-          if (params.useVariableFixing && ((stats.upperBound - lagrangeanLowerBound) * 100.0 / stats.upperBound < lagOptimalityGapToStartRepairing))
+          if (params.useVariableFixing && tryArcFixingOrRepair)
           {
             repairMultipliers(repairedDual, LPSolveType::LAGSolver);
 
@@ -1393,29 +1401,42 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
   {
     while (!shouldTerminate && (infeasibleRoutesByArc.size() < infeasibleRoutesBatchSize))
     {
+      stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
       ++stats.numLagIterations;
       ++numLagIterations;
       ++stats.numLagIterationsWithResets;
 
       // Arc fixing
       bool isDualFeasible = false;
+      bool tryArcFixingOrRepair = false;
+      double longestShortestPathLength = 0;
       double minReducedCost = 0.0;
       Dual repairedDual(dual);
       double percentFixed = 0.0;
       if (params.useVariableFixing && (bestDualArcFixingPercent > 0.001))
       {
-        repairMultipliers(bestDualArcFixing, LPSolveType::LAGSolver);
+        //repairMultipliers(bestDualArcFixing, LPSolveType::LAGSolver);
+        auto startTimeFix = std::chrono::high_resolution_clock::now();
         routeDD.fixArcs(bestDualArcFixing, LPSolveType::LAGSolver);
+        auto endTimeFix = std::chrono::high_resolution_clock::now();
+        auto totalTimeFix = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeFix - startTimeFix).count();
+        stats.millisecondsFix += totalTimeFix;
       }
 
       // Run muSSP
       std::vector<std::vector<int>> shortestPaths;
       auto startSSPTime = std::chrono::high_resolution_clock::now();
-      double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(dual, shortestPaths, isDualFeasible, minReducedCost);
+      double lagrangeanLowerBound = routeDD.solveMinCostFlowModelWang(dual, shortestPaths, isDualFeasible, minReducedCost, longestShortestPathLength);
       stats.numSSPIterations = stats.numSSPIterations + shortestPaths.size();
       auto endMuSSPTime = std::chrono::high_resolution_clock::now();
       auto sspSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endMuSSPTime - startSSPTime).count();
       stats.millisecondsSolvingSSP = stats.millisecondsSolvingSSP + sspSolveTime;
+ 
+      // Heuristic for trying arc fixing or repair
+      if (stats.lowerBound + longestShortestPathLength > stats.upperBound)
+      {
+        tryArcFixingOrRepair = true;
+      }
 
       // Impute the dual bound value and value of fixedPathDual
       double dualBoundWithoutFixedPathDual = 0.0;
@@ -1523,13 +1544,18 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       }
 
       // Compute primal solution
+      auto startTimeDecompose = std::chrono::high_resolution_clock::now();
       std::vector<int> infeasibleRoute;
       std::vector<double> routeFlows;
       std::vector<std::vector<int>> decomposedRoutes;
       std::vector<std::vector<int>> decomposedArcs;
       routeDD.decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
+      auto endTimeDecompose = std::chrono::high_resolution_clock::now();
+      auto totalTimeDecompose = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeDecompose - startTimeDecompose).count();
+      stats.millisecondsDecompose += totalTimeDecompose;
 
       // for yellow, check v^{t} dot (1 - Ax^{t})
+      auto startYellow = std::chrono::high_resolution_clock::now();
       if (isImproved)
       {
         Primal latestPrimal(primal);
@@ -1545,10 +1571,14 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
           stepSizeMultiplier = std::min(stepSizeMultiplier * 1.1, 2.0);
         }
       }
+      auto endYellow = std::chrono::high_resolution_clock::now();
+      auto totalYellow = std::chrono::duration_cast<std::chrono::milliseconds>(endYellow - startYellow).count();
+      stats.millisecondsDecompose += totalTimeDecompose;
 
       // tune the weighting of the primals
       // min ||b-A(alpha x^{t} + (1-alpha)x^{bar}|| s.t. u/10 <= alpha <= u
       // currently using weighting 95% previous, 5% current
+      auto startTimeTryingAlpha = std::chrono::high_resolution_clock::now();
       double alphaTry = alphaLowerBound / 10;
       double bestAlpha = alphaTry;
       double bestAlphaValue = INF;
@@ -1569,7 +1599,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
             bestAlpha = alphaTry;
             previousGradient = gradient;
           }
-          alphaTry = std::min(alphaTry + (alphaLowerBound / 10), alphaLowerBound);
+          alphaTry = std::min(alphaTry + (alphaLowerBound / 2), alphaLowerBound);
+          //alphaTry = std::min(alphaTry  alphaLowerBound);
         }
       }
       else
@@ -1581,9 +1612,16 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       Primal nextPrimal(primal);
       constructNextPrimal(bestAlpha, decomposedRoutes, decomposedArcs, nextPrimal);
       primal = nextPrimal;
+      auto endTimeTryingAlpha = std::chrono::high_resolution_clock::now();
+      auto totalTimeTryingAlpha = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeTryingAlpha - startTimeTryingAlpha).count();
+      stats.millisecondsTryingAlpha += totalTimeTryingAlpha;
 
       // Update dual
+      auto startTimeUpdateDual = std::chrono::high_resolution_clock::now();
       updateMultipliersVolumeAlgorithm(dual, primal, lagrangeanLowerBound, stats.numLagIterations);
+      auto endTimeUpdateDual = std::chrono::high_resolution_clock::now();
+      auto totalTimeUpdateDual = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeUpdateDual - startTimeUpdateDual).count();
+      stats.millisecondsUpdateDual += totalTimeUpdateDual;
 
       // Check for infeasibilities
       if (phaseType == PhaseType::SEPARATION)
@@ -1622,9 +1660,9 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       //if (isDualFeasible & (vrptw.fixedNumPaths != FixedNumPaths::FIXED_NUM_PATHS))
       if (isDualFeasible)
       {
-        if (params.useVariableFixing)
+        if (params.useVariableFixing && tryArcFixingOrRepair)
         {
-          repairMultipliers(repairedDual, LPSolveType::LAGSolver);
+          //repairMultipliers(repairedDual, LPSolveType::LAGSolver);
           percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver);
           std::cout << "percent fixed: " << percentFixed << std::endl;
         }
@@ -1640,7 +1678,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       {
         if (params.repairDuals)
         {
-          if (params.useVariableFixing && ((stats.upperBound - lagrangeanLowerBound) * 100.0 / stats.upperBound < lagOptimalityGapToStartRepairing))
+          if (params.useVariableFixing && tryArcFixingOrRepair)
           {
             repairMultipliers(repairedDual, LPSolveType::LAGSolver);
             double repairedBound = routeDD.getDualObjectiveValue(repairedDual, LPSolveType::LAGSolver);
@@ -2131,7 +2169,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
 
 bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
 {
-  auto startTime = std::chrono::high_resolution_clock::now();
+  auto startTimeCut = std::chrono::high_resolution_clock::now();
 
   // Rounded Capacity Cuts
   bool cutAdded = false;
@@ -2210,9 +2248,9 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
   capCutTooSmallCounters.resize(dual.capDuals.size());
   cliqueCutTooSmallCounters.resize(dual.srcDuals.size());
 
-  auto endTime = std::chrono::high_resolution_clock::now();
-  auto totalTime = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
-  stats.millisecondsFindingCuts += totalTime;
+  auto endTimeCut = std::chrono::high_resolution_clock::now();
+  auto totalTimeCut = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeCut - startTimeCut).count();
+  stats.millisecondsFindingCuts += totalTimeCut;
 
   return cutAdded;
 };
