@@ -64,6 +64,8 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   targetLowerBound = 1.0;
 
   // dynamic parameters
+  std::cout << "ngSetSize: " << params.ngSetSize << std::endl;
+  std::cout << "change to LP: " << params.changeToLP << std::endl;
   std::cout << "var fixing: " << params.useVariableFixing << std::endl;
   std::cout << "muSSP: " << params.useMuSSP << std::endl;
   std::cout << "repairDuals: " << params.repairDuals << std::endl;
@@ -206,9 +208,8 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
         cutSets.push_back(cutSetAsSet);
         routeDD.addCapCutSet(cutSet, rccArcs, RHS, params.lpSolveType);
         stats.numCuts = stats.numCuts + 1;
+        dual.capDuals.push_back(maxViolation);
       }
-
-      dual.capDuals.push_back(maxViolation);
     }
 
     for (int cutIndex=0; cutIndex<numCuts; ++cutIndex)
@@ -250,7 +251,7 @@ void VRPTWDDSolver::addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeH
     {
       int numTeeth = MyCutsCMP->CPL[cutIndex]->Key;
       std::vector<std::set<int>> teeth;
-      std::cout << "new strengthened comb with " << numTeeth << " teeth" << std::endl;
+      std::cout << "new comb with " << numTeeth << " teeth" << std::endl;
 
       std::set<int> handle;
       std::cout << "handle: ";
@@ -264,13 +265,12 @@ void VRPTWDDSolver::addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeH
 	handle.insert(row);
         std::cout << row << ",";
       }
-      std::cout << std::endl;
       teeth.push_back(handle);
 
       for (int toothIndex=1; toothIndex<=numTeeth; ++toothIndex)
       {
         std::set<int> tooth;
-        std::cout << "tooth: ";
+        std::cout << " tooth: ";
         int minIndex = MyCutsCMP->CPL[cutIndex]->ExtList[toothIndex];
 	int maxIndex = -1;
 	if (toothIndex == numTeeth)
@@ -292,14 +292,13 @@ void VRPTWDDSolver::addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeH
 	  tooth.insert(row);
           std::cout << row << ",";
 	}
-        std::cout << std::endl;
 
 	teeth.push_back(tooth);
       }
       routeDD.addCombCutTeeth(teeth);
 
       int RHS = MyCutsCMP->CPL[cutIndex]->RHS;
-      std::cout << ">= " << RHS << std::endl;
+      std::cout << " >= " << RHS << std::endl;
       routeDD.addCombCutRHS(RHS);
     }
     stats.numCuts = stats.numCuts + numCuts;
@@ -393,6 +392,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         {
           if (params.useVariableFixing)
           {
+            //std::cout << "initial value: " << routeDD.getDualObjectiveValue(dual, LPSolveType::LPSolver) << std::endl;
             repairMultipliers(dual, LPSolveType::LPSolver);
             percentArcsFixed = routeDD.fixArcs(dual, LPSolveType::LPSolver);
           }
@@ -415,7 +415,9 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
 
       if (lpFlowType == FlowType::LP)
       {
-        routeDD.strengthenSRCs(averageRouteLength);
+        //routeDD.strengthenSRCs(averageRouteLength);
+        //routeDD.checkAn32k5SolutionPossible();
+        //routeDD.checkAn36k5SolutionPossible();
         solved = solveLP(dual);
       }
       else
@@ -505,10 +507,20 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
 
           // currently adding by full separation, can strengthen with all up / all down
           std::vector<double> violations;
+          primal = Primal();
+          for (int index=0; index<decomposedRoutes.size(); ++index)
+          {
+            auto route = decomposedRoutes[index];
+            auto routeArcs = decomposedArcs[index];
+            auto routeFlow = routeFlows[index];
+            primal.xDecompositions.push_back(route);
+            primal.xDecompositionArcs.push_back(routeArcs);
+            primal.xDecompositionFlows.push_back(routeFlow);
+          }
           numSrcAdded = routeDD.findSRC3s(primal, 100, violations);
           numSrcAdded += routeDD.findSRC4s(primal, 100, violations);
-          numSrcAdded += routeDD.findSRC5V1s(primal, 100, violations);
-          numSrcAdded += routeDD.findSRC5V2s(primal, 100, violations);
+          //numSrcAdded += routeDD.findSRC5V1s(primal, 100, violations);
+          //numSrcAdded += routeDD.findSRC5V2s(primal, 100, violations);
 
           if (numSrcAdded > 0)
           {
@@ -534,6 +546,9 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         while (!stopFindingInfeasibilities)
         {
           std::vector<int> infeasibleRoute;
+          routeFlows.clear();
+          decomposedRoutes.clear();
+          decomposedArcs.clear();
           routeDD.decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::SEPARATE);
           if (!infeasibleRoute.empty())
           {
@@ -545,6 +560,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           }
         }
       }
+      /*
       else
       {
         // adding cuts could separate graph / ruin flow structure
@@ -555,10 +571,11 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           if (!routeDD.isRouteFeasible(route))
           {
             auto routeArcs = decomposedArcs[index];
-            infeasibilities.push_back(routeArcs);
+            //infeasibilities.push_back(routeArcs);
           }
         }
       }
+      */
 
       if (infeasibilities.size() > 0)
       {
@@ -696,6 +713,8 @@ bool VRPTWDDSolver::solveLP(Dual& duals)
 
   stats.lpIterations = stats.lpIterations + 1;
   stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
+
+  //routeDD.print();
   return true;
 };
 
@@ -1316,12 +1335,15 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
         }
       }
 
-      if ((percentFixed > percentFixedToChangeToCPLEX) || (routeDD.getNumArcsNotRemovedOrReverseOrFixed() < numArcsToChangeToCPLEX))
+      if (params.changeToLP)
       {
-        params.lpSolveType = LPSolveType::LPSolver;
-        stats.lpIterations = 1;
-        shouldTerminate = true;
-        std::cout << "switching from LAG to LP solver" << std::endl;
+        if ((percentFixed > percentFixedToChangeToCPLEX) || (routeDD.getNumArcsNotRemovedOrReverseOrFixed() < numArcsToChangeToCPLEX))
+        {
+          params.lpSolveType = LPSolveType::LPSolver;
+          stats.lpIterations = 1;
+          shouldTerminate = true;
+          std::cout << "switching from LAG to LP solver" << std::endl;
+        }
       }
     }
 
@@ -2179,7 +2201,7 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
         averageRouteLength += primal.xDecompositions[index].size();
       }
       averageRouteLength = averageRouteLength / primal.xDecompositions.size();
-      routeDD.strengthenSRCs(averageRouteLength);
+      //routeDD.strengthenSRCs(averageRouteLength);
     }
   }
 

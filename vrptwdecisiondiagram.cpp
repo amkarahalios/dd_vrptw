@@ -1432,7 +1432,7 @@ int VRPTWDecisionDiagram::findSRC3s(const Primal& primal, int limit, std::vector
             }
             std::cout << std::endl;
 
-            std::cout << "violation: " << violation << std::endl;
+            std::cout << "index: " << cliqueCuts.size() << " violation: " << violation << std::endl;
           }
 
           if (numAdded == limit)
@@ -1499,7 +1499,7 @@ int VRPTWDecisionDiagram::findSRC4s(const Primal& primal, int limit, std::vector
               }
               std::cout << std::endl;
 
-              std::cout << "violation: " << violation << std::endl;
+              std::cout << "index: " << cliqueCuts.size() << " violation: " << violation << std::endl;
             }
 
             if (numAdded == limit)
@@ -1567,7 +1567,7 @@ int VRPTWDecisionDiagram::findSRC5V1s(const Primal& primal, int limit, std::vect
               }
               std::cout << std::endl;
 
-              std::cout << "violation: " << violation << std::endl;
+              std::cout << "index: " << cliqueCuts.size() << " violation: " << violation << std::endl;
             }
  
             if (numAdded == limit)
@@ -1635,7 +1635,7 @@ int VRPTWDecisionDiagram::findSRC5V2s(const Primal& primal, int limit, std::vect
               }
               std::cout << std::endl;
 
-              std::cout << "violation: " << violation << std::endl;
+              std::cout << "index: " << cliqueCuts.size() << " violation: " << violation << std::endl;
             }
 
             if (numAdded == limit)
@@ -2237,7 +2237,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
       {
         duals.combDuals[dualIndex] = lpCombDuals[dualIndex];
-        dualValue += lpCombDuals[dualIndex];
+        dualValue += lpCombDuals[dualIndex] * combRHS[dualIndex];
       }
       for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
       {
@@ -2301,7 +2301,7 @@ double VRPTWDecisionDiagram::getDualObjectiveValue(const Dual& dual, LPSolveType
 
   for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
   {
-    lowerBound += dual.combDuals[dualIndex];
+    lowerBound += dual.combDuals[dualIndex] * combRHS[dualIndex];
   }
 
   for (int dualIndex=0; dualIndex<cliqueCuts.size(); ++dualIndex)
@@ -2320,6 +2320,7 @@ double VRPTWDecisionDiagram::getDualObjectiveValue(const Dual& dual, LPSolveType
       }
     }
   }
+
   lowerBound = lowerBound + dual.fixedPathDual*vrptw.numVehicles;
 
   return lowerBound;
@@ -3120,11 +3121,13 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
 
 int VRPTWDecisionDiagram::separateFeasibleRoute(const std::vector<int>& routeArcs)
 {
+/*
   std::cout << "separating feasible route:" << std::endl;
   for (int index=0; index<routeArcs.size(); ++index)
   {
     std::cout << "arc: " << routeArcs[index] << " loc: " << arcs[routeArcs[index]].location << std::endl;
   }
+*/
 
   // clear fixed arcs when dd changes
   for (int arcIndex : fixedArcs)
@@ -4198,6 +4201,50 @@ bool VRPTWDecisionDiagram::checkLRC121SolutionPossible() const
     if (!doesRouteExistByLocations(routesByLocation[routeIndex], updatedRouteArcs))
     {
       std::cout << "ERROR LRC121: failed at index: " << routeIndex << std::endl;
+      return false;
+    }
+  }
+
+  std::cout << "clear" << std::endl;
+  return true;
+}
+
+bool VRPTWDecisionDiagram::checkAn32k5SolutionPossible() const
+{
+  std::vector<std::vector<int>> routesByLocation;
+  routesByLocation.push_back({21,31,19,17,13,7,26,0});
+  routesByLocation.push_back({12,1,16,30,0});
+  routesByLocation.push_back({27,24,0});
+  routesByLocation.push_back({29,18,8,9,22,15,10,25,5,20,0});
+  routesByLocation.push_back({14,28,11,4,23,3,2,6,0});
+  for (int routeIndex=0; routeIndex<routesByLocation.size(); ++routeIndex)
+  {
+    std::vector<int> updatedRouteArcs;
+    if (!doesRouteExistByLocations(routesByLocation[routeIndex], updatedRouteArcs))
+    {
+      std::cout << "ERROR An32k5: failed at index: " << routeIndex << std::endl;
+      return false;
+    }
+  }
+
+  std::cout << "clear" << std::endl;
+  return true;
+}
+
+bool VRPTWDecisionDiagram::checkAn36k5SolutionPossible() const
+{
+  std::vector<std::vector<int>> routesByLocation;
+  routesByLocation.push_back({9,6,3,4,19,31,12,0});
+  routesByLocation.push_back({28,14,34,23,2,35,8,15,0});
+  routesByLocation.push_back({16,11,24,27,25,5,20,0});
+  routesByLocation.push_back({10,7,26,0});
+  routesByLocation.push_back({1,22,32,13,17,30,29,33,18,21,0});
+  for (int routeIndex=0; routeIndex<routesByLocation.size(); ++routeIndex)
+  {
+    std::vector<int> updatedRouteArcs;
+    if (!doesRouteExistByLocations(routesByLocation[routeIndex], updatedRouteArcs))
+    {
+      std::cout << "ERROR An36k5: failed at index: " << routeIndex << std::endl;
       return false;
     }
   }
