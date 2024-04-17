@@ -1,0 +1,285 @@
+fixed number of vehicles
+capacity: 100
+instance upper bound: 661
+route length upper bound: 33
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+done compiling DD
+batch size for lag: 1
+deactivate cut value threshold: 0.01
+deactivate cut iter threshold: 25
+percent arcs fixed to change to CPLEX: 97.5
+number arcs fixed to change to CPLEX: 100000
+kappa iterations: 100
+ngSetSize: 2
+change to LP: 0
+var fixing: 1
+muSSP: 1
+repairDuals: 1
+robustCuts: 1
+nonRobustCuts: 1
+volume algo: 0
+phases: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[661] numArcs: [127562] numFixed: [0] time: [2]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[661] numArcs: [127562] numFixed: [0] time: [2]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[661] numArcs: [127562] numFixed: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[661] numArcs: [127562] numFixed: [0] time: [2]
+fixed path dual: 13.804
+STATS - lpIterations[1] lagIterations[1] sspIterations[5] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[437.66] ub[661] numArcs: [127534] numFixed: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[5] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[437.66] ub[661] numArcs: [127534] numFixed: [0] time: [2]
+lambda: 0,4.5,6.9,12.6,9.36,9.76,8.64,27.74,12.8,23.4,22,1.8,7.38,25.76,7.02,7.2,7.8,34.56,4.94,9.24,4.96,8,3.04,3.08,5.72,17.08,2.6,28.06,5.1,6.4,24.4,14.4,2.4,
+mu: 
+srcDuals: 
+alpha: 0.179061
+psiStar: 459.326
+lagLB: 437.66
+||gamma||^2: 121
+try arc fixing based on heuristic lspl: 268.763
+fixed path dual: 17.253
+STATS - lpIterations[1] lagIterations[2] sspIterations[10] numSeparations[4] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[456.875] ub[661] numArcs: [127743] numFixed: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[2] sspIterations[10] numSeparations[4] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[456.875] ub[661] numArcs: [127743] numFixed: [0] time: [2]
+lambda: 0,4.67906,7.07906,12.7791,9.53906,9.93906,8.81906,27.9191,12.9791,23.5791,22,1.97906,7.55906,25.9391,7.19906,7.37906,7.97906,34.7391,5.11906,9.41906,5.13906,8.17906,3.04,3.25906,5.89906,16.5428,2.77906,26.9856,5.27906,6.57906,23.1466,14.5791,2.57906,
+mu: 
+srcDuals: 
+alpha: 0.315434
+psiStar: 479.27
+lagLB: 456.875
+||gamma||^2: 71
+fixing. lower bound used: 438.786
+percent fixed: 0.438154
+updating best lambda arc fixing
+fixing. lower bound used: 438.786
+try arc fixing based on heuristic lspl: 253.657
+fixed path dual: 20.504
+STATS - lpIterations[1] lagIterations[3] sspIterations[15] numSeparations[7] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[477.861] ub[661] numArcs: [127858] numFixed: [560] time: [4]
+STATS1 - lpIterations[1] lagIterations[3] sspIterations[15] numSeparations[7] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[477.861] ub[661] numArcs: [127858] numFixed: [560] time: [4]
+lambda: 0,4.99449,7.39449,13.0945,9.85449,10.2545,9.13449,28.2345,13.2945,23.8945,22,2.29449,7.87449,26.2545,7.51449,7.69449,8.29449,35.0545,5.43449,9.73449,5.45449,8.49449,3.04,3.25906,6.21449,15.912,3.09449,25.7239,5.59449,6.89449,21.5694,14.8945,2.89449,
+mu: 
+srcDuals: 
+alpha: 0.859153
+psiStar: 501.058
+lagLB: 477.861
+||gamma||^2: 27
+fixing. lower bound used: 451.986
+percent fixed: 0.728489
+updating best lambda arc fixing
+fixing. lower bound used: 451.986
+try arc fixing based on heuristic lspl: 207.739
+fixed path dual: 21.1919
+STATS - lpIterations[1] lagIterations[4] sspIterations[20] numSeparations[8] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[499.343] ub[661] numArcs: [127854] numFixed: [875] time: [7]
+STATS1 - lpIterations[1] lagIterations[4] sspIterations[20] numSeparations[8] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[499.343] ub[661] numArcs: [127854] numFixed: [875] time: [7]
+lambda: 0,5.85365,7.39449,13.9536,10.7136,11.1136,9.99365,29.0936,14.1536,24.7536,22.8592,3.15365,8.73365,27.1136,8.37365,8.55365,9.15365,35.9136,5.43449,10.5936,6.31365,9.35365,3.04,2.39991,7.07365,15.912,3.95365,24.8647,5.59449,7.75365,20.7103,15.7536,3.75365,
+mu: 
+srcDuals: 
+alpha: 0.685911
+psiStar: 523.35
+lagLB: 499.343
+||gamma||^2: 35
+fixing. lower bound used: 470.028
+percent fixed: 1.08721
+updating best lambda arc fixing
+fixing. lower bound used: 470.028
+try arc fixing based on heuristic lspl: 205.681
+fixed path dual: 20.3925
+STATS - lpIterations[1] lagIterations[5] sspIterations[25] numSeparations[9] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[0] lb[509.75] ub[661] numArcs: [127878] numFixed: [1344] time: [8]
+STATS1 - lpIterations[1] lagIterations[5] sspIterations[25] numSeparations[9] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[509.75] ub[661] numArcs: [127878] numFixed: [1344] time: [8]
+lambda: 0,6.53956,7.39449,14.6396,11.3996,11.7996,10.6796,29.7796,14.8396,25.4396,23.5451,3.83956,9.41956,27.7996,9.05956,9.23956,9.83956,36.5996,4.74858,11.2796,6.99956,10.0396,3.04,1.02809,7.75956,16.5979,4.63956,25.5507,4.22267,8.43956,21.3962,15.7536,4.43956,
+mu: 
+srcDuals: 
+alpha: 0.674273
+psiStar: 534.024
+lagLB: 509.75
+||gamma||^2: 36
+fixing. lower bound used: 484.433
+percent fixed: 1.55571
+updating best lambda arc fixing
+fixing. lower bound used: 484.433
+try arc fixing based on heuristic lspl: 201.699
+fixed path dual: 21.6011
+STATS - lpIterations[1] lagIterations[6] sspIterations[30] numSeparations[11] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[0] lb[527.93] ub[661] numArcs: [128048] numFixed: [1946] time: [10]
+STATS1 - lpIterations[1] lagIterations[6] sspIterations[30] numSeparations[11] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[527.93] ub[661] numArcs: [128048] numFixed: [1946] time: [10]
+lambda: 0,7.21383,7.39449,15.3138,12.0738,12.4738,11.3538,30.4538,15.5138,26.1138,23.5451,4.51383,8.74529,28.4738,9.73383,9.91383,10.5138,37.2738,5.42286,11.9538,7.67383,10.7138,3.04,1.02809,8.43383,15.9236,5.31383,23.5278,4.89695,9.11383,20.7219,16.4279,5.11383,
+mu: 
+srcDuals: 
+alpha: 0.858702
+psiStar: 552.832
+lagLB: 527.93
+||gamma||^2: 29
+fixing. lower bound used: 496.569
+percent fixed: 2.15105
+updating best lambda arc fixing
+fixing. lower bound used: 496.569
+try arc fixing based on heuristic lspl: 170.385
+fixed path dual: 19.0561
+STATS - lpIterations[1] lagIterations[7] sspIterations[35] numSeparations[11] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[0] lb[529.803] ub[661] numArcs: [128026] numFixed: [2760] time: [13]
+STATS1 - lpIterations[1] lagIterations[7] sspIterations[35] numSeparations[11] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[529.803] ub[661] numArcs: [128026] numFixed: [2760] time: [13]
+lambda: 0,8.07253,7.39449,16.1725,11.2151,11.6151,12.2125,31.3125,16.3725,26.9725,22.6864,5.37253,9.60399,29.3325,10.5925,10.7725,11.3725,38.1325,6.28156,12.8125,8.53253,11.5725,3.04,1.02809,9.29253,15.0649,6.17253,22.6691,5.75565,9.97253,19.8632,17.2866,5.97253,
+mu: 
+srcDuals: 
+alpha: 0.426847
+psiStar: 554.56
+lagLB: 529.803
+||gamma||^2: 58
+fixing. lower bound used: 511.167
+percent fixed: 2.98537
+updating best lambda arc fixing
+fixing. lower bound used: 511.167
+try arc fixing based on heuristic lspl: 159.509
+fixed path dual: 19.1407
+STATS - lpIterations[1] lagIterations[8] sspIterations[40] numSeparations[12] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[0] lb[533.641] ub[661] numArcs: [128093] numFixed: [3762] time: [15]
+STATS1 - lpIterations[1] lagIterations[8] sspIterations[40] numSeparations[12] numCuts[0] compileTime[2] sspSolveTime[1] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[533.641] ub[661] numArcs: [128093] numFixed: [3762] time: [15]
+lambda: 0,8.49938,7.82134,16.5994,11.642,12.042,12.6394,31.7394,16.7994,27.3994,23.1132,4.51884,10.0308,29.7594,9.73884,11.1994,11.7994,38.5594,5.42786,11.532,8.95938,10.292,3.04,1.02809,9.71938,15.4917,6.59938,23.096,5.3288,10.3994,20.29,16.4329,6.39938,
+mu: 
+srcDuals: 
+alpha: 0.27149
+psiStar: 558.346
+lagLB: 533.641
+||gamma||^2: 91
+fixing. lower bound used: 514.582
+percent fixed: 3.46763
+updating best lambda arc fixing
+fixing. lower bound used: 514.582
+try arc fixing based on heuristic lspl: 157.547
+fixed path dual: 21.0991
+STATS - lpIterations[1] lagIterations[9] sspIterations[45] numSeparations[15] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] lb[546.419] ub[661] numArcs: [128250] numFixed: [4372] time: [17]
+STATS1 - lpIterations[1] lagIterations[9] sspIterations[45] numSeparations[15] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[546.419] ub[661] numArcs: [128250] numFixed: [4372] time: [17]
+lambda: 0,8.77087,8.09283,16.8709,11.9135,12.3135,12.9109,30.9249,15.1704,27.6709,23.3847,4.79033,10.3023,28.6734,10.0103,11.4709,12.0709,38.8309,5.69935,11.8035,8.4164,10.5635,3.04,1.02809,9.99087,15.7632,6.87087,23.3675,5.60029,10.6709,20.5615,16.7044,6.67087,
+mu: 
+srcDuals: 
+alpha: 0.864314
+psiStar: 571.484
+lagLB: 546.419
+||gamma||^2: 29
+fixing. lower bound used: 517.569
+percent fixed: 3.77573
+updating best lambda arc fixing
+fixing. lower bound used: 517.569
+try arc fixing based on heuristic lspl: 154.954
+fixed path dual: 19.6204
+STATS - lpIterations[1] lagIterations[10] sspIterations[50] numSeparations[15] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] lb[551.99] ub[661] numArcs: [128246] numFixed: [4852] time: [19]
+STATS1 - lpIterations[1] lagIterations[10] sspIterations[50] numSeparations[15] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[551.99] ub[661] numArcs: [128246] numFixed: [4852] time: [19]
+lambda: 0,9.63518,8.09283,17.7352,12.7778,13.1778,13.7752,31.7892,16.0348,28.5352,24.249,3.92601,11.1666,29.5377,9.14601,12.3352,12.9352,39.6952,4.83504,10.9392,9.28071,9.69917,3.04,1.02809,10.8552,16.6275,7.73518,24.2318,4.73598,11.5352,21.4258,15.8401,7.53518,
+mu: 
+srcDuals: 
+alpha: 0.570238
+psiStar: 577.081
+lagLB: 551.99
+||gamma||^2: 44
+fixing. lower bound used: 530.533
+percent fixed: 6.58825
+updating best lambda arc fixing
+fixing. lower bound used: 530.533
+try arc fixing based on heuristic lspl: 148.782
+fixed path dual: 18.5511
+STATS - lpIterations[1] lagIterations[11] sspIterations[55] numSeparations[16] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] lb[553.487] ub[661] numArcs: [128286] numFixed: [8390] time: [21]
+STATS1 - lpIterations[1] lagIterations[11] sspIterations[55] numSeparations[16] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[553.487] ub[661] numArcs: [128286] numFixed: [8390] time: [21]
+lambda: 0,10.2054,8.66307,18.3054,12.2075,12.6075,14.3454,32.3595,16.605,29.1054,23.6788,4.49625,10.5964,30.108,9.71625,12.9054,13.5054,40.2654,5.40528,11.5094,9.85095,10.2694,3.04,1.02809,11.4254,15.4871,8.30542,22.5211,5.30621,12.1054,20.2854,16.4103,8.10542,
+mu: 
+srcDuals: 
+alpha: 0.280133
+psiStar: 578.418
+lagLB: 553.487
+||gamma||^2: 89
+fixing. lower bound used: 537.376
+percent fixed: 8.13313
+updating best lambda arc fixing
+fixing. lower bound used: 537.376
+try arc fixing based on heuristic lspl: 144.004
+fixed path dual: 20.6407
+STATS - lpIterations[1] lagIterations[12] sspIterations[60] numSeparations[19] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] lb[566.456] ub[661] numArcs: [128463] numFixed: [10454] time: [23]
+STATS1 - lpIterations[1] lagIterations[12] sspIterations[60] numSeparations[19] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[566.456] ub[661] numArcs: [128463] numFixed: [10454] time: [23]
+lambda: 0,10.4856,8.9432,18.5856,12.4877,12.8877,14.6256,31.5191,14.9242,29.3856,23.9589,4.77639,10.8765,28.9874,9.99639,13.1856,13.7856,40.5456,5.68541,11.7895,9.29069,10.5495,3.04,1.02809,11.7056,15.7672,8.30542,22.8012,5.58635,12.3856,20.5655,16.6905,8.10542,
+mu: 
+srcDuals: 
+alpha: 1.2042
+psiStar: 591.744
+lagLB: 566.456
+||gamma||^2: 21
+fixing. lower bound used: 539.897
+percent fixed: 9.10002
+updating best lambda arc fixing
+fixing. lower bound used: 539.897
+try arc fixing based on heuristic lspl: 140.391
+fixed path dual: 17.3411
+STATS - lpIterations[1] lagIterations[13] sspIterations[65] numSeparations[19] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] lb[572.838] ub[661] numArcs: [128452] numFixed: [11715] time: [25]
+STATS1 - lpIterations[1] lagIterations[13] sspIterations[65] numSeparations[19] numCuts[0] compileTime[2] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[572.838] ub[661] numArcs: [128452] numFixed: [11715] time: [25]
+lambda: 0,10.4856,8.9432,19.7898,13.6919,14.0919,15.8298,32.7233,16.1284,30.5898,25.1631,4.77639,12.0807,30.1916,9.99639,13.1856,14.9898,41.7498,5.68541,11.7895,10.4949,10.5495,1.8358,1.02809,12.9098,16.9714,9.50962,24.0054,5.58635,13.5898,21.7697,16.6905,9.30962,
+mu: 
+srcDuals: 
+alpha: 0.539294
+psiStar: 598.185
+lagLB: 572.838
+||gamma||^2: 47
+fixing. lower bound used: 563.981
+percent fixed: 21.4781
+updating best lambda arc fixing
+fixing. lower bound used: 563.981
+try arc fixing based on heuristic lspl: 132.005
+fixed path dual: 18.0513
+STATS - lpIterations[1] lagIterations[14] sspIterations[70] numSeparations[21] numCuts[0] compileTime[2] sspSolveTime[3] lpSolveTime[0] lb[578.007] ub[661] numArcs: [128545] numFixed: [27640] time: [27]
+STATS1 - lpIterations[1] lagIterations[14] sspIterations[70] numSeparations[21] numCuts[0] compileTime[2] sspSolveTime[3] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[578.007] ub[661] numArcs: [128545] numFixed: [27640] time: [27]
+lambda: 0,11.0248,9.4825,20.329,13.1526,13.5526,16.369,31.6447,14.5105,31.129,24.6238,5.31568,12.62,29.1131,10.5357,13.7248,15.529,42.289,6.2247,12.3288,9.4163,11.0888,1.8358,1.56738,13.449,16.4321,8.97033,23.4661,6.12564,14.129,21.2304,17.2298,9.30962,
+mu: 
+srcDuals: 
+alpha: 0.325015
+psiStar: 603.358
+lagLB: 578.007
+||gamma||^2: 78
+fixing. lower bound used: 565.599
+percent fixed: 23.1016
+updating best lambda arc fixing
+fixing. lower bound used: 565.599
+try arc fixing based on heuristic lspl: 131.68
+fixed path dual: 18.1051
+STATS - lpIterations[1] lagIterations[15] sspIterations[75] numSeparations[25] numCuts[0] compileTime[2] sspSolveTime[3] lpSolveTime[0] lb[578.926] ub[661] numArcs: [128937] numFixed: [29444] time: [30]
+STATS1 - lpIterations[1] lagIterations[15] sspIterations[75] numSeparations[25] numCuts[0] compileTime[2] sspSolveTime[3] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[578.926] ub[661] numArcs: [128937] numFixed: [29444] time: [30]
+lambda: 0,11.0248,9.80751,20.6541,13.4776,13.8776,15.069,31.9697,14.8355,31.4541,24.6238,5.31568,12.295,29.4381,9.56063,14.0499,15.8541,42.6141,6.54972,10.7038,9.74131,10.4388,1.8358,1.89239,12.799,16.4321,9.29534,23.4661,6.45066,14.4541,21.2304,17.5548,9.63464,
+mu: 
+srcDuals: 
+alpha: 0.572061
+psiStar: 604.096
+lagLB: 578.926
+||gamma||^2: 44
+fixing. lower bound used: 566.249
+percent fixed: 23.9109
+updating best lambda arc fixing
+fixing. lower bound used: 566.249
+try arc fixing based on heuristic lspl: 130.536
+fixed path dual: 16.8992
+STATS - lpIterations[1] lagIterations[16] sspIterations[80] numSeparations[28] numCuts[0] compileTime[2] sspSolveTime[3] lpSolveTime[0] lb[579.761] ub[661] numArcs: [129129] numFixed: [30383] time: [32]
+STATS1 - lpIterations[1] lagIterations[16] sspIterations[80] numSeparations[28] numCuts[0] compileTime[2] sspSolveTime[3] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[579.761] ub[661] numArcs: [129129] numFixed: [30383] time: [32]
+lambda: 0,11.5969,9.80751,18.9379,14.0497,14.4497,15.6411,32.5418,15.4076,30.882,25.1959,5.88774,12.8671,30.0101,10.1327,13.4778,14.1379,43.1861,6.54972,11.2758,10.3134,11.0109,1.8358,1.32033,13.3711,17.0042,9.8674,24.0382,5.87859,15.0261,21.8025,17.5548,10.2067,
+mu: 
+srcDuals: 
+alpha: 0.520618
+psiStar: 604.75
+lagLB: 579.761
+||gamma||^2: 48
+fixing. lower bound used: 573.114
+percent fixed: 28.3374
+updating best lambda arc fixing
+fixing. lower bound used: 573.114
+try arc fixing based on heuristic lspl: 130.015
+fixed path dual: 15.8912
+alpha: 0.318776
+psiStar: 604.537
+lagLB: 576.803
+||gamma||^2: 87
+fixing. lower bound used: 574.245
+percent fixed: 30.1315
+updating best lambda arc fixing
+fixing. lower bound used: 574.245
+try arc fixing based on heuristic lspl: 119.07
+fixed path dual: 18.1786
+STATS - lpIterations[1] lagIterations[18] sspIterations[90] numSeparations[32] numCuts[0] compileTime[2] sspSolveTime[4] lpSolveTime[0] lb[587.921] ub[661] numArcs: [129398] numFixed: [38522] time: [37]
+STATS1 - lpIterations[1] lagIterations[18] sspIterations[90] numSeparations[32] numCuts[0] compileTime[2] sspSolveTime[4] lpSolveTime[0] repairTime[1] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[587.921] ub[661] numArcs: [129398] numFixed: [38522] time: [37]
+lambda: 0,11.1612,10.6469,19.7773,13.8478,14.7684,16.1617,32.8605,15.2057,31.7214,24.4734,5.77081,11.624,29.8083,9.37821,14.3172,14.9773,44.0255,6.11401,10.8401,10.6322,10.5752,1.8358,2.15973,13.8917,16.2817,10.1862,23.8363,6.08044,15.8655,20.5594,17.1191,10.5255,
+mu: 
+srcDuals: 
+alpha: 0.553598
+psiStar: 612.833
+lagLB: 587.921
+||gamma||^2: 45
+fixing. lower bound used: 574.757
