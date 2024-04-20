@@ -1336,7 +1336,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
           double previousPercentFixed = percentFixed;
           percentFixed = routeDD.fixArcs(repairedDual, params.lpSolveType);
           std::cout << "percent fixed: " << percentFixed << std::endl;
-          if ((percentFixed - previousPercentFixed) > 1)
+          if (((percentFixed - previousPercentFixed) > 1) && (currDualsArcFixing.size() < 5))
           {
             currDualsArcFixing.push_back(repairedDual);
           }
@@ -1367,7 +1367,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual)
             double previousPercentFixed = percentFixed;
             percentFixed = routeDD.fixArcs(repairedDual, params.lpSolveType);
             std::cout << "percent fixed: " << percentFixed << std::endl;
-            if ((percentFixed - previousPercentFixed) > 1)
+            if (((percentFixed - previousPercentFixed) > 1) && (currDualsArcFixing.size() < 5))
             {
               currDualsArcFixing.push_back(repairedDual);
             }
@@ -1584,7 +1584,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
       {
         if (stepSizeMultiplierIteration == stepSizeMultiplierIterationCutoff)
         {
-          stepSizeMultiplier = std::max(0.000005, stepSizeMultiplier * 0.66);
+          stepSizeMultiplier = std::max(0.0000005, stepSizeMultiplier * 0.66);
           stepSizeMultiplierIteration = 0;
         }
         else
@@ -1729,7 +1729,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
           double previousPercentFixed = percentFixed;
           percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver);
           std::cout << "percent fixed: " << percentFixed << std::endl;
-          if ((percentFixed - previousPercentFixed) > 0.2)
+          if (((percentFixed - previousPercentFixed) > 1) && (currDualsArcFixing.size() < 5))
           {
             currDualsArcFixing.push_back(repairedDual);
           }
@@ -1778,7 +1778,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxationVolumeAlgorithm(Dual& dual)
 
             double previousPercentFixed = percentFixed;
             percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver);
-            if ((percentFixed - previousPercentFixed) > 1)
+            if (((percentFixed - previousPercentFixed) > 1) && (currDualsArcFixing.size() < 5))
             {
               currDualsArcFixing.push_back(repairedDual);
             }
