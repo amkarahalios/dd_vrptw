@@ -130,6 +130,7 @@ class VRPTWDDSolver
     void printMultipliers(Dual& duals);
     void repairMultipliers(Dual& repairedDual, LPSolveType lpSolveType);
     void resizeMultipliers(const Dual& dual1, Dual& dual2);
+    void resizeMultipliers(const Dual& dual1, std::vector<Dual>& dual2);
  
     void constructNextPrimal(double alpha, const std::vector<std::vector<int>>& decomposedRoutes, const std::vector<std::vector<int>>& decomposedRouteArcs, Primal& primal);
     void getGradient(const Primal& primal, const Dual& dual, std::vector<double>& gradient);
@@ -144,8 +145,9 @@ class VRPTWDDSolver
     double muPercentImproved;
 
     // for arc fixing
-    Dual bestDualArcFixing;
-    double bestDualArcFixingPercent;
+    std::vector<Dual> currDualsArcFixing;
+    std::vector<Dual> bestDualsArcFixing;
+    double bestDualsArcFixingPercent;
 
     // for subgradient descent / volume algorithm
     Dual bestDual;

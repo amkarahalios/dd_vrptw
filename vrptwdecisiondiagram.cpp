@@ -222,7 +222,7 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
 
   locationToArcs[toLocation].push_back(newArcIndex);
 
-  if (!arcs[newArcIndex].isReverseArc)
+  if (!arcs[newArcIndex].isReverseArc && (arcs[newArcIndex].location != 0) || (arcs[newArcIndex].fromNodeIndex != rootNodeIndex))
   {
     // add to appropriate cut sets
     capCutSetArcs.resize(capCutSets.size());
@@ -243,7 +243,6 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
     combCutArcs.resize(combRHS.size());
     for (int combIndex=0; combIndex<combRHS.size(); ++combIndex)
     {
-      std::set<int> combCutArcSet;
       auto teeth = teeths[combIndex];
       int fromLoc = nodes[arcs[newArcIndex].fromNodeIndex].state.lastVisited;
       int toLoc = nodes[arcs[newArcIndex].toNodeIndex].state.lastVisited;
@@ -2503,11 +2502,28 @@ void VRPTWDecisionDiagram::mergeNodes(int nodeIndex1, int nodeIndex2)
   }
 }
 
+double VRPTWDecisionDiagram::fixArcs(const std::vector<Dual>& duals, LPSolveType solveType)
+{
+  for (const Dual& dual : duals)
+  {
+    fixArcs(dual, solveType);
+  }
+
+  return getPercentFixedArcs();
+};
+
 double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType)
 {
   // get value of dual
   double lowerBound = getDualObjectiveValue(dual, solveType);
   std::cout << "fixing. lower bound used: " << lowerBound << std::endl;
+
+  // only need to check all down once if no separations
+  bool alreadyCheckedAllDown = false;
+  if (fixedArcs.size() > 0)
+  {
+    alreadyCheckedAllDown = true;
+  }
 
   setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(dual, solveType);
 
@@ -2533,20 +2549,23 @@ double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType)
           shortestPathDown[toNodeIndex] = distanceFromNode;
         }
 
-        int location = arcs[arcIndex].location;
-        if (nodeSeen[toNodeIndex])
+        if (!alreadyCheckedAllDown)
         {
-          std::set<int> intersection;
-          std::set<int> allDownCurrNode = allVisitedDown[nodeIndex];
-          allDownCurrNode.insert(location);
-          std::set_intersection(allVisitedDown[toNodeIndex].begin(), allVisitedDown[toNodeIndex].end(), allDownCurrNode.begin(), allDownCurrNode.end(), std::inserter(intersection,intersection.begin()));
-          allVisitedDown[toNodeIndex] = intersection;
-        }
-        else
-        {
-          allVisitedDown[toNodeIndex] = allVisitedDown[nodeIndex];
-          allVisitedDown[toNodeIndex].insert(location);
-          nodeSeen[toNodeIndex] = true;
+          int location = arcs[arcIndex].location;
+          if (nodeSeen[toNodeIndex])
+          {
+            std::set<int> intersection;
+            std::set<int> allDownCurrNode = allVisitedDown[nodeIndex];
+            allDownCurrNode.insert(location);
+            std::set_intersection(allVisitedDown[toNodeIndex].begin(), allVisitedDown[toNodeIndex].end(), allDownCurrNode.begin(), allDownCurrNode.end(), std::inserter(intersection,intersection.begin()));
+            allVisitedDown[toNodeIndex] = intersection;
+          }
+          else
+          {
+            allVisitedDown[toNodeIndex] = allVisitedDown[nodeIndex];
+            allVisitedDown[toNodeIndex].insert(location);
+            nodeSeen[toNodeIndex] = true;
+          }
         }
       }
     }
@@ -2570,58 +2589,58 @@ double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType)
     }
   }
 
+  // only check arcs that are not removed ... dont loop over arcs.size()
   std::set<double> setToCheck;
-  for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
+  for (int nodeIndex=0; nodeIndex<nodes.size(); ++nodeIndex)
   {
-    // fix arcs based on lb + rc > ub
-    const VRPTWArc& arcToCheck = arcs[arcIndex];
-    double bestPossibleReducedCost = shortestPathDown[arcToCheck.fromNodeIndex] + shortestPathUp[arcToCheck.toNodeIndex] + arcToCheck.coeff - dual.fixedPathDual;
-    /*
-    if (lowerBound > 12000)
+    const std::vector<int> arcIndices = nodes[nodeIndex].outArcs;
+    for (int arcIndex : arcIndices)
     {
-      //std::cout << "spd: " << shortestPathDown[arcToCheck.fromNodeIndex] << " spu: " << shortestPathUp[arcToCheck.toNodeIndex] << " arc: " << arcToCheck.coeff << std::endl;
-      //std::cout << "total: " << bestPossibleReducedCost << std::endl;
-      setToCheck.insert(bestPossibleReducedCost);
-    }
-    */
+      // fix arcs based on lb + rc > ub
+      const VRPTWArc& arcToCheck = arcs[arcIndex];
+      double bestPossibleReducedCost = shortestPathDown[arcToCheck.fromNodeIndex] + shortestPathUp[arcToCheck.toNodeIndex] + arcToCheck.coeff - dual.fixedPathDual;
 
-    // fix arcs based on allDown
-    // make sure we don't remove edge case for src cuts special feasible routes that start with 0 0
-    bool removeAllDown = false;
-    if (arcToCheck.location != 0)
-    {
-      auto arcAllVisitedDown = allVisitedDown[arcToCheck.fromNodeIndex];
-      if (arcAllVisitedDown.find(arcToCheck.location) != arcAllVisitedDown.end())
+      // fix arcs based on allDown
+      bool removeAllDown = false;
+      if (!alreadyCheckedAllDown)
       {
-        removeAllDown = true;
-      }
-    }
-
-    bool removeReducedCost = (lowerBound + bestPossibleReducedCost) > (vrptw.instanceUpperBound + 0.00001);
-    if (removeReducedCost || removeAllDown)
-    {
-      // remove from graph if there
-      bool removed = false;
-      VRPTWArc& arc = arcs[arcIndex];
-      //std::cout << "fix arc index: " << arcIndex << " from node: " << arc.fromNodeIndex << " to node: " << arc.toNodeIndex << " loc: " << arc.location << std::endl;
-      auto fromNodeOutArcIt = std::find(nodes[arc.fromNodeIndex].outArcs.begin(), nodes[arc.fromNodeIndex].outArcs.end(), arcIndex);
-      if (fromNodeOutArcIt != std::end(nodes[arc.fromNodeIndex].outArcs))
-      {
-        removed = true;
-        nodes[arc.fromNodeIndex].outArcs.erase(fromNodeOutArcIt);
-      }
-      auto toNodeInArcIt = std::find(nodes[arc.toNodeIndex].inArcs.begin(), nodes[arc.toNodeIndex].inArcs.end(), arcIndex);
-      if (toNodeInArcIt != std::end(nodes[arc.toNodeIndex].inArcs))
-      {
-        removed = true;
-        nodes[arc.toNodeIndex].inArcs.erase(toNodeInArcIt);
+        // make sure we don't remove edge case for src cuts special feasible routes that start with 0 0
+        if (arcToCheck.location != 0)
+        {
+          auto arcAllVisitedDown = allVisitedDown[arcToCheck.fromNodeIndex];
+          if (arcAllVisitedDown.find(arcToCheck.location) != arcAllVisitedDown.end())
+          {
+            removeAllDown = true;
+          }
+        }
       }
 
-      if (removed)
+      bool removeReducedCost = (lowerBound + bestPossibleReducedCost) > (vrptw.instanceUpperBound + 0.00001);
+      if (removeReducedCost || removeAllDown)
       {
-        auto elementInserted = fixedArcs.insert(arcIndex);
-        arc.heuristicFlow = 0.0;
-        arc.decompositionFlow = 0.0;
+        // remove from graph if there
+        bool removed = false;
+        VRPTWArc& arc = arcs[arcIndex];
+        //std::cout << "fix arc index: " << arcIndex << " from node: " << arc.fromNodeIndex << " to node: " << arc.toNodeIndex << " loc: " << arc.location << std::endl;
+        auto fromNodeOutArcIt = std::find(nodes[arc.fromNodeIndex].outArcs.begin(), nodes[arc.fromNodeIndex].outArcs.end(), arcIndex);
+        if (fromNodeOutArcIt != std::end(nodes[arc.fromNodeIndex].outArcs))
+        {
+          removed = true;
+          nodes[arc.fromNodeIndex].outArcs.erase(fromNodeOutArcIt);
+        }
+        auto toNodeInArcIt = std::find(nodes[arc.toNodeIndex].inArcs.begin(), nodes[arc.toNodeIndex].inArcs.end(), arcIndex);
+        if (toNodeInArcIt != std::end(nodes[arc.toNodeIndex].inArcs))
+        {
+          removed = true;
+          nodes[arc.toNodeIndex].inArcs.erase(toNodeInArcIt);
+        }
+
+        if (removed)
+        {
+          auto elementInserted = fixedArcs.insert(arcIndex);
+          arc.heuristicFlow = 0.0;
+          arc.decompositionFlow = 0.0;
+        }
       }
     }
   }
@@ -2821,51 +2840,54 @@ bool VRPTWDecisionDiagram::doesRouteExistByLocations(const std::vector<int>& rou
 
   // check all special 0-starting SRC paths
   bool specialSRCPathExists = false;
-  for (int arcIndex : nodes[rootNodeIndex].outArcs)
+  if (!regularPathExists)
   {
-    routeArcs.clear();
-    routeArcs.push_back(arcIndex);
-    if (arcs[arcIndex].location == 0)
+    for (int arcIndex : nodes[rootNodeIndex].outArcs)
     {
-      // check special SRC arc
-      int routeIndex = 0;
-      if (routeLocations[0] == 0)
+      routeArcs.clear();
+      routeArcs.push_back(arcIndex);
+      if (arcs[arcIndex].location == 0)
       {
-        routeIndex = 1;
-      }
-
-      int currNodeIndex = arcs[arcIndex].toNodeIndex;
-      while (currNodeIndex != terminalNodeIndex)
-      {
-        bool nextLocationPossible = false;
-        for (int arcIndex : nodes[currNodeIndex].outArcs)
+        // check special SRC arc
+        int routeIndex = 0;
+        if (routeLocations[0] == 0)
         {
-          if (arcs[arcIndex].location == routeLocations[routeIndex])
+          routeIndex = 1;
+        }
+
+        int currNodeIndex = arcs[arcIndex].toNodeIndex;
+        while (currNodeIndex != terminalNodeIndex)
+        {
+          bool nextLocationPossible = false;
+          for (int currNodeArcIndex: nodes[currNodeIndex].outArcs)
           {
-            routeArcs.push_back(arcIndex);
-            currNodeIndex = arcs[arcIndex].toNodeIndex;
-            nextLocationPossible = true;
+            if (arcs[currNodeArcIndex].location == routeLocations[routeIndex])
+            {
+              routeArcs.push_back(currNodeArcIndex);
+              currNodeIndex = arcs[currNodeArcIndex].toNodeIndex;
+              nextLocationPossible = true;
+              break;
+            }
+          }
+
+          if (!nextLocationPossible)
+          {
+            break;
+          }
+
+          routeIndex = routeIndex + 1;
+          if (routeIndex == routeLocations.size())
+          {
+            specialSRCPathExists = true;
             break;
           }
         }
-
-        if (!nextLocationPossible)
-        {
-          break;
-        }
-
-        routeIndex = routeIndex + 1;
-        if (routeIndex == routeLocations.size())
-        {
-          specialSRCPathExists = true;
-          break;
-        }
       }
-    }
 
-    if (specialSRCPathExists)
-    {
-      break;
+      if (specialSRCPathExists)
+      {
+        break;
+      }
     }
   }
 
@@ -3128,13 +3150,13 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
 
 int VRPTWDecisionDiagram::separateFeasibleRoute(const std::vector<int>& routeArcs)
 {
-/*
+  /*
   std::cout << "separating feasible route:" << std::endl;
   for (int index=0; index<routeArcs.size(); ++index)
   {
     std::cout << "arc: " << routeArcs[index] << " loc: " << arcs[routeArcs[index]].location << std::endl;
   }
-*/
+  */
 
   // clear fixed arcs when dd changes
   for (int arcIndex : fixedArcs)
@@ -4042,16 +4064,17 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::ve
   }
 
   // create solution from reverse arcs and clean up residual graph backward arcs
-  DBG(
+  /*
   for (auto path : shortestPathsByArc)
   {
     std::cout << "path: ";
     for (int arcIndex : path)
     {
-      std::cout << arcs[arcIndex].fromNodeIndex << ", ";
+      std::cout << arcs[arcIndex].location << ", ";
     }
     std::cout << std::endl;
-  })
+  }
+  */
   DBG(std::cout << "finished running, now create solution" << std::endl;)
   return createSolutionFromReverseArcsAndResetWang(clippedArcs, shortestPathsByArc);
 };
@@ -4291,6 +4314,13 @@ void VRPTWDecisionDiagram::convertSolutionForVRPTWSep(std::vector<int>& edgeTail
     {
       int currLoc = (nodes[arc.fromNodeIndex].state.lastVisited == 0) ? vrptw.numLocations : nodes[arc.fromNodeIndex].state.lastVisited;
       int nextLoc = (arc.location == 0) ? vrptw.numLocations : arc.location;
+
+      // special src paths have 0,0 start
+      if ((currLoc == vrptw.numLocations) && (currLoc == nextLoc))
+      {
+        continue;
+      }
+
       if (currLoc < nextLoc)
       {
         edgeFlows[std::make_pair(currLoc,nextLoc)] = edgeFlows[std::make_pair(currLoc,nextLoc)] + arc.heuristicFlow;
@@ -4365,6 +4395,7 @@ void VRPTWDecisionDiagram::addCombCutTeeth(const std::vector<std::set<int>>& tee
 {
   teeths.push_back(teeth);
   combCutArcs.resize(teeths.size());
+  auto newCombCutArcs = combCutArcs.back();
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
   {
     if (!arcs[arcIndex].isReverseArc)
@@ -4378,7 +4409,7 @@ void VRPTWDecisionDiagram::addCombCutTeeth(const std::vector<std::set<int>>& tee
         bool toLocInSet = (std::find(tooth.begin(), tooth.end(), toLoc) != tooth.end());
         if ((fromLocInSet && !toLocInSet) || (!fromLocInSet && toLocInSet))
         {
-          combCutArcs.back().push_back(arcIndex);
+          newCombCutArcs.push_back(arcIndex);
         }
       }
     }

@@ -13,7 +13,7 @@ struct Dual
 {
   public:
     Dual() {}
-    Dual(Dual& dual)
+    Dual(const Dual& dual)
     {
       lambda = dual.lambda;
       capDuals = dual.capDuals;
@@ -256,6 +256,7 @@ class VRPTWDecisionDiagram
     double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, Dual& dual);
     double getDualObjectiveValue(const Dual& dual, LPSolveType lpSolveType);
     double fixArcs(const Dual& dual, LPSolveType lpSolveType);
+    double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType);
 
     // primal heuristic and separation methods
     void primalHeuristic(std::vector<std::vector<int>>& routesByLocation);

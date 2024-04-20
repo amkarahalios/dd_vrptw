@@ -1712,6 +1712,7 @@ struct VRPTW
         timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
 
         numLocations = demands.size();
+        std::cout << "num locations: " << numLocations << std::endl;
         routeLengthUpperBound = numLocations;
 
         // formally add if this works
@@ -1883,6 +1884,7 @@ struct VRPTW
         }
 
         numLocations = demands.size();
+        std::cout << "num locations: " << numLocations << std::endl;
         routeLengthUpperBound = numLocations;
 
         DBG(
