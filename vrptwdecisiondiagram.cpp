@@ -222,7 +222,7 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
 
   locationToArcs[toLocation].push_back(newArcIndex);
 
-  if (!arcs[newArcIndex].isReverseArc && (arcs[newArcIndex].location != 0) || (arcs[newArcIndex].fromNodeIndex != rootNodeIndex))
+  if (!arcs[newArcIndex].isReverseArc && ((arcs[newArcIndex].location != 0) || (arcs[newArcIndex].fromNodeIndex != rootNodeIndex)))
   {
     // add to appropriate cut sets
     capCutSetArcs.resize(capCutSets.size());
@@ -4395,10 +4395,9 @@ void VRPTWDecisionDiagram::addCombCutTeeth(const std::vector<std::set<int>>& tee
 {
   teeths.push_back(teeth);
   combCutArcs.resize(teeths.size());
-  auto newCombCutArcs = combCutArcs.back();
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
   {
-    if (!arcs[arcIndex].isReverseArc)
+    if (!arcs[arcIndex].isReverseArc && ((arcs[arcIndex].location != 0) || (arcs[arcIndex].fromNodeIndex != rootNodeIndex)))
     {
       int fromLoc = nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited;
       int toLoc = nodes[arcs[arcIndex].toNodeIndex].state.lastVisited;
@@ -4409,7 +4408,7 @@ void VRPTWDecisionDiagram::addCombCutTeeth(const std::vector<std::set<int>>& tee
         bool toLocInSet = (std::find(tooth.begin(), tooth.end(), toLoc) != tooth.end());
         if ((fromLocInSet && !toLocInSet) || (!fromLocInSet && toLocInSet))
         {
-          newCombCutArcs.push_back(arcIndex);
+          combCutArcs[teeths.size()-1].push_back(arcIndex);
         }
       }
     }
