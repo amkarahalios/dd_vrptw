@@ -306,10 +306,11 @@ class VRPTWDecisionDiagram
     void printCuts() const;
 
     // for cuts
-    void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, LPSolveType solveType);
+    void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, RCCType rccType, LPSolveType solveType);
     std::vector<int> getCapCutSet(int index) const { return capCutSets[index]; }
     int getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
     int getNumCapCuts() const { return capCutSetsRHS.size(); }
+    RCCType getRCCType(int index) const { return rccTypes[index]; }
 
     int getNumCliqueCuts() const { return cliqueCuts.size(); }
     bool isCapCutActive(int index);
@@ -322,7 +323,8 @@ class VRPTWDecisionDiagram
     int getCombCutRHS(int index) const { return combRHS[index]; }
     int getNumCombCuts() const { return combRHS.size(); }
 
-    int getRCCCoeff(std::vector<int> route, int rccIndex);
+    double getRCCCoeff(std::vector<int> route, int rccIndex);
+    bool calculateRCCCoeff(int arcIndex, int rccIndex, double& coeff);
     int getSRCCoeff(int numTimesVisited, SRCType srcType);
     SRCType getSRCType(int index) { return cliqueCutTypes[index]; }
     int getSRCRHS(SRCType srcType);
@@ -377,6 +379,8 @@ class VRPTWDecisionDiagram
     std::vector<double> capCutSetsRHS;
     std::vector<std::vector<std::vector<int>>> capCutSetRoutes;
     std::vector<std::vector<int>> capCutSetArcs;
+    std::vector<std::vector<double>> capCutSetCoeffs;
+    std::vector<RCCType> rccTypes;
     std::vector<bool> capCutActive;
 
     // Clique Cuts (SRC)

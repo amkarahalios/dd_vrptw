@@ -91,6 +91,12 @@ enum SRCType
   SRC5V2 = 2
 };
 
+enum RCCType
+{
+  Type1 = 0,
+  Type3 = 1
+};
+
 enum ShortestPathMode
 {
   UPDATE_POTENTIALS = 0,

@@ -225,22 +225,21 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
   if (!arcs[newArcIndex].isReverseArc && ((arcs[newArcIndex].location != 0) || (arcs[newArcIndex].fromNodeIndex != rootNodeIndex)))
   {
     // add to appropriate cut sets
-    capCutSetArcs.resize(capCutSets.size());
     for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
     {
       auto capCutSet = capCutSets[capCutIndex];
-      int fromLoc = nodes[arcs[newArcIndex].fromNodeIndex].state.lastVisited;
-      int toLoc = nodes[arcs[newArcIndex].toNodeIndex].state.lastVisited;
-      bool fromLocInSet = (std::find(capCutSet.begin(), capCutSet.end(), fromLoc) != capCutSet.end());
-      bool toLocInSet = (std::find(capCutSet.begin(), capCutSet.end(), toLoc) != capCutSet.end());
-      if (fromLocInSet && toLocInSet)
+      RCCType rccType = rccTypes[capCutIndex];
+
+      double coeff = 0;
+      bool nonZeroCoeff = calculateRCCCoeff(newArcIndex, capCutIndex, coeff);
+      if (nonZeroCoeff)
       {
         capCutSetArcs[capCutIndex].push_back(newArcIndex);
+        capCutSetCoeffs[capCutIndex].push_back(coeff);
       }
     }
 
     // use duals for combs
-    combCutArcs.resize(combRHS.size());
     for (int combIndex=0; combIndex<combRHS.size(); ++combIndex)
     {
       auto teeth = teeths[combIndex];
@@ -815,18 +814,20 @@ void VRPTWDecisionDiagram::setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSr
   {
     if (isCapCutActive(capCutIndex))
     {
-      for (int arcIndex : capCutSetArcs[capCutIndex])
+      for (int index=0; index<capCutSetArcs[capCutIndex].size(); ++index)
       {
+        int arcIndex = capCutSetArcs[capCutIndex][index];
+        double coeff = capCutSetCoeffs[capCutIndex][index];
         VRPTWArc& arc = arcs[arcIndex];
         if (solveType == LPSolveType::LPSolver)
         {
-          arc.coeff = arc.coeff - dual.capDuals[capCutIndex];
-          arc.cijPi = arc.cijPi - dual.capDuals[capCutIndex];
+          arc.coeff = arc.coeff - dual.capDuals[capCutIndex] * coeff;
+          arc.cijPi = arc.cijPi - dual.capDuals[capCutIndex] * coeff;
         }
         else
         {
-          arc.coeff = arc.coeff + dual.capDuals[capCutIndex];
-          arc.cijPi = arc.cijPi + dual.capDuals[capCutIndex];
+          arc.coeff = arc.coeff + dual.capDuals[capCutIndex] * coeff;
+          arc.cijPi = arc.cijPi + dual.capDuals[capCutIndex] * coeff;
         }
       }
     }
@@ -918,9 +919,11 @@ void VRPTWDecisionDiagram::getCutSetValues(std::vector<double>& cutValues)
   for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
   {
     double cutSetValue = 0.0;
-    for (int arcIndex : capCutSetArcs[capCutIndex])
+    for (int index=0; index<capCutSetArcs[capCutIndex].size(); ++index)
     {
-      cutSetValue += arcs[arcIndex].heuristicFlow;
+      int arcIndex = capCutSetArcs[capCutIndex][index];
+      double coeff = capCutSetCoeffs[capCutIndex][index];
+      cutSetValue += arcs[arcIndex].heuristicFlow * coeff;
     }
     cutValues.push_back(cutSetValue);
   }
@@ -1432,6 +1435,12 @@ int VRPTWDecisionDiagram::findSRC3s(const Primal& primal, int limit, std::vector
             std::cout << std::endl;
 
             std::cout << "index: " << cliqueCuts.size() << " violation: " << violation << std::endl;
+            std::cout << "arcs: ";
+            for (int arcIndex : bestLayerArcs)
+            {
+              std::cout << arcIndex << ",";
+            }
+            std::cout << std::endl;
           }
 
           if (numAdded == limit)
@@ -2091,9 +2100,12 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       if (isCapCutActive(capCutIndex))
       {
         IloExpr cutSetSum(env);
-        for (int arcIndex : capCutSetArcs[capCutIndex])
+        for (int index=0; index<capCutSetArcs[capCutIndex].size(); ++index)
         {
-          cutSetSum += x[arcIndex];
+          int arcIndex = capCutSetArcs[capCutIndex][index];
+          double coeff = capCutSetCoeffs[capCutIndex][index];
+          //std::cout << "arc index: " << arcIndex << " coeff: " << coeff << std::endl;
+          cutSetSum += x[arcIndex] * coeff;
         }
 
         capConstraints.add(cutSetSum <= capCutSetsRHS[capCutIndex]);
@@ -4346,35 +4358,11 @@ void VRPTWDecisionDiagram::convertSolutionForVRPTWSep(std::vector<int>& edgeTail
   }
 };
 
-void VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, LPSolveType solveType)
+bool VRPTWDecisionDiagram::calculateRCCCoeff(int arcIndex, int rccIndex, double& coeff)
 {
-  capCutSets.push_back(cutSet);
-  capCutSetArcs.resize(capCutSets.size());
-  capCutSetsRHS.push_back(rhs);
-  capCutActive.push_back(true);
-
-  /*
-  if (solveType == LPSolveType::LAGSolver)
-  {
-    for (int arcIndex : rccArcs)
-    {
-      if (!arcs[arcIndex].isReverseArc)
-      {
-        int fromLoc = nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited;
-        int toLoc = nodes[arcs[arcIndex].toNodeIndex].state.lastVisited;
-        bool fromLocInSet = (std::find(cutSet.begin(), cutSet.end(), fromLoc) != cutSet.end());
-        bool toLocInSet = (std::find(cutSet.begin(), cutSet.end(), toLoc) != cutSet.end());
-        if (fromLocInSet && toLocInSet)
-        {
-          capCutSetArcs.back().push_back(arcIndex);
-        }
-      }
-    }
-  }
-  */
-  //else
-  //{
-  for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
+  auto cutSet = capCutSets[rccIndex];
+  auto rccType = rccTypes[rccIndex];
+  if (rccType == RCCType::Type1)
   {
     if (!arcs[arcIndex].isReverseArc)
     {
@@ -4384,11 +4372,67 @@ void VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet, const st
       bool toLocInSet = (std::find(cutSet.begin(), cutSet.end(), toLoc) != cutSet.end());
       if (fromLocInSet && toLocInSet)
       {
-        capCutSetArcs.back().push_back(arcIndex);
+        coeff = 1;
+        return true;
       }
     }
   }
-  //}
+  else if (rccType == RCCType::Type3)
+  {
+    if (!arcs[arcIndex].isReverseArc)
+    {
+      int fromLoc = nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited;
+      int toLoc = nodes[arcs[arcIndex].toNodeIndex].state.lastVisited;
+      bool fromLocInSet = (std::find(cutSet.begin(), cutSet.end(), fromLoc) != cutSet.end());
+      bool toLocInSet = (std::find(cutSet.begin(), cutSet.end(), toLoc) != cutSet.end());
+      if ((fromLoc != 0) && (toLoc != 0) && !fromLocInSet && !toLocInSet)
+      {
+        coeff = 1;
+        return true;
+      }
+
+      if (((fromLoc == 0) && toLocInSet) || ((toLoc == 0) && fromLocInSet))
+      {
+        coeff = -0.5;
+        return true;
+      }
+ 
+      if (((fromLoc == 0) && !toLocInSet && (toLoc != 0)) || ((toLoc == 0) && !fromLocInSet && (fromLoc != 0)))
+      {
+        coeff = 0.5;
+        return true;
+      }
+    }
+  }
+
+  coeff = 0;
+  return false;
+}
+
+// RCCType1 is x(S:S) <= |S| - k(S)
+// RCCType3 is x(Sbar:Sbar) + 0.5x({0}:Sbar) - 0.5x({0}:S) <= |Sbar| - k(S)
+void VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, RCCType rccType, LPSolveType solveType)
+{
+  capCutSets.push_back(cutSet);
+  capCutSetArcs.resize(capCutSets.size());
+  capCutSetCoeffs.resize(capCutSets.size());
+  capCutSetsRHS.push_back(rhs);
+  capCutActive.push_back(true);
+  rccTypes.push_back(rccType);
+
+  for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
+  {
+    if (!arcs[arcIndex].isReverseArc)
+    {
+      double coeff = 0;
+      bool nonZeroCoeff = calculateRCCCoeff(arcIndex, capCutSets.size()-1, coeff);
+      if (nonZeroCoeff)
+      {
+        capCutSetArcs[capCutSets.size()-1].push_back(arcIndex);
+        capCutSetCoeffs[capCutSets.size()-1].push_back(coeff);
+      }
+    }
+  }
 };
 
 void VRPTWDecisionDiagram::addCombCutTeeth(const std::vector<std::set<int>>& teeth)
@@ -4397,7 +4441,7 @@ void VRPTWDecisionDiagram::addCombCutTeeth(const std::vector<std::set<int>>& tee
   combCutArcs.resize(teeths.size());
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
   {
-    if (!arcs[arcIndex].isReverseArc && ((arcs[arcIndex].location != 0) || (arcs[arcIndex].fromNodeIndex != rootNodeIndex)))
+    if (!arcs[arcIndex].isReverseArc)
     {
       int fromLoc = nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited;
       int toLoc = nodes[arcs[arcIndex].toNodeIndex].state.lastVisited;
@@ -4406,7 +4450,7 @@ void VRPTWDecisionDiagram::addCombCutTeeth(const std::vector<std::set<int>>& tee
         auto tooth = teeth[toothIndex];
         bool fromLocInSet = (std::find(tooth.begin(), tooth.end(), fromLoc) != tooth.end());
         bool toLocInSet = (std::find(tooth.begin(), tooth.end(), toLoc) != tooth.end());
-        if ((fromLocInSet && !toLocInSet) || (!fromLocInSet && toLocInSet))
+        if (((fromLocInSet && !toLocInSet) || (!fromLocInSet && toLocInSet)) && ((fromLoc != 0) || (toLoc != 0)))
         {
           combCutArcs[teeths.size()-1].push_back(arcIndex);
         }
@@ -4425,29 +4469,66 @@ bool VRPTWDecisionDiagram::isCapCutActive(int index)
   return capCutActive[index];
 };
 
-int VRPTWDecisionDiagram::getRCCCoeff(std::vector<int> route, int rccIndex)
+double VRPTWDecisionDiagram::getRCCCoeff(std::vector<int> route, int rccIndex)
 {
-  int coeff = 0;
-  int fromLoc = 0;
-  auto cutSet = capCutSets[rccIndex];
-  for (int toLoc : route)
+  RCCType rccType = rccTypes[rccIndex];
+  if (rccType == RCCType::Type1)
   {
-    if (toLoc == 0)
+    double coeff = 0;
+    int fromLoc = 0;
+    auto cutSet = capCutSets[rccIndex];
+    for (int toLoc : route)
     {
-      continue;
+      if (toLoc == 0)
+      {
+        continue;
+      }
+
+      bool fromLocInSet = (std::find(cutSet.begin(), cutSet.end(), fromLoc) != cutSet.end());
+      bool toLocInSet = (std::find(cutSet.begin(), cutSet.end(), toLoc) != cutSet.end());
+      if (fromLocInSet && toLocInSet)
+      {
+        coeff = coeff + 1;
+      }
+
+      fromLoc = toLoc;
     }
 
-    bool fromLocInSet = (std::find(cutSet.begin(), cutSet.end(), fromLoc) != cutSet.end());
-    bool toLocInSet = (std::find(cutSet.begin(), cutSet.end(), toLoc) != cutSet.end());
-    if (fromLocInSet && toLocInSet)
+    return coeff;
+  }
+  else if (rccType == RCCType::Type3)
+  {
+    double coeff = 0;
+    int fromLoc = 0;
+    auto cutSet = capCutSets[rccIndex];
+    for (int toLoc : route)
     {
-      coeff = coeff + 1;
+      bool fromLocInSet = (std::find(cutSet.begin(), cutSet.end(), fromLoc) != cutSet.end());
+      bool toLocInSet = (std::find(cutSet.begin(), cutSet.end(), toLoc) != cutSet.end());
+      if ((fromLoc != 0) && (toLoc != 0) && !fromLocInSet && !toLocInSet)
+      {
+        coeff = coeff + 1;
+      }
+
+      if (((fromLoc == 0) && toLocInSet) || ((toLoc == 0) && fromLocInSet))
+      {
+        coeff = coeff - 0.5;
+        return true;
+      }
+ 
+      if (((fromLoc == 0) && !toLocInSet && (toLoc != 0)) || ((toLoc == 0) && !fromLocInSet && (fromLoc != 0)))
+      {
+        coeff = coeff + 0.5;
+        return true;
+      }
+
+      fromLoc = toLoc;
     }
 
-    fromLoc = toLoc;
+    return coeff;
   }
 
-  return coeff;
+  return 0;
 };
 
 int VRPTWDecisionDiagram::getNumTimesSetVisited(std::vector<int> route, const std::set<int>& set)
