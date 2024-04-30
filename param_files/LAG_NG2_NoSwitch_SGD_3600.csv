@@ -4,6 +4,7 @@ LPSolveType:LAG
 StateSpace:NG
 NGSetSize:2
 ChangeToLP:N
+UseSeparations:Y
 
 VariableFixing:Y
 MuSSP:Y
@@ -12,4 +13,5 @@ RepairDuals:Y
 RobustCuts:Y
 NonRobustCuts:Y
 VolumeAlgorithm:N
-Phases:N
+UseScaling:Y
+UseSparseRCCs:Y

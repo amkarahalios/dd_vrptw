@@ -135,7 +135,15 @@ int main(int argc, char** argv)
               params.changeToLP = true;
             }
           }
-          else if (lineIndex == 7)
+          else if (lineIndex == 6)
+          {
+            params.useSeparations = false;
+            if (paramValueString == "Y")
+            {
+              params.useSeparations = true;
+            }
+          }
+          else if (lineIndex == 8)
           {
             params.useVariableFixing = false;
             if (paramValueString == "Y")
@@ -143,7 +151,7 @@ int main(int argc, char** argv)
               params.useVariableFixing = true;
             }
           }
-          else if (lineIndex == 8)
+          else if (lineIndex == 9)
           {
             params.useMuSSP = false;
             if (paramValueString == "Y")
@@ -151,7 +159,7 @@ int main(int argc, char** argv)
               params.useMuSSP = true;
             }
           }
-          else if (lineIndex == 9)
+          else if (lineIndex == 10)
           {
             params.repairDuals = false;
             if (paramValueString == "Y")
@@ -159,7 +167,7 @@ int main(int argc, char** argv)
               params.repairDuals = true;
             }
           }
-          else if (lineIndex == 11)
+          else if (lineIndex == 12)
           {
             params.useRobustCuts = false;
             if (paramValueString == "Y")
@@ -167,7 +175,7 @@ int main(int argc, char** argv)
               params.useRobustCuts = true;
             }
           }
-          else if (lineIndex == 12)
+          else if (lineIndex == 13)
           {
             params.useNonRobustCuts = false;
             if (paramValueString == "Y")
@@ -175,7 +183,7 @@ int main(int argc, char** argv)
               params.useNonRobustCuts = true;
             }
           }
-          else if (lineIndex == 13)
+          else if (lineIndex == 14)
           {
             params.useVolumeAlgorithm = false;
             if (paramValueString == "Y")
@@ -183,12 +191,28 @@ int main(int argc, char** argv)
               params.useVolumeAlgorithm = true;
             }
           }
-          else if (lineIndex == 14)
+          else if (lineIndex == 15)
           {
-            params.usePhases = false;
+            params.useScaling = false;
             if (paramValueString == "Y")
             {
-              params.usePhases = true;
+              params.useScaling = true;
+            }
+          }
+          else if (lineIndex == 16)
+          {
+            params.useSparseRCCs = false;
+            if (paramValueString == "Y")
+            {
+              params.useSparseRCCs = true;
+            }
+          }
+          else if (lineIndex == 17)
+          {
+            params.useRestarts = false;
+            if (paramValueString == "Y")
+            {
+              params.useRestarts = true;
             }
           }
         }

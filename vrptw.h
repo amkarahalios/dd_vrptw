@@ -97,6 +97,13 @@ enum RCCType
   Type3 = 1
 };
 
+
+enum SGDAlgorithm
+{
+  SGD = 0,
+  VA = 1
+};
+
 enum ShortestPathMode
 {
   UPDATE_POTENTIALS = 0,
@@ -129,6 +136,7 @@ struct VRPTWDDParameters
   StateSpace stateSpace;
   int ngSetSize;
   bool changeToLP;
+  bool useSeparations;
 
   bool useVariableFixing;
   bool useMuSSP;
@@ -137,7 +145,9 @@ struct VRPTWDDParameters
   bool useRobustCuts;
   bool useNonRobustCuts;
   bool useVolumeAlgorithm;
-  bool usePhases;
+  bool useScaling;
+  bool useSparseRCCs;
+  bool useRestarts;
 };
 
 struct VRPTWSolution
@@ -506,6 +516,7 @@ const static std::map<std::string,double> instanceOptimalSolutions =
 {"RC2_10_8.vrptw",23279.8},
 {"RC2_10_9.vrptw",22731.6},
 {"RC2_10_10.vrptw",21736.1},
+{"test-A-n8-k3.vrp",160},
 {"A-n32-k5.vrp",784},
 {"A-n33-k5.vrp",661},
 {"A-n33-k6.vrp",742},

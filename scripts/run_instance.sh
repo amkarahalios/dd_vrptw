@@ -2,15 +2,16 @@
 
 export LD_LIBRARY_PATH="$HOME/dd_vrptw/Cliquer/src/lib/:$LD_LIBRARY_PATH"
 
-if [ $# -ne 3 ]; then
+if [ $# -ne 4 ]; then
   echo "Invalid arguments"
   echo "Argument 1: instances dir"
   echo "Argument 2: COL_GEN or COL_ELIM"
   echo "Argument 3: param file name"
+  echo "Argument 4: iteration number"
   exit 2
 fi
 
-OUTPUT_DIR=$HOME/dd_vrptw/new_logs/$1_$3/
+OUTPUT_DIR=$HOME/dd_vrptw/new_logs/$1_$3_$4/
 mkdir -p $OUTPUT_DIR
 
 FILES=$HOME/dd_vrptw/instances/$1/*

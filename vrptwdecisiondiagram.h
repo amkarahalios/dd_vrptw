@@ -27,6 +27,8 @@ struct Dual
     std::vector<double> combDuals;
     std::vector<double> srcDuals;
     double fixedPathDual;
+
+    std::vector<bool> capCutUsage;
 };
 
 struct Primal
@@ -253,7 +255,7 @@ class VRPTWDecisionDiagram
 
     // network flow for lp/ip
     void initializeColumnsByLPDecomp();
-    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, Dual& dual);
+    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, Dual& dual, bool removeConstraintsForTesting);
     double getDualObjectiveValue(const Dual& dual, LPSolveType lpSolveType);
     double fixArcs(const Dual& dual, LPSolveType lpSolveType);
     double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType);
@@ -306,11 +308,14 @@ class VRPTWDecisionDiagram
     void printCuts() const;
 
     // for cuts
-    void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, RCCType rccType, LPSolveType solveType);
+    void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, RCCType rccType, LPSolveType solveType, bool useScaling);
     std::vector<int> getCapCutSet(int index) const { return capCutSets[index]; }
-    int getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
+    double getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
+    double getCapCutSetScaling(int index) const { return capCutSetsScaling[index]; }
     int getNumCapCuts() const { return capCutSetsRHS.size(); }
     RCCType getRCCType(int index) const { return rccTypes[index]; }
+    double getRCCCoeff(std::vector<int> route, int rccIndex);
+    bool calculateRCCCoeff(int arcIndex, int rccIndex, double& coeff);
 
     int getNumCliqueCuts() const { return cliqueCuts.size(); }
     bool isCapCutActive(int index);
@@ -323,8 +328,6 @@ class VRPTWDecisionDiagram
     int getCombCutRHS(int index) const { return combRHS[index]; }
     int getNumCombCuts() const { return combRHS.size(); }
 
-    double getRCCCoeff(std::vector<int> route, int rccIndex);
-    bool calculateRCCCoeff(int arcIndex, int rccIndex, double& coeff);
     int getSRCCoeff(int numTimesVisited, SRCType srcType);
     SRCType getSRCType(int index) { return cliqueCutTypes[index]; }
     int getSRCRHS(SRCType srcType);
@@ -377,6 +380,7 @@ class VRPTWDecisionDiagram
     // Rounded Capacity Cuts
     std::vector<std::vector<int>> capCutSets;
     std::vector<double> capCutSetsRHS;
+    std::vector<double> capCutSetsScaling;
     std::vector<std::vector<std::vector<int>>> capCutSetRoutes;
     std::vector<std::vector<int>> capCutSetArcs;
     std::vector<std::vector<double>> capCutSetCoeffs;

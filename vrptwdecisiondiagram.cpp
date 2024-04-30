@@ -235,7 +235,7 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
       if (nonZeroCoeff)
       {
         capCutSetArcs[capCutIndex].push_back(newArcIndex);
-        capCutSetCoeffs[capCutIndex].push_back(coeff);
+        capCutSetCoeffs[capCutIndex].push_back(coeff * capCutSetsScaling[capCutIndex]);
       }
     }
 
@@ -940,8 +940,8 @@ void VRPTWDecisionDiagram::getCutSetValuesRoutes(const Primal& primal, std::vect
     {
       double flow = primal.xDecompositionFlows[index];
       auto route = primal.xDecompositions[index];
-      int coeff = getRCCCoeff(route, capCutIndex);
-      cutSetValue += (flow * coeff);
+      double coeff = getRCCCoeff(route, capCutIndex);
+      cutSetValue += (flow * coeff * capCutSetsScaling[capCutIndex]);
     }
 
     cutValues.push_back(cutSetValue);
@@ -1976,7 +1976,7 @@ void VRPTWDecisionDiagram::initializeColumnsByLPDecomp()
 // can we merge nodes to reduce problem size?
 // can we warm start with a solution? dual solution?
 // can we reduce memory?
-double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, Dual& duals)
+double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, Dual& duals, bool removeForTesting)
 {
   // setup model
   IloEnv env;
@@ -2097,7 +2097,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
     // RCC - rounded capacity cuts, might even need to use for IPs
     for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
     {
-      if (isCapCutActive(capCutIndex))
+      if (isCapCutActive(capCutIndex) && !removeForTesting)
       {
         IloExpr cutSetSum(env);
         for (int index=0; index<capCutSetArcs[capCutIndex].size(); ++index)
@@ -2108,7 +2108,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
           cutSetSum += x[arcIndex] * coeff;
         }
 
-        capConstraints.add(cutSetSum <= capCutSetsRHS[capCutIndex]);
+        capConstraints.add(cutSetSum <= capCutSetsRHS[capCutIndex] * capCutSetsScaling[capCutIndex]);
       }
       else
       {
@@ -2242,7 +2242,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       for (int dualIndex=0; dualIndex<capCutSets.size(); ++dualIndex)
       {
         duals.capDuals[dualIndex] = lpCapDuals[dualIndex];
-        dualValue += (lpCapDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+        dualValue += (lpCapDuals[dualIndex] * capCutSetsRHS[dualIndex] * capCutSetsScaling[dualIndex]);
         if (duals.capDuals[dualIndex] < 0)
         {
           std::cout << "cap dual [" << dualIndex << "]: " << duals.capDuals[dualIndex] << std::endl;
@@ -2277,6 +2277,11 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
 
       dualValue = dualValue + duals.fixedPathDual*vrptw.numVehicles;
       std::cout << "lp dual value: " << dualValue << std::endl;
+      std::cout << "obj val: " << objValue << std::endl;
+      if ((dualValue <= objValue - 0.00001) || (objValue <= dualValue - 0.00001))
+      {
+        std::cout << "ERROR in dual value" << std::endl;
+      }
     }
 
     env.end();
@@ -2308,11 +2313,11 @@ double VRPTWDecisionDiagram::getDualObjectiveValue(const Dual& dual, LPSolveType
     {
       if (solveType == LPSolveType::LPSolver)
       {
-        lowerBound += (dual.capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+        lowerBound += (dual.capDuals[dualIndex] * capCutSetsRHS[dualIndex] * capCutSetsScaling[dualIndex]);
       }
       else
       {
-        lowerBound += (-1 * dual.capDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+        lowerBound += (-1 * dual.capDuals[dualIndex] * capCutSetsRHS[dualIndex] * capCutSetsScaling[dualIndex]);
       }
     }
   }
@@ -2529,6 +2534,12 @@ double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType)
   // get value of dual
   double lowerBound = getDualObjectiveValue(dual, solveType);
   std::cout << "fixing. lower bound used: " << lowerBound << std::endl;
+  /*
+  if (lowerBound > 0)
+  {
+    return 0;
+  }
+  */
 
   // only need to check all down once if no separations
   bool alreadyCheckedAllDown = false;
@@ -3010,11 +3021,11 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
 
     for (int arcIndex : route)
     {
-      //std::cout << arcs[arcIndex].location << " ";
-      //std::cout << arcIndex << " ";
+      std::cout << arcs[arcIndex].location << " ";
+      std::cout << arcIndex << " ";
       arcs[arcIndex].decompositionFlow = arcs[arcIndex].decompositionFlow - routeFlow;
     }
-    //std::cout << std::endl;
+    std::cout << std::endl;
   }
 };
 
@@ -3042,7 +3053,6 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
 
   clearRelaxedSrcs();
 
-/*
   std::cout << "separating route arcs: ";
   for (int arcIndex : routeArcs)
   {
@@ -3056,7 +3066,6 @@ void VRPTWDecisionDiagram::separateInfeasibleRoute(const std::vector<int>& route
     std::cout << arcs[arcIndex].location << " ";
   }
   std::cout << std::endl;
-*/
 
   // index to routeArcs.size()-1 because the last arc will be removed because it causes a conflict
   bool haveMovedFirstArc = false;
@@ -4411,12 +4420,31 @@ bool VRPTWDecisionDiagram::calculateRCCCoeff(int arcIndex, int rccIndex, double&
 
 // RCCType1 is x(S:S) <= |S| - k(S)
 // RCCType3 is x(Sbar:Sbar) + 0.5x({0}:Sbar) - 0.5x({0}:S) <= |Sbar| - k(S)
-void VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, RCCType rccType, LPSolveType solveType)
+void VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, RCCType rccType, LPSolveType solveType, bool useScaling)
 {
   capCutSets.push_back(cutSet);
   capCutSetArcs.resize(capCutSets.size());
   capCutSetCoeffs.resize(capCutSets.size());
   capCutSetsRHS.push_back(rhs);
+  double scaling = 1.0;
+  if (useScaling)
+  {
+    if ((rhs > 0.0001) || (rhs < -0.0001))
+    {
+      scaling = 1.0 / std::abs(rhs);
+      /*
+      if (rccType == RCCType::Type1)
+      {
+        scaling = 1.0 / (cutSet.size() * std::abs(rhs));
+      }
+      else
+      {
+        scaling = 1.0 / ((vrptw.numLocations - 1 - cutSet.size()) * std::abs(rhs));
+      }
+      */
+    }
+  }
+  capCutSetsScaling.push_back(scaling);
   capCutActive.push_back(true);
   rccTypes.push_back(rccType);
 
@@ -4429,7 +4457,7 @@ void VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet, const st
       if (nonZeroCoeff)
       {
         capCutSetArcs[capCutSets.size()-1].push_back(arcIndex);
-        capCutSetCoeffs[capCutSets.size()-1].push_back(coeff);
+        capCutSetCoeffs[capCutSets.size()-1].push_back(coeff * scaling);
       }
     }
   }
@@ -4479,11 +4507,6 @@ double VRPTWDecisionDiagram::getRCCCoeff(std::vector<int> route, int rccIndex)
     auto cutSet = capCutSets[rccIndex];
     for (int toLoc : route)
     {
-      if (toLoc == 0)
-      {
-        continue;
-      }
-
       bool fromLocInSet = (std::find(cutSet.begin(), cutSet.end(), fromLoc) != cutSet.end());
       bool toLocInSet = (std::find(cutSet.begin(), cutSet.end(), toLoc) != cutSet.end());
       if (fromLocInSet && toLocInSet)
@@ -4513,13 +4536,11 @@ double VRPTWDecisionDiagram::getRCCCoeff(std::vector<int> route, int rccIndex)
       if (((fromLoc == 0) && toLocInSet) || ((toLoc == 0) && fromLocInSet))
       {
         coeff = coeff - 0.5;
-        return true;
       }
  
       if (((fromLoc == 0) && !toLocInSet && (toLoc != 0)) || ((toLoc == 0) && !fromLocInSet && (fromLoc != 0)))
       {
         coeff = coeff + 0.5;
-        return true;
       }
 
       fromLoc = toLoc;

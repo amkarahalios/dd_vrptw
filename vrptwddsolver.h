@@ -117,8 +117,7 @@ class VRPTWDDSolver
     bool solveIP(Dual& duals);
 
     void initializeDual(Dual& dual);
-    bool solveLagrangeanRelaxation(Dual& duals);
-    bool solveLagrangeanRelaxationVolumeAlgorithm(Dual& duals);
+    bool solveLagrangeanRelaxation(Dual& duals, SGDAlgorithm& sgdAlgo);
 
     void addColumn();
     void initializeColumns();
@@ -126,10 +125,11 @@ class VRPTWDDSolver
     bool solveLPCG(Dual& duals);
 
     void updateMultipliers(Dual& duals, double lagrangeanLowerBound, int iteration);
-    void updateMultipliersVolumeAlgorithm(Dual& duals, Primal& primal, double lagrangeanLowerBound, int iteration);
+    void updateMultipliersVolumeAlgorithm(Dual& duals, Primal& primal, int iteration);
     void printMultipliers(Dual& duals);
     void repairMultipliers(Dual& repairedDual, LPSolveType lpSolveType);
     void resizeMultipliers(const Dual& dual1, Dual& dual2);
+    void resizeMultipliersAndCopy(const Dual& dual1, Dual& dual2);
     void resizeMultipliers(const Dual& dual1, std::vector<Dual>& dual2);
  
     void constructNextPrimal(double alpha, const std::vector<std::vector<int>>& decomposedRoutes, const std::vector<std::vector<int>>& decomposedRouteArcs, Primal& primal);
@@ -158,10 +158,15 @@ class VRPTWDDSolver
     double stepSizeMultiplier;
     int stepSizeMultiplierIteration;
     int stepSizeMultiplierIterationCutoff;
+    double minStepSizeMultiplier;
     double alphaLowerBound;
     int alphaLowerBoundIteration;
-    double alphaLowerBoundCheckValue;
     double targetLowerBound;
+    double percentGapToStartCuts;
+    int numCapCutUpdateGroups;
+    double targetBoundIncrease;
+    int numIterationsRestart;
+    int numIterationsDeactivations;
 
     // static params
     int infeasibleRoutesBatchSize;
@@ -172,6 +177,8 @@ class VRPTWDDSolver
     int numArcsToChangeToCPLEX;
     int numLagCuts;
     int kappaIterations;
+    bool shouldRestart;
+    bool useScaling;
 
     // for primal
     Primal primal;
