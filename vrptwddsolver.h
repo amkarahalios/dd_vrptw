@@ -11,16 +11,6 @@
 #include "capsep.h"
 #include "combsep.h"
 
-enum PhaseType
-{
-  INITIAL_DUAL = 0,
-  SEPARATION = 1,
-  ROBUST_PRIMAL = 2,
-  ROBUST_CUT_DUALS = 3,
-  NONROBUST_PRIMAL = 4,
-  NONROBUST_CUT_DUALS = 5
-};
-
 struct DDStats
 {
   public:
@@ -141,7 +131,6 @@ class VRPTWDDSolver
     VRPTWDecisionDiagram routeDD;
     VRPTWDDParameters params;
     std::vector<std::vector<int>> bestSolution;
-    PhaseType phaseType;
     double muPercentImproved;
 
     // for arc fixing

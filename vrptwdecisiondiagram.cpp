@@ -2992,7 +2992,6 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
                 {
                   arcs[routeArcIndex].decompositionFlow = arcs[routeArcIndex].decompositionFlow - routeFlow;
                 }
-                DBG(std::cout << "infeasibility found while decomposing" << std::endl;)
                 return;
               }
             }

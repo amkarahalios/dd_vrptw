@@ -1,7 +1,7 @@
 #include "vrptwddsolver.h"
 #include <math.h>
 
-VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _params), params(_params), phaseType(PhaseType::INITIAL_DUAL)
+VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _params), params(_params)
 {
   for (int location=0; location<vrptw.numLocations; ++location)
   {
@@ -1633,7 +1633,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
     }
 
     // Separations
-    if ((phaseType == PhaseType::SEPARATION) && !shouldTerminate)
+    if (!shouldTerminate)
     {
       for (auto infeasibleRouteToSeparateByArc : infeasibleRoutesByArc)
       {
