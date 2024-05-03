@@ -148,6 +148,7 @@ struct VRPTWDDParameters
   bool useScaling;
   bool useSparseRCCs;
   bool useRestarts;
+  bool switchSepToCuts;
 };
 
 struct VRPTWSolution

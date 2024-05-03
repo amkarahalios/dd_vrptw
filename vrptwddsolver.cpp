@@ -85,6 +85,14 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "use scaling: " << params.useScaling << std::endl;
   std::cout << "use sparse RCCs: " << params.useSparseRCCs << std::endl;
   std::cout << "use restarts: " << params.useRestarts << std::endl;
+  std::cout << "switch separations to cuts: " << params.switchSepToCuts << std::endl;
+
+  if (params.switchSepToCuts)
+  {
+    params.useRobustCuts = false;
+    params.useNonRobustCuts = false;
+    params.useSeparations = true;
+  }
 
   CMGR_CreateCMgr(&MyCutsCMP,Dim);
   CMGR_CreateCMgr(&MyOldCutsCMP,Dim);
@@ -1219,14 +1227,20 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
     stepSizeMultiplierIteration = 0;
     shouldRestart = false;
 
-    //kappaIterations = 100;
-    //numLagCuts = 20;
     muPercentImproved = 0.0001;
     minStepSizeMultiplier = 0.0001;
     numCapCutUpdateGroups = 1;
 
-    // switch to use SGD
-    if ((sgdAlgo == SGDAlgorithm::VA) && (stats.lpIterations > numIterationsRestart))
+    // consider switching from VA/SGD/SepToCuts
+    if (params.switchSepToCuts)
+    {
+      std::cout << "switch sep to cuts" << std::endl;
+      params.useRobustCuts = true;
+      params.useNonRobustCuts = true;
+      params.useSeparations = false;
+      params.switchSepToCuts = false;
+    }
+    else if ((sgdAlgo == SGDAlgorithm::VA) && (stats.lpIterations > numIterationsRestart))
     {
       std::cout << "switch to SGD" << std::endl;
       sgdAlgo = SGDAlgorithm::SGD;
@@ -1235,11 +1249,19 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
     }
     else if (sgdAlgo == SGDAlgorithm::SGD)
     {
+      std::cout << "using separating again" << std::endl;
+      kappaIterations = 100;
+      params.useSeparations = true;
+    }
+    /*
+    else if (sgdAlgo == SGDAlgorithm::SGD)
+    {
       std::cout << "switch to VA" << std::endl;
       sgdAlgo = SGDAlgorithm::VA;
       params.useRobustCuts = true;
       params.useNonRobustCuts = true;
     }
+    */
   }
 
   // check best LP
@@ -1662,6 +1684,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       {
         shouldRestart = true;
       }
+    }
+
+    // Consider switch setp to cuts
+    if (shouldTerminate && params.switchSepToCuts)
+    {
+      shouldRestart = true;
     }
 
     // Switch back to VA to add more cuts?

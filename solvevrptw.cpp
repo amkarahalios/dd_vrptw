@@ -215,6 +215,14 @@ int main(int argc, char** argv)
               params.useRestarts = true;
             }
           }
+          else if (lineIndex == 18)
+          {
+            params.switchSepToCuts = false;
+            if (paramValueString == "Y")
+            {
+              params.switchSepToCuts = true;
+            }
+          }
         }
         wordIndex = wordIndex + 1;
       }
