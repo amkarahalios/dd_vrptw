@@ -2470,6 +2470,10 @@ struct VRPTW
           {
             greedyLocations = greedyLocations + 1;
             greedyLoad = greedyLoad + sortedDemands[index];
+            if (greedyLoad >= capacity)
+            {
+              break;
+            }
           }
         }
 
