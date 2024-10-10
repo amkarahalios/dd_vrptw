@@ -8,6 +8,101 @@ import re
 import collections
 
 instance_upper_bounds = {
+"A-n32-k5.vrp":784,
+"A-n33-k5.vrp":661,
+"A-n33-k6.vrp":742,
+"A-n34-k5.vrp":778,
+"A-n36-k5.vrp":799,
+"A-n37-k5.vrp":669,
+"A-n37-k6.vrp":949,
+"A-n38-k5.vrp":730,
+"A-n39-k5.vrp":822,
+"A-n39-k6.vrp":831,
+"A-n44-k6.vrp":937,
+"A-n45-k6.vrp":944,
+"A-n45-k7.vrp":1146,
+"A-n46-k7.vrp":914,
+"A-n48-k7.vrp":1073,
+"A-n53-k7.vrp":1010,
+"A-n54-k7.vrp":1167,
+"A-n55-k9.vrp":1073,
+"A-n60-k9.vrp":1354,
+"A-n61-k9.vrp":1034,
+"A-n62-k8.vrp":1288,
+"A-n63-k10.vrp":1314,
+"A-n63-k9.vrp":1616,
+"A-n64-k9.vrp":1401,
+"A-n65-k9.vrp":1174,
+"A-n69-k9.vrp":1159,
+"A-n80-k10.vrp":1763,
+"B-n31-k5.vrp":672,
+"B-n34-k5.vrp":788,
+"B-n35-k5.vrp":955,
+"B-n38-k6.vrp":805,
+"B-n39-k5.vrp":549,
+"B-n41-k6.vrp":829,
+"B-n43-k6.vrp":742,
+"B-n44-k7.vrp":909,
+"B-n45-k5.vrp":751,
+"B-n45-k6.vrp":678,
+"B-n50-k7.vrp":741,
+"B-n50-k8.vrp":1312,
+"B-n51-k7.vrp":1032,
+"B-n52-k7.vrp":747,
+"B-n56-k7.vrp":707,
+"B-n57-k7.vrp":1153,
+"B-n57-k9.vrp":1598,
+"B-n63-k10.vrp":1496,
+"B-n64-k9.vrp":861,
+"B-n66-k9.vrp":1316,
+"B-n67-k10.vrp":1032,
+"B-n68-k9.vrp":1272,
+"B-n78-k10.vrp":1221,
+"E-n101-k14.vrp":1071,
+"E-n101-k8.vrp":817,
+"E-n13-k4.vrp":247,
+"E-n22-k4.vrp":375,
+"E-n23-k3.vrp":569,
+"E-n30-k3.vrp":534,
+"E-n31-k7.vrp":379,
+"E-n33-k4.vrp":835,
+"E-n51-k5.vrp":521,
+"E-n76-k10.vrp":830,
+"E-n76-k14.vrp":1021,
+"E-n76-k7.vrp":682,
+"E-n76-k8.vrp":735,
+"F-n135-k7.vrp":1162,
+"F-n45-k4.vrp":724,
+"F-n72-k4.vrp":237,
+"P-n101-k4.vrp":681,
+"P-n16-k8.vrp":450,
+"P-n19-k2.vrp":212,
+"P-n20-k2.vrp":216,
+"P-n21-k2.vrp":211,
+"P-n22-k2.vrp":216,
+"P-n22-k8.vrp":603,
+"P-n23-k8.vrp":529,
+"P-n40-k5.vrp":458,
+"P-n45-k5.vrp":510,
+"P-n50-k10.vrp":696,
+"P-n50-k7.vrp":554,
+"P-n50-k8.vrp":631,
+"P-n51-k10.vrp":741,
+"P-n55-k10.vrp":694,
+"P-n55-k15.vrp":989,
+"P-n55-k7.vrp":568,
+"P-n55-k8.vrp":588,
+"P-n60-k10.vrp":744,
+"P-n60-k15.vrp":968,
+"P-n65-k10.vrp":792,
+"P-n70-k10.vrp":827,
+"P-n76-k4.vrp":593,
+"P-n76-k5.vrp":627,
+"M-n101-k10.vrp":820,
+"M-n121-k7.vrp":1034,
+"M-n151-k12.vrp":1053,
+"M-n200-k16.vrp":1373,
+"M-n200-k17.vrp":1373,
 "C101.vrptw":827.3,
 "C102.vrptw":827.3,
 "C103.vrptw":826.3,
@@ -642,6 +737,62 @@ instance_upper_bounds = {
 "X-n289-k60.vrp":95151,
 "X-n294-k50.vrp":47161,
 "X-n298-k31.vrp":34231,
+"X-n303-k21.vrp":21736,
+"X-n308-k13.vrp":25859,
+"X-n313-k71.vrp":94043,
+"X-n317-k53.vrp":78355,
+"X-n322-k28.vrp":29834,
+"X-n327-k20.vrp":27532,
+"X-n331-k15.vrp":31102,
+"X-n336-k84.vrp":139111,
+"X-n344-k43.vrp":42050,
+"X-n351-k40.vrp":25896,
+"X-n359-k29.vrp":51505,
+"X-n367-k17.vrp":22814,
+"X-n376-k94.vrp":147713,
+"X-n384-k52.vrp":65928,
+"X-n393-k38.vrp":38260,
+"X-n401-k29.vrp":66154,
+"X-n411-k19.vrp":19712,
+"X-n420-k130.vrp":107798,
+"X-n429-k61.vrp":65449,
+"X-n439-k37.vrp":36391,
+"X-n449-k29.vrp":55233,
+"X-n459-k26.vrp":24139,
+"X-n469-k138.vrp":221824,
+"X-n480-k70.vrp":89449,
+"X-n491-k59.vrp":66483,
+"X-n502-k39.vrp":69226,
+"X-n513-k21.vrp":24201,
+"X-n524-k153.vrp":154593,
+"X-n536-k96.vrp":94846,
+"X-n548-k50.vrp":86700,
+"X-n561-k42.vrp":42717,
+"X-n573-k30.vrp":50673,
+"X-n586-k159.vrp":190316,
+"X-n599-k92.vrp":108451,
+"X-n613-k62.vrp":59353,
+"X-n627-k43.vrp":62164,
+"X-n641-k35.vrp":63682,
+"X-n655-k131.vrp":106780,
+"X-n670-k130.vrp":146332,
+"X-n685-k75.vrp":68205,
+"X-n701-k44.vrp":81923,
+"X-n716-k35.vrp":43373,
+"X-n733-k159.vrp":136187,
+"X-n749-k98.vrp":77269,
+"X-n766-k71.vrp":114417,
+"X-n783-k48.vrp":72386,
+"X-n801-k40.vrp":73305,
+"X-n819-k171.vrp":158121,
+"X-n837-k142.vrp":193737,
+"X-n856-k95.vrp":88965,
+"X-n876-k59.vrp":99299,
+"X-n895-k37.vrp":53860,
+"X-n916-k207.vrp":329179,
+"X-n936-k151.vrp":132715,
+"X-n957-k87.vrp":85465,
+"X-n979-k58.vrp":118976,
 "LC1_2_1.pdp":2705,
 "LC1_2_2.pdp":2765,
 "LC1_2_3.pdp":3128,
@@ -974,72 +1125,101 @@ logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_logs/"
 #test_set = ["col_elim_hg_lag_ng_4_20_N_3600","col_elim_hg-close_lag_ng_4_20_N-7200"]
 #test_set = ["col_elim_hg-close_lag_ng_4_20_N-7200"]
 test_set = ["col_elim_hg_lag_ng_2_50_N_3600",
-            "col_elim_hg_lag_ng_4_50_N_3600",
-            "col_elim_hg_lag_ng_6_50_N_3600",
-            "col_elim_hg_lag_ng_2_50_N_batch50_3600",
-            "col_elim_hg_lag_ng_2_50_N_batch100_3600",
-            "col_elim_hg_lp_ng_2_50_N_3600",
-            "col_elim_hg_lp_ng_4_50_N_3600",
-            "col_elim_hg_lp_ng_6_50_N_3600",
-            "col_elim_X100200_lag_ng_2_50_N_3600",
-            "col_elim_X100200_lag_ng_2_50_N_nomussp_3600",
-            "col_elim_X100200_lag_ng_2_50_N_novarfix_3600",
-            "col_elim_sop_lag_ng_2_50_N_3600",
-            "col_elim_sop_lag_ng_5_50_N_3600",
-            "col_elim_sop_lag_ng_8_50_N_3600",
-            "col_elim_sop_lp_ng_2_50_N_3600",
-            "col_elim_sop_lp_ng_5_50_N_3600",
-            "col_elim_sop_lp_ng_8_50_N_3600",
-            "col_elim_spb_lag_ng_2_50_N_3600",
-            "col_elim_spb_lag_ng_5_50_N_3600",
-            "col_elim_spb_lag_ng_8_50_N_3600",
-            "col_elim_spb_lp_ng_2_50_N_3600",
-            "col_elim_spb_lp_ng_5_50_N_3600",
-            "col_elim_spb_lp_ng_8_50_N_3600",
-            "col_elim_lp_0_0_BANDB_3600",
-            "col_elim_lp_5_0_BANDB_3600",
-            "col_elim_lp_0_0_MIP_3600",
-            "col_elim_lp_5_0_MIP_3600",
-            "col_elim_lp_5_3_MIP_3600",
-            "batch1_0",
-            "batch1_50",
-            "batch1_100",
-            "batch50_0",
-            "batch50_50",
-            "batch50_100",
-            "batch100_0",
-            "batch100_50",
-            "batch100_100",
-            "variable_fix_LAG_N",
-            "variable_fix_LAG_Y_5",
-            "variable_fix_LAG_Y_10",
-            "variable_fix_LAG_Y_100",
-            "variable_fix_LP_N",
-            "variable_fix_LP_Y",
-            "cuts_LP_Y",
-            "cuts_LP_N",
-            "cuts_LAG_N",
-            "cuts_LAG_Y",
-            "Vrp-Set-HG-C12-124_batch1_0",
-            "Vrp-Set-HG-C12-124_batch1_50",
-            "Vrp-Set-HG-C12-124_batch1_100",
-            "Vrp-Set-HG-C12-124_batch50_0",
-            "Vrp-Set-HG-C12-124_batch50_50",
-            "Vrp-Set-HG-C12-124_batch50_100",
-            "Vrp-Set-HG-C12-124_batch100_0",
-            "Vrp-Set-HG-C12-124_batch100_50",
-            "Vrp-Set-HG-C12-124_batch100_100",
-            "Vrp-Set-HG-C12-124_variable_fix_LAG_N",
-            "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5",
-            "Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100",
-            "Vrp-Set-HG_LAG_NG2",
-            "Vrp-Long-Run_LAG_NG2_20000",
-            "Vrp-Long-Long-Run_LAG_NG2_86400",
-            "Vrp-Long-Long-Run_LAG_NG2_172800",
-            "Vrp-Long-Long-Run_LAG_NG2_cuts_phase_172800",
-            "Vrp-Long-Long-Long-Run_LAG_NG2_alpha_factor_345600",
-            "X_LAG_NG2_All_3600",
-            "CVRP_LAG_NG2_All_3600"]
+            #"col_elim_hg_lag_ng_4_50_N_3600",
+            #"col_elim_hg_lag_ng_6_50_N_3600",
+            #"col_elim_hg_lag_ng_2_50_N_batch50_3600",
+            #"col_elim_hg_lag_ng_2_50_N_batch100_3600",
+            #"col_elim_hg_lp_ng_2_50_N_3600",
+            #"col_elim_hg_lp_ng_4_50_N_3600",
+            #"col_elim_hg_lp_ng_6_50_N_3600",
+            #"col_elim_X100200_lag_ng_2_50_N_3600",
+            #"col_elim_X100200_lag_ng_2_50_N_nomussp_3600",
+            #"col_elim_X100200_lag_ng_2_50_N_novarfix_3600",
+            #"col_elim_sop_lag_ng_2_50_N_3600",
+            #"col_elim_sop_lag_ng_5_50_N_3600",
+            #"col_elim_sop_lag_ng_8_50_N_3600",
+            #"col_elim_sop_lp_ng_2_50_N_3600",
+            #"col_elim_sop_lp_ng_5_50_N_3600",
+            #"col_elim_sop_lp_ng_8_50_N_3600",
+            #"col_elim_spb_lag_ng_2_50_N_3600",
+            #"col_elim_spb_lag_ng_5_50_N_3600",
+            #"col_elim_spb_lag_ng_8_50_N_3600",
+            #"col_elim_spb_lp_ng_2_50_N_3600",
+            #"col_elim_spb_lp_ng_5_50_N_3600",
+            #"col_elim_spb_lp_ng_8_50_N_3600",
+            #"col_elim_lp_0_0_BANDB_3600",
+            #"col_elim_lp_5_0_BANDB_3600",
+            #"col_elim_lp_0_0_MIP_3600",
+            #"col_elim_lp_5_0_MIP_3600",
+            #"col_elim_lp_5_3_MIP_3600",
+            #"batch1_0",
+            #"batch1_50",
+            #"batch1_100",
+            #"batch50_0",
+            #"batch50_50",
+            #"batch50_100",
+            #"batch100_0",
+            #"batch100_50",
+            #"batch100_100",
+            #"variable_fix_LAG_N",
+            #"variable_fix_LAG_Y_5",
+            #"variable_fix_LAG_Y_10",
+            #"variable_fix_LAG_Y_100",
+            #"variable_fix_LP_N",
+            #"variable_fix_LP_Y",
+            #"cuts_LP_Y",
+            #"cuts_LP_N",
+            #"cuts_LAG_N",
+            #"cuts_LAG_Y",
+            #"Vrp-Set-HG-C12-124_batch1_0",
+            #"Vrp-Set-HG-C12-124_batch1_50",
+            #"Vrp-Set-HG-C12-124_batch1_100",
+            #"Vrp-Set-HG-C12-124_batch50_0",
+            #"Vrp-Set-HG-C12-124_batch50_50",
+            #"Vrp-Set-HG-C12-124_batch50_100",
+            #"Vrp-Set-HG-C12-124_batch100_0",
+            #"Vrp-Set-HG-C12-124_batch100_50",
+            #"Vrp-Set-HG-C12-124_batch100_100",
+            #"Vrp-Set-HG-C12-124_variable_fix_LAG_N",
+            #"Vrp-Set-HG-C12-124_variable_fix_LAG_Y_5",
+            #"Vrp-Set-HG-C12-124_variable_fix_LAG_Y_100",
+            #"Vrp-Set-HG_LAG_NG2",
+            #"Vrp-Long-Run_LAG_NG2_20000",
+            #"Vrp-Long-Long-Run_LAG_NG2_86400",
+            #"Vrp-Long-Long-Run_LAG_NG2_172800",
+            #"Vrp-Long-Long-Run_LAG_NG2_cuts_phase_172800",
+            #"Vrp-Long-Long-Long-Run_LAG_NG2_alpha_factor_345600",
+            #"X_LAG_NG2_All_3600",
+            #"X_LAG_NG2_All_10800",
+            #"X_LAG_NG2_SGD_10800",
+            #"X_LAG_NG2_No_Cuts_10800",
+            #"X_LAG_NG2_No_Phase_10800",
+            "CVRP_LAG_NG2_All_10800",
+            "CVRP_LAG_NG2_SGD_10800",
+            "CVRP_LAG_NG2_No_Cuts_10800",
+            "CVRP_LAG_NG2_No_Phase_10800",
+            "CVRP_LAG_NG2_All_3600",
+            "CVRP_LAG_NG2_SGD_3600",
+            "CVRP_LAG_NG2_No_Cuts_3600",
+            "CVRP_LAG_NG2_No_Phase_3600",
+            "X_LAG_NG2_All_20000",
+            "X_LAG_NG2_SGD_20000",
+            "CVRP_LAG_NG2_NoSwitch_All_10800",
+            "CVRP_LAG_NG2_NoSwitch_SGD_10800",
+            "CVRP_LAG_NG2_NoSwitch_No_Cuts_10800",
+            "CVRP_LAG_NG2_NoSwitch_SGD_No_Cuts_10800",
+            "CVRP_LAG_NG2_NoSwitch_All_3600",
+            "CVRP_LAG_NG2_NoSwitch_SGD_3600",
+            "CVRP_LAG_NG2_NoSwitch_No_Cuts_3600",
+            "CVRP_LAG_NG2_NoSwitch_No_Phase_No_Cuts_3600",
+            "CVRP_LAG_NG2_NoSwitch_No_Phase_3600",
+            "CVRP_LAG_NG2_NoSwitch_SGD_No_Cuts_3600",
+            "CVRP_LAG_NG2_NoSwitch_3600_0",
+            "CVRP_LAG_NG2_NoSwitchToLP_SwitchSepToCuts_3600_2",
+            "CVRP_LAG_NG2_NoSwitchToLP_SwitchSepToCuts_3600_5",
+            "CVRP_LAG_VA_NoCuts_3600_0",
+            "CVRP_LAG_SGD_NoCuts_3600_1",
+            "CVRP_LAG_SGD_NoCuts_3600_0"]
 
 instances = []
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/ALL_sop/"
@@ -1051,7 +1231,8 @@ instances = []
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/X100200/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG-C12-124/"
 #instance_dir = "/Users/akarahal/Desktop/dd_graph_color/instances/"
-instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/X/"
+#instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/X/"
+instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/CVRP/"
 
 for instance in os.listdir(instance_dir):
   instances.append(instance)
@@ -1098,12 +1279,12 @@ for test in test_set:
         compileTime = colelim_match.group(5)
         sspSolveTime = colelim_match.group(6)
         lpSolveTime = colelim_match.group(7)
-        lb = math.ceil(float(colelim_match.group(8)))
+        lb = float(colelim_match.group(8))
         ub = float(colelim_match.group(9))
         numArcs = int(colelim_match.group(10))
         numFixed = int(colelim_match.group(11))
         time = colelim_match.group(12)
-        time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+        time_result = {'instance': instance, 'test': test, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
         time_results.append(time_result)
  
       colgen_match = colgen_pattern.match(line)
@@ -1114,7 +1295,7 @@ for test in test_set:
         ddTime = colgen_match.group(2)
         pricingTime = colgen_match.group(3)
         masterTime = colgen_match.group(4)
-        lb = math.ceil(float(colgen_match.group(5)))
+        lb = float(colgen_match.group(5))
         time = colgen_match.group(6)
         # remove DD time?
         time = float(time) - float(ddTime)
@@ -1125,7 +1306,7 @@ for test in test_set:
         ddTime = colgen_match1.group(2)
         pricingTime = colgen_match1.group(3)
         masterTime = colgen_match1.group(4)
-        lb = math.ceil(float(colgen_match1.group(5)))
+        lb = float(colgen_match1.group(5))
         sol = float(colgen_match1.group(6))
         time = colgen_match1.group(7)
         # remove DD time?
@@ -1181,13 +1362,13 @@ for test in test_set:
       results.append(result)
       time_results.append(result)
     elif col_elim:
-      result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'numSep' : numSeparations, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+      result = {'instance': instance, 'test': test, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
       results.append(result)
     elif held:
       result = {'instance': instance, 'test': test, 'lb' : lb, 'time' : time}
       results.append(result)
     else:
-      result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'size': numpy.nan, 'time' : numpy.nan}
+      result = {'instance': instance, 'test': test, 'lpIt' : numpy.nan, 'lagIt' : numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'size': numpy.nan, 'time' : numpy.nan}
       results.append(result)
 
 # setup results df
@@ -1201,10 +1382,12 @@ time_results_df.reset_index(drop=True,inplace=True)
 # print table
 print_table = True
 if print_table:
-  table_results_df = results_df[['instance','test','lb','time']]
+  table_results_df = results_df[['instance','test','lb','lpIt','lagIt','time']]
   print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
 
-# experiment 2 - plot the lb versus time for each method
+run = True
+if run:
+# plot the lb versus time for each method
 # used these for paper exp2
 # using these to test X instances
 #tests_to_compare = ["col_elim_hg_lag_ng_2_50_N_3600",
@@ -1222,59 +1405,64 @@ if print_table:
 #tests_to_compare = ['Vrp-Set-HG_LAG_NG2']
 #tests_to_compare = ['Vrp-Long-Run_LAG_NG2_20000']
 #tests_to_compare = ['Vrp-Long-Long-Run_LAG_NG2_86400','Vrp-Long-Long-Run_LAG_NG2_172800','Vrp-Long-Long-Run_LAG_NG2_cuts_phase_172800', "Vrp-Long-Long-Long-Run_LAG_NG2_alpha_factor_345600"]
-tests_to_compare = ['X_LAG_NG2_All_3600']
+  #tests_to_compare = ['CVRP_LAG_NG2_All_3600','CVRP_LAG_NG2_SGD_3600','CVRP_LAG_NG2_No_Cuts_3600','CVRP_LAG_NG2_No_Phase_3600','CVRP_LAG_NG2_All_10800','CVRP_LAG_NG2_SGD_10800']
+  #tests_to_compare = ['X_LAG_NG2_All_10800','X_LAG_NG2_SGD_10800']
+  #tests_to_compare = ['CVRP_LAG_NG2_All_10800','CVRP_LAG_NG2_No_Phase_10800','CVRP_LAG_NG2_No_Cuts_10800','CVRP_LAG_NG2_SGD_10800']
+  tests_to_compare = ["CVRP_LAG_NG2_NoSwitch_3600_0", "CVRP_LAG_VA_NoCuts_3600_0", "CVRP_LAG_SGD_NoCuts_3600_0","CVRP_LAG_SGD_NoCuts_3600_1","CVRP_LAG_NG2_NoSwitchToLP_SwitchSepToCuts_3600_5"]
+  #tests_to_compare = ['X_LAG_NG2_All_10800','X_LAG_NG2_No_Phase_10800','X_LAG_NG2_No_Cuts_10800','X_LAG_NG2_SGD_10800']
 
 #instances_to_consider = ["X-n327-k20.vrp","X-n344-k43.vrp","X-n359-k29.vrp","X-n367-k17.vrp","X-n480-k70.vrp","X-n502-k39.vrp","X-n561-k42.vrp","X-n573-k30.vrp","X-n801-k40.vrp","X-n957-k87.vrp"]
-instances_to_consider = instances
+  instances_to_consider = instances
 #instances_to_consider = instances['X']
-for instance in instances_to_consider:
-  time = list(range(0,3600,100))
-  #time = list(range(0,7200,100))
-  #time = list(range(0,20000,100))
-  #time = list(range(0,86400,100))
-  #time = list(range(0,172800,100))
-  #time = list(range(0,345600,100))
-  lbs = []
-  labels = []
-  instance_results = time_results_df[time_results_df['instance'] == instance]
-  if instance_results.empty:
-    continue
-  if not instance_results.empty:
-    for test in tests_to_compare:
-      instance_test_results = instance_results[instance_results['test'] == test]
-      if not instance_test_results.empty:
-        instance_test_lb = []
-        for t in time:
-          instance_test_results_time = instance_test_results[instance_test_results['time'].astype(int) <= t]
-          if (instance_test_results_time.empty):
-            lb = 0
-          else:
-            lb = max(instance_test_results_time['lb'])
-          instance_test_lb.append(lb)
-        lbs.append(instance_test_lb)
-        labels.append(test)
+  for instance in instances_to_consider:
+    time = list(range(0,3600,100))
+    #time = list(range(0,7200,100))
+    #time = list(range(0,10800,100))
+    #time = list(range(0,20000,100))
+    #time = list(range(0,86400,100))
+    #time = list(range(0,172800,100))
+    #time = list(range(0,345600,100))
+    lbs = []
+    labels = []
+    instance_results = time_results_df[time_results_df['instance'] == instance]
+    if instance_results.empty:
+      continue
+    if not instance_results.empty:
+      for test in tests_to_compare:
+        instance_test_results = instance_results[instance_results['test'] == test]
+        if not instance_test_results.empty:
+          instance_test_lb = []
+          for t in time:
+            instance_test_results_time = instance_test_results[instance_test_results['time'].astype(int) <= t]
+            if (instance_test_results_time.empty):
+              lb = 0
+            else:
+              lb = max(instance_test_results_time['lb'])
+            instance_test_lb.append(lb)
+          lbs.append(instance_test_lb)
+          labels.append(test)
 
-    min_val = 10000000
-    max_val = 0
-    for (label, lb) in zip(labels, lbs):
-      if len([l for l in lb if l >0]) == 0:
-        continue
-      to_plot = zip(time,lb)
-      to_plot = [data for data in to_plot if data[1] > 0]
-      times_to_plot = [d[0] for d in to_plot]
-      lbs_to_plot = [d[1] for d in to_plot]
-      plt.plot(times_to_plot,lbs_to_plot,label=label)
-      min_value = min([l for l in lb if l > 0])
-      max_value = max(lb)
-      min_val = min(min_val, min_value)
-      max_val = max(max_val, max_value)
-    plt.title(instance)
-    plt.xlabel('time (s)')
-    plt.ylabel('lb')
-    if instance in instance_upper_bounds:
-      plt.axhline(y=instance_upper_bounds[instance],linewidth=2,label="opt",color="magenta")
-      plt.ylim(min_val-10,instance_upper_bounds[instance]+10)
-    else:
-      plt.ylim(min_val,max_val)
-    plt.legend()
-    plt.show()
+      min_val = 10000000
+      max_val = 0
+      for (label, lb) in zip(labels, lbs):
+        if len([l for l in lb if l >0]) == 0:
+          continue
+        to_plot = zip(time,lb)
+        to_plot = [data for data in to_plot if data[1] > 0]
+        times_to_plot = [d[0] for d in to_plot]
+        lbs_to_plot = [d[1] for d in to_plot]
+        plt.plot(times_to_plot,lbs_to_plot,label=label)
+        min_value = min([l for l in lb if l > 0])
+        max_value = max(lb)
+        min_val = min(min_val, min_value)
+        max_val = max(max_val, max_value)
+      plt.title(instance)
+      plt.xlabel('time (s)')
+      plt.ylabel('lb')
+      if instance in instance_upper_bounds:
+        plt.axhline(y=instance_upper_bounds[instance],linewidth=2,label="opt",color="magenta")
+        plt.ylim(min_val-10,instance_upper_bounds[instance]+10)
+      else:
+        plt.ylim(min_val,max_val)
+      plt.legend()
+      plt.show()

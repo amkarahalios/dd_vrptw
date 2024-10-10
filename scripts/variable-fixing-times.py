@@ -752,6 +752,16 @@ for method_pair in method_pairs:
     avg_diff = sum(diffs) / len(diffs)
     print(f'lp avg diff: {avg_diff}')
     plt.scatter(no_fix_times, fix_times, marker='o', label='CE', color='g')
+ 
+  # difference in times as factor
+  if 'LAG' in method_pair[0]:
+    diffs = [(fix - no_fix) * 100 / no_fix for (fix,no_fix) in zip(fix_times,no_fix_times) if no_fix != 0]
+    avg_diff = sum(diffs) / len(diffs)
+    print(f'lag avg diff (as factor): {avg_diff}')
+  else:
+    diffs = [(fix - no_fix) * 100 / no_fix for (fix,no_fix) in zip(fix_times,no_fix_times) if no_fix != 0]
+    avg_diff = sum(diffs) / len(diffs)
+    print(f'lp avg diff (as factor): {avg_diff}')
 
 plt.xlabel('CE Solve Time (s)')
 plt.xscale('log')
