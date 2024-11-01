@@ -1737,7 +1737,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
         }
         else
         {
@@ -1926,7 +1926,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
         }
         else
         {
@@ -2073,7 +2073,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
 
           // rounding in TSPTW
           instanceUpperBound += 0.01;
@@ -2192,7 +2192,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
         }
         else
         {
@@ -2322,7 +2322,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
 
           // rounding in TSPTW
           //instanceUpperBound += 0.01;

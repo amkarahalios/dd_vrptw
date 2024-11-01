@@ -135,8 +135,10 @@ class VRPTWDDSolver
 
     // for arc fixing
     std::vector<Dual> currDualsArcFixing;
-    std::vector<Dual> bestDualsArcFixing;
-    double bestDualsArcFixingPercent;
+    std::vector<Dual> bestDualsArcFixingLag;
+    double bestDualsArcFixingLagPercent;
+    Dual bestDualArcFixingLP;
+    double bestDualArcFixingLPPercent;
 
     // for subgradient descent / volume algorithm
     Dual bestDual;
@@ -180,7 +182,7 @@ class VRPTWDDSolver
 
     // used to deactivate cuts
     std::vector<int> capCutTooSmallCounters;
-    std::vector<int> cliqueCutTooSmallCounters;
+    std::vector<int> srcCutTooSmallCounters;
 
     DDStats stats;
 };

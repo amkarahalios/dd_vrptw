@@ -48,7 +48,8 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "mu percent improved: " << muPercentImproved << std::endl;
   std::cout << "percent to start cuts: " << percentGapToStartCuts << std::endl;
 
-  bestDualsArcFixingPercent = 0.0;
+  bestDualsArcFixingLagPercent = 0.0;
+  bestDualArcFixingLPPercent = 0.0;
   bestDualValue = 0.0;
   stepSizeMultiplier = 1.0;
   stepSizeMultiplierIteration = 0;
@@ -256,14 +257,14 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
 
         if ((cutSet.size() <= vrptw.numLocations / 2) || !params.useSparseRCCs)
         {
-          routeDD.addCapCutSet(cutSet, rccArcs, RHS, RCCType::Type1, params.lpSolveType, params.useScaling);
-          std::cout << "using type 1 with rhs: " << RHS << std::endl;
+          routeDD.addCapCutSet(cutSet, rccArcs, RHS, RCCType::Type1, params.useScaling);
+          std::cout << "adding RCC type 1 with rhs: " << RHS << std::endl;
         }
         else
         {
           double newRHS = RHS - cutSet.size() + ((vrptw.numLocations - 1) - cutSet.size());
-          routeDD.addCapCutSet(cutSet, rccArcs, newRHS, RCCType::Type3, params.lpSolveType, params.useScaling);
-          std::cout << "using type 3 with rhs: " << newRHS << std::endl;
+          routeDD.addCapCutSet(cutSet, rccArcs, newRHS, RCCType::Type3, params.useScaling);
+          std::cout << "adding RCC type 3 with rhs: " << newRHS << std::endl;
         }
       }
     }
@@ -373,7 +374,7 @@ void VRPTWDDSolver::addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeH
 void VRPTWDDSolver::addSRCCuts(std::vector<double>& srcDuals, const std::vector<double>& violations)
 {
   int newViolationIndex = 0;
-  for (int index=srcDuals.size(); index<routeDD.getNumCliqueCuts(); ++index)
+  for (int index=srcDuals.size(); index<routeDD.getNumSrcCuts(); ++index)
   {
     srcDuals.push_back(violations[newViolationIndex]);
     ++newViolationIndex;
@@ -478,6 +479,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
   Dual dual;
   initializeDual(dual);
   bestDual = dual;
+  bestDualArcFixingLP = dual;
 
   SGDAlgorithm sgdAlgo = SGDAlgorithm::SGD;
   if (params.useVolumeAlgorithm)
@@ -494,32 +496,79 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
     bool solved = false;
     if (params.lpSolveType == LPSolveType::LPSolver)
     {
-      if (stats.lpIterations > 1)
+      double percentArcsFixed = 0.0;
+      if (!changedLagToLP)
       {
-        double percentArcsFixed = 0.0;
-        if (!changedLagToLP)
+        if (params.useVariableFixing)
         {
-          if (params.useVariableFixing)
+          if (bestDualArcFixingLPPercent > 0)
           {
-            //std::cout << "initial value: " << routeDD.getDualObjectiveValue(dual, LPSolveType::LPSolver) << std::endl;
-            //repairMultipliers(dual, LPSolveType::LPSolver);
-            percentArcsFixed = routeDD.fixArcs(dual, LPSolveType::LPSolver);
+            repairMultipliers(bestDualArcFixingLP, LPSolveType::LPSolver);
+            percentArcsFixed = routeDD.fixArcs(bestDualArcFixingLP, LPSolveType::LPSolver);
+            /*
+            if (!routeDD.checkAn48k7SolutionPossible())
+            {
+              routeDD.printFixedArcs();
+              printMultipliers(bestDualArcFixingLP);
+              routeDD.print();
+              routeDD.printCuts();
+              return false;
+            }
+            */
+          }
+
+          repairMultipliers(dual, LPSolveType::LPSolver);
+          percentArcsFixed = routeDD.fixArcs(dual, LPSolveType::LPSolver);
+          /*
+          if (!routeDD.checkAn48k7SolutionPossible())
+          {
+            routeDD.printFixedArcs();
+            printMultipliers(dual);
+            routeDD.print();
+            routeDD.printCuts();
+            return false;
+          }
+          */
+          if (percentArcsFixed > bestDualArcFixingLPPercent)
+          {
+            bestDualArcFixingLPPercent = percentArcsFixed;
+            bestDualArcFixingLP = dual;
+            std::cout << "update best LP dual for fixing. Percent: " << bestDualArcFixingLPPercent << std::endl;
           }
         }
-        else
-        {
-          // TODO(akarahal) if using a counter to avoid loops for LAG solve...
-          // ...can now get rid of them by merging nodes!
-          // TODO(akarahal) may be helpful to save even more duals for fixing!
-          changedLagToLP = false;
-        }
+      }
+      else
+      {
+        // TODO(akarahal) if using a counter to avoid loops for LAG solve...
+        // ...can now get rid of the counters by merging nodes!
+        changedLagToLP = false;
       }
 
       // TODO(akarahal) store best duals for arc fixing better
       if (params.useVariableFixing)
       {
-        //repairMultipliers(bestDualArcFixing, LPSolveType::LAGSolver);
-        routeDD.fixArcs(bestDualsArcFixing, LPSolveType::LAGSolver);
+        std::cout << "fix with best duals from LAG. Using: " << bestDualsArcFixingLag.size() << " duals" << std::endl;
+        std::vector<Dual> dualsToUseForFixing;
+        for (int dualMultiplierIndex=0; dualMultiplierIndex<bestDualsArcFixingLag.size(); ++dualMultiplierIndex)
+        {
+          Dual dualToRepair = bestDualsArcFixingLag[dualMultiplierIndex];
+          repairMultipliers(dualToRepair, LPSolveType::LAGSolver);
+          dualsToUseForFixing.push_back(dualToRepair);
+        }
+        routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver);
+        /*
+        if (!routeDD.checkAn48k7SolutionPossible())
+        {
+          routeDD.printFixedArcs();
+          for (auto dualU : dualsToUseForFixing)
+          {
+            printMultipliers(dualU);
+          }
+          routeDD.print();
+          routeDD.printCuts();
+          return false;
+        }
+        */
       }
 
       if (lpFlowType == FlowType::LP)
@@ -527,6 +576,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         //routeDD.strengthenSRCs(averageRouteLength);
         //routeDD.checkAn32k5SolutionPossible();
         //routeDD.checkAn36k5SolutionPossible();
+        //routeDD.checkAn48k7SolutionPossible();
         solved = solveLP(dual);
       }
       else
@@ -637,7 +687,8 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         }
 
         resizeMultipliers(dual, bestDual);
-        resizeMultipliers(dual, bestDualsArcFixing);
+        resizeMultipliers(dual, bestDualsArcFixingLag);
+        resizeMultipliers(dual, bestDualArcFixingLP);
         resizeMultipliers(dual, currDualsArcFixing);
  
         auto endTimeCut = std::chrono::high_resolution_clock::now();
@@ -690,7 +741,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           if (routeDD.doesRouteExistByArcs(infeasibleRoute))
           {
             stats.numSeparations = stats.numSeparations + 1;
-            routeDD.separateInfeasibleRoute(infeasibleRoute);
+            routeDD.separateRoute(infeasibleRoute);
             currDualsArcFixing.clear();
           }
         }
@@ -937,12 +988,13 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
     double longestShortestPathLength = 0;
     double shortestPathLength = routeDD.computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc, longestShortestPathLength);
     shortestPathLength = shortestPathLength - repairedDual.fixedPathDual;
-    if (shortestPathLength >= 0)
+    if (shortestPathLength >= -0.0000000001)
     {
       break;
     }
     else
     {
+      std::cout << "Dual needs repair, spl: " << shortestPathLength << std::endl;
       bool updated = false;
       std::vector<std::vector<int>> shortestPathsByArc;
       shortestPathsByArc.push_back(shortestPathByArc);
@@ -1010,7 +1062,7 @@ void VRPTWDDSolver::printMultipliers(Dual& dual)
   std::cout << "srcDuals: ";
   for (int index=0; index<dual.srcDuals.size(); ++index)
   {
-    if (routeDD.isCliqueCutActive(index))
+    if (routeDD.isSrcCutActive(index))
     {
       std::cout << dual.srcDuals[index] << ",";
     }
@@ -1030,8 +1082,8 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
   std::vector<double> combValues;
   routeDD.getCombValues(combValues);
 
-  std::vector<double> cliqueCutValues;
-  routeDD.getCliqueCutValues(cliqueCutValues);
+  std::vector<double> srcCutValues;
+  routeDD.getSrcCutValues(srcCutValues);
 
   // gamma_(k) = b - Ax_(k)
   // Beasley - when multiplier is already 0 and step direction is negative, don't include in ||gamma||^2
@@ -1057,7 +1109,7 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
     int gammaIndex = i + vrptw.numLocations;
     if (routeDD.isCapCutActive(i))
     {
-      gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i) * routeDD.getCapCutSetScaling(i)) + cutValues[i];
+      gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
       if ((i % numCapCutUpdateGroups != stats.numLagIterations % numCapCutUpdateGroups) || ((dual.capDuals[i] <= 0.001) && (gamma[gammaIndex] <= 0.001)))
       {
         gamma[gammaIndex] = 0;
@@ -1081,7 +1133,7 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
     int gammaIndex = i + vrptw.numLocations + dual.capDuals.size();
     SRCType srcType = routeDD.getSRCType(i);
     int rhs = routeDD.getSRCRHS(srcType);
-    gamma[gammaIndex] = (-1*rhs) + cliqueCutValues[i];
+    gamma[gammaIndex] = (-1*rhs) + srcCutValues[i];
 
     if ((dual.srcDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
     {
@@ -1174,21 +1226,21 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
   // remove if too small for too long
   for (int srcIndex=0; srcIndex<dual.srcDuals.size(); ++srcIndex)
   {
-    if (routeDD.isCliqueCutActive(srcIndex))
+    if (routeDD.isSrcCutActive(srcIndex))
     {
       if (dual.srcDuals[srcIndex] < deactivateCutValueThreshold)
       {
-        cliqueCutTooSmallCounters[srcIndex] = cliqueCutTooSmallCounters[srcIndex] + 1;
-        if (cliqueCutTooSmallCounters[srcIndex] > deactivateCutIterThreshold)
+        srcCutTooSmallCounters[srcIndex] = srcCutTooSmallCounters[srcIndex] + 1;
+        if (srcCutTooSmallCounters[srcIndex] > deactivateCutIterThreshold)
         {
           std::cout << "deactivated src cut at index: " << srcIndex << std::endl;
-          routeDD.deactivateCliqueCut(srcIndex);
+          routeDD.deactivateSrcCut(srcIndex);
           stats.numCuts = stats.numCuts - 1;
         }
       }
       else
       {
-        cliqueCutTooSmallCounters[srcIndex] = 0;
+        srcCutTooSmallCounters[srcIndex] = 0;
       }
     }
   }
@@ -1294,11 +1346,18 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       double minReducedCost = 0.0;
       Dual repairedDual(dual);
       double percentFixed = 0.0;
-      if (params.useVariableFixing && (bestDualsArcFixingPercent > 0.001))
+      if (params.useVariableFixing && (bestDualsArcFixingLagPercent > 0.001))
       {
-        //repairMultipliers(bestDualsArcFixing, LPSolveType::LAGSolver);
         auto startTimeFix = std::chrono::high_resolution_clock::now();
-        routeDD.fixArcs(bestDualsArcFixing, LPSolveType::LAGSolver);
+        std::cout << "fix with best duals from LAG. Using: " << bestDualsArcFixingLag.size() << " duals" << std::endl;
+        std::vector<Dual> dualsToUseForFixing;
+        for (int dualMultiplierIndex=0; dualMultiplierIndex<bestDualsArcFixingLag.size(); ++dualMultiplierIndex)
+        {
+          Dual dualToRepair = bestDualsArcFixingLag[dualMultiplierIndex];
+          repairMultipliers(dualToRepair, LPSolveType::LAGSolver);
+          dualsToUseForFixing.push_back(dualToRepair);
+        }
+        routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver);
         auto endTimeFix = std::chrono::high_resolution_clock::now();
         auto totalTimeFix = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeFix - startTimeFix).count();
         stats.millisecondsFix += totalTimeFix;
@@ -1329,8 +1388,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
 
       for (int index=0; index<dual.capDuals.size(); ++index)
       {
-        lagrangeanLowerBound += dual.capDuals[index] * routeDD.getCapCutSetRHS(index) * -1 * routeDD.getCapCutSetScaling(index);
-        dualBoundWithoutFixedPathDual += dual.capDuals[index] * routeDD.getCapCutSetRHS(index) * -1 * routeDD.getCapCutSetScaling(index);
+        lagrangeanLowerBound += dual.capDuals[index] * routeDD.getCapCutSetRHS(index) * -1;
+        dualBoundWithoutFixedPathDual += dual.capDuals[index] * routeDD.getCapCutSetRHS(index) * -1;
       }
  
       for (int index=0; index<dual.combDuals.size(); ++index)
@@ -1348,6 +1407,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       if (vrptw.fixedNumPaths == FixedNumPaths::FIXED_NUM_PATHS)
       {
         dual.fixedPathDual = (lagrangeanLowerBound - dualBoundWithoutFixedPathDual) / vrptw.numVehicles;
+        repairedDual.fixedPathDual = dual.fixedPathDual;
         std::cout << "fixed path dual: " << dual.fixedPathDual << std::endl;
 
         minReducedCost = minReducedCost - dual.fixedPathDual;
@@ -1363,6 +1423,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       else
       {
         dual.fixedPathDual = 0.0;
+        repairedDual.fixedPathDual = dual.fixedPathDual;
       }
 
       std::cout << "lag: " << lagrangeanLowerBound << std::endl;
@@ -1560,13 +1621,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       }
 
       // Repair Dual
-      //if (isDualFeasible & (vrptw.fixedNumPaths != FixedNumPaths::FIXED_NUM_PATHS))
       if (isDualFeasible)
       {
         if (params.useVariableFixing && tryArcFixingOrRepair)
         {
-          //repairMultipliers(repairedDual, LPSolveType::LAGSolver);
           double previousPercentFixed = percentFixed;
+          repairMultipliers(repairedDual, LPSolveType::LAGSolver);
           percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver);
           std::cout << "percent fixed: " << percentFixed << std::endl;
           if (((percentFixed - previousPercentFixed) > 1) && (currDualsArcFixing.size() < 5))
@@ -1575,11 +1635,11 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           }
         }
 
-        if (percentFixed > bestDualsArcFixingPercent)
+        if (percentFixed > bestDualsArcFixingLagPercent)
         {
           std::cout << "updating best lambda arc fixing" << std::endl;
-          bestDualsArcFixing = currDualsArcFixing;
-          bestDualsArcFixingPercent = percentFixed;
+          bestDualsArcFixingLag = currDualsArcFixing;
+          bestDualsArcFixingLagPercent = percentFixed;
         }
       }
       else
@@ -1632,11 +1692,11 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
               currDualsArcFixing.push_back(repairedDual);
             }
             std::cout << "percent fixed: " << percentFixed << std::endl;
-            if (percentFixed > bestDualsArcFixingPercent)
+            if (percentFixed > bestDualsArcFixingLagPercent)
             {
               std::cout << "updating from repair - best lambda arc fixing" << std::endl;
-              bestDualsArcFixingPercent = percentFixed;
-              bestDualsArcFixing = currDualsArcFixing;
+              bestDualsArcFixingLagPercent = percentFixed;
+              bestDualsArcFixingLag = currDualsArcFixing;
             }
           }
         }
@@ -1663,7 +1723,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         if (routeDD.doesRouteExistByArcs(infeasibleRouteToSeparateByArc))
         {
           stats.numSeparations = stats.numSeparations + 1;
-          routeDD.separateInfeasibleRoute(infeasibleRouteToSeparateByArc);
+          routeDD.separateRoute(infeasibleRouteToSeparateByArc);
           currDualsArcFixing.clear();
         }
       }
@@ -1828,8 +1888,8 @@ void VRPTWDDSolver::getGradient(const Primal& currPrimal, const Dual& dual, std:
   std::vector<double> combValues;
   routeDD.getCombValuesRoutes(currPrimal, combValues);
 
-  std::vector<double> cliqueCutValues;
-  routeDD.getCliqueCutValuesRoutes(currPrimal, cliqueCutValues);
+  std::vector<double> srcCutValues;
+  routeDD.getSrcCutValuesRoutes(currPrimal, srcCutValues);
 
   // gradient_(k) = b - Ax_(k)
   gradient.resize(vrptw.numLocations + dual.capDuals.size() + dual.srcDuals.size() + dual.combDuals.size(), 0);
@@ -1844,7 +1904,7 @@ void VRPTWDDSolver::getGradient(const Primal& currPrimal, const Dual& dual, std:
     int gradientIndex = i + vrptw.numLocations;
     if (routeDD.isCapCutActive(i))
     {
-      gradient[gradientIndex] = (-1 * routeDD.getCapCutSetRHS(i) * routeDD.getCapCutSetScaling(i)) + cutValues[i];
+      gradient[gradientIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
     }
     else
     {
@@ -1858,7 +1918,7 @@ void VRPTWDDSolver::getGradient(const Primal& currPrimal, const Dual& dual, std:
     int gradientIndex = i + vrptw.numLocations + dual.capDuals.size();
     SRCType srcType = routeDD.getSRCType(i);
     int rhs = routeDD.getSRCRHS(srcType);
-    gradient[gradientIndex] = (-1*rhs) + cliqueCutValues[i];
+    gradient[gradientIndex] = (-1*rhs) + srcCutValues[i];
   }
 
   for (int i=0; i<dual.combDuals.size(); ++i)
@@ -1880,8 +1940,8 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
   std::vector<double> combValues;
   routeDD.getCombValuesRoutes(currPrimal, combValues);
 
-  std::vector<double> cliqueCutValues;
-  routeDD.getCliqueCutValuesRoutes(currPrimal, cliqueCutValues);
+  std::vector<double> srcCutValues;
+  routeDD.getSrcCutValuesRoutes(currPrimal, srcCutValues);
 
   // gamma_(k) = b - Ax_(k)
   // Beasley - when multiplier is already 0 and step direction is negative, don't include in ||gamma||^2
@@ -1919,7 +1979,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
     }
 
     //if (i != keepIndex)
-    gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i) * routeDD.getCapCutSetScaling(i)) + cutValues[i];
+    gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
     if ((i % numCapCutUpdateGroups != stats.numLagIterations % numCapCutUpdateGroups) || ((dual.capDuals[i] <= 0.001) && (gamma[gammaIndex] <= 0.001)))
     {
       gamma[gammaIndex] = 0;
@@ -1935,11 +1995,11 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
   for (int i=0; i<dual.srcDuals.size(); ++i)
   {
     int gammaIndex = i + vrptw.numLocations + dual.capDuals.size();
-    if (routeDD.isCliqueCutActive(i))
+    if (routeDD.isSrcCutActive(i))
     {
       SRCType srcType = routeDD.getSRCType(i);
       int rhs = routeDD.getSRCRHS(srcType);
-      gamma[gammaIndex] = (-1*rhs) + cliqueCutValues[i];
+      gamma[gammaIndex] = (-1*rhs) + srcCutValues[i];
 
       if ((bestDual.srcDuals[i] <= 0.01) && (gamma[gammaIndex] <= 0.01))
       {
@@ -2034,21 +2094,21 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
   // remove if too small for too long
   for (int srcIndex=0; srcIndex<dual.srcDuals.size(); ++srcIndex)
   {
-    if (routeDD.isCliqueCutActive(srcIndex))
+    if (routeDD.isSrcCutActive(srcIndex))
     {
       if (dual.srcDuals[srcIndex] < deactivateCutValueThreshold)
       {
-        cliqueCutTooSmallCounters[srcIndex] = cliqueCutTooSmallCounters[srcIndex] + 1;
-        if (cliqueCutTooSmallCounters[srcIndex] > deactivateCutIterThreshold)
+        srcCutTooSmallCounters[srcIndex] = srcCutTooSmallCounters[srcIndex] + 1;
+        if (srcCutTooSmallCounters[srcIndex] > deactivateCutIterThreshold)
         {
           std::cout << "deactivated src cut at index: " << srcIndex << std::endl;
-          routeDD.deactivateCliqueCut(srcIndex);
+          routeDD.deactivateSrcCut(srcIndex);
           stats.numCuts = stats.numCuts - 1;
         }
       }
       else
       {
-        cliqueCutTooSmallCounters[srcIndex] = 0;
+        srcCutTooSmallCounters[srcIndex] = 0;
       }
     }
   }
@@ -2138,10 +2198,11 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
 
   //resizeMultipliersAndCopy(dual, bestDual);
   resizeMultipliers(dual, bestDual);
-  resizeMultipliers(dual, bestDualsArcFixing);
+  resizeMultipliers(dual, bestDualsArcFixingLag);
   resizeMultipliers(dual, currDualsArcFixing);
+  resizeMultipliers(dual, bestDualArcFixingLP);
   capCutTooSmallCounters.resize(dual.capDuals.size());
-  cliqueCutTooSmallCounters.resize(dual.srcDuals.size());
+  srcCutTooSmallCounters.resize(dual.srcDuals.size());
 
   auto endTimeCut = std::chrono::high_resolution_clock::now();
   auto totalTimeCut = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeCut - startTimeCut).count();

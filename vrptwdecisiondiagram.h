@@ -49,12 +49,12 @@ struct Primal
 
 struct VRPTWNodeState
 {
-  VRPTWNodeState(int _counter, int _capacity, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited) : counter(_counter), capacity(_capacity), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited), srcCount(0) {};
-  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited), srcCount(state.srcCount) {};
+  VRPTWNodeState(int _counter, int _capacity, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited) : counter(_counter), capacity(_capacity), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited) {};
+  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited) {};
 
   bool operator==(const VRPTWNodeState & rhs) const
   {
-    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited) && (srcCount == rhs.srcCount))
+    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
     {
       return true;
     }
@@ -104,8 +104,6 @@ struct VRPTWNodeState
   int timeWithMultiplier;
   int lastVisited;
   std::set<int> visited;
-
-  int srcCount;
 };
 
 struct hash_state
@@ -226,12 +224,12 @@ class VRPTWDecisionDiagram
     void getNumberOfTimesLocationsCovered(std::unordered_map<int,double>& locationsCovered);
     void getCutSetValues(std::vector<double>& cutValues);
     void getCombValues(std::vector<double>& combValues);
-    void getCliqueCutValues(std::vector<double>& cliqueCutValues);
+    void getSrcCutValues(std::vector<double>& srcCutValues);
 
     void getNumberOfTimesLocationsCoveredRoutes(const Primal& primal, std::unordered_map<int,double>& locationsCovered);
     void getCutSetValuesRoutes(const Primal& primal, std::vector<double>& cutValues);
     void getCombValuesRoutes(const Primal& primal, std::vector<double>& combValues);
-    void getCliqueCutValuesRoutes(const Primal& primal, std::vector<double>& cliqueCutValues);
+    void getSrcCutValuesRoutes(const Primal& primal, std::vector<double>& srcCutValues);
 
     void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
     bool areNodesConnected(int nodeIndex1, int nodeIndex2);
@@ -266,8 +264,7 @@ class VRPTWDecisionDiagram
     bool doesRouteExistByLocations(const std::vector<int>& routeByLocation, std::vector<int>& routeArcs) const;
     void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, DecompositionReason dr);
     void getSolutionArcs(std::set<int>& solutionArcs);
-    void separateInfeasibleRoute(const std::vector<int>& routeArcs);
-    int separateFeasibleRoute(const std::vector<int>& routeArcs);
+    void separateRoute(const std::vector<int>& routeArcs);
     bool isRouteFeasible(const std::vector<int>& route);
     void repairRoute(const std::vector<int>& route, std::vector<int>& feasibleRoute, std::vector<int>& feasibleRouteArcs);
 
@@ -301,14 +298,16 @@ class VRPTWDecisionDiagram
     const std::vector<VRPTWArc>& getArcs() const { return arcs; }
     bool checkAn32k5SolutionPossible() const;
     bool checkAn36k5SolutionPossible() const;
+    bool checkAn48k7SolutionPossible() const;
     bool checkC141SolutionPossible() const;
     bool checkLC121SolutionPossible() const;
     bool checkLRC121SolutionPossible() const;
     bool checkSinglePathPossible() const;
     void printCuts() const;
+    void printFixedArcs() const;
 
     // for cuts
-    void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, RCCType rccType, LPSolveType solveType, bool useScaling);
+    void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, RCCType rccType, bool useScaling);
     std::vector<int> getCapCutSet(int index) const { return capCutSets[index]; }
     double getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
     double getCapCutSetScaling(int index) const { return capCutSetsScaling[index]; }
@@ -317,11 +316,11 @@ class VRPTWDecisionDiagram
     double getRCCCoeff(std::vector<int> route, int rccIndex);
     bool calculateRCCCoeff(int arcIndex, int rccIndex, double& coeff);
 
-    int getNumCliqueCuts() const { return cliqueCuts.size(); }
+    int getNumSrcCuts() const { return srcCuts.size(); }
     bool isCapCutActive(int index);
     void deactivateCapCut(int index) { capCutActive[index] = false; }
-    bool isCliqueCutActive(int index);
-    void deactivateCliqueCut(int index) { cliqueCutActive[index] = false; }
+    bool isSrcCutActive(int index);
+    void deactivateSrcCut(int index) { srcCutActive[index] = false; }
 
     void addCombCutTeeth(const std::vector<std::set<int>>& teeth);
     void addCombCutRHS(const double& rhs) { combRHS.push_back(rhs); }
@@ -329,7 +328,7 @@ class VRPTWDecisionDiagram
     int getNumCombCuts() const { return combRHS.size(); }
 
     int getSRCCoeff(int numTimesVisited, SRCType srcType);
-    SRCType getSRCType(int index) { return cliqueCutTypes[index]; }
+    SRCType getSRCType(int index) { return srcCutTypes[index]; }
     int getSRCRHS(SRCType srcType);
     void clearRelaxedSrcs();
 
@@ -344,9 +343,12 @@ class VRPTWDecisionDiagram
     void setupNgSets(int s);
  
     double getSRCFlowViolation(const Primal& primal, const std::vector<int>& primalFeasibleIndices, const std::set<int>& cutSet, SRCType srcType);
-    void getSRCArcsAndCoeffs(const Primal& primal, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& bestLayerArcs, std::vector<int>& bestLayerCoeffs);
-    bool checkExistingCliqueCuts(const std::set<int>& testSet, std::vector<int>& bestArcSet, std::vector<int>& bestCoeffs, SRCType srcType);
+    void getSRCArcsAndCoeffs(const Primal& primal, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& srcArcs, std::vector<int>& srcCoeffs);
+    bool checkExistingSrcCuts(const std::set<int>& testSet, std::vector<int>& bestArcSet, std::vector<int>& bestCoeffs, SRCType srcType);
     int getNumTimesSetVisited(std::vector<int> route, const std::set<int>& cutSet);
+    void trimRouteToLocations(std::vector<int>& routeArcs, const std::set<int>& cutSet);
+    bool isArcIncrementalSRC(int numTimesVisited, SRCType srcType);
+    void getRouteSRCArcs(const std::vector<int>& routeArcs, const std::set<int>& cutSet, SRCType srcType, std::set<int>& arcSet);
     int getSRC3Coeff(int numTimesVisited);
     int getSRC4Coeff(int numTimesVisited);
     int getSRC5V1Coeff(int numTimesVisited);
@@ -387,14 +389,14 @@ class VRPTWDecisionDiagram
     std::vector<RCCType> rccTypes;
     std::vector<bool> capCutActive;
 
-    // Clique Cuts (SRC)
-    std::vector<std::set<int>> cliqueCuts;
-    std::vector<std::vector<int>> cliqueCutSeparatedArcs;
-    std::vector<std::vector<int>> cliqueCutSeparatedCoeffs;
-    std::vector<std::vector<int>> cliqueCutRelaxedArcs;
-    std::vector<std::vector<int>> cliqueCutRelaxedCoeffs;
-    std::vector<SRCType> cliqueCutTypes;
-    std::vector<bool> cliqueCutActive;
+    // SRC Cuts (SRC)
+    std::vector<std::set<int>> srcCuts;
+    std::vector<std::vector<int>> srcCutSeparatedArcs;
+    std::vector<std::vector<int>> srcCutSeparatedCoeffs;
+    std::vector<std::vector<int>> srcCutRelaxedArcs;
+    std::vector<std::vector<int>> srcCutRelaxedCoeffs;
+    std::vector<SRCType> srcCutTypes;
+    std::vector<bool> srcCutActive;
     int separatedFeasibleRouteCounter;
 
     // Strengthened Comb Cuts
