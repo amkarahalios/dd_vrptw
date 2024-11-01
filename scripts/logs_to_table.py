@@ -968,8 +968,9 @@ lb_pattern = re.compile("Current Bounds - LB: ([0-9]+) UB:.*")
 ub_pattern = re.compile("Current Bounds - LB:.*UB: ([0-9]+).*")
 finish_pattern = re.compile("Done solving.*time:\[([0-9]+).*\] LB:\[([0-9]+)\] UB:\[([0-9]+)\]")
 
-logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
+#logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
 #logs_dir = "/Users/akarahal/Desktop/dd_graph_color/logs/"
+logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_logs/"
 #test_set = ["col_elim_hg_lag_ng_4_20_N_3600","col_elim_hg-close_lag_ng_4_20_N-7200"]
 #test_set = ["col_elim_hg-close_lag_ng_4_20_N-7200"]
 test_set = ["col_elim_hg_lag_ng_2_50_N_3600",
@@ -1036,7 +1037,8 @@ test_set = ["col_elim_hg_lag_ng_2_50_N_3600",
             "Vrp-Long-Long-Run_LAG_NG2_86400",
             "Vrp-Long-Long-Run_LAG_NG2_172800",
             "Vrp-Long-Long-Run_LAG_NG2_cuts_phase_172800",
-            "Vrp-Long-Long-Long-Run_LAG_NG2_alpha_factor_345600"]
+            "Vrp-Long-Long-Long-Run_LAG_NG2_alpha_factor_345600",
+            "LAG_NG2_All_3600"]
 
 instances = []
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/ALL_sop/"
@@ -1044,10 +1046,11 @@ instances = []
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Run/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Long-Run/"
-instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Long-Long-Run/"
+#instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Long-Long-Long-Run/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/X100200/"
 #instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG-C12-124/"
 #instance_dir = "/Users/akarahal/Desktop/dd_graph_color/instances/"
+instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/X/"
 
 for instance in os.listdir(instance_dir):
   instances.append(instance)
@@ -1261,7 +1264,7 @@ if experiment2:
   #                    "col_elim_sop_lp_ng_2_50_N_3600",
   #                    "col_elim_sop_lp_ng_5_50_N_3600",
   #                    "col_elim_sop_lp_ng_8_50_N_3600"]
-  tests_to_compare = ['Vrp-Set-HG_LAG_NG2']
+  #tests_to_compare = ['Vrp-Set-HG_LAG_NG2']
   #tests_to_compare = ['Vrp-Long-Run_LAG_NG2_20000']
   tests_to_compare = ['Vrp-Long-Long-Run_LAG_NG2_86400','Vrp-Long-Long-Run_LAG_NG2_172800','Vrp-Long-Long-Run_LAG_NG2_cuts_phase_172800', "Vrp-Long-Long-Long-Run_LAG_NG2_alpha_factor_345600"]
 
