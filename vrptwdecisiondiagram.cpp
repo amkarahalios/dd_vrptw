@@ -1328,8 +1328,11 @@ void VRPTWDecisionDiagram::getSRCArcsAndCoeffs(const Primal& primal, const std::
 
         for (int arcIndex : srcArcsRoute)
         {
-          srcArcs.push_back(arcIndex);
-          srcCoeffs.push_back(1);
+          if (std::find(srcArcs.begin(), srcArcs.end(), arcIndex) == srcArcs.end())
+          {
+            srcArcs.push_back(arcIndex);
+            srcCoeffs.push_back(1);
+          }
         }
       }
     }
@@ -1337,7 +1340,7 @@ void VRPTWDecisionDiagram::getSRCArcsAndCoeffs(const Primal& primal, const std::
 };
 
 // TODO(akarahal) deactivate elsewhere, but remember to zero-out related duals
-// add to clique cuts, might already have one with same test set
+// add to src cuts, might already have one with same test set
 // instead of updating, add new one - easier for arc fixing
 bool VRPTWDecisionDiagram::checkExistingSrcCuts(const std::set<int>& testSet, std::vector<int>& bestArcSet, std::vector<int>& bestCoeffs, SRCType srcType)
 {
@@ -1364,7 +1367,7 @@ bool VRPTWDecisionDiagram::checkExistingSrcCuts(const std::set<int>& testSet, st
           }
           else
           {
-            std::cout << "checking existing clique cut, arc already in set: " << arcIndex << std::endl;
+            std::cout << "checking existing src cut, arc already in set: " << arcIndex << std::endl;
           }
         }
 
@@ -2287,7 +2290,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       std::cout << "obj val: " << objValue << std::endl;
       if ((dualValue <= objValue - 0.00001) || (objValue <= dualValue - 0.00001))
       {
-        std::cout << "ERROR in dual value" << std::endl;
+        std::cout << "WARNING dual values for unit upper bounds on arcs" << std::endl;
       }
     }
 
@@ -4148,6 +4151,30 @@ bool VRPTWDecisionDiagram::checkAn32k5SolutionPossible() const
     if (!doesRouteExistByLocations(routesByLocation[routeIndex], updatedRouteArcs))
     {
       std::cout << "ERROR An32k5: failed at index: " << routeIndex << std::endl;
+      return false;
+    }
+  }
+
+  std::cout << "clear" << std::endl;
+  return true;
+}
+
+bool VRPTWDecisionDiagram::checkAn33k6SolutionPossible() const
+{
+  std::vector<std::vector<int>> routesByLocation;
+  //routesByLocation.push_back({21,31,19,17,13,7,26,0});
+  routesByLocation.push_back({5,2,20,15,9,3,8,4,0});
+  routesByLocation.push_back({31,24,23,26,22,0});
+  routesByLocation.push_back({17,11,29,19,7,0});
+  routesByLocation.push_back({10,12,21,0});
+  routesByLocation.push_back({28,27,30,16,25,32,0});
+  routesByLocation.push_back({13,6,18,1,14,0});
+  for (int routeIndex=0; routeIndex<routesByLocation.size(); ++routeIndex)
+  {
+    std::vector<int> updatedRouteArcs;
+    if (!doesRouteExistByLocations(routesByLocation[routeIndex], updatedRouteArcs))
+    {
+      std::cout << "ERROR An33k6: failed at index: " << routeIndex << std::endl;
       return false;
     }
   }

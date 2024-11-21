@@ -297,6 +297,7 @@ class VRPTWDecisionDiagram
     const std::vector<VRPTWNode>& getNodes() const { return nodes; }
     const std::vector<VRPTWArc>& getArcs() const { return arcs; }
     bool checkAn32k5SolutionPossible() const;
+    bool checkAn33k6SolutionPossible() const;
     bool checkAn36k5SolutionPossible() const;
     bool checkAn48k7SolutionPossible() const;
     bool checkC141SolutionPossible() const;

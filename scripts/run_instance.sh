@@ -25,6 +25,6 @@ do
     echo "$OUTPUT_FILE does exist."
   else
     echo "Running for $OUTPUT_FILE"
-    timeout 3600 .././solver $f $2 $PARAM_FILE > $OUTPUT_FILE
+    timeout 50000 .././solver $f $2 $PARAM_FILE > $OUTPUT_FILE
   fi
 done

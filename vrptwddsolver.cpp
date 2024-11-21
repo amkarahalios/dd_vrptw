@@ -34,7 +34,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   percentFixedToChangeToCPLEX = 97.5;
   numArcsToChangeToCPLEX = 100000;
   numLagCuts = 20;
-  kappaIterations = 40;
+  kappaIterations = 20;
   muPercentImproved = 0.001;
   percentGapToStartCuts = 0.95;
 
@@ -57,21 +57,21 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   alphaLowerBound = 0.1;
   alphaLowerBoundIteration = 0;
   targetLowerBound = 1.0;
-  targetBoundIncrease = 1.05;
+  targetBoundIncrease = 1.01;
   minStepSizeMultiplier = 0.0001;
 
-  shouldRestart = false;
-  numCapCutUpdateGroups = 5;
-  numIterationsRestart = 5;
-  numIterationsDeactivations = 2;
+  //shouldRestart = false;
+  //numCapCutUpdateGroups = 5;
+  //numIterationsRestart = 5;
+  //numIterationsDeactivations = 2;
 
   // va parameters
   std::cout << "step size iteration cutoff: " << stepSizeMultiplierIterationCutoff << std::endl;
   std::cout << "target bound increase: " << targetBoundIncrease << std::endl;
   std::cout << "min step size multiplier: " << minStepSizeMultiplier << std::endl;
-  std::cout << "num cap cut update groups: " << numCapCutUpdateGroups << std::endl;
-  std::cout << "num iterations restart: " << numIterationsRestart << std::endl;
-  std::cout << "num iterations deactivation: " << numIterationsDeactivations << std::endl;
+  //std::cout << "num cap cut update groups: " << numCapCutUpdateGroups << std::endl;
+  //std::cout << "num iterations restart: " << numIterationsRestart << std::endl;
+  //std::cout << "num iterations deactivation: " << numIterationsDeactivations << std::endl;
 
   // dynamic parameters
   std::cout << "ngSetSize: " << params.ngSetSize << std::endl;
@@ -88,12 +88,14 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "use restarts: " << params.useRestarts << std::endl;
   std::cout << "switch separations to cuts: " << params.switchSepToCuts << std::endl;
 
+  /*
   if (params.switchSepToCuts)
   {
     params.useRobustCuts = false;
     params.useNonRobustCuts = false;
     params.useSeparations = true;
   }
+  */
 
   CMGR_CreateCMgr(&MyCutsCMP,Dim);
   CMGR_CreateCMgr(&MyOldCutsCMP,Dim);
@@ -506,7 +508,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
             repairMultipliers(bestDualArcFixingLP, LPSolveType::LPSolver);
             percentArcsFixed = routeDD.fixArcs(bestDualArcFixingLP, LPSolveType::LPSolver);
             /*
-            if (!routeDD.checkAn48k7SolutionPossible())
+            if (!routeDD.checkAn33k6SolutionPossible())
             {
               routeDD.printFixedArcs();
               printMultipliers(bestDualArcFixingLP);
@@ -520,7 +522,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           repairMultipliers(dual, LPSolveType::LPSolver);
           percentArcsFixed = routeDD.fixArcs(dual, LPSolveType::LPSolver);
           /*
-          if (!routeDD.checkAn48k7SolutionPossible())
+          if (!routeDD.checkAn33k6SolutionPossible())
           {
             routeDD.printFixedArcs();
             printMultipliers(dual);
@@ -557,7 +559,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         }
         routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver);
         /*
-        if (!routeDD.checkAn48k7SolutionPossible())
+        if (!routeDD.checkAn33k6SolutionPossible())
         {
           routeDD.printFixedArcs();
           for (auto dualU : dualsToUseForFixing)
@@ -574,9 +576,15 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       if (lpFlowType == FlowType::LP)
       {
         //routeDD.strengthenSRCs(averageRouteLength);
-        //routeDD.checkAn32k5SolutionPossible();
-        //routeDD.checkAn36k5SolutionPossible();
-        //routeDD.checkAn48k7SolutionPossible();
+        /*
+        if (!routeDD.checkAn33k6SolutionPossible())
+        {
+          routeDD.printFixedArcs();
+          routeDD.print();
+          routeDD.printCuts();
+          return false;
+        }
+        */
         solved = solveLP(dual);
       }
       else
@@ -592,8 +600,8 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       if (params.lpSolveType == LPSolveType::LPSolver)
       {
         changedLagToLP = true;
-        params.useRobustCuts = true;
-        params.useNonRobustCuts = true;
+        //params.useRobustCuts = true;
+        //params.useNonRobustCuts = true;
         continue;
       }
     }
@@ -622,14 +630,12 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       std::vector<std::vector<int>> decomposedArcs;
       std::vector<double> routeFlows;
 
-      // do cuts first in case separations mess up dd structure
       if (lpFlowType == FlowType::LP)
       {
-        auto startTimeCut = std::chrono::high_resolution_clock::now();
-
         if (params.useRobustCuts)
         {
-          // RCC - rounded capacity cuts
+          auto startTimeCut = std::chrono::high_resolution_clock::now();
+          // RCC - Rounded Capacity Cuts
           std::vector<int> edgeTail;
           std::vector<int> edgeHead;
           std::vector<double> edgeFlow;
@@ -641,23 +647,20 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           // Strengthened Combs
           addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
           dual.combDuals.resize(routeDD.getNumCombCuts());
+          auto endTimeCut = std::chrono::high_resolution_clock::now();
+          auto totalTimeCut = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeCut - startTimeCut).count();
+          stats.millisecondsFindingCuts += totalTimeCut;
         }
 
+        // SRC - Subset Row Cuts
+        // Part 1 - calculate primals, don't separate until after decomposition separations happen
         if (params.useNonRobustCuts)
         {
-          // Subset Row Cuts
+          auto startTimeCut = std::chrono::high_resolution_clock::now();
           std::vector<int> infeasibleRoute;
           routeDD.decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-          averageRouteLength = averageRouteLength * numRoutesInAverage;
-          for (auto route : decomposedRoutes)
-          {
-            averageRouteLength = averageRouteLength + route.size();
-          }
-          numRoutesInAverage += decomposedRoutes.size();
-          averageRouteLength = averageRouteLength / numRoutesInAverage;
 
           // currently adding by full separation, can strengthen with all up / all down
-          std::vector<double> violations;
           primal = Primal();
           for (int index=0; index<decomposedRoutes.size(); ++index)
           {
@@ -668,37 +671,23 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
             primal.xDecompositionArcs.push_back(routeArcs);
             primal.xDecompositionFlows.push_back(routeFlow);
           }
-          numSrcAdded = routeDD.findSRC3s(primal, 100, violations);
-          numSrcAdded += routeDD.findSRC4s(primal, 100, violations);
-          //numSrcAdded += routeDD.findSRC5V1s(primal, 100, violations);
-          //numSrcAdded += routeDD.findSRC5V2s(primal, 100, violations);
 
-          if (numSrcAdded > 0)
-          {
-            cutAdded = true;
-            stats.numCuts = stats.numCuts + numSrcAdded;
-          }
-
-          std::vector<double> zeroViolations;
-          zeroViolations.resize(violations.size());
-          addSRCCuts(dual.srcDuals, zeroViolations);
-
-          currDualsArcFixing.clear();
+          auto endTimeCut = std::chrono::high_resolution_clock::now();
+          auto totalTimeCut = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeCut - startTimeCut).count();
+          stats.millisecondsFindingCuts += totalTimeCut;
         }
-
+ 
         resizeMultipliers(dual, bestDual);
         resizeMultipliers(dual, bestDualsArcFixingLag);
         resizeMultipliers(dual, bestDualArcFixingLP);
         resizeMultipliers(dual, currDualsArcFixing);
  
-        auto endTimeCut = std::chrono::high_resolution_clock::now();
-        auto totalTimeCut = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeCut - startTimeCut).count();
-        stats.millisecondsFindingCuts += totalTimeCut;
       }
 
       bool stopFindingInfeasibilities = false;
       std::vector<std::vector<int>> infeasibilities;
-      if ((numSrcAdded == 0) && params.useSeparations)
+      //if ((numSrcAdded == 0) && params.useSeparations)
+      if (params.useSeparations)
       {
         while (!stopFindingInfeasibilities)
         {
@@ -763,6 +752,38 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           index = index + 1;
         }
         std::cout << "no more separations possible" << std::endl;
+      }
+ 
+      // SRC - Subset Row Cuts
+      // Part 2 - these may require separations, which may alter the structure
+      if (params.useNonRobustCuts)
+      {
+        auto startTimeCut = std::chrono::high_resolution_clock::now();
+        std::vector<double> violations;
+        numSrcAdded = routeDD.findSRC3s(primal, 100, violations);
+        numSrcAdded += routeDD.findSRC4s(primal, 100, violations);
+        //numSrcAdded += routeDD.findSRC5V1s(primal, 100, violations);
+        //numSrcAdded += routeDD.findSRC5V2s(primal, 100, violations);
+
+        if (numSrcAdded > 0)
+        {
+          cutAdded = true;
+          stats.numCuts = stats.numCuts + numSrcAdded;
+        }
+ 
+        std::vector<double> zeroViolations;
+        zeroViolations.resize(violations.size());
+        addSRCCuts(dual.srcDuals, zeroViolations);
+
+        resizeMultipliers(dual, bestDual);
+        resizeMultipliers(dual, bestDualsArcFixingLag);
+        resizeMultipliers(dual, bestDualArcFixingLP);
+        resizeMultipliers(dual, currDualsArcFixing);
+
+        currDualsArcFixing.clear();
+        auto endTimeCut = std::chrono::high_resolution_clock::now();
+        auto totalTimeCut = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeCut - startTimeCut).count();
+        stats.millisecondsFindingCuts += totalTimeCut;
       }
 
       if (!cutAdded && (infeasibilities.size() == 0))
@@ -1110,7 +1131,8 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
     if (routeDD.isCapCutActive(i))
     {
       gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
-      if ((i % numCapCutUpdateGroups != stats.numLagIterations % numCapCutUpdateGroups) || ((dual.capDuals[i] <= 0.001) && (gamma[gammaIndex] <= 0.001)))
+      //if ((i % numCapCutUpdateGroups != stats.numLagIterations % numCapCutUpdateGroups) || ((dual.capDuals[i] <= 0.001) && (gamma[gammaIndex] <= 0.001)))
+      if ((dual.capDuals[i] <= 0.001) && (gamma[gammaIndex] <= 0.001))
       {
         gamma[gammaIndex] = 0;
       }
@@ -1267,6 +1289,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
   dual = bestDual;
  
   // consider switching from VA/SGD/SepToCuts
+  /*
   if (params.switchSepToCuts)
   {
     if (params.useSeparations && (stats.lpIterations != 0))
@@ -1294,13 +1317,13 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
   else if (sgdAlgo == SGDAlgorithm::SGD)
   {
     std::cout << "using separating again" << std::endl;
-    kappaIterations = 100;
     params.useSeparations = true;
   }
 
   // restart
   if (shouldRestart)
   {
+    // starting from initial dual not a good idea
     std::cout << "restarting" << std::endl;
     initializeDual(dual);
     initializeDual(bestDual);
@@ -1312,9 +1335,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
     shouldRestart = false;
 
     muPercentImproved = 0.0001;
-    minStepSizeMultiplier = 0.0001;
-    numCapCutUpdateGroups = 1;
+    //minStepSizeMultiplier = 0.0001;
+    //numCapCutUpdateGroups = 1;
   }
+  */
 
   // check best LP
   /*
@@ -1681,7 +1705,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
 
               if (repairedBound > 0.95 * targetLowerBound)
               {
-                targetLowerBound = std::min(repairedBound * 1.05, stats.upperBound);
+                targetLowerBound = std::min(repairedBound * targetBoundIncrease, stats.upperBound);
               }
             }
 
@@ -1740,13 +1764,16 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
     if ((shouldTerminate && (params.useRobustCuts || params.useNonRobustCuts)) && shouldCut)
     {
       addCutsUsingCurrentPrimal(dual);
+      /*
       if (params.useRestarts)
       {
         shouldRestart = true;
       }
+      */
     }
 
     // Consider switch setp to cuts
+    /*
     if (shouldTerminate && params.switchSepToCuts)
     {
       if (params.useRestarts)
@@ -1754,8 +1781,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         shouldRestart = true;
       }
     }
+    */
 
     // Switch back to VA to add more cuts?
+    /*
     if (shouldTerminate && (sgdAlgo == SGDAlgorithm::SGD) && (stats.lpIterations % numIterationsRestart == 0))
     {
       if (params.useRestarts)
@@ -1763,6 +1792,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         shouldRestart = true;
       }
     }
+    */
 
     infeasibleRoutesByArc.clear();
   }
@@ -2136,42 +2166,40 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
   }
 
   // Subset Row Cuts
-  double totalFlow = 0;
-  std::vector<double> flowByVertex(vrptw.numLocations, 0);
-  for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
-  {
-    double flow = primal.xDecompositionFlows[index];
-    totalFlow += flow;
-    auto route = primal.xDecompositions[index];
-    std::cout << "route with flow " << flow << " : ";
-    for (int loc : route)
-    {
-      flowByVertex[loc] += flow;
-      std::cout << loc << ",";
-    }
-    std::cout << " ";
-    auto routeArcs = primal.xDecompositionArcs[index];
-    for (int arcIndex : routeArcs)
-    {
-      std::cout << arcIndex << ",";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << "total flow: " << totalFlow << std::endl;
-  for (int index=0; index<vrptw.numLocations; ++index)
-  {
-    std::cout << "loc: " << index << " flow: " << flowByVertex[index] << std::endl;
-  }
-
   if (params.useNonRobustCuts)
   {
+    double totalFlow = 0;
+    std::vector<double> flowByVertex(vrptw.numLocations, 0);
+    for (int index=0; index<primal.xDecompositionFlows.size(); ++index)
+    {
+      double flow = primal.xDecompositionFlows[index];
+      totalFlow += flow;
+      auto route = primal.xDecompositions[index];
+      std::cout << "route with flow " << flow << " : ";
+      for (int loc : route)
+      {
+        flowByVertex[loc] += flow;
+        std::cout << loc << ",";
+      }
+      std::cout << " ";
+      auto routeArcs = primal.xDecompositionArcs[index];
+      for (int arcIndex : routeArcs)
+      {
+        std::cout << arcIndex << ",";
+      }
+      std::cout << std::endl;
+    }
+    std::cout << "total flow: " << totalFlow << std::endl;
+    for (int index=0; index<vrptw.numLocations; ++index)
+    {
+      std::cout << "loc: " << index << " flow: " << flowByVertex[index] << std::endl;
+    }
+
     std::vector<double> violations;
-    //std::cout << "finding src3s" << std::endl;
-    //int numSrc3Added = routeDD.findSRC3s(primal, numLagCuts, violations);
-    //std::cout << "finding src4s" << std::endl;
-    //int numSrc4Added = routeDD.findSRC4s(primal, numLagCuts, violations);
-    int numSrc3Added = 0;
-    int numSrc4Added = 0;
+    std::cout << "finding src3s" << std::endl;
+    int numSrc3Added = routeDD.findSRC3s(primal, numLagCuts, violations);
+    std::cout << "finding src4s" << std::endl;
+    int numSrc4Added = routeDD.findSRC4s(primal, numLagCuts, violations);
 
     int numSrcAdded = numSrc3Added + numSrc4Added;
     if (numSrcAdded > 0)
@@ -2184,13 +2212,15 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual)
       addSRCCuts(dual.srcDuals, violations);
 
       // strengthen src using average route length
+      /*
       int averageRouteLength = 0;
       for (int index=0; index<primal.xDecompositions.size(); ++index)
       {
         averageRouteLength += primal.xDecompositions[index].size();
       }
       averageRouteLength = averageRouteLength / primal.xDecompositions.size();
-      //routeDD.strengthenSRCs(averageRouteLength);
+      routeDD.strengthenSRCs(averageRouteLength);
+      */
  
       currDualsArcFixing.clear();
     }
