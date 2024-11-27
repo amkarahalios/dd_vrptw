@@ -1,13 +1,11 @@
 #include "vrptwddsolver.h"
 #include <math.h>
+#include <ilcplex/ilocplex.h>
 
 VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _params), params(_params)
 {
-  for (int location=0; location<vrptw.numLocations; ++location)
-  {
-    //stats.upperBound += (vrptw.distances[location][0] * 2);
-    stats.upperBound = vrptw.instanceUpperBound;
-  }
+  //stats.upperBound = vrptw.instanceUpperBound;
+  stats.upperBound = INF;
 
   std::cout << "compiling DD" << std::endl;
   auto startCompileTime = std::chrono::high_resolution_clock::now();
@@ -614,12 +612,17 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
 
     // get primal heuristic flow decomp or just a flow decomp for the solution
     std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
-    //routeDD.primalHeuristic(routesByLocationPrimalHeuristic);
-    //double currentUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristic);
-    //if (currentUpperBound < stats.upperBound)
-    //{
-    //  stats.upperBound = currentUpperBound;
-    //}
+    bool primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
+    //bool primalHeuristicFeasible = primalHeuristicMIP(routesByLocationPrimalHeuristic);
+    if (primalHeuristicFeasible)
+    {
+      double heuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristic);
+      if (heuristicUpperBound < stats.upperBound)
+      {
+        stats.upperBound = heuristicUpperBound;
+      }
+      std::cout << "primal heuristic ub: " << heuristicUpperBound << std::endl;
+    }
 
     // infeasibilities for LP solve
     if (params.lpSolveType == LPSolveType::LPSolver)
@@ -703,6 +706,21 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           else
           {
             stopFindingInfeasibilities = true;
+          }
+
+          // Add to set for primal heuristic
+          for (auto route : decomposedRoutes)
+          {
+            if (routeDD.isRouteFeasible(route))
+            {
+              primalRoutes.push_back(route);
+              primalRouteCosts.push_back(vrptw.evaluateRouteDistance(route));
+              int primalRouteIndex = primalRoutes.size()-1;
+              for (int loc : route)
+              {
+                primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+              }
+            }
           }
         }
       }
@@ -896,6 +914,90 @@ bool VRPTWDDSolver::solveLP(Dual& duals)
   //routeDD.print();
   return true;
 };
+
+// primal heuristic with MIP
+bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRoutes)
+{
+  std::cout << "running primal heuristic MIP" << std::endl;
+
+  // setup model
+  IloEnv env;
+  IloModel columnModel(env);
+  IloRangeArray coverConstraints(env);
+  IloNumVarArray x(env, primalRoutes.size());
+  IloExpr objective(env);
+
+  // setup variables and objective
+  int routeIndex = 0;
+  for (auto route : primalRoutes)
+  {
+    x[routeIndex] = IloNumVar(env, 0, 1, ILOINT);
+    objective += x[routeIndex] * primalRouteCosts[routeIndex];
+    ++routeIndex;
+  }
+
+  // setup cover constraints
+  for (int location=1; location<vrptw.numLocations; ++location)
+  {
+    IloExpr sumLocationRoutes(env);
+
+    for (int routeIndex : primalRouteLocationIndices[location])
+    {
+      sumLocationRoutes += x[routeIndex];
+    }
+
+    coverConstraints.add(sumLocationRoutes >= 1);
+  }
+  columnModel.add(coverConstraints);
+
+  std::cout << "primal heuristic num vars: " << routeIndex << std::endl;
+  columnModel.add(IloMinimize(env, objective));
+  objective.end();
+
+  // setup solver
+  IloCplex solver(columnModel);
+  solver.setOut(env.getNullStream());
+  solver.setWarning(env.getNullStream());
+  solver.setError(env.getNullStream());
+  solver.setParam(IloCplex::Param::Threads, 1);
+  solver.exportModel("MIPHeuristicModel.lp");
+
+  // solve model
+  solver.solve();
+
+  // get results
+  IloAlgorithm::Status solverStatus = solver.getStatus();
+  if (solverStatus == IloAlgorithm::Optimal)
+  {
+    // store results
+    for (int routeIndex=0; routeIndex<primalRoutes.size(); ++routeIndex)
+    {
+      double value = solver.getValue(x[routeIndex]);
+      if (value >= 0.999)
+      {
+        returnRoutes.push_back(primalRoutes[routeIndex]);
+      }
+    }
+
+    double objectiveValue = solver.getObjValue();
+    std::cout << "primal heuristic MIP obj: " << objectiveValue << std::endl;
+
+    std::cout << "feasible primal routes: " << std::endl;
+    for (auto primalRoute : returnRoutes)
+    {
+      std::cout << "route: " << std::endl;
+      for (int loc : primalRoute)
+      {
+        std::cout << loc << " ";
+      }
+      std::cout << std::endl;
+    }
+
+    return true;
+  }
+
+  return false;
+}
 
 bool VRPTWDDSolver::solvePricingProblem(std::vector<double>& lambda)
 {
@@ -1530,6 +1632,38 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       auto endTimeDecompose = std::chrono::high_resolution_clock::now();
       auto totalTimeDecompose = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeDecompose - startTimeDecompose).count();
       stats.millisecondsDecompose += totalTimeDecompose;
+
+      // Add to set for primal heuristic
+      int numPrimalRoutes = primalRoutes.size();
+      for (auto route : decomposedRoutes)
+      {
+        if (routeDD.isRouteFeasible(route))
+        {
+          primalRoutes.push_back(route);
+          primalRouteCosts.push_back(vrptw.evaluateRouteDistance(route));
+          int primalRouteIndex = primalRoutes.size()-1;
+          for (int loc : route)
+          {
+            primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+          }
+        }
+      }
+      if (primalRoutes.size() > numPrimalRoutes)
+      {
+        // get primal heuristic flow decomp or just a flow decomp for the solution
+        std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
+        //bool primalHeuristicFeasible = primalHeuristicMIP(routesByLocationPrimalHeuristic);
+        bool primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
+        if (primalHeuristicFeasible)
+        {
+          double heuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristic);
+          if (heuristicUpperBound < stats.upperBound)
+          {
+            stats.upperBound = heuristicUpperBound;
+          }
+          std::cout << "primal heuristic ub: " << heuristicUpperBound << std::endl;
+        }
+      }
 
       // for yellow, check v^{t} dot (1 - Ax^{t})
       if (sgdAlgo == SGDAlgorithm::VA)

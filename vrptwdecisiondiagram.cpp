@@ -2674,30 +2674,86 @@ double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType)
   return getPercentFixedArcs();
 }
 
-// greedily take paths with flow
-void VRPTWDecisionDiagram::primalHeuristic(std::vector<std::vector<int>>& routesByLocationPrimalHeuristic)
+int VRPTWDecisionDiagram::selectArcWithLargestFlowFromNode(int nodeIndex)
 {
-  DBG(std::cout << "running primal heuristic" << std::endl;)
+  int arcIndexLargestFlow = -1;
+  double largestFlow = 0;
+  for (int outArcIndex : nodes[nodeIndex].outArcs)
+  {
+    double flow = arcs[outArcIndex].heuristicFlow;
+    if (flow > 0.00001)
+    {
+      if (flow > largestFlow)
+      {
+        largestFlow = flow;
+        arcIndexLargestFlow = outArcIndex;
+      }
+    }
+  }
+
+  return arcIndexLargestFlow;
+}
+ 
+bool VRPTWDecisionDiagram::addLocationToRoute(int location, std::vector<int>& route)
+{
+  int bestInsertionIndex = -1;
+  double bestDistance = INF;
+  for (int insertionIndex=0; insertionIndex<route.size(); ++insertionIndex)
+  {
+    std::vector<int> newRoute;
+    for (int routeIndex=0; routeIndex<route.size(); ++routeIndex)
+    {
+      if (insertionIndex == routeIndex)
+      {
+        newRoute.push_back(location);
+      }
+      newRoute.push_back(route[routeIndex]);
+    }
+    bool isFeasible = isRouteFeasible(newRoute);
+    if (isFeasible)
+    {
+      double distance = vrptw.evaluateRouteDistance(newRoute);
+
+      if (distance < bestDistance)
+      {
+        bestDistance = distance;
+        bestInsertionIndex = insertionIndex;
+      }
+    }
+  }
+
+  if (bestInsertionIndex == -1)
+  {
+    return false;
+  }
+  else
+  {
+    route.insert(route.begin() + bestInsertionIndex, location);
+    return true;
+  }
+}
+
+// greedily take paths with flow
+// choose highest flow value
+// follow path down until cannot go further
+// after this, try adding elements to current sequences in loop
+// can try adding element anywhere in each sequence, and use the best one
+bool VRPTWDecisionDiagram::primalHeuristicGreedy(std::vector<std::vector<int>>& routesByLocationPrimalHeuristic)
+{
+  std::cout << "running primal heuristic greedy" << std::endl;
+
+  bool rootFlowExists = true;
   std::set<int> locationsCovered;
   locationsCovered.insert(0);
-  bool rootFlowExists = true;
-  while (locationsCovered.size() != vrptw.numLocations)
+  while (rootFlowExists && (locationsCovered.size() < vrptw.numLocations))
   {
-    std::vector<int> route;
-    route.push_back(0);
     int currentNodeIndex = rootNodeIndex;
     bool continueRoute = true;
-    while (continueRoute && rootFlowExists)
+    std::vector<int> route;
+    route.push_back(0);
+    while (continueRoute)
     {
-      int arcIndex = -1;
-      for (int outArcIndex : nodes[currentNodeIndex].outArcs)
-      {
-        if (arcs[outArcIndex].heuristicFlow > 0.00001)
-        {
-          arcIndex = outArcIndex;
-          break;
-        }
-      }
+      int arcIndex = selectArcWithLargestFlowFromNode(currentNodeIndex);
 
       if (arcIndex == -1)
       {
@@ -2708,23 +2764,26 @@ void VRPTWDecisionDiagram::primalHeuristic(std::vector<std::vector<int>>& routes
         }
         break;
       }
-
-      arcs[arcIndex].heuristicFlow = 0;
-      int nextArcLocation = arcs[arcIndex].location;
-      int nextNodeIndex = arcs[arcIndex].toNodeIndex;
-      if (locationsCovered.find(nextArcLocation) == locationsCovered.end())
-      {
-        route.push_back(nextArcLocation);
-        locationsCovered.insert(nextArcLocation);
-      }
-
-      if (nextNodeIndex == terminalNodeIndex)
-      {
-        continueRoute = false;
-      }
       else
       {
-        currentNodeIndex = nextNodeIndex;
+        int nextArcLocation = arcs[arcIndex].location;
+        int nextNodeIndex = arcs[arcIndex].toNodeIndex;
+        if (locationsCovered.find(nextArcLocation) == locationsCovered.end())
+        {
+          route.push_back(nextArcLocation);
+          locationsCovered.insert(nextArcLocation);
+        }
+
+        if (nextNodeIndex == terminalNodeIndex)
+        {
+          continueRoute = false;
+        }
+        else
+        {
+          currentNodeIndex = nextNodeIndex;
+        }
+ 
+        arcs[arcIndex].heuristicFlow = 0;
       }
     }
 
@@ -2734,64 +2793,60 @@ void VRPTWDecisionDiagram::primalHeuristic(std::vector<std::vector<int>>& routes
     {
       routesByLocationPrimalHeuristic.push_back(route);
     }
+  }
  
-    // add the rest of the locations
-    if (!rootFlowExists)
+  // when done with flow decomposition, greedily add other locations
+  for (int location=1; location<vrptw.numLocations; ++location)
+  {
+    if (locationsCovered.find(location) == locationsCovered.end())
     {
-      std::vector<int> capacities;
-      for (auto currRoute : routesByLocationPrimalHeuristic)
+      for (int routeIndex=0; routeIndex<routesByLocationPrimalHeuristic.size(); ++routeIndex)
       {
-        int cap = 0;
-        for (int loc : currRoute)
+        auto route = routesByLocationPrimalHeuristic[routeIndex];
+        bool addedLocation = addLocationToRoute(location, route);
+        if (addedLocation)
         {
-          cap = cap + vrptw.demands[loc];
+          locationsCovered.insert(location);
+          routesByLocationPrimalHeuristic[routeIndex] = route;
+          break;
         }
-        capacities.push_back(cap);
-      }
-
-      for (int location=1; location<vrptw.numLocations; ++location)
-      {
-        if (locationsCovered.find(location) == locationsCovered.end())
-        {
-          for (int routeIndex=0; routeIndex<capacities.size(); ++routeIndex)
-          {
-            if (capacities[routeIndex] + vrptw.demands[location] <= vrptw.capacity)
-            {
-              capacities[routeIndex] = capacities[routeIndex] + vrptw.demands[location];
-              auto beforeLast = routesByLocationPrimalHeuristic[routeIndex].end()-1;
-              routesByLocationPrimalHeuristic[routeIndex].insert(beforeLast, location);
-              locationsCovered.insert(location);
-              break;
-            }
-          }
-        }
-      }
-
-      std::vector<int> extraRoute;
-      extraRoute.push_back(0);
-      int extraRouteCap = 0;
-      for (int location=1; location<vrptw.numLocations; ++location)
-      {
-        if (locationsCovered.find(location) == locationsCovered.end())
-        {
-          if ((extraRouteCap + vrptw.demands[location]) <= vrptw.capacity)
-          {
-            extraRouteCap = extraRouteCap + vrptw.demands[location];
-            extraRoute.push_back(location);
-            locationsCovered.insert(location);
-          }
-        }
-      }
-      extraRoute.push_back(0);
-      if (extraRoute.size() > 2)
-      {
-        routesByLocationPrimalHeuristic.push_back(extraRoute);
       }
     }
   }
 
-  DBG(
-    for (auto primalRoute: routesByLocationPrimalHeuristic)
+  // if not all locations covered, try to make new sequences to cover them all
+  while (true)
+  {
+    bool addedNewLocation = false;
+
+    std::vector<int> newRoute;
+    newRoute.push_back(0);
+    for (int location=1; location<vrptw.numLocations; ++location)
+    {
+      if (locationsCovered.find(location) == locationsCovered.end())
+      {
+        bool addedLocation = addLocationToRoute(location, newRoute);
+        locationsCovered.insert(location);
+        addedNewLocation = true;
+      }
+    }
+
+    if (newRoute.size() > 1)
+    {
+      newRoute.push_back(0);
+      routesByLocationPrimalHeuristic.push_back(newRoute);
+    }
+
+    if (!addedNewLocation)
+    {
+      break;
+    }
+  }
+
+  // if all locations covered, return solution and true
+  if (locationsCovered.size() == vrptw.numLocations)
+  {
+    for (auto primalRoute : routesByLocationPrimalHeuristic)
     {
       std::cout << "primalRoute: ";
       for (int loc : primalRoute)
@@ -2800,7 +2855,14 @@ void VRPTWDecisionDiagram::primalHeuristic(std::vector<std::vector<int>>& routes
       }
       std::cout << std::endl;
     }
-  )
+    return true;
+  }
+  else
+  {
+    std::cout << "only " << locationsCovered.size() << " locations used" << std::endl;
+    routesByLocationPrimalHeuristic.clear();
+    return false;
+  }
 };
 
 bool VRPTWDecisionDiagram::doesRouteExistByArcs(const std::vector<int>& routeArcs) const

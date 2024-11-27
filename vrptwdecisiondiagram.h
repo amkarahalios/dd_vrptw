@@ -258,8 +258,12 @@ class VRPTWDecisionDiagram
     double fixArcs(const Dual& dual, LPSolveType lpSolveType);
     double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType);
 
-    // primal heuristic and separation methods
-    void primalHeuristic(std::vector<std::vector<int>>& routesByLocation);
+    // primal heuristics
+    int selectArcWithLargestFlowFromNode(int nodeIndex);
+    bool addLocationToRoute(int location, std::vector<int>& route);
+    bool primalHeuristicGreedy(std::vector<std::vector<int>>& routesByLocation);
+
+    // separation methods
     bool doesRouteExistByArcs(const std::vector<int>& routeArcs) const;
     bool doesRouteExistByLocations(const std::vector<int>& routeByLocation, std::vector<int>& routeArcs) const;
     void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, DecompositionReason dr);

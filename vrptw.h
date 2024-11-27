@@ -2339,17 +2339,25 @@ struct VRPTW
       std::cout << "route length upper bound: " << routeLengthUpperBound << std::endl;
     };
 
+    double evaluateRouteDistance(const std::vector<int>& routeByLocation)
+    {
+      double cost = 0;
+      int previousLoc = 0;
+      for (int loc : routeByLocation)
+      {
+        cost = cost + distances[loc][previousLoc];
+        previousLoc = loc;
+      }
+
+      return cost;
+    }
+
     double evaluateSolutionCost(const std::vector<std::vector<int>>& routesByLocation)
     {
       double cost = 0;
       for (auto route : routesByLocation)
       {
-        int previousLoc = 0;
-        for (int loc : route)
-        {
-          cost = cost + distances[loc][previousLoc];
-          previousLoc = loc;
-        }
+        cost += evaluateRouteDistance(route);
       }
 
       return cost;
@@ -2375,25 +2383,6 @@ struct VRPTW
       }
 
       return demandsCopy.size();
-    };
-
-    int isRouteInfeasible(const std::vector<int>& routeByLocation)
-    {
-      std::vector<int> locationsVisitedFreq;
-      locationsVisitedFreq.resize(numLocations);
-      for (int location : routeByLocation)
-      {
-        ++locationsVisitedFreq[location];
-        if (locationsVisitedFreq[location] == 2)
-        {
-          if (location != 0)
-          {
-            return location;
-          }
-        }
-      }
-
-      return -1;
     };
 
     void recomputeDistancesPDPTW()
