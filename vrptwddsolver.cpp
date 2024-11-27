@@ -4,8 +4,14 @@
 
 VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _params), params(_params)
 {
-  //stats.upperBound = vrptw.instanceUpperBound;
-  stats.upperBound = INF;
+  if (params.primalHeuristic == PrimalHeuristic::BEST_UB)
+  {
+    stats.upperBound = vrptw.instanceUpperBound;
+  }
+  else
+  {
+    stats.upperBound = INF;
+  }
 
   std::cout << "compiling DD" << std::endl;
   auto startCompileTime = std::chrono::high_resolution_clock::now();
@@ -85,6 +91,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "use sparse RCCs: " << params.useSparseRCCs << std::endl;
   std::cout << "use restarts: " << params.useRestarts << std::endl;
   std::cout << "switch separations to cuts: " << params.switchSepToCuts << std::endl;
+  std::cout << "primal heuristic: " << params.primalHeuristic << std::endl;
 
   /*
   if (params.switchSepToCuts)
@@ -610,10 +617,18 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       return false;
     }
 
-    // get primal heuristic flow decomp or just a flow decomp for the solution
+    // Primal Heuristic
     std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
-    bool primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
-    //bool primalHeuristicFeasible = primalHeuristicMIP(routesByLocationPrimalHeuristic);
+    bool primalHeuristicFeasible = false;
+    if (params.primalHeuristic == PrimalHeuristic::GREEDY)
+    {
+      primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
+    }
+    else if (params.primalHeuristic == PrimalHeuristic::MIP)
+    {
+      primalHeuristicFeasible = primalHeuristicMIP(routesByLocationPrimalHeuristic);
+    }
+
     if (primalHeuristicFeasible)
     {
       double heuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristic);
@@ -1648,21 +1663,30 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           }
         }
       }
-      if (primalRoutes.size() > numPrimalRoutes)
+
+      // Primal Heuristic
+      std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
+      bool primalHeuristicFeasible = false;
+      if (params.primalHeuristic == PrimalHeuristic::GREEDY)
       {
-        // get primal heuristic flow decomp or just a flow decomp for the solution
-        std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
-        //bool primalHeuristicFeasible = primalHeuristicMIP(routesByLocationPrimalHeuristic);
-        bool primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
-        if (primalHeuristicFeasible)
+        primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
+      }
+      else if (params.primalHeuristic == PrimalHeuristic::MIP)
+      {
+        if (primalRoutes.size() > numPrimalRoutes)
         {
-          double heuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristic);
-          if (heuristicUpperBound < stats.upperBound)
-          {
-            stats.upperBound = heuristicUpperBound;
-          }
-          std::cout << "primal heuristic ub: " << heuristicUpperBound << std::endl;
+          primalHeuristicFeasible = primalHeuristicMIP(routesByLocationPrimalHeuristic);
         }
+      }
+
+      if (primalHeuristicFeasible)
+      {
+        double heuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristic);
+        if (heuristicUpperBound < stats.upperBound)
+        {
+          stats.upperBound = heuristicUpperBound;
+        }
+        std::cout << "primal heuristic ub: " << heuristicUpperBound << std::endl;
       }
 
       // for yellow, check v^{t} dot (1 - Ax^{t})

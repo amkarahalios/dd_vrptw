@@ -223,6 +223,18 @@ int main(int argc, char** argv)
               params.switchSepToCuts = true;
             }
           }
+          else if (lineIndex == 20)
+          {
+            params.primalHeuristic = PrimalHeuristic::BEST_UB;
+            if (paramValueString == "GREEDY")
+            {
+              params.primalHeuristic = PrimalHeuristic::GREEDY;
+            }
+            else if (paramValueString == "MIP")
+            {
+              params.primalHeuristic = PrimalHeuristic::MIP;
+            }
+          }
         }
         wordIndex = wordIndex + 1;
       }

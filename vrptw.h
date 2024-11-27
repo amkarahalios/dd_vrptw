@@ -128,6 +128,13 @@ enum VRPTWTimeWindowType
   NO_TIME_WINDOWS = 1,
 };
 
+enum PrimalHeuristic
+{
+  GREEDY = 0,
+  BEST_UB = 1,
+  MIP = 2
+};
+
 struct VRPTWDDParameters
 {
   int timeoutSeconds;
@@ -149,6 +156,8 @@ struct VRPTWDDParameters
   bool useSparseRCCs;
   bool useRestarts;
   bool switchSepToCuts;
+
+  PrimalHeuristic primalHeuristic;
 };
 
 struct VRPTWSolution
