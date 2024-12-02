@@ -737,6 +737,34 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
               }
             }
           }
+
+          // Add truncated infeasible route
+          if (!infeasibleRoute.empty())
+          {
+            std::cout << "handle truncated route" << std::endl;
+            std::vector<int> truncatedRoute;
+            routeDD.doesRouteExistByArcs(infeasibleRoute, truncatedRoute);
+
+            truncatedRoute.pop_back();
+            truncatedRoute.push_back(0);
+            if (routeDD.isRouteFeasible(truncatedRoute))
+            {
+              primalRoutes.push_back(truncatedRoute);
+              primalRouteCosts.push_back(vrptw.evaluateRouteDistance(truncatedRoute));
+              int primalRouteIndex = primalRoutes.size()-1;
+              for (int loc : truncatedRoute)
+              {
+                primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+              }
+ 
+              std::cout << "truncated route: ";
+              for (int loc : truncatedRoute)
+              {
+                std::cout << loc << ",";
+              }
+              std::cout << std::endl;
+              }
+          }
         }
       }
       /*
@@ -760,7 +788,8 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       {
         for (auto infeasibleRoute : infeasibilities)
         {
-          if (routeDD.doesRouteExistByArcs(infeasibleRoute))
+          std::vector<int> emptyRoute;
+          if (routeDD.doesRouteExistByArcs(infeasibleRoute, emptyRoute))
           {
             stats.numSeparations = stats.numSeparations + 1;
             routeDD.separateRoute(infeasibleRoute);
@@ -1652,6 +1681,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       int numPrimalRoutes = primalRoutes.size();
       for (auto route : decomposedRoutes)
       {
+        // include feasible routes, and truncated infeasible routes
         if (routeDD.isRouteFeasible(route))
         {
           primalRoutes.push_back(route);
@@ -1660,6 +1690,29 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           for (int loc : route)
           {
             primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+          }
+        }
+        else
+        {
+          std::vector<int> truncatedRoute;
+          routeDD.createTruncatedRoute(route, truncatedRoute);
+
+          if (routeDD.isRouteFeasible(truncatedRoute))
+          {
+            primalRoutes.push_back(truncatedRoute);
+            primalRouteCosts.push_back(vrptw.evaluateRouteDistance(truncatedRoute));
+            int primalRouteIndex = primalRoutes.size()-1;
+            for (int loc : truncatedRoute)
+            {
+              primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+            }
+
+            std::cout << "created truncated route: ";
+            for (int loc : truncatedRoute)
+            {
+              std::cout << loc << ",";
+            }
+            std::cout << std::endl;
           }
         }
       }
@@ -1902,7 +1955,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       for (auto infeasibleRouteToSeparateByArc : infeasibleRoutesByArc)
       {
         // when separating changes, can use locations to re-find the route
-        if (routeDD.doesRouteExistByArcs(infeasibleRouteToSeparateByArc))
+        std::vector<int> emptyRoute;
+        if (routeDD.doesRouteExistByArcs(infeasibleRouteToSeparateByArc, emptyRoute))
         {
           stats.numSeparations = stats.numSeparations + 1;
           routeDD.separateRoute(infeasibleRouteToSeparateByArc);

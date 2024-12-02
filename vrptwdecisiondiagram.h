@@ -262,9 +262,10 @@ class VRPTWDecisionDiagram
     int selectArcWithLargestFlowFromNode(int nodeIndex);
     bool addLocationToRoute(int location, std::vector<int>& route);
     bool primalHeuristicGreedy(std::vector<std::vector<int>>& routesByLocation);
+    void createTruncatedRoute(const std::vector<int>& route, std::vector<int>& truncatedRoute);
 
     // separation methods
-    bool doesRouteExistByArcs(const std::vector<int>& routeArcs) const;
+    bool doesRouteExistByArcs(const std::vector<int>& routeArcs, std::vector<int>& locationArcs) const;
     bool doesRouteExistByLocations(const std::vector<int>& routeByLocation, std::vector<int>& routeArcs) const;
     void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, DecompositionReason dr);
     void getSolutionArcs(std::set<int>& solutionArcs);

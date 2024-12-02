@@ -2788,8 +2788,8 @@ bool VRPTWDecisionDiagram::primalHeuristicGreedy(std::vector<std::vector<int>>& 
     }
 
     // add route if at least one location was added
-    route.push_back(0);
-    if (route.size() > 2)
+    //route.push_back(0);
+    if (route.size() > 1)
     {
       routesByLocationPrimalHeuristic.push_back(route);
     }
@@ -2802,7 +2802,7 @@ bool VRPTWDecisionDiagram::primalHeuristicGreedy(std::vector<std::vector<int>>& 
     {
       for (int routeIndex=0; routeIndex<routesByLocationPrimalHeuristic.size(); ++routeIndex)
       {
-        auto route = routesByLocationPrimalHeuristic[routeIndex];
+        std::vector<int> route = routesByLocationPrimalHeuristic[routeIndex];
         bool addedLocation = addLocationToRoute(location, route);
         if (addedLocation)
         {
@@ -2826,8 +2826,11 @@ bool VRPTWDecisionDiagram::primalHeuristicGreedy(std::vector<std::vector<int>>& 
       if (locationsCovered.find(location) == locationsCovered.end())
       {
         bool addedLocation = addLocationToRoute(location, newRoute);
-        locationsCovered.insert(location);
-        addedNewLocation = true;
+        if (addedLocation)
+        {
+          locationsCovered.insert(location);
+          addedNewLocation = true;
+        }
       }
     }
 
@@ -2865,8 +2868,39 @@ bool VRPTWDecisionDiagram::primalHeuristicGreedy(std::vector<std::vector<int>>& 
   }
 };
 
-bool VRPTWDecisionDiagram::doesRouteExistByArcs(const std::vector<int>& routeArcs) const
+void VRPTWDecisionDiagram::createTruncatedRoute(const std::vector<int>& route, std::vector<int>& truncatedRoute)
 {
+  VRPTWNodeState currState = nodes[rootNodeIndex].state;
+  truncatedRoute.push_back(0);
+  for (int index=0; index<route.size(); ++index)
+  {
+    int nextLocation = route[index];
+    if (nextLocation == 0)
+    {
+      continue;
+    }
+
+    VRPTWNodeState newState(currState);
+    bool newNodeFeasible = generateNewStateFromExact(newState, nextLocation);
+    if (!newNodeFeasible)
+    {
+      truncatedRoute.push_back(0);
+      return;
+    }
+    else
+    {
+      truncatedRoute.push_back(nextLocation);
+    }
+
+    currState = newState;
+  }
+ 
+  truncatedRoute.push_back(0);
+}
+
+bool VRPTWDecisionDiagram::doesRouteExistByArcs(const std::vector<int>& routeArcs, std::vector<int>& routeLocations) const
+{
+  routeLocations.push_back(0);
   for (int index=0; index<(routeArcs.size()-1); ++index)
   {
     int currNodeIndex = arcs[routeArcs[index]].toNodeIndex;
@@ -2874,6 +2908,10 @@ bool VRPTWDecisionDiagram::doesRouteExistByArcs(const std::vector<int>& routeArc
     if (currNodeIndex != nextNodeIndex)
     {
       return false;
+    }
+    else
+    {
+      routeLocations.push_back(arcs[routeArcs[index]].location);
     }
   }
 
