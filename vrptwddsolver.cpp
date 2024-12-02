@@ -635,8 +635,17 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       if (heuristicUpperBound < stats.upperBound)
       {
         stats.upperBound = heuristicUpperBound;
+        std::cout << "primal heuristic ub: " << heuristicUpperBound << std::endl;
       }
-      std::cout << "primal heuristic ub: " << heuristicUpperBound << std::endl;
+
+      std::vector<std::vector<int>> routesByLocationPrimalHeuristicLNS;
+      largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
+      double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
+      if (lnsHeuristicUpperBound < stats.upperBound)
+      {
+        stats.upperBound = lnsHeuristicUpperBound;
+        std::cout << "lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+      }
     }
 
     // infeasibilities for LP solve
@@ -1038,6 +1047,153 @@ bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRout
     }
 
     return true;
+  }
+
+  return false;
+}
+
+bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+{
+  std::vector<std::vector<int>> routesToUse;
+  for (auto route : feasibleSolution)
+  {
+    routesToUse.push_back(route);
+  }
+
+  // use local search to include more primal routes
+  for (auto route : feasibleSolution)
+  {
+    for (int index1=1; index1<route.size()-1; ++index1)
+    {
+      for (int loc=1; loc<vrptw.numLocations; ++loc)
+      {
+        // 1. insert locations
+        std::vector<int> newRouteInsertion;
+        for (int index2=0; index2<route.size(); ++index2)
+        {
+          if (index1 == index2)
+          {
+            newRouteInsertion.push_back(route[index2]);
+            newRouteInsertion.push_back(loc);
+          }
+          else
+          {
+            newRouteInsertion.push_back(route[index2]);
+          }
+        }
+
+        if (routeDD.isRouteFeasible(newRouteInsertion))
+        {
+          routesToUse.push_back(newRouteInsertion);
+        }
+
+        // 2. remove locations
+        std::vector<int> newRouteDeletion;
+        for (int index2=0; index2<route.size(); ++index2)
+        {
+          if (index1 != index2)
+          {
+            newRouteDeletion.push_back(route[index2]);
+          }
+        }
+
+        if (routeDD.isRouteFeasible(newRouteDeletion))
+        {
+          routesToUse.push_back(newRouteDeletion);
+        }
+      }
+    }
+  }
+
+  // run mip again with the new set of routes
+  std::cout << "running lns heuristic MIP" << std::endl;
+
+  std::map<int,std::vector<int>> routesToUseLocationIndices;
+  for (int routeIndex=0; routeIndex<routesToUse.size(); ++routeIndex)
+  {
+    for (int loc : routesToUse[routeIndex])
+    {
+      routesToUseLocationIndices[loc].push_back(routeIndex);
+    }
+  }
+
+  // setup model
+  IloEnv env;
+  IloModel columnModel(env);
+  IloRangeArray coverConstraints(env);
+  IloNumVarArray x(env, routesToUse.size());
+  IloExpr objective(env);
+
+  // setup variables and objective
+  int routeIndex = 0;
+  for (auto route : routesToUse)
+  {
+    x[routeIndex] = IloNumVar(env, 0, 1, ILOINT);
+    objective += x[routeIndex] * vrptw.evaluateRouteDistance(route);
+    ++routeIndex;
+  }
+
+  // setup cover constraints
+  for (int location=1; location<vrptw.numLocations; ++location)
+  {
+    IloExpr sumLocationRoutes(env);
+
+    for (int routeIndex : routesToUseLocationIndices[location])
+    {
+      sumLocationRoutes += x[routeIndex];
+    }
+
+    coverConstraints.add(sumLocationRoutes >= 1);
+  }
+  columnModel.add(coverConstraints);
+
+  std::cout << "lns primal heuristic num vars: " << routeIndex << std::endl;
+  columnModel.add(IloMinimize(env, objective));
+  objective.end();
+
+  // setup solver
+  IloCplex solver(columnModel);
+  solver.setOut(env.getNullStream());
+  solver.setWarning(env.getNullStream());
+  solver.setError(env.getNullStream());
+  solver.setParam(IloCplex::Param::Threads, 1);
+  solver.exportModel("MIPHeuristicModelLNS.lp");
+
+  // solve model
+  solver.solve();
+
+  // get results
+  IloAlgorithm::Status solverStatus = solver.getStatus();
+  if (solverStatus == IloAlgorithm::Optimal)
+  {
+    // store results
+    for (int routeIndex=0; routeIndex<routesToUse.size(); ++routeIndex)
+    {
+      double value = solver.getValue(x[routeIndex]);
+      if (value >= 0.999)
+      {
+        newBestRoutes.push_back(routesToUse[routeIndex]);
+      }
+    }
+
+    double objectiveValue = solver.getObjValue();
+    std::cout << "lns primal heuristic MIP obj: " << objectiveValue << std::endl;
+    std::cout << "lns feasible primal routes: " << std::endl;
+    for (auto primalRoute : newBestRoutes)
+    {
+      std::cout << "route: " << std::endl;
+      for (int loc : primalRoute)
+      {
+        std::cout << loc << " ";
+      }
+      std::cout << std::endl;
+    }
+
+    return true;
+  }
+  else
+  {
+    std::cout << "ERROR lns infeasible" << std::endl;
   }
 
   return false;

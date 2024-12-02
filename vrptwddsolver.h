@@ -107,6 +107,7 @@ class VRPTWDDSolver
     bool solveIP(Dual& duals);
 
     bool primalHeuristicMIP(std::vector<std::vector<int>>& routesByLocationPrimalHeuristic);
+    bool largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
 
     void initializeDual(Dual& dual);
     bool solveLagrangeanRelaxation(Dual& duals, SGDAlgorithm& sgdAlgo);
