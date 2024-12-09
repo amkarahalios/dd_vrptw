@@ -755,12 +755,15 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           {
             if (routeDD.isRouteFeasible(route))
             {
-              primalRoutes.push_back(route);
-              primalRouteCosts.push_back(vrptw.evaluateRouteDistance(route));
-              int primalRouteIndex = primalRoutes.size()-1;
-              for (int loc : route)
+              if (std::find(primalRoutes.begin(), primalRoutes.end(), route) == primalRoutes.end())
               {
-                primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+                primalRoutes.push_back(route);
+                primalRouteCosts.push_back(vrptw.evaluateRouteDistance(route));
+                int primalRouteIndex = primalRoutes.size()-1;
+                for (int loc : route)
+                {
+                  primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+                }
               }
             }
           }
@@ -776,21 +779,24 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
             truncatedRoute.push_back(0);
             if (routeDD.isRouteFeasible(truncatedRoute))
             {
-              primalRoutes.push_back(truncatedRoute);
-              primalRouteCosts.push_back(vrptw.evaluateRouteDistance(truncatedRoute));
-              int primalRouteIndex = primalRoutes.size()-1;
-              for (int loc : truncatedRoute)
+              if (std::find(primalRoutes.begin(), primalRoutes.end(), truncatedRoute) == primalRoutes.end())
               {
-                primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+                primalRoutes.push_back(truncatedRoute);
+                primalRouteCosts.push_back(vrptw.evaluateRouteDistance(truncatedRoute));
+                int primalRouteIndex = primalRoutes.size()-1;
+                for (int loc : truncatedRoute)
+                {
+                  primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+                }
+   
+                std::cout << "truncated route: ";
+                for (int loc : truncatedRoute)
+                {
+                  std::cout << loc << ",";
+                }
+                std::cout << std::endl;
               }
- 
-              std::cout << "truncated route: ";
-              for (int loc : truncatedRoute)
-              {
-                std::cout << loc << ",";
-              }
-              std::cout << std::endl;
-              }
+            }
           }
         }
       }
@@ -1874,12 +1880,15 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         // include feasible routes, and truncated infeasible routes
         if (routeDD.isRouteFeasible(route))
         {
-          primalRoutes.push_back(route);
-          primalRouteCosts.push_back(vrptw.evaluateRouteDistance(route));
-          int primalRouteIndex = primalRoutes.size()-1;
-          for (int loc : route)
+          if (std::find(primalRoutes.begin(), primalRoutes.end(), route) == primalRoutes.end())
           {
-            primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+            primalRoutes.push_back(route);
+            primalRouteCosts.push_back(vrptw.evaluateRouteDistance(route));
+            int primalRouteIndex = primalRoutes.size()-1;
+            for (int loc : route)
+            {
+              primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+            }
           }
         }
         else
@@ -1889,20 +1898,23 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
 
           if (routeDD.isRouteFeasible(truncatedRoute))
           {
-            primalRoutes.push_back(truncatedRoute);
-            primalRouteCosts.push_back(vrptw.evaluateRouteDistance(truncatedRoute));
-            int primalRouteIndex = primalRoutes.size()-1;
-            for (int loc : truncatedRoute)
+            if (std::find(primalRoutes.begin(), primalRoutes.end(), route) == primalRoutes.end())
             {
-              primalRouteLocationIndices[loc].push_back(primalRouteIndex);
-            }
+              primalRoutes.push_back(truncatedRoute);
+              primalRouteCosts.push_back(vrptw.evaluateRouteDistance(truncatedRoute));
+              int primalRouteIndex = primalRoutes.size()-1;
+              for (int loc : truncatedRoute)
+              {
+                primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+              }
 
-            std::cout << "created truncated route: ";
-            for (int loc : truncatedRoute)
-            {
-              std::cout << loc << ",";
+              std::cout << "created truncated route: ";
+              for (int loc : truncatedRoute)
+              {
+                std::cout << loc << ",";
+              }
+              std::cout << std::endl;
             }
-            std::cout << std::endl;
           }
         }
       }

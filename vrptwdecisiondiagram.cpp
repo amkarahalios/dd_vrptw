@@ -3235,7 +3235,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
     for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
     {
       arcs[arcIndex].decompositionFlow = solver.getValue(x[arcIndex]);
-      arcs[arcIndex].heuristicFlow= solver.getValue(x[arcIndex]);
+      arcs[arcIndex].heuristicFlow = solver.getValue(x[arcIndex]);
     }
 
     double objValue = solver.getObjValue();
@@ -3246,8 +3246,37 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
     return false;
   }
 
-  return false;
   // 5. Return the solution
+  std::vector<int> infeasibleRoute;
+  std::vector<std::vector<int>> decomposedArcs;
+  std::vector<double> routeFlows;
+  std::vector<std::vector<int>> decomposedRoutes;
+  decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
+ 
+  for (auto route : decomposedRoutes)
+  {
+    std::vector<int> newRoute;
+    for (int loc : route)
+    {
+      if (loc >= 0)
+      {
+        newRoute.push_back(loc);
+      }
+      else
+      {
+        int suffixIndex = -1 * loc;
+        auto suffix = suffixes[suffixIndex];
+        for (int suffixLoc : suffix)
+        {
+          newRoute.push_back(suffixLoc);
+        }
+      }
+    }
+
+    newBestRoutes.push_back(route);
+  }
+
+  return true;
 }
 
 bool VRPTWDecisionDiagram::doesRouteExistByArcs(const std::vector<int>& routeArcs, std::vector<int>& routeLocations) const
