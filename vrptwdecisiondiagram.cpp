@@ -2952,7 +2952,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
       {
         prefix.push_back(route[index]);
       }
-      else if ((index >= randomStartingIndex) && (index < randomStartingIndex+numLocationsToDestroy))
+      else if ((index >= randomStartingIndex) && (index < std::min((int)route.size()-1,randomStartingIndex+numLocationsToDestroy)))
       {
         destroyedElements.push_back(route[index]);
       }
@@ -3139,8 +3139,6 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
     nodeIndex = nodeIndex + 1;
   }
 
-  print();
-
   // 4. Solve the Arc Flow Formulation as a MIP
   std::cout << "running dd lns mip" << std::endl;
 
@@ -3273,7 +3271,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
       }
     }
 
-    newBestRoutes.push_back(route);
+    newBestRoutes.push_back(newRoute);
   }
 
   return true;
