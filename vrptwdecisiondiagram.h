@@ -263,6 +263,8 @@ class VRPTWDecisionDiagram
     bool addLocationToRoute(int location, std::vector<int>& route);
     bool primalHeuristicGreedy(std::vector<std::vector<int>>& routesByLocation);
     void createTruncatedRoute(const std::vector<int>& route, std::vector<int>& truncatedRoute);
+    bool largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
+    int addPrimalHeuristicSuffixArc(int fromNodeIndex, const std::vector<int>& suffix, int suffixIndex);
 
     // separation methods
     bool doesRouteExistByArcs(const std::vector<int>& routeArcs, std::vector<int>& locationArcs) const;

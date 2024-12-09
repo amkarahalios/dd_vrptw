@@ -135,6 +135,13 @@ enum PrimalHeuristic
   MIP = 2
 };
 
+enum PrimalHeuristicLNS
+{
+  NONE = 0,
+  LOCAL_SEARCH = 1,
+  RESTRICTED_DD = 2
+};
+
 struct VRPTWDDParameters
 {
   int timeoutSeconds;
@@ -158,6 +165,7 @@ struct VRPTWDDParameters
   bool switchSepToCuts;
 
   PrimalHeuristic primalHeuristic;
+  PrimalHeuristicLNS primalHeuristicLNS;
 };
 
 struct VRPTWSolution

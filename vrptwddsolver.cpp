@@ -92,6 +92,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "use restarts: " << params.useRestarts << std::endl;
   std::cout << "switch separations to cuts: " << params.switchSepToCuts << std::endl;
   std::cout << "primal heuristic: " << params.primalHeuristic << std::endl;
+  std::cout << "primal heuristic lns: " << params.primalHeuristicLNS << std::endl;
 
   /*
   if (params.switchSepToCuts)
@@ -635,16 +636,33 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       if (heuristicUpperBound < stats.upperBound)
       {
         stats.upperBound = heuristicUpperBound;
-        std::cout << "primal heuristic ub: " << heuristicUpperBound << std::endl;
+        std::cout << "lp primal heuristic ub: " << heuristicUpperBound << std::endl;
       }
 
       std::vector<std::vector<int>> routesByLocationPrimalHeuristicLNS;
-      largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
-      double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
-      if (lnsHeuristicUpperBound < stats.upperBound)
+      if (params.primalHeuristicLNS == PrimalHeuristicLNS::LOCAL_SEARCH)
       {
-        stats.upperBound = lnsHeuristicUpperBound;
-        std::cout << "lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+        largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
+        double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
+        if (lnsHeuristicUpperBound < stats.upperBound)
+        {
+          stats.upperBound = lnsHeuristicUpperBound;
+          std::cout << "lp lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+        }
+      }
+      else if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
+      {
+        VRPTWDecisionDiagram heuristicDD(vrptw, params);
+        bool solutionFound = heuristicDD.largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
+        if (solutionFound)
+        {
+          double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
+          if (lnsHeuristicUpperBound < stats.upperBound)
+          {
+            stats.upperBound = lnsHeuristicUpperBound;
+            std::cout << "lp lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+          }
+        }
       }
     }
 
@@ -977,6 +995,7 @@ bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRout
   IloEnv env;
   IloModel columnModel(env);
   IloRangeArray coverConstraints(env);
+  IloRangeArray fixedPathConstraint(env);
   IloNumVarArray x(env, primalRoutes.size());
   IloExpr objective(env);
 
@@ -1002,6 +1021,21 @@ bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRout
     coverConstraints.add(sumLocationRoutes >= 1);
   }
   columnModel.add(coverConstraints);
+
+  // set fixed number of vehicles
+  if (vrptw.fixedNumPaths == FIXED_NUM_PATHS)
+  {
+    IloExpr fixedNumPaths(env);
+    int routeIndex = 0;
+    for (auto route : primalRoutes)
+    {
+      fixedNumPaths += x[routeIndex];
+      ++routeIndex;
+    }
+
+    fixedPathConstraint.add(fixedNumPaths == vrptw.numVehicles);
+    columnModel.add(fixedPathConstraint);
+  }
 
   std::cout << "primal heuristic num vars: " << routeIndex << std::endl;
   columnModel.add(IloMinimize(env, objective));
@@ -1895,7 +1929,38 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         {
           stats.upperBound = heuristicUpperBound;
         }
-        std::cout << "primal heuristic ub: " << heuristicUpperBound << std::endl;
+        std::cout << "lag primal heuristic ub: " << heuristicUpperBound << std::endl;
+ 
+        std::vector<std::vector<int>> routesByLocationPrimalHeuristicLNS;
+        if (params.primalHeuristicLNS == PrimalHeuristicLNS::LOCAL_SEARCH)
+        {
+          largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
+          double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
+          if (lnsHeuristicUpperBound < stats.upperBound)
+          {
+            stats.upperBound = lnsHeuristicUpperBound;
+            std::cout << "lag lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+          }
+        }
+        else if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
+        {
+          VRPTWDecisionDiagram heuristicDD(vrptw, params);
+          bool isSolutionFound = heuristicDD.largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
+          if (isSolutionFound)
+          {
+            double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
+            if (lnsHeuristicUpperBound < stats.upperBound)
+            {
+              stats.upperBound = lnsHeuristicUpperBound;
+              std::cout << "lag lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+            }
+          }
+          else
+          {
+            std::cout << "ERROR" << std::endl;
+            return false;
+          }
+        }
       }
 
       // for yellow, check v^{t} dot (1 - Ax^{t})

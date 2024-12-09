@@ -235,6 +235,18 @@ int main(int argc, char** argv)
               params.primalHeuristic = PrimalHeuristic::MIP;
             }
           }
+          else if (lineIndex == 21)
+          {
+            params.primalHeuristicLNS = PrimalHeuristicLNS::NONE;
+            if (paramValueString == "LOCAL_SEARCH")
+            {
+              params.primalHeuristicLNS = PrimalHeuristicLNS::LOCAL_SEARCH;
+            }
+            else if (paramValueString == "RESTRICTED_DD")
+            {
+              params.primalHeuristicLNS = PrimalHeuristicLNS::RESTRICTED_DD;
+            }
+          }
         }
         wordIndex = wordIndex + 1;
       }
