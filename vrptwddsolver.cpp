@@ -25,6 +25,13 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     //routeDD.checkLRC121SolutionPossible();
   }
 
+  std::vector<std::vector<int>> heuristicRoutes;
+  routeDD.generateHeuristicRoutes(heuristicRoutes);
+  for (auto route : heuristicRoutes)
+  {
+    addRouteToPrimalRoutes(route);
+  }
+
   auto endCompileTime = std::chrono::high_resolution_clock::now();
   auto compileSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endCompileTime - startCompileTime).count();
   stats.millisecondsCompiling = stats.millisecondsCompiling + compileSolveTime;
@@ -648,6 +655,10 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         {
           stats.upperBound = lnsHeuristicUpperBound;
           std::cout << "lp lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+          for (auto route : routesByLocationPrimalHeuristicLNS)
+          {
+            addRouteToPrimalRoutes(route);
+          }
         }
       }
       else if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
@@ -661,6 +672,10 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           {
             stats.upperBound = lnsHeuristicUpperBound;
             std::cout << "lp lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+            for (auto route : routesByLocationPrimalHeuristicLNS)
+            {
+              addRouteToPrimalRoutes(route);
+            }
           }
         }
       }
@@ -732,11 +747,31 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       bool stopFindingInfeasibilities = false;
       std::vector<std::vector<int>> infeasibilities;
       //if ((numSrcAdded == 0) && params.useSeparations)
+      int numPrimalRoutes = primalRoutes.size();
       if (params.useSeparations)
       {
         while (!stopFindingInfeasibilities)
         {
           std::vector<int> infeasibleRoute;
+          routeFlows.clear();
+          decomposedRoutes.clear();
+          decomposedArcs.clear();
+          routeDD.decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
+          for (auto route : decomposedRoutes)
+          {
+            if (routeDD.isRouteFeasible(route))
+            {
+              addRouteToPrimalRoutes(route);
+            }
+            else
+            {
+              std::vector<int> truncatedRoute;
+              routeDD.createTruncatedRoute(route, truncatedRoute);
+              addRouteToPrimalRoutes(truncatedRoute);
+            }
+          }
+
+          infeasibleRoute.clear();
           routeFlows.clear();
           decomposedRoutes.clear();
           decomposedArcs.clear();
@@ -748,55 +783,6 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           else
           {
             stopFindingInfeasibilities = true;
-          }
-
-          // Add to set for primal heuristic
-          for (auto route : decomposedRoutes)
-          {
-            if (routeDD.isRouteFeasible(route))
-            {
-              if (std::find(primalRoutes.begin(), primalRoutes.end(), route) == primalRoutes.end())
-              {
-                primalRoutes.push_back(route);
-                primalRouteCosts.push_back(vrptw.evaluateRouteDistance(route));
-                int primalRouteIndex = primalRoutes.size()-1;
-                for (int loc : route)
-                {
-                  primalRouteLocationIndices[loc].push_back(primalRouteIndex);
-                }
-              }
-            }
-          }
-
-          // Add truncated infeasible route
-          if (!infeasibleRoute.empty())
-          {
-            std::cout << "handle truncated route" << std::endl;
-            std::vector<int> truncatedRoute;
-            routeDD.doesRouteExistByArcs(infeasibleRoute, truncatedRoute);
-
-            truncatedRoute.pop_back();
-            truncatedRoute.push_back(0);
-            if (routeDD.isRouteFeasible(truncatedRoute))
-            {
-              if (std::find(primalRoutes.begin(), primalRoutes.end(), truncatedRoute) == primalRoutes.end())
-              {
-                primalRoutes.push_back(truncatedRoute);
-                primalRouteCosts.push_back(vrptw.evaluateRouteDistance(truncatedRoute));
-                int primalRouteIndex = primalRoutes.size()-1;
-                for (int loc : truncatedRoute)
-                {
-                  primalRouteLocationIndices[loc].push_back(primalRouteIndex);
-                }
-   
-                std::cout << "truncated route: ";
-                for (int loc : truncatedRoute)
-                {
-                  std::cout << loc << ",";
-                }
-                std::cout << std::endl;
-              }
-            }
           }
         }
       }
@@ -992,6 +978,50 @@ bool VRPTWDDSolver::solveLP(Dual& duals)
   return true;
 };
 
+void VRPTWDDSolver::addRouteToPrimalRoutes(std::vector<int> route)
+{
+  if (routeDD.isRouteFeasible(route))
+  {
+    if (std::find(primalRoutes.begin(), primalRoutes.end(), route) == primalRoutes.end())
+    {
+      primalRoutes.push_back(route);
+      primalRouteCosts.push_back(vrptw.evaluateRouteDistance(route));
+      int primalRouteIndex = primalRoutes.size()-1;
+      for (int loc : route)
+      {
+        primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+      }
+
+      std::cout << "added route to primal routes: ";
+      for (int loc : route)
+      {
+        std::cout << loc << ",";
+      }
+      std::cout << std::endl;
+ 
+      std::vector<int> maximalSequence;
+      routeDD.createMaximalSequence(route, maximalSequence);
+      if (std::find(primalRoutes.begin(), primalRoutes.end(), maximalSequence) == primalRoutes.end())
+      {
+        primalRoutes.push_back(maximalSequence);
+        primalRouteCosts.push_back(vrptw.evaluateRouteDistance(maximalSequence));
+        int primalRouteIndex = primalRoutes.size()-1;
+        for (int loc : maximalSequence)
+        {
+          primalRouteLocationIndices[loc].push_back(primalRouteIndex);
+        }
+
+        std::cout << "added maximal sequence to primal routes: ";
+        for (int loc : maximalSequence)
+        {
+          std::cout << loc << ",";
+        }
+        std::cout << std::endl;
+      }
+    }
+  }
+}
+
 // primal heuristic with MIP
 bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRoutes)
 {
@@ -1006,12 +1036,12 @@ bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRout
   IloExpr objective(env);
 
   // setup variables and objective
-  int routeIndex = 0;
+  int varNum = 0;
   for (auto route : primalRoutes)
   {
-    x[routeIndex] = IloNumVar(env, 0, 1, ILOINT);
-    objective += x[routeIndex] * primalRouteCosts[routeIndex];
-    ++routeIndex;
+    x[varNum] = IloNumVar(env, 0, 1, ILOINT);
+    objective += x[varNum] * primalRouteCosts[varNum];
+    ++varNum;
   }
 
   // setup cover constraints
@@ -1043,7 +1073,7 @@ bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRout
     columnModel.add(fixedPathConstraint);
   }
 
-  std::cout << "primal heuristic num vars: " << routeIndex << std::endl;
+  std::cout << "primal heuristic num vars: " << varNum << std::endl;
   columnModel.add(IloMinimize(env, objective));
   objective.end();
 
@@ -1092,16 +1122,15 @@ bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRout
   return false;
 }
 
-bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+void VRPTWDDSolver::localSearchAroundSequences(const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences)
 {
-  std::vector<std::vector<int>> routesToUse;
-  for (auto route : feasibleSolution)
+  for (auto route : sequences)
   {
-    routesToUse.push_back(route);
+    newSequences.push_back(route);
   }
 
   // use local search to include more primal routes
-  for (auto route : feasibleSolution)
+  for (auto route : sequences)
   {
     for (int index1=1; index1<route.size()-1; ++index1)
     {
@@ -1124,7 +1153,7 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
 
         if (routeDD.isRouteFeasible(newRouteInsertion))
         {
-          routesToUse.push_back(newRouteInsertion);
+          newSequences.push_back(newRouteInsertion);
         }
 
         // 2. remove locations
@@ -1139,11 +1168,18 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
 
         if (routeDD.isRouteFeasible(newRouteDeletion))
         {
-          routesToUse.push_back(newRouteDeletion);
+          newSequences.push_back(newRouteDeletion);
         }
       }
     }
   }
+  
+}
+
+bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+{
+  std::vector<std::vector<int>> routesToUse;
+  localSearchAroundSequences(feasibleSolution, routesToUse);
 
   // run mip again with the new set of routes
   std::cout << "running lns heuristic MIP" << std::endl;
@@ -1880,42 +1916,13 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         // include feasible routes, and truncated infeasible routes
         if (routeDD.isRouteFeasible(route))
         {
-          if (std::find(primalRoutes.begin(), primalRoutes.end(), route) == primalRoutes.end())
-          {
-            primalRoutes.push_back(route);
-            primalRouteCosts.push_back(vrptw.evaluateRouteDistance(route));
-            int primalRouteIndex = primalRoutes.size()-1;
-            for (int loc : route)
-            {
-              primalRouteLocationIndices[loc].push_back(primalRouteIndex);
-            }
-          }
+          addRouteToPrimalRoutes(route);
         }
         else
         {
           std::vector<int> truncatedRoute;
           routeDD.createTruncatedRoute(route, truncatedRoute);
-
-          if (routeDD.isRouteFeasible(truncatedRoute))
-          {
-            if (std::find(primalRoutes.begin(), primalRoutes.end(), route) == primalRoutes.end())
-            {
-              primalRoutes.push_back(truncatedRoute);
-              primalRouteCosts.push_back(vrptw.evaluateRouteDistance(truncatedRoute));
-              int primalRouteIndex = primalRoutes.size()-1;
-              for (int loc : truncatedRoute)
-              {
-                primalRouteLocationIndices[loc].push_back(primalRouteIndex);
-              }
-
-              std::cout << "created truncated route: ";
-              for (int loc : truncatedRoute)
-              {
-                std::cout << loc << ",";
-              }
-              std::cout << std::endl;
-            }
-          }
+          addRouteToPrimalRoutes(truncatedRoute);
         }
       }
 
@@ -1952,6 +1959,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           {
             stats.upperBound = lnsHeuristicUpperBound;
             std::cout << "lag lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+            for (auto route : routesByLocationPrimalHeuristicLNS)
+            {
+              addRouteToPrimalRoutes(route);
+            }
           }
         }
         else if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
@@ -1965,6 +1976,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
             {
               stats.upperBound = lnsHeuristicUpperBound;
               std::cout << "lag lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
+              for (auto route : routesByLocationPrimalHeuristicLNS)
+              {
+                addRouteToPrimalRoutes(route);
+              }
             }
           }
           else

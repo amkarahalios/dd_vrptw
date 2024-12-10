@@ -1,5 +1,8 @@
 #include <bits/stdc++.h>
 #include <cmath>
+#include <random>
+#include <algorithm>
+#include <chrono>
 
 extern "C" {
 #include "graph.h"
@@ -288,6 +291,86 @@ int VRPTWDecisionDiagram::addPrimalHeuristicSuffixArc(int fromNodeIndex, const s
   }
 
   return newArcIndex;
+}
+ 
+void VRPTWDecisionDiagram::generateHeuristicRoutes(std::vector<std::vector<int>>& routes)
+{
+  std::set<int> locationsUsed;
+  locationsUsed.insert(0);
+  while (locationsUsed.size() < vrptw.numLocations)
+  {
+    std::vector<int> route;
+    route.push_back(0);
+    VRPTWNodeState currState = nodes[rootNodeIndex].state;
+    for (int location=1; location<vrptw.numLocations; ++location)
+    {
+      if (locationsUsed.find(location) != locationsUsed.end())
+      {
+        continue;
+      }
+
+      VRPTWNodeState newState(currState);
+      bool newNodeFeasible = generateNewStateFromExact(newState, location);
+      if (!newNodeFeasible)
+      {
+        break;
+      }
+      else
+      {
+        route.push_back(location);
+        locationsUsed.insert(location);
+      }
+
+      currState = newState;
+    }
+    route.push_back(0);
+    routes.push_back(route);
+  }
+}
+ 
+void VRPTWDecisionDiagram::createMaximalSequence(const std::vector<int>& sequence, std::vector<int>& maximalSequence)
+{
+  std::vector<int> locationsToTry;
+  for (int location=1; location<vrptw.numLocations; ++location)
+  {
+    locationsToTry.push_back(location);
+  }
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::cout << "random seed: " << seed << std::endl;
+  std::shuffle(locationsToTry.begin(), locationsToTry.end(), std::default_random_engine(seed));
+
+  std::vector<int> updatedSequence = sequence;
+  while (true)
+  {
+    bool isUpdated = false;
+    for (int location : locationsToTry)
+    {
+      for (int index=1; index<updatedSequence.size(); ++index)
+      {
+        std::vector<int> testSequence = updatedSequence;
+        testSequence.insert(testSequence.begin() + index, location);
+        bool isFeasible = isRouteFeasible(testSequence);
+        if (isFeasible)
+        {
+          isUpdated = true;
+          updatedSequence = testSequence;
+          break;
+        }
+      }
+
+      if (isUpdated)
+      {
+        break;
+      }
+    }
+
+    if (!isUpdated)
+    {
+      break;
+    }
+  }
+
+  maximalSequence = updatedSequence;
 }
 
 int VRPTWDecisionDiagram::addReverseArc(int forwardArcIndex)
