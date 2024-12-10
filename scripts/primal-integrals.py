@@ -1098,7 +1098,7 @@ instance_upper_bounds = {
 
 colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] time: \[([0-9]+)\]")
 
-logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_logs/"
+logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_logs/CVRP_primal_param_files/"
 test_set = ["LAG_NG2_mip_bk_3600_0",
             "LAG_NG2_mip_lnsdd_3600_0",
             "LAG_NG2_mip_ls_3600_0",
@@ -1140,79 +1140,51 @@ for test in test_set:
         ub = float(colelim_match.group(9))
         numArcs = int(colelim_match.group(10))
         numFixed = int(colelim_match.group(11))
-        time = colelim_match.group(12)
+        time = float(colelim_match.group(12))
         time_result = {'instance': instance, 'test': test, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
         time_results.append(time_result)
  
     if col_elim:
-      result = {'instance': instance, 'test': test, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+      result = {'instance': instance, 'test': test, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
       results.append(result)
     else:
-      result = {'instance': instance, 'test': test, 'lpIt' : numpy.nan, 'lagIt' : numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'size': numpy.nan, 'time' : numpy.nan}
+      result = {'instance': instance, 'test': test, 'lpIt' : numpy.nan, 'lagIt' : numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'ub': numpy.nan, 'size': numpy.nan, 'time' : numpy.nan}
       results.append(result)
 
-# setup results df
+# Setup results df
 results_df = pandas.DataFrame(results)
 results_df.sort_values(by=['instance','lb'],inplace=True)
 results_df.reset_index(drop=True,inplace=True)
-time_results_df = pandas.DataFrame(time_results)
-time_results_df.sort_values(by=['instance','lb'],inplace=True)
-time_results_df.reset_index(drop=True,inplace=True)
 
-# print table
+time_results_df = pandas.DataFrame(time_results)
+
 print_table = True
 if print_table:
-  table_results_df = results_df[['instance','test','lb','lpIt','lagIt','time']]
+  table_results_df = results_df[['instance','test','lb','ub','lpIt','lagIt','time']]
   print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
 
-run = True
-if run:
-  tests_to_compare = test_set
+# Collect data and primal integral values
+for instance in instances:
+  best_known = instance_upper_bounds[instance]
+  instance_results = time_results_df[time_results_df['instance'] == instance]
+  if not instance_results.empty:
+    for test in test_set:
+      instance_test_results = instance_results[instance_results['test'] == test]
+      instance_test_results.sort_values(by=['ub'],inplace=True)
 
-  instances_to_consider = instances
-  for instance in instances_to_consider:
-    time = list(range(0,3600,100))
-    lbs = []
-    labels = []
-    instance_results = time_results_df[time_results_df['instance'] == instance]
-    if instance_results.empty:
-      continue
-    if not instance_results.empty:
-      for test in tests_to_compare:
-        instance_test_results = instance_results[instance_results['test'] == test]
-        if not instance_test_results.empty:
-          instance_test_lb = []
-          for t in time:
-            instance_test_results_time = instance_test_results[instance_test_results['time'].astype(int) <= t]
-            if (instance_test_results_time.empty):
-              lb = 0
-            else:
-              lb = max(instance_test_results_time['lb'])
-            instance_test_lb.append(lb)
-          lbs.append(instance_test_lb)
-          labels.append(test)
+      if not instance_test_results.empty:
+        primal_integral = 0
+        primal_gap = 1
+        best_seen_ub = 1e9
+        best_seen_ub_time = 0
+        instance_test_ubs = instance_test_results['ub']
+        instance_test_times = instance_test_results['time']
+        for ub, time in zip(instance_test_ubs, instance_test_times):
+          if ub < best_seen_ub:
+            primal_integral += primal_gap * (time - best_seen_ub_time)
+            primal_gap = abs(ub - best_known) / max(abs(best_known), abs(ub))
+            best_seen_ub = ub
+            best_seen_ub_time = time
 
-      min_val = 10000000
-      max_val = 0
-      for (label, lb) in zip(labels, lbs):
-        if len([l for l in lb if l >0]) == 0:
-          continue
-        to_plot = zip(time,lb)
-        to_plot = [data for data in to_plot if data[1] > 0]
-        times_to_plot = [d[0] for d in to_plot]
-        lbs_to_plot = [d[1] for d in to_plot]
-        plt.plot(times_to_plot,lbs_to_plot,label=label)
-        min_value = min([l for l in lb if l > 0])
-        max_value = max(lb)
-        min_val = min(min_val, min_value)
-        max_val = max(max_val, max_value)
-      plt.title(instance)
-      plt.xlabel('time (s)')
-      plt.ylabel('lb')
-      if instance in instance_upper_bounds:
-        plt.axhline(y=instance_upper_bounds[instance],linewidth=2,label="opt",color="magenta")
-        plt.ylim(min_val-10,instance_upper_bounds[instance]+10)
-      else:
-        plt.ylim(min_val,max_val)
-      plt.legend()
-      plt.show()
+        primal_integral += primal_gap * (3600 - best_seen_ub_time)
+        print(instance, test, primal_integral / 3600)
