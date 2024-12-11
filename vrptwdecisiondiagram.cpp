@@ -130,7 +130,9 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
   setTimeStepSize();
   separatedFeasibleRouteCounter = 0;
 
-  std::srand(5);
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::srand(seed);
+  std::cout << seed << std::endl;
 };
 
 void VRPTWDecisionDiagram::setTimeStepSize()
@@ -3010,11 +3012,14 @@ void VRPTWDecisionDiagram::createTruncatedRoute(const std::vector<int>& route, s
   truncatedRoute.push_back(0);
 }
 
-bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, int numTransitionsRebuild, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
 {
   std::cout << "running lns dd" << std::endl;
 
   // 1. Destroy
+  // Use a parameter numElementsDestroy to determine how much to destroy
+  // Allow some randomness in what gets destroyed (using an ordering of relevance)
+  // Allow some randomness to determine where to start destroying each sequence
   std::cout << "destroy phase" << std::endl;
   std::vector<std::vector<int>> prefixes;
   std::vector<std::vector<int>> suffixes;
@@ -3023,8 +3028,9 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
   {
     // Find random part to destroy
     int routeNumLocations = route.size() - 2;
-    int numLocationsToDestroy = std::ceil(routeNumLocations * 0.2);
-    int randomStartingIndex = 2 + (std::rand() % (routeNumLocations-1));
+    int numLocationsToDestroy = std::min(routeNumLocations, numElementsDestroy);
+    int randomInteger = std::rand();
+    int randomStartingIndex = 2 + (randomInteger % (routeNumLocations-2));
 
     // Destroy part of each route, which creates prefixes, destroyed parts, and suffixes
     std::vector<int> prefix;
@@ -3061,9 +3067,9 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
     std::cout << std::endl;
   }
 
-  std::cout << "num prefixes: " << prefixes.size() << std::endl;
-  std::cout << "num suffixes: " << suffixes.size() << std::endl;
-  std::cout << "num destroyed elements: " << destroyedElements.size() << std::endl;
+  //std::cout << "num prefixes: " << prefixes.size() << std::endl;
+  //std::cout << "num suffixes: " << suffixes.size() << std::endl;
+  //std::cout << "num destroyed elements: " << destroyedElements.size() << std::endl;
   for (int e : destroyedElements)
   {
     std::cout << e << " ";
@@ -3073,6 +3079,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
   // 2. Create DP up to forward frontier
   std::cout << "forward frontier" << std::endl;
   std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
+  std::map<int,int> newNodeDepths;
   nodes.reserve(std::pow(vrptw.numLocations,2));
   arcs.reserve(std::pow(vrptw.numLocations,2)/100);
 
@@ -3080,6 +3087,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
   VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
+  newNodeDepths[rootNodeIndex] = 0;
 
   int terminalNodeLoc = 0;
   if (vrptw.circuitOrPath == CircuitOrPath::PATH)
@@ -3116,6 +3124,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
         int numRemovedElements = route.size() - numPrefixLocations - numSuffixLocations - 2;
         if ((index >= numPrefixLocations) && (index <= numPrefixLocations + numRemovedElements))
         {
+          newNodeDepths[nextNodeIndex] = 0;
           if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
           {
             const auto newElement = std::make_pair(newState.timeWithMultiplier, nextNodeIndex);
@@ -3136,6 +3145,10 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
   }
 
   // 3. Create a restricted DD using the frontier states
+  // Allow up to t feasible transitions... some may be infeasible if we select, so check these!
+  // Allow some randomness in which transition(s) are chosen
+  // Use an ordering to determine which transition(s) to try
+  // Limit number of insertions/deletions with counter on states
   std::cout << "restricted dd compilation" << std::endl;
   while (!pq.empty())
   {
@@ -3155,10 +3168,16 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
 
     std::sort(possibleElementDistance.begin(), possibleElementDistance.end(), sort_by_second);
 
-    for (int locationIndex=0; locationIndex<2; ++locationIndex)
+    int numFeasibleTransitions = 0;
+    for (auto pair : possibleElementDistance)
     {
-      int location = possibleElementDistance[locationIndex].first;
-
+      int randomInteger = std::rand();
+      bool randomSkip = (randomInteger % 100) >= 90;
+      if (randomSkip)
+      {
+        break;
+      }
+      int location = pair.first;
       VRPTWNodeState newState(stateToCheck);
       bool newNodeFeasible = generateNewStateFromExact(newState, location);
       if (newNodeFeasible)
@@ -3168,19 +3187,29 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
         int newNumNodes = nodes.size();
         if (newNumNodes > numNodes)
         {
-          if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+          newNodeDepths[newNodeIndex] = newNodeDepths[nodeIndex] + 1;
+          if (newNodeDepths[newNodeIndex] > numElementsDestroy + 1)
           {
-            const auto newElement = std::make_pair(newState.timeWithMultiplier, newNodeIndex);
-            pq.push(newElement);
-          }
-          else
-          {
-            const auto newElement = std::make_pair(newState.capacity, newNodeIndex);
-            pq.push(newElement);
+            if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+            {
+              const auto newElement = std::make_pair(newState.timeWithMultiplier, newNodeIndex);
+              pq.push(newElement);
+            }
+            else
+            {
+              const auto newElement = std::make_pair(newState.capacity, newNodeIndex);
+              pq.push(newElement);
+            }
           }
         }
 
         addArc(nodeIndex, newNodeIndex);
+        ++numFeasibleTransitions;
+ 
+        if (numFeasibleTransitions >= numTransitionsRebuild)
+        {
+          break;
+        }
       }
     }
   }
@@ -3333,7 +3362,8 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(const std::vector<std::vector
   std::vector<double> routeFlows;
   std::vector<std::vector<int>> decomposedRoutes;
   decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
- 
+
+  newBestRoutes.clear();
   for (auto route : decomposedRoutes)
   {
     std::vector<int> newRoute;

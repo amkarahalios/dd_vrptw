@@ -1,4 +1,7 @@
 #include "vrptwddsolver.h"
+#include <algorithm>
+#include <chrono>
+#include <random>
 #include <math.h>
 #include <ilcplex/ilocplex.h>
 
@@ -643,41 +646,9 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       if (heuristicUpperBound < stats.upperBound)
       {
         stats.upperBound = heuristicUpperBound;
-        std::cout << "lp primal heuristic ub: " << heuristicUpperBound << std::endl;
-      }
-
-      std::vector<std::vector<int>> routesByLocationPrimalHeuristicLNS;
-      if (params.primalHeuristicLNS == PrimalHeuristicLNS::LOCAL_SEARCH)
-      {
-        largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
-        double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
-        if (lnsHeuristicUpperBound < stats.upperBound)
-        {
-          stats.upperBound = lnsHeuristicUpperBound;
-          std::cout << "lp lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
-          for (auto route : routesByLocationPrimalHeuristicLNS)
-          {
-            addRouteToPrimalRoutes(route);
-          }
-        }
-      }
-      else if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
-      {
-        VRPTWDecisionDiagram heuristicDD(vrptw, params);
-        bool solutionFound = heuristicDD.largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
-        if (solutionFound)
-        {
-          double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
-          if (lnsHeuristicUpperBound < stats.upperBound)
-          {
-            stats.upperBound = lnsHeuristicUpperBound;
-            std::cout << "lp lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
-            for (auto route : routesByLocationPrimalHeuristicLNS)
-            {
-              addRouteToPrimalRoutes(route);
-            }
-          }
-        }
+        std::cout << "improved ub from MIP primal heuristic: " << heuristicUpperBound << std::endl;
+ 
+        largeNeighborhoodSearch(routesByLocationPrimalHeuristic);
       }
     }
 
@@ -1122,47 +1093,77 @@ bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRout
   return false;
 }
 
-void VRPTWDDSolver::localSearchAroundSequences(const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences)
+void VRPTWDDSolver::localSearchAroundSequences(int iterationLimit, const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences)
 {
   for (auto route : sequences)
   {
     newSequences.push_back(route);
   }
 
-  // use local search to include more primal routes
-  for (auto route : sequences)
+  // Shuffle locations
+  std::vector<int> locationsToTry;
+  for (int location=1; location<vrptw.numLocations; ++location)
   {
-    for (int index1=1; index1<route.size()-1; ++index1)
+    locationsToTry.push_back(location);
+  }
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  std::cout << "random seed: " << seed << std::endl;
+  std::shuffle(locationsToTry.begin(), locationsToTry.end(), std::default_random_engine(seed));
+
+  // Shuffle sequences
+  std::vector<std::vector<int>> sequencesCopy;
+  std::shuffle(sequencesCopy.begin(), sequencesCopy.end(), std::default_random_engine(seed));
+
+  // Use local search to include more primal routes
+  int numIterations = 0;
+  for (auto route : sequencesCopy)
+  {
+    for (int loc : locationsToTry)
     {
-      for (int loc=1; loc<vrptw.numLocations; ++loc)
+      // Shuffle indices
+      std::vector<int> indicesToTry;
+      for (int index=1; index<vrptw.numLocations; ++index)
       {
-        // 1. insert locations
+        indicesToTry.push_back(index);
+      }
+      unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+      std::cout << "random seed: " << seed << std::endl;
+      std::shuffle(indicesToTry.begin(), indicesToTry.end(), std::default_random_engine(seed));
+
+      // 1. Insert locations
+      for (int index : indicesToTry)
+      {
+        ++numIterations;
         std::vector<int> newRouteInsertion;
-        for (int index2=0; index2<route.size(); ++index2)
+        for (int routeIndex=0; routeIndex<route.size(); ++routeIndex)
         {
-          if (index1 == index2)
+          if (index == routeIndex)
           {
-            newRouteInsertion.push_back(route[index2]);
+            newRouteInsertion.push_back(route[routeIndex]);
             newRouteInsertion.push_back(loc);
           }
           else
           {
-            newRouteInsertion.push_back(route[index2]);
+            newRouteInsertion.push_back(route[routeIndex]);
           }
         }
-
+ 
         if (routeDD.isRouteFeasible(newRouteInsertion))
         {
           newSequences.push_back(newRouteInsertion);
         }
+      }
 
-        // 2. remove locations
+      // 2. Remove locations
+      for (int index : indicesToTry)
+      {
+        ++numIterations;
         std::vector<int> newRouteDeletion;
-        for (int index2=0; index2<route.size(); ++index2)
+        for (int routeIndex=0; routeIndex<route.size(); ++routeIndex)
         {
-          if (index1 != index2)
+          if (index != routeIndex)
           {
-            newRouteDeletion.push_back(route[index2]);
+            newRouteDeletion.push_back(route[routeIndex]);
           }
         }
 
@@ -1171,15 +1172,102 @@ void VRPTWDDSolver::localSearchAroundSequences(const std::vector<std::vector<int
           newSequences.push_back(newRouteDeletion);
         }
       }
+
+      if (numIterations > iterationLimit)
+      {
+        break;
+      }
+    }
+    if (numIterations > iterationLimit)
+    {
+      break;
     }
   }
-  
 }
 
-bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution)
+{
+  std::vector<std::vector<int>> newBestRoutes;
+  int totalTimeSeconds = 0;
+  int maxTimeSeconds = 10;
+  auto startTime = std::chrono::high_resolution_clock::now();
+  int numElementsDestroy = 1;
+  int numTransitionsRebuild = 1;
+  int localSearchIterationLimit = 100;
+  int iterationsWithoutImprovement = 0;
+  int numIterationsToUpdateParameters = 5;
+  while (totalTimeSeconds < maxTimeSeconds)
+  {
+    // Try LNS with current parameters
+    if (params.primalHeuristicLNS == PrimalHeuristicLNS::LOCAL_SEARCH)
+    {
+      largeNeighborhoodSearchIteration(localSearchIterationLimit, feasibleSolution, newBestRoutes);
+    }
+    else if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
+    {
+      VRPTWDecisionDiagram heuristicDD(vrptw, params);
+      heuristicDD.largeNeighborhoodSearch(numElementsDestroy, numTransitionsRebuild, feasibleSolution, newBestRoutes);
+    }
+ 
+    // Accept improved solution, or increase parameters if no improvement
+    double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(newBestRoutes);
+    if (lnsHeuristicUpperBound < stats.upperBound)
+    {
+      stats.upperBound = lnsHeuristicUpperBound;
+      std::cout << "improved ub from lns primal heuristic: " << lnsHeuristicUpperBound << std::endl;
+      for (auto route : newBestRoutes)
+      {
+        addRouteToPrimalRoutes(route);
+      }
+    }
+    else
+    {
+      iterationsWithoutImprovement += 1;
+      if (iterationsWithoutImprovement % numIterationsToUpdateParameters == 0)
+      {
+        if (params.primalHeuristicLNS == PrimalHeuristicLNS::LOCAL_SEARCH)
+        {
+          localSearchIterationLimit += 100;
+          std::cout << "updated ls limit: " << localSearchIterationLimit << std::endl;
+          if (localSearchIterationLimit > 1000)
+          {
+            break;
+          }
+        }
+        else
+        {
+          if (numElementsDestroy % 2 == 0)
+          {
+            numElementsDestroy += 1;
+            std::cout << "updated num elements destroy: " << numElementsDestroy << std::endl;
+            if (numElementsDestroy > vrptw.numLocations)
+            {
+              break;
+            }
+          }
+          else
+          {
+            numTransitionsRebuild += 1;
+            std::cout << "updated num transitions in dd build: " << numTransitionsRebuild << std::endl;
+            if (numTransitionsRebuild > vrptw.numLocations)
+            {
+              break;
+            }
+          }
+        }
+      }
+    }
+ 
+    auto endTime = std::chrono::high_resolution_clock::now();
+    auto secondsElapsed = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count();
+    totalTimeSeconds = secondsElapsed;
+  }
+}
+
+bool VRPTWDDSolver::largeNeighborhoodSearchIteration(int iterationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
 {
   std::vector<std::vector<int>> routesToUse;
-  localSearchAroundSequences(feasibleSolution, routesToUse);
+  localSearchAroundSequences(iterationLimit, feasibleSolution, routesToUse);
 
   // run mip again with the new set of routes
   std::cout << "running lns heuristic MIP" << std::endl;
@@ -1243,6 +1331,7 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   if (solverStatus == IloAlgorithm::Optimal)
   {
     // store results
+    newBestRoutes.clear();
     for (int routeIndex=0; routeIndex<routesToUse.size(); ++routeIndex)
     {
       double value = solver.getValue(x[routeIndex]);
@@ -1947,46 +2036,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         if (heuristicUpperBound < stats.upperBound)
         {
           stats.upperBound = heuristicUpperBound;
-        }
-        std::cout << "lag primal heuristic ub: " << heuristicUpperBound << std::endl;
- 
-        std::vector<std::vector<int>> routesByLocationPrimalHeuristicLNS;
-        if (params.primalHeuristicLNS == PrimalHeuristicLNS::LOCAL_SEARCH)
-        {
-          largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
-          double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
-          if (lnsHeuristicUpperBound < stats.upperBound)
-          {
-            stats.upperBound = lnsHeuristicUpperBound;
-            std::cout << "lag lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
-            for (auto route : routesByLocationPrimalHeuristicLNS)
-            {
-              addRouteToPrimalRoutes(route);
-            }
-          }
-        }
-        else if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
-        {
-          VRPTWDecisionDiagram heuristicDD(vrptw, params);
-          bool isSolutionFound = heuristicDD.largeNeighborhoodSearch(routesByLocationPrimalHeuristic, routesByLocationPrimalHeuristicLNS);
-          if (isSolutionFound)
-          {
-            double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(routesByLocationPrimalHeuristicLNS);
-            if (lnsHeuristicUpperBound < stats.upperBound)
-            {
-              stats.upperBound = lnsHeuristicUpperBound;
-              std::cout << "lag lns primal heuristic ub: " << lnsHeuristicUpperBound << std::endl;
-              for (auto route : routesByLocationPrimalHeuristicLNS)
-              {
-                addRouteToPrimalRoutes(route);
-              }
-            }
-          }
-          else
-          {
-            std::cout << "ERROR" << std::endl;
-            return false;
-          }
+          std::cout << "improved ub from MIP primal heuristic: " << heuristicUpperBound << std::endl;
+          largeNeighborhoodSearch(routesByLocationPrimalHeuristic);
         }
       }
 

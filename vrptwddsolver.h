@@ -108,8 +108,9 @@ class VRPTWDDSolver
 
     void addRouteToPrimalRoutes(std::vector<int> route);
     bool primalHeuristicMIP(std::vector<std::vector<int>>& routesByLocationPrimalHeuristic);
-    void localSearchAroundSequences(const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences);
-    bool largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
+    void localSearchAroundSequences(int iterationLimit, const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences);
+    void largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution);
+    bool largeNeighborhoodSearchIteration(int iterationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
 
     void initializeDual(Dual& dual);
     bool solveLagrangeanRelaxation(Dual& duals, SGDAlgorithm& sgdAlgo);
