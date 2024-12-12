@@ -1,0 +1,362 @@
+flexible number of vehicles
+capacity: 21
+num locations: 120
+instance upper bound: 13333
+route length upper bound: 22
+3278689113
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+added route to primal routes: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,0,
+random seed: 2523643336
+added route to primal routes: 0,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,0,
+random seed: 3147130979
+added route to primal routes: 0,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,0,
+random seed: 3761617449
+added route to primal routes: 0,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,0,
+random seed: 97849850
+added route to primal routes: 0,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,0,
+random seed: 715643947
+added route to primal routes: 0,106,107,108,109,110,111,112,113,114,115,116,117,118,119,0,
+random seed: 1330987835
+added maximal sequence to primal routes: 0,87,5,76,85,69,43,72,106,107,108,109,110,111,112,113,114,115,116,117,118,119,0,
+done compiling DD
+batch size for lag: 1
+deactivate cut value threshold: 0.01
+deactivate cut iter threshold: 1000000000
+percent arcs fixed to change to CPLEX: 97.5
+number arcs fixed to change to CPLEX: 100000
+kappa iterations: 20
+num lag cuts: 20
+mu percent improved: 0.001
+percent to start cuts: 0.95
+step size iteration cutoff: 5
+target bound increase: 1.01
+min step size multiplier: 0.0001
+ngSetSize: 2
+change to LP: 1
+var fixing: 1
+useSeparations: 1
+muSSP: 1
+repairDuals: 1
+robustCuts: 1
+nonRobustCuts: 0
+volume algo: 0
+use scaling: 0
+use sparse RCCs: 0
+use restarts: 0
+switch separations to cuts: 0
+primal heuristic: 2
+primal heuristic lns: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1e+09] numArcs: [550375] numFixed: [0] time: [37]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1e+09] numArcs: [550375] numFixed: [0] time: [37]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1e+09] numArcs: [550375] numFixed: [0] time: [37]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1e+09] numArcs: [550375] numFixed: [0] time: [37]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1e+09] numArcs: [550375] numFixed: [0] time: [37]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1e+09] numArcs: [550375] numFixed: [0] time: [37]
+lag: 8399.9
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] lb[8399.9] ub[1e+09] numArcs: [550375] numFixed: [0] time: [37]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[8399.9] ub[1e+09] numArcs: [550375] numFixed: [0] time: [37]
+lambda: 0,93.3333,54.4762,52.1905,103.333,104.286,67.5238,97.5238,57.9048,74,21.7143,76.2857,49.3333,72.7619,67.9048,74.6667,31.5238,86.6667,86.9524,89.7143,12.5714,44,101.619,63.9048,98.1905,34.4762,104.667,75.7143,87.2381,31.5238,46.1905,26.8571,38.8571,54.2857,65.0476,79.4286,70.1905,97.7143,24.5714,51.1429,58.0952,92.8571,52.381,59.5238,80.6667,48.5714,107.619,120.381,92.6667,51.0476,13.619,113.143,19.0476,85.9048,31.5238,39.4286,86.5714,91.5238,73.3333,96.6667,99.2381,22.2857,53.5238,123.81,62,93.0476,107.81,40.5714,97.619,94.5714,44,32.0952,53.5238,30.381,91.0476,95.619,60.1905,91.0476,51.7143,51.5238,30.5714,93.5238,63.7143,78.6667,28.7619,102.667,95.2381,52.9524,18.381,108,66.1905,39.3333,72.6667,37.3333,24.0952,101.238,29.9048,101.238,70.0952,72.4762,91.5238,123.524,55.9048,86.7619,124.381,125.81,91.619,22.0952,107.238,59.2381,91.8095,59.1429,46.4762,62.381,60.9524,76.9524,17.8095,103.905,50,23.4286,
+mu: 
+combDuals: 
+srcDuals: 
+new best dual, value: 8399.9
+20 19 0 545515 
+added route to primal routes: 0,20,0,
+random seed: 2329131429
+added maximal sequence to primal routes: 0,83,13,109,84,8,60,45,75,77,11,59,37,40,57,28,118,90,97,99,34,20,0,
+running primal heuristic MIP
+primal heuristic num vars: 9
+primal heuristic MIP obj: 69970
+feasible primal routes: 
+route: 
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 0 
+route: 
+0 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 0 
+route: 
+0 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 0 
+route: 
+0 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 0 
+route: 
+0 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 0 
+route: 
+0 106 107 108 109 110 111 112 113 114 115 116 117 118 119 0 
+improved ub from MIP primal heuristic: 69970
+improved ub from lns primal heuristic: 0
+updated location limit: 1
+updated location limit: 2
+updated location limit: 3
+updated location limit: 4
+updated location limit: 5
+updated location limit: 6
+updated location limit: 7
+updated location limit: 8
+updated location limit: 9
+updated location limit: 10
+updated location limit: 11
+updated location limit: 12
+updated location limit: 13
+updated location limit: 14
+updated location limit: 15
+updated location limit: 16
+updated location limit: 17
+updated location limit: 18
+updated location limit: 19
+updated location limit: 20
+updated location limit: 21
+updated location limit: 22
+updated location limit: 23
+updated location limit: 24
+updated location limit: 25
+updated location limit: 26
+updated location limit: 27
+updated location limit: 28
+updated location limit: 29
+updated location limit: 30
+updated location limit: 31
+updated location limit: 32
+updated location limit: 33
+updated location limit: 34
+updated location limit: 35
+updated location limit: 36
+updated location limit: 37
+updated location limit: 38
+updated location limit: 39
+updated location limit: 40
+updated location limit: 41
+updated location limit: 42
+updated location limit: 43
+updated location limit: 44
+updated location limit: 45
+updated location limit: 46
+updated location limit: 47
+updated location limit: 48
+updated location limit: 49
+updated location limit: 50
+updated location limit: 51
+updated location limit: 52
+updated location limit: 53
+updated location limit: 54
+updated location limit: 55
+updated location limit: 56
+updated location limit: 57
+updated location limit: 58
+updated location limit: 59
+updated location limit: 60
+updated location limit: 61
+updated location limit: 62
+updated location limit: 63
+updated location limit: 64
+updated location limit: 65
+updated location limit: 66
+updated location limit: 67
+updated location limit: 68
+updated location limit: 69
+updated location limit: 70
+updated location limit: 71
+updated location limit: 72
+updated location limit: 73
+updated location limit: 74
+updated location limit: 75
+updated location limit: 76
+updated location limit: 77
+updated location limit: 78
+updated location limit: 79
+updated location limit: 80
+updated location limit: 81
+updated location limit: 82
+updated location limit: 83
+updated location limit: 84
+updated location limit: 85
+updated location limit: 86
+updated location limit: 87
+updated location limit: 88
+updated location limit: 89
+updated location limit: 90
+updated location limit: 91
+updated location limit: 92
+updated location limit: 93
+updated location limit: 94
+updated location limit: 95
+updated location limit: 96
+updated location limit: 97
+updated location limit: 98
+updated location limit: 99
+updated location limit: 100
+updated location limit: 101
+updated location limit: 102
+updated location limit: 103
+updated location limit: 104
+updated location limit: 105
+updated location limit: 106
+updated location limit: 107
+updated location limit: 108
+updated location limit: 109
+updated location limit: 110
+updated location limit: 111
+updated location limit: 112
+updated location limit: 113
+updated location limit: 114
+updated location limit: 115
+updated location limit: 116
+updated location limit: 117
+updated location limit: 118
+updated location limit: 119
+updated location limit: 120
+updated location limit: 121
+best alpha: 1
+gamma: 1 val: 1
+gamma: 2 val: 1
+gamma: 3 val: 1
+gamma: 4 val: 1
+gamma: 5 val: 1
+gamma: 6 val: 1
+gamma: 7 val: 1
+gamma: 8 val: 1
+gamma: 9 val: 1
+gamma: 10 val: 1
+gamma: 11 val: 1
+gamma: 12 val: 1
+gamma: 13 val: 1
+gamma: 14 val: 1
+gamma: 15 val: 1
+gamma: 16 val: 1
+gamma: 17 val: 1
+gamma: 18 val: 1
+gamma: 19 val: 1
+gamma: 20 val: 0
+gamma: 21 val: 1
+gamma: 22 val: 1
+gamma: 23 val: 1
+gamma: 24 val: 1
+gamma: 25 val: 1
+gamma: 26 val: 1
+gamma: 27 val: 1
+gamma: 28 val: 1
+gamma: 29 val: 1
+gamma: 30 val: 1
+gamma: 31 val: 1
+gamma: 32 val: 1
+gamma: 33 val: 1
+gamma: 34 val: 1
+gamma: 35 val: 1
+gamma: 36 val: 1
+gamma: 37 val: 1
+gamma: 38 val: 1
+gamma: 39 val: 1
+gamma: 40 val: 1
+gamma: 41 val: 1
+gamma: 42 val: 1
+gamma: 43 val: 1
+gamma: 44 val: 1
+gamma: 45 val: 1
+gamma: 46 val: 1
+gamma: 47 val: 1
+gamma: 48 val: 1
+gamma: 49 val: 1
+gamma: 50 val: 1
+gamma: 51 val: 1
+gamma: 52 val: 1
+gamma: 53 val: 1
+gamma: 54 val: 1
+gamma: 55 val: 1
+gamma: 56 val: 1
+gamma: 57 val: 1
+gamma: 58 val: 1
+gamma: 59 val: 1
+gamma: 60 val: 1
+gamma: 61 val: 1
+gamma: 62 val: 1
+gamma: 63 val: 1
+gamma: 64 val: 1
+gamma: 65 val: 1
+gamma: 66 val: 1
+gamma: 67 val: 1
+gamma: 68 val: 1
+gamma: 69 val: 1
+gamma: 70 val: 1
+gamma: 71 val: 1
+gamma: 72 val: 1
+gamma: 73 val: 1
+gamma: 74 val: 1
+gamma: 75 val: 1
+gamma: 76 val: 1
+gamma: 77 val: 1
+gamma: 78 val: 1
+gamma: 79 val: 1
+gamma: 80 val: 1
+gamma: 81 val: 1
+gamma: 82 val: 1
+gamma: 83 val: 1
+gamma: 84 val: 1
+gamma: 85 val: 1
+gamma: 86 val: 1
+gamma: 87 val: 1
+gamma: 88 val: 1
+gamma: 89 val: 1
+gamma: 90 val: 1
+gamma: 91 val: 1
+gamma: 92 val: 1
+gamma: 93 val: 1
+gamma: 94 val: 1
+gamma: 95 val: 1
+gamma: 96 val: 1
+gamma: 97 val: 1
+gamma: 98 val: 1
+gamma: 99 val: 1
+gamma: 100 val: 1
+gamma: 101 val: 1
+gamma: 102 val: 1
+gamma: 103 val: 1
+gamma: 104 val: 1
+gamma: 105 val: 1
+gamma: 106 val: 1
+gamma: 107 val: 1
+gamma: 108 val: 1
+gamma: 109 val: 1
+gamma: 110 val: 1
+gamma: 111 val: 1
+gamma: 112 val: 1
+gamma: 113 val: 1
+gamma: 114 val: 1
+gamma: 115 val: 1
+gamma: 116 val: 1
+gamma: 117 val: 1
+gamma: 118 val: 1
+gamma: 119 val: 1
+alpha: -71.1856
+psiStar: 0
+lagLB: 8399.9
+||gamma||^2: 118
+lambda: 0,93.3333,54.4762,52.1905,103.333,104.286,67.5238,97.5238,57.9048,74,21.7143,76.2857,49.3333,72.7619,67.9048,74.6667,31.5238,86.6667,86.9524,89.7143,12.5714,44,101.619,63.9048,98.1905,34.4762,104.667,75.7143,87.2381,31.5238,46.1905,26.8571,38.8571,54.2857,65.0476,79.4286,70.1905,97.7143,24.5714,51.1429,58.0952,92.8571,52.381,59.5238,80.6667,48.5714,107.619,120.381,92.6667,51.0476,13.619,113.143,19.0476,85.9048,31.5238,39.4286,86.5714,91.5238,73.3333,96.6667,99.2381,22.2857,53.5238,123.81,62,93.0476,107.81,40.5714,97.619,94.5714,44,32.0952,53.5238,30.381,91.0476,95.619,60.1905,91.0476,51.7143,51.5238,30.5714,93.5238,63.7143,78.6667,28.7619,102.667,95.2381,52.9524,18.381,108,66.1905,39.3333,72.6667,37.3333,24.0952,101.238,29.9048,101.238,70.0952,72.4762,91.5238,123.524,55.9048,86.7619,124.381,125.81,91.619,22.0952,107.238,59.2381,91.8095,59.1429,46.4762,62.381,60.9524,76.9524,17.8095,103.905,50,23.4286,
+mu: 
+combDuals: 
+srcDuals: 
+lambda: 0,93.3333,54.4762,52.1905,103.333,104.286,67.5238,97.5238,57.9048,74,21.7143,76.2857,49.3333,72.7619,67.9048,74.6667,31.5238,86.6667,86.9524,89.7143,12.5714,44,101.619,63.9048,98.1905,34.4762,104.667,75.7143,87.2381,31.5238,46.1905,26.8571,38.8571,54.2857,65.0476,79.4286,70.1905,97.7143,24.5714,51.1429,58.0952,92.8571,52.381,59.5238,80.6667,48.5714,107.619,120.381,92.6667,51.0476,13.619,113.143,19.0476,85.9048,31.5238,39.4286,86.5714,91.5238,73.3333,96.6667,99.2381,22.2857,53.5238,123.81,62,93.0476,107.81,40.5714,97.619,94.5714,44,32.0952,53.5238,30.381,91.0476,95.619,60.1905,91.0476,51.7143,51.5238,30.5714,93.5238,63.7143,78.6667,28.7619,102.667,95.2381,52.9524,18.381,108,66.1905,39.3333,72.6667,37.3333,24.0952,101.238,29.9048,101.238,70.0952,72.4762,91.5238,123.524,55.9048,86.7619,124.381,125.81,91.619,22.0952,107.238,59.2381,91.8095,59.1429,46.4762,62.381,60.9524,76.9524,17.8095,103.905,50,23.4286,
+mu: 
+combDuals: 
+srcDuals: 
+20 19 0 545515 
+integral solution - no cut added
+running primal heuristic MIP
+primal heuristic num vars: 9
+primal heuristic MIP obj: 69970
+feasible primal routes: 
+route: 
+0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 0 
+route: 
+0 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 0 
+route: 
+0 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 0 
+route: 
+0 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 0 
+route: 
+0 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 0 
+route: 
+0 106 107 108 109 110 111 112 113 114 115 116 117 118 119 0 
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] lb[8399.9] ub[0] numArcs: [550375] numFixed: [0] time: [38]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[37] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[8399.9] ub[0] numArcs: [550375] numFixed: [0] time: [38]
+finished solving - complete
+time elapsed: 38

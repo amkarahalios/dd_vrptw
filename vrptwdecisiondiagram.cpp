@@ -3030,7 +3030,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, int n
     int routeNumLocations = route.size() - 2;
     int numLocationsToDestroy = std::min(routeNumLocations, numElementsDestroy);
     int randomInteger = std::rand();
-    int randomStartingIndex = 2 + (randomInteger % (routeNumLocations-2));
+    int randomStartingIndex = std::max(2, randomInteger % routeNumLocations);
 
     // Destroy part of each route, which creates prefixes, destroyed parts, and suffixes
     std::vector<int> prefix;
