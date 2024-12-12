@@ -279,7 +279,8 @@ int VRPTWDecisionDiagram::addPrimalHeuristicSuffixArc(int fromNodeIndex, const s
     loc1 = loc2;
   }
 
-  int suffixIndicator = -1 * suffixIndex;
+  // suffix indicator, change index by 1 so 0 isn't like going to the depot
+  int suffixIndicator = (-1 * suffixIndex) - 1;
   VRPTWArc newArc(fromNodeIndex, terminalNodeIndex, suffixIndicator, distance);
   int newArcIndex = arcs.size();
   arcs.push_back(newArc);
@@ -3375,7 +3376,8 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, int n
       }
       else
       {
-        int suffixIndex = -1 * loc;
+        // suffix indicator, change index by 1 so 0 isn't like going to the depot
+        int suffixIndex = (-1 * loc) - 1;
         auto suffix = suffixes[suffixIndex];
         for (int suffixLoc : suffix)
         {
