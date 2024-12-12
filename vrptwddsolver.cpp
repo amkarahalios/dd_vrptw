@@ -647,8 +647,10 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       {
         stats.upperBound = heuristicUpperBound;
         std::cout << "improved ub from MIP primal heuristic: " << heuristicUpperBound << std::endl;
- 
-        largeNeighborhoodSearch(routesByLocationPrimalHeuristic);
+        if (params.primalHeuristicLNS != PrimalHeuristicLNS::NONE)
+        {
+          largeNeighborhoodSearch(routesByLocationPrimalHeuristic);
+        }
       }
     }
 
@@ -1151,7 +1153,10 @@ void VRPTWDDSolver::localSearchAroundSequences(int locationLimit, const std::vec
 
         if (routeDD.isRouteFeasible(newRouteInsertion))
         {
-          newSequences.push_back(newRouteInsertion);
+          if (std::find(newSequences.begin(), newSequences.end(), newRouteInsertion) == newSequences.end())
+          {
+            newSequences.push_back(newRouteInsertion);
+          }
         }
       }
 
@@ -1167,9 +1172,15 @@ void VRPTWDDSolver::localSearchAroundSequences(int locationLimit, const std::vec
           }
         }
 
-        if (routeDD.isRouteFeasible(newRouteDeletion))
+        if (newRouteDeletion.size() > 2)
         {
-          newSequences.push_back(newRouteDeletion);
+          if (routeDD.isRouteFeasible(newRouteDeletion))
+          {
+            if (std::find(newSequences.begin(), newSequences.end(), newRouteDeletion) == newSequences.end())
+            {
+              newSequences.push_back(newRouteDeletion);
+            }
+          }
         }
       }
     }
@@ -2028,7 +2039,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         {
           stats.upperBound = heuristicUpperBound;
           std::cout << "improved ub from MIP primal heuristic: " << heuristicUpperBound << std::endl;
-          largeNeighborhoodSearch(routesByLocationPrimalHeuristic);
+          if (params.primalHeuristicLNS != PrimalHeuristicLNS::NONE)
+          {
+            largeNeighborhoodSearch(routesByLocationPrimalHeuristic);
+          }
         }
       }
 
