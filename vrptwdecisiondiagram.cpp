@@ -2813,7 +2813,7 @@ bool VRPTWDecisionDiagram::addLocationToRoute(int location, std::vector<int>& ro
 {
   int bestInsertionIndex = -1;
   double bestDistance = INF;
-  for (int insertionIndex=0; insertionIndex<route.size(); ++insertionIndex)
+  for (int insertionIndex=1; insertionIndex<route.size(); ++insertionIndex)
   {
     std::vector<int> newRoute;
     for (int routeIndex=0; routeIndex<route.size(); ++routeIndex)
@@ -2903,9 +2903,12 @@ bool VRPTWDecisionDiagram::primalHeuristicGreedy(std::vector<std::vector<int>>& 
     }
 
     // add route if at least one location was added
-    //route.push_back(0);
     if (route.size() > 1)
     {
+      if (route.back() != 0)
+      {
+        route.push_back(0);
+      }
       routesByLocationPrimalHeuristic.push_back(route);
     }
   }
@@ -2936,6 +2939,7 @@ bool VRPTWDecisionDiagram::primalHeuristicGreedy(std::vector<std::vector<int>>& 
 
     std::vector<int> newRoute;
     newRoute.push_back(0);
+    newRoute.push_back(0);
     for (int location=1; location<vrptw.numLocations; ++location)
     {
       if (locationsCovered.find(location) == locationsCovered.end())
@@ -2949,9 +2953,8 @@ bool VRPTWDecisionDiagram::primalHeuristicGreedy(std::vector<std::vector<int>>& 
       }
     }
 
-    if (newRoute.size() > 1)
+    if (newRoute.size() > 2)
     {
-      newRoute.push_back(0);
       routesByLocationPrimalHeuristic.push_back(newRoute);
     }
 
