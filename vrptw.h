@@ -166,6 +166,9 @@ struct VRPTWDDParameters
 
   PrimalHeuristic primalHeuristic;
   PrimalHeuristicLNS primalHeuristicLNS;
+  int lnsTimeout;
+  int lnsRandomPercent;
+  int lnsIterationsToUpdateParams;
 };
 
 struct VRPTWSolution
@@ -1754,7 +1757,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
         }
         else
         {
@@ -1943,7 +1946,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
         }
         else
         {
@@ -2090,7 +2093,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
 
           // rounding in TSPTW
           instanceUpperBound += 0.01;
@@ -2209,7 +2212,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
         }
         else
         {
@@ -2339,7 +2342,7 @@ struct VRPTW
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
-          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second + 1;
+          instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
 
           // rounding in TSPTW
           //instanceUpperBound += 0.01;

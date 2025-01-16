@@ -397,11 +397,7 @@ int VRPTWDecisionDiagram::addReverseArc(int forwardArcIndex)
 // create next relaxed state from current one
 bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, int location, int nodeIndex)
 {
-  if (newState.counter > vrptw.routeLengthUpperBound)
-  {
-    return false;
-  }
-
+  // create some binary values for initial relaxation to use different state information
   int timeWindowBinary = 1;
   if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::NO_TIME_WINDOWS)
   {
@@ -420,6 +416,12 @@ bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, 
     counterBinary = 0;
   }
 
+  newState.counter = newState.counter + counterBinary;
+  if (newState.counter > vrptw.routeLengthUpperBound)
+  {
+    return false;
+  }
+
   newState.capacity = newState.capacity + vrptw.demands[location];
   if (newState.capacity > vrptw.capacity)
   {
@@ -432,7 +434,6 @@ bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, 
   }
 
   // precedence only considered for root node, otherwise need to learn by separation
-  bool precedenceIssue = false;
   if ((nodeIndex == 0) && !vrptw.precedences[location].empty())
   {
     if (vrptw.precedences[location].size() > 0)
@@ -482,8 +483,6 @@ bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, 
   newVisited.insert(location);
   newState.visited = newVisited;
 
-  newState.counter = newState.counter + counterBinary;
-
   int newTimeWithMultiplier = (int)(earliestStartTime * vrptw.timeStateMultiplier);
 
   // testing: do not discretize if the distance + service time is under the step size
@@ -497,6 +496,15 @@ bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, 
   int loadQuotient = newState.capacity / capacityStepSize;
   int newCapacityDiscretized = capacityStepSize * loadQuotient * capacityBinary;
   newState.capacity = newCapacityDiscretized;
+
+  // time window removals - need to be able to make it back in time
+  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+  {
+    if (earliestStartTime + vrptw.distances[location][0] + vrptw.serviceTimes[location] > vrptw.endTimes[0])
+    {
+      return false;
+    }
+  }
 
   return true;
 }
@@ -791,7 +799,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   addNode(rootNodeState);
   rootNodeIndex = 0;
   pq.push(std::make_pair(0,0));
-  compilationAllVisitedDown.push_back(initialDeque);
+  //compilationAllVisitedDown.push_back(initialDeque);
 
   // terminal node t
   int terminalNodeLoc = 0;
@@ -817,7 +825,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   {
     pq.push(std::make_pair(vrptw.capacity+1,1));
   }
-  compilationAllVisitedDown.push_back(initialDeque);
+  //compilationAllVisitedDown.push_back(initialDeque);
 
   // create nodes except r/t
   while (!pq.empty())
@@ -849,9 +857,10 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
             pq.push(newElement);
           }
 
-          compilationAllVisitedDown.push_back(compilationAllVisitedDown[nodeIndex]);
-          compilationAllVisitedDown[newNodeIndex].insert(location);
+          //compilationAllVisitedDown.push_back(compilationAllVisitedDown[nodeIndex]);
+          //compilationAllVisitedDown[newNodeIndex].insert(location);
         }
+        /*
         else
         {
           std::set<int> intersection;
@@ -860,6 +869,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
           std::set_intersection(compilationAllVisitedDown[newNodeIndex].begin(), compilationAllVisitedDown[newNodeIndex].end(), allDownCurrNode.begin(), allDownCurrNode.end(), std::inserter(intersection,intersection.begin()));
           compilationAllVisitedDown[newNodeIndex] = intersection;
         }
+        */
 
         addArc(nodeIndex, newNodeIndex);
       }
@@ -867,6 +877,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   }
 
   // add arcs to terminal node
+  std::cout << "adding terminal arcs" << std::endl;
   int nodeIndex = 2;
   while (nodeIndex < nodes.size())
   {
@@ -884,7 +895,8 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
     nodeIndex = nodeIndex + 1;
   }
 
-  //print();
+  std::cout << "num nodes: " << nodes.size() << std::endl;
+  std::cout << "num arcs: " << arcs.size() << std::endl;
 };
 
   //checkLC121SolutionPossible();
@@ -3016,7 +3028,7 @@ void VRPTWDecisionDiagram::createTruncatedRoute(const std::vector<int>& route, s
   truncatedRoute.push_back(0);
 }
 
-bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, int numTransitionsRebuild, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
 {
   std::cout << "running lns dd" << std::endl;
 
@@ -3113,22 +3125,36 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, int n
 
     VRPTWNodeState currState = nodes[rootNodeIndex].state;
     int currNodeIndex = rootNodeIndex;
+    // Start at index 1 because first is the depot
     for (int index=1; index<route.size()-1; ++index)
     {
       VRPTWNodeState newState(currState);
       int nextLocation = route[index];
       generateNewStateFromExact(newState, nextLocation);
       int numNodes = nodes.size();
+
+      // add nodes for all routes
       int nextNodeIndex = addNode(newState);
       int newNumNodes = nodes.size();
       if (newNumNodes > numNodes)
       {
+        // only put the "frontier" between the prefix and suffix in the queue
         int numPrefixLocations = prefixes[routeIndex].size() - 1;
         int numSuffixLocations = suffixes[routeIndex].size() - 1;
         int numRemovedElements = route.size() - numPrefixLocations - numSuffixLocations - 2;
         if ((index >= numPrefixLocations) && (index <= numPrefixLocations + numRemovedElements))
         {
-          newNodeDepths[nextNodeIndex] = 0;
+          // keep track of depth into destroyed layer
+          if (newNodeDepths.find(currNodeIndex) == newNodeDepths.end())
+          {
+            newNodeDepths[nextNodeIndex] = 0;
+          }
+          else
+          {
+            newNodeDepths[nextNodeIndex] = newNodeDepths[currNodeIndex] + 1;
+          }
+
+          // push to queue
           if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
           {
             const auto newElement = std::make_pair(newState.timeWithMultiplier, nextNodeIndex);
@@ -3175,8 +3201,9 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, int n
     int numFeasibleTransitions = 0;
     for (auto pair : possibleElementDistance)
     {
+      // should make a parameter
       int randomInteger = std::rand();
-      bool randomSkip = (randomInteger % 100) >= 90;
+      bool randomSkip = (randomInteger % 100) >= params.lnsRandomPercent;
       if (randomSkip)
       {
         break;
@@ -3192,7 +3219,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, int n
         if (newNumNodes > numNodes)
         {
           newNodeDepths[newNodeIndex] = newNodeDepths[nodeIndex] + 1;
-          if (newNodeDepths[newNodeIndex] > numElementsDestroy + 1)
+          if (newNodeDepths[newNodeIndex] < numElementsDestroy)
           {
             if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
             {
@@ -3208,12 +3235,12 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, int n
         }
 
         addArc(nodeIndex, newNodeIndex);
-        ++numFeasibleTransitions;
+        //++numFeasibleTransitions;
  
-        if (numFeasibleTransitions >= numTransitionsRebuild)
-        {
-          break;
-        }
+        //if (numFeasibleTransitions >= numTransitionsRebuild)
+        //{
+        //  break;
+        //}
       }
     }
   }

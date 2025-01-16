@@ -247,6 +247,18 @@ int main(int argc, char** argv)
               params.primalHeuristicLNS = PrimalHeuristicLNS::RESTRICTED_DD;
             }
           }
+          else if (lineIndex == 22)
+          {
+            params.lnsTimeout = std::stoi(paramValueString);
+          }
+          else if (lineIndex == 23)
+          {
+            params.lnsRandomPercent = std::stoi(paramValueString);
+          }
+          else if (lineIndex == 24)
+          {
+            params.lnsIterationsToUpdateParams = std::stoi(paramValueString);
+          }
         }
         wordIndex = wordIndex + 1;
       }
