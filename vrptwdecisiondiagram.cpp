@@ -295,39 +295,53 @@ int VRPTWDecisionDiagram::addPrimalHeuristicSuffixArc(int fromNodeIndex, const s
 
   return newArcIndex;
 }
- 
+
+// Insert into best position repeatedly
 void VRPTWDecisionDiagram::generateHeuristicRoutes(std::vector<std::vector<int>>& routes)
 {
   std::set<int> locationsUsed;
   locationsUsed.insert(0);
   while (locationsUsed.size() < vrptw.numLocations)
   {
-    std::vector<int> route;
-    route.push_back(0);
-    VRPTWNodeState currState = nodes[rootNodeIndex].state;
+    std::vector<int> newRoute;
+    newRoute.push_back(0);
+    newRoute.push_back(0);
+
+    std::vector<int> locationsToTry;
     for (int location=1; location<vrptw.numLocations; ++location)
     {
-      if (locationsUsed.find(location) != locationsUsed.end())
+      if (locationsUsed.find(location) == locationsUsed.end())
       {
-        continue;
+        locationsToTry.push_back(location);
       }
-
-      VRPTWNodeState newState(currState);
-      bool newNodeFeasible = generateNewStateFromExact(newState, location);
-      if (!newNodeFeasible)
-      {
-        break;
-      }
-      else
-      {
-        route.push_back(location);
-        locationsUsed.insert(location);
-      }
-
-      currState = newState;
     }
-    route.push_back(0);
-    routes.push_back(route);
+ 
+    for (auto location : locationsToTry)
+    {
+      addLocationToRoute(location, newRoute);
+    }
+
+    if (newRoute.size() > 2)
+    {
+      if (isRouteFeasible(newRoute))
+      {
+        routes.push_back(newRoute);
+        for (int loc : newRoute)
+        {
+          locationsUsed.insert(loc);
+        }
+      }
+    }
+  }
+
+  for (auto primalRoute : routes)
+  {
+    std::cout << "initial primalRoute: ";
+    for (int loc : primalRoute)
+    {
+      std::cout << loc << " ";
+    }
+    std::cout << std::endl;
   }
 }
  
@@ -497,21 +511,41 @@ bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, 
   int newCapacityDiscretized = capacityStepSize * loadQuotient * capacityBinary;
   newState.capacity = newCapacityDiscretized;
 
-  // time window removals - need to be able to make it back in time
-  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-  {
-    if (earliestStartTime + vrptw.distances[location][0] + vrptw.serviceTimes[location] > vrptw.endTimes[0])
-    {
-      return false;
-    }
-  }
-
   return true;
 }
 
 // state should be exact for true/false return to be true
 bool VRPTWDecisionDiagram::generateNewStateFromExact(VRPTWNodeState& newState, int location)
 {
+  if (location == 0)
+  {
+    std::set<int> initialDeque = {};
+    VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
+    if (newState == rootNodeState)
+    {
+      return true;
+    }
+
+    if (vrptw.problemType == ProblemType::PDP)
+    {
+      const auto visitedSet = newState.visited;
+      for (int loc : newState.visited)
+      {
+        for (int relianceLoc : vrptw.reliances[loc])
+        {
+          if (visitedSet.find(relianceLoc) == visitedSet.end())
+          {
+            return false;
+          }
+        }
+      }
+    }
+    else
+    {
+      return true;
+    }
+  }
+
   newState.counter = newState.counter + 1;
   if (vrptw.counterType == VRPTWCounterType::NO_USE_COUNTER)
   {
@@ -769,6 +803,43 @@ void VRPTWDecisionDiagram::setupNgSets(int s)
   }
 }
 
+void VRPTWDecisionDiagram::compileEmpty()
+{
+  // reserve but do not resize
+  if ((vrptw.fixedNumPaths != FIXED_NUM_PATHS) || (vrptw.numVehicles > 1))
+  {
+    nodes.reserve(vrptw.capacity * (std::pow(vrptw.numLocations,2)));
+  }
+  else
+  {
+    nodes.reserve(std::pow(vrptw.numLocations,2));
+  }
+  arcs.reserve(std::pow(vrptw.numLocations,2)/100);
+
+  // root node r
+  std::set<int> initialDeque = {};
+  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
+  addNode(rootNodeState);
+  rootNodeIndex = 0;
+
+  // terminal node t
+  int terminalNodeLoc = 0;
+  int largestLocationIndex = vrptw.numLocations;
+  if (vrptw.circuitOrPath == CircuitOrPath::PATH)
+  {
+    terminalNodeLoc = vrptw.numLocations-1;
+    largestLocationIndex = vrptw.numLocations-1;
+  }
+  double terminalEndTime = 0;
+  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+  {
+    terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
+  }
+  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
+  addNode(terminalNodeState);
+  terminalNodeIndex = 1;
+}
+
 typedef std::pair<int,int> keyType;
 void VRPTWDecisionDiagram::compileNgRoute(int s)
 {
@@ -799,7 +870,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   addNode(rootNodeState);
   rootNodeIndex = 0;
   pq.push(std::make_pair(0,0));
-  //compilationAllVisitedDown.push_back(initialDeque);
+  compilationAllVisitedDown.push_back(initialDeque);
 
   // terminal node t
   int terminalNodeLoc = 0;
@@ -825,7 +896,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   {
     pq.push(std::make_pair(vrptw.capacity+1,1));
   }
-  //compilationAllVisitedDown.push_back(initialDeque);
+  compilationAllVisitedDown.push_back(initialDeque);
 
   // create nodes except r/t
   while (!pq.empty())
@@ -835,8 +906,14 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
     pq.pop();
     const VRPTWNodeState& stateToCheck = nodes[nodeIndex].state;
 
+    const auto allVisited = compilationAllVisitedDown[nodeIndex];
     for (int location=1; location<largestLocationIndex; ++location)
     {
+      if (allVisited.find(location) != allVisited.end())
+      {
+        continue;
+      }
+
       VRPTWNodeState newState(stateToCheck);
       bool newNodeFeasible = generateNewStateRelaxation(newState, location, nodeIndex);
       if (newNodeFeasible)
@@ -857,10 +934,9 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
             pq.push(newElement);
           }
 
-          //compilationAllVisitedDown.push_back(compilationAllVisitedDown[nodeIndex]);
-          //compilationAllVisitedDown[newNodeIndex].insert(location);
+          compilationAllVisitedDown.push_back(compilationAllVisitedDown[nodeIndex]);
+          compilationAllVisitedDown[newNodeIndex].insert(location);
         }
-        /*
         else
         {
           std::set<int> intersection;
@@ -869,7 +945,6 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
           std::set_intersection(compilationAllVisitedDown[newNodeIndex].begin(), compilationAllVisitedDown[newNodeIndex].end(), allDownCurrNode.begin(), allDownCurrNode.end(), std::inserter(intersection,intersection.begin()));
           compilationAllVisitedDown[newNodeIndex] = intersection;
         }
-        */
 
         addArc(nodeIndex, newNodeIndex);
       }
@@ -2833,6 +2908,10 @@ bool VRPTWDecisionDiagram::addLocationToRoute(int location, std::vector<int>& ro
       if (insertionIndex == routeIndex)
       {
         newRoute.push_back(location);
+        for (int relianceLoc : vrptw.reliances[location])
+        {
+          newRoute.push_back(relianceLoc);
+        }
       }
       newRoute.push_back(route[routeIndex]);
     }
@@ -2856,6 +2935,12 @@ bool VRPTWDecisionDiagram::addLocationToRoute(int location, std::vector<int>& ro
   else
   {
     route.insert(route.begin() + bestInsertionIndex, location);
+    int index = 1;
+    for (int relianceLoc : vrptw.reliances[location])
+    {
+      route.insert(route.begin() + bestInsertionIndex + index, relianceLoc); 
+      ++index;
+    }
     return true;
   }
 }
@@ -3045,8 +3130,13 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
     // Find random part to destroy
     int routeNumLocations = route.size() - 2;
     int numLocationsToDestroy = std::min(routeNumLocations, numElementsDestroy);
-    int randomInteger = std::rand();
-    int randomStartingIndex = std::max(2, randomInteger % routeNumLocations);
+    int randomInteger1 = std::rand();
+    int randomValue = 0;
+    if (route.size() > 3)
+    {
+      randomValue = randomInteger1 % (route.size()-3);
+    }
+    int randomStartingIndex = 1 + randomValue;
 
     // Destroy part of each route, which creates prefixes, destroyed parts, and suffixes
     std::vector<int> prefix;
@@ -3202,8 +3292,8 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
     for (auto pair : possibleElementDistance)
     {
       // should make a parameter
-      int randomInteger = std::rand();
-      bool randomSkip = (randomInteger % 100) >= params.lnsRandomPercent;
+      int randomInteger2 = std::rand();
+      bool randomSkip = (randomInteger2 % 100) >= params.lnsRandomPercent;
       if (randomSkip)
       {
         break;
@@ -3218,8 +3308,9 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
         int newNumNodes = nodes.size();
         if (newNumNodes > numNodes)
         {
+          // allow up to depth of 2, should make parameter
           newNodeDepths[newNodeIndex] = newNodeDepths[nodeIndex] + 1;
-          if (newNodeDepths[newNodeIndex] < numElementsDestroy)
+          if (newNodeDepths[newNodeIndex] < numElementsDestroy + 2)
           {
             if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
             {
@@ -3786,16 +3877,10 @@ void VRPTWDecisionDiagram::separateRoute(const std::vector<int>& routeArcs)
 
 bool VRPTWDecisionDiagram::isRouteFeasible(const std::vector<int>& route)
 {
-  bool haveMovedFirstArc = false;
   VRPTWNodeState currState = nodes[rootNodeIndex].state;
   for (int index=0; index<route.size(); ++index)
   {
     int nextLocation = route[index];
-    if (nextLocation == 0)
-    {
-      continue;
-    }
-
     VRPTWNodeState newState(currState);
     bool newNodeFeasible = generateNewStateFromExact(newState, nextLocation);
     if (!newNodeFeasible)

@@ -1748,6 +1748,7 @@ struct VRPTW
         int minServiceTime = *std::min_element(serviceTimes.begin()+1, serviceTimes.end());
         int minDistanceDepot = (*std::min_element(distances[0].begin()+1, distances[0].end())) + 1;
         timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
+        //timeStateDiscretization = 500;
 
         numLocations = demands.size();
         std::cout << "num locations: " << numLocations << std::endl;

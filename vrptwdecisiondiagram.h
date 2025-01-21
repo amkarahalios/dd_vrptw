@@ -214,6 +214,7 @@ class VRPTWDecisionDiagram
     // compilation
     void compileExactFukasawa(int s);
     void compileNgRoute(int s);
+    void compileEmpty();
 
     // set arc coeffs to different values
     void setCoeffsAsDistances();
