@@ -1240,7 +1240,8 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
     else if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
     {
       VRPTWDecisionDiagram heuristicDD(vrptw, params);
-      heuristicDD.largeNeighborhoodSearch(numElementsDestroy, currSolution, newBestRoutes);
+      heuristicDD.beamSearch(currSolution, newBestRoutes);
+      //heuristicDD.largeNeighborhoodSearch(numElementsDestroy, currSolution, newBestRoutes);
     }
  
     // Accept improved solution, or increase parameters if no improvement
