@@ -3126,6 +3126,139 @@ void VRPTWDecisionDiagram::createTruncatedRoute(const std::vector<int>& route, s
  
   truncatedRoute.push_back(0);
 }
+ 
+bool VRPTWDecisionDiagram::reducedCostNeighborhood(int nodesKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+{
+  std::cout << "running reduced cost neighborhood dd" << std::endl;
+
+  std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
+  nodes.reserve(std::pow(vrptw.numLocations,2));
+  arcs.reserve(std::pow(vrptw.numLocations,2)/100);
+
+  std::set<int> initialDeque = {};
+  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
+  addNode(rootNodeState);
+  rootNodeIndex = 0;
+  pq.push(std::make_pair(0,0));
+
+  int terminalNodeLoc = 0;
+  if (vrptw.circuitOrPath == CircuitOrPath::PATH)
+  {
+    terminalNodeLoc = vrptw.numLocations-1;
+  }
+  double terminalEndTime = 0;
+  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+  {
+    terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
+  }
+  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
+  addNode(terminalNodeState);
+  terminalNodeIndex = 1;
+
+  // orderings for elements can be pre-cached
+  std::cout << "pre-caching ordering of reduced costs for locations" << std::endl;
+  std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
+  for (int location1=0; location1<vrptw.numLocations; ++location1)
+  {
+    std::vector<std::pair<int,double>> possibleElementReducedCost;
+    for (int location2=1; location2<vrptw.numLocations; ++location2)
+    {
+      if (location1 == location2)
+      {
+        continue;
+      }
+      double additionalReducedCost = vrptw.distances[location1][location2] - dual.lambda[location2];
+      std::pair<int,double> possiblePair = std::make_pair(location2, additionalReducedCost);
+      possibleElementReducedCost.push_back(possiblePair);
+    }
+    std::sort(possibleElementReducedCost.begin(), possibleElementReducedCost.end(), sort_by_second);
+    std::vector<int> orderedVector;
+    for (auto locationDistance : possibleElementReducedCost)
+    {
+      orderedVector.push_back(locationDistance.first);
+    }
+    locationNextLocationReducedCostOrdering.push_back(orderedVector);
+  }
+
+  std::cout << "reduced cost neighborhood dd compilation" << std::endl;
+  // only keep x elements
+  int nodeLimit = nodesKeep * 10000;
+  while (!pq.empty() && (nodes.size() < nodeLimit))
+  {
+    keyType queueItemToCheck = pq.top();
+    int reducedCost = queueItemToCheck.first;
+    int nodeIndex = queueItemToCheck.second;
+    pq.pop();
+    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
+    for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
+    {
+      VRPTWNodeState newState(stateToCheck);
+      bool newNodeFeasible = generateNewStateFromExact(newState, location);
+      if (newNodeFeasible)
+      {
+        int numNodes = nodes.size();
+        int newNodeIndex = addNode(newState);
+        int newNumNodes = nodes.size();
+        if (newNumNodes > numNodes)
+        {
+          double additionalReducedCost = vrptw.distances[location][stateToCheck.lastVisited] - dual.lambda[location];
+          const auto newElement = std::make_pair(std::ceil(reducedCost + additionalReducedCost), newNodeIndex);
+          pq.push(newElement);
+        }
+
+        addArc(nodeIndex, newNodeIndex);
+      }
+    }
+  }
+
+  std::cout << "num nodes: " << nodes.size() << std::endl;
+  int nodeIndex = 2;
+  while (nodeIndex < nodes.size())
+  {
+    if (vrptw.circuitOrPath == CircuitOrPath::PATH)
+    {
+      if (nodes[nodeIndex].state.counter == vrptw.numLocations - 1)
+      {
+        addArc(nodeIndex, terminalNodeIndex);
+      }
+    }
+    else
+    {
+      addArc(nodeIndex, terminalNodeIndex);
+    }
+    nodeIndex = nodeIndex + 1;
+  }
+
+  // 4. Solve the Arc Flow Formulation as a MIP
+  std::cout << "running reduced cost neighborhood search mip" << std::endl;
+  setCoeffsAsDistances();
+  Dual duals1;
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, duals1, false);
+  std::cout << "obj from reduced cost neighborhood search: " << lnsObjectiveValue << std::endl;
+
+  // 5. Return the solution
+  std::vector<int> infeasibleRoute;
+  std::vector<std::vector<int>> decomposedArcs;
+  std::vector<double> routeFlows;
+  std::vector<std::vector<int>> decomposedRoutes;
+  decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
+  std::cout << "done decomposing" << std::endl;
+
+  newBestRoutes.clear();
+  for (auto route : decomposedRoutes)
+  {
+    std::vector<int> newRoute;
+    for (int loc : route)
+    {
+      newRoute.push_back(loc);
+    }
+
+    newBestRoutes.push_back(newRoute);
+  }
+
+  return true;
+  return true;
+}
 
 bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
 {

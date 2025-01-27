@@ -663,7 +663,8 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
     }
     else if (params.primalHeuristic == PrimalHeuristic::MIP)
     {
-      primalHeuristicFeasible = primalHeuristicMIP(routesByLocationPrimalHeuristic);
+      Dual duals;
+      primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, routesByLocationPrimalHeuristic, duals);
     }
 
     if (primalHeuristicFeasible)
@@ -1028,7 +1029,7 @@ void VRPTWDDSolver::addRouteToPrimalRoutes(std::vector<int> route)
 }
 
 // primal heuristic with MIP
-bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRoutes)
+bool VRPTWDDSolver::primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& returnRoutes, Dual& duals)
 {
   std::cout << "running primal heuristic MIP" << std::endl;
 
@@ -1044,7 +1045,14 @@ bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRout
   int varNum = 0;
   for (auto route : primalRoutes)
   {
-    x[varNum] = IloNumVar(env, 0, 1, ILOINT);
+    if (flowType == FlowType::IP)
+    {
+      x[varNum] = IloNumVar(env, 0, 1, ILOINT);
+    }
+    else
+    {
+      x[varNum] = IloNumVar(env, 0, 1);
+    }
     objective += x[varNum] * primalRouteCosts[varNum];
     ++varNum;
   }
@@ -1117,6 +1125,24 @@ bool VRPTWDDSolver::primalHeuristicMIP(std::vector<std::vector<int>>& returnRout
       for (int loc : primalRoute)
       {
         std::cout << loc << " ";
+      }
+      std::cout << std::endl;
+    }
+
+    // store duals for LP
+    if (flowType == FlowType::LP)
+    {
+      IloNumArray lpDuals(env);
+      solver.getDuals(lpDuals, coverConstraints);
+      duals.lambda.resize(vrptw.numLocations);
+      for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
+      {
+        duals.lambda[dualIndex] = lpDuals[dualIndex];
+      }
+      std::cout << "DUALS: ";
+      for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
+      {
+        std::cout << lpDuals[dualIndex] << ",";
       }
       std::cout << std::endl;
     }
@@ -1230,15 +1256,10 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   {
     increasingParameter = 2;
   }
-  int locationLimit = 0;
   int iterationsWithoutImprovement = 0;
   while (totalTimeSeconds < params.lnsTimeout)
   {
-    if (params.primalHeuristicLNS == PrimalHeuristicLNS::LOCAL_SEARCH)
-    {
-      largeNeighborhoodSearchIteration(locationLimit, currSolution, newBestRoutes);
-    }
-    else if (params.primalHeuristicLNS == PrimalHeuristicLNS::DESTROY_REPAIR)
+    if (params.primalHeuristicLNS == PrimalHeuristicLNS::DESTROY_REPAIR)
     {
       VRPTWDecisionDiagram heuristicDD(vrptw, params);
       int numElementsDestroy = increasingParameter;
@@ -1249,6 +1270,15 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
       VRPTWDecisionDiagram heuristicDD(vrptw, params);
       int limitedDiscrepancyValue = increasingParameter;
       heuristicDD.beamSearch(limitedDiscrepancyValue, currSolution, newBestRoutes);
+    }
+    else if (params.primalHeuristicLNS == PrimalHeuristicLNS::REDUCED_COST)
+    {
+      VRPTWDecisionDiagram heuristicDD(vrptw, params);
+      int nodesKeep = increasingParameter;
+      Dual duals;
+      std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
+      primalHeuristicMIP(FlowType::LP, routesByLocationPrimalHeuristic, duals);
+      heuristicDD.reducedCostNeighborhood(nodesKeep, duals, currSolution, newBestRoutes);
     }
  
     // Accept improved solution, or increase increasingParameters if no improvement
@@ -1294,7 +1324,7 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   std::cout << "primal heuristic timeout" << std::endl;
 }
 
-bool VRPTWDDSolver::largeNeighborhoodSearchIteration(int locationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDDSolver::localSearch(int locationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
 {
   std::vector<std::vector<int>> routesToUse;
   localSearchAroundSequences(locationLimit, feasibleSolution, routesToUse);
@@ -2056,7 +2086,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       {
         if (primalRoutes.size() > numPrimalRoutes)
         {
-          primalHeuristicFeasible = primalHeuristicMIP(routesByLocationPrimalHeuristic);
+          Dual duals;
+          primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, routesByLocationPrimalHeuristic, duals);
         }
       }
 

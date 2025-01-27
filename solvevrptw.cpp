@@ -238,17 +238,17 @@ int main(int argc, char** argv)
           else if (lineIndex == 21)
           {
             params.primalHeuristicLNS = PrimalHeuristicLNS::NONE;
-            if (paramValueString == "LOCAL_SEARCH")
-            {
-              params.primalHeuristicLNS = PrimalHeuristicLNS::LOCAL_SEARCH;
-            }
-            else if (paramValueString == "DESTROY_REPAIR")
+            if (paramValueString == "DESTROY_REPAIR")
             {
               params.primalHeuristicLNS = PrimalHeuristicLNS::DESTROY_REPAIR;
             }
             else if (paramValueString == "BEAM")
             {
               params.primalHeuristicLNS = PrimalHeuristicLNS::BEAM;
+            }
+            else if (paramValueString == "REDUCED_COST")
+            {
+              params.primalHeuristicLNS = PrimalHeuristicLNS::REDUCED_COST;
             }
           }
           else if (lineIndex == 22)

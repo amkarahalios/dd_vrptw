@@ -140,7 +140,8 @@ enum PrimalHeuristicLNS
   NONE = 0,
   LOCAL_SEARCH = 1,
   DESTROY_REPAIR = 2,
-  BEAM = 3
+  BEAM = 3,
+  REDUCED_COST = 4
 };
 
 struct VRPTWDDParameters
