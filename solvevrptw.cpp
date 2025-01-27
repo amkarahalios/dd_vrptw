@@ -242,9 +242,13 @@ int main(int argc, char** argv)
             {
               params.primalHeuristicLNS = PrimalHeuristicLNS::LOCAL_SEARCH;
             }
-            else if (paramValueString == "RESTRICTED_DD")
+            else if (paramValueString == "DESTROY_REPAIR")
             {
-              params.primalHeuristicLNS = PrimalHeuristicLNS::RESTRICTED_DD;
+              params.primalHeuristicLNS = PrimalHeuristicLNS::DESTROY_REPAIR;
+            }
+            else if (paramValueString == "BEAM")
+            {
+              params.primalHeuristicLNS = PrimalHeuristicLNS::BEAM;
             }
           }
           else if (lineIndex == 22)

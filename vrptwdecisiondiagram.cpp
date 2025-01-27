@@ -132,7 +132,7 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
 
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   std::srand(seed);
-  std::cout << seed << std::endl;
+  std::cout << "DD random seed:" << seed << std::endl;
 };
 
 void VRPTWDecisionDiagram::setTimeStepSize()
@@ -909,7 +909,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
     keyType queueItemToCheck = pq.top();
     int nodeIndex = queueItemToCheck.second;
     pq.pop();
-    const VRPTWNodeState& stateToCheck = nodes[nodeIndex].state;
+    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
 
     const auto allVisited = compilationAllVisitedDown[nodeIndex];
     for (int location=1; location<largestLocationIndex; ++location)
@@ -3127,7 +3127,7 @@ void VRPTWDecisionDiagram::createTruncatedRoute(const std::vector<int>& route, s
   truncatedRoute.push_back(0);
 }
 
-bool VRPTWDecisionDiagram::beamSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
 {
   std::cout << "running beam search dd" << std::endl;
 
@@ -3206,13 +3206,13 @@ bool VRPTWDecisionDiagram::beamSearch(const std::vector<std::vector<int>>& feasi
   // Allow some randomness in which transition(s) are chosen
   // Use an ordering to determine which transition(s) to try
   // Limit number of insertions/deletions with counter on states
-  std::cout << "restricted dd compilation" << std::endl;
+  std::cout << "restricted beam dd compilation" << std::endl;
   while (!pq.empty())
   {
     keyType queueItemToCheck = pq.top();
     int nodeIndex = queueItemToCheck.second;
     pq.pop();
-    const VRPTWNodeState& stateToCheck = nodes[nodeIndex].state;
+    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
 
     std::vector<std::pair<int,double>> possibleElementDistance;
     for (int location=1; location<vrptw.numLocations; ++location)
@@ -3233,7 +3233,7 @@ bool VRPTWDecisionDiagram::beamSearch(const std::vector<std::vector<int>>& feasi
       }
 
       int location = pair.first;
-      
+ 
       // don't allow duplicate location arcs
       bool locationArcAlreadyExists = false;
       for (int arcIndex : nodes[nodeIndex].outArcs)
@@ -3260,16 +3260,30 @@ bool VRPTWDecisionDiagram::beamSearch(const std::vector<std::vector<int>>& feasi
         int newNumNodes = nodes.size();
         if (newNumNodes > numNodes)
         {
-          // allow up to discrepancy 2, should make parameter
+          // allow limited discrepancy
+          bool isDiscrepancy = false;
           int routeIndex = newState.counter + 1;
-          int routeLocation = feasibleSolution[nodeRouteIndex[newNodeIndex]][routeIndex];
-          bool isDiscrepancy = (location != routeLocation);
+          auto originalRouteSize = feasibleSolution[nodeRouteIndex[newNodeIndex]].size();
+          if (routeIndex < originalRouteSize)
+          {
+            int routeLocation = feasibleSolution[nodeRouteIndex[newNodeIndex]][routeIndex];
+            isDiscrepancy = (location != routeLocation);
+          }
+          else
+          {
+            isDiscrepancy = true;
+          }
+
           if (isDiscrepancy)
           {
             nodeDiscrepancies[newNodeIndex] = nodeDiscrepancies[nodeIndex] + 1;
           }
+          else
+          {
+            nodeDiscrepancies[newNodeIndex] = nodeDiscrepancies[nodeIndex];
+          }
 
-          if (nodeDiscrepancies[newNodeIndex] < 2)
+          if (nodeDiscrepancies[newNodeIndex] <= limitedDiscrepancyValue)
           {
             if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
             {
@@ -3495,7 +3509,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
   // Allow some randomness in which transition(s) are chosen
   // Use an ordering to determine which transition(s) to try
   // Limit number of insertions/deletions with counter on states
-  std::cout << "restricted dd compilation" << std::endl;
+  std::cout << "restricted destroy-repair dd compilation" << std::endl;
   while (!pq.empty())
   {
     keyType queueItemToCheck = pq.top();

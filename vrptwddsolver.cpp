@@ -55,6 +55,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     {
       largeNeighborhoodSearch(heuristicRoutes);
     }
+
     if (stats.upperBound < vrptw.instanceUpperBound)
     {
       std::cout << "OUTPERFORMED: " << vrptw.instanceUpperBound << std::endl;
@@ -677,6 +678,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         {
           largeNeighborhoodSearch(routesByLocationPrimalHeuristic);
         }
+
         if (stats.upperBound < vrptw.instanceUpperBound)
         {
           std::cout << "OUTPERFORMED: " << vrptw.instanceUpperBound << std::endl;
@@ -1223,28 +1225,33 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   std::vector<std::vector<int>> currSolution = feasibleSolution;
   int totalTimeSeconds = 0;
   auto startTime = std::chrono::high_resolution_clock::now();
-  int numElementsDestroy = 1;
+  int increasingParameter = 1;
   if (vrptw.problemType == ProblemType::PDP)
   {
-    numElementsDestroy = 2;
+    increasingParameter = 2;
   }
   int locationLimit = 0;
   int iterationsWithoutImprovement = 0;
   while (totalTimeSeconds < params.lnsTimeout)
   {
-    // Try LNS with current parameters
     if (params.primalHeuristicLNS == PrimalHeuristicLNS::LOCAL_SEARCH)
     {
       largeNeighborhoodSearchIteration(locationLimit, currSolution, newBestRoutes);
     }
-    else if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
+    else if (params.primalHeuristicLNS == PrimalHeuristicLNS::DESTROY_REPAIR)
     {
       VRPTWDecisionDiagram heuristicDD(vrptw, params);
-      heuristicDD.beamSearch(currSolution, newBestRoutes);
-      //heuristicDD.largeNeighborhoodSearch(numElementsDestroy, currSolution, newBestRoutes);
+      int numElementsDestroy = increasingParameter;
+      heuristicDD.largeNeighborhoodSearch(numElementsDestroy, currSolution, newBestRoutes);
+    }
+    else if (params.primalHeuristicLNS == PrimalHeuristicLNS::BEAM)
+    {
+      VRPTWDecisionDiagram heuristicDD(vrptw, params);
+      int limitedDiscrepancyValue = increasingParameter;
+      heuristicDD.beamSearch(limitedDiscrepancyValue, currSolution, newBestRoutes);
     }
  
-    // Accept improved solution, or increase parameters if no improvement
+    // Accept improved solution, or increase increasingParameters if no improvement
     double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(newBestRoutes);
     if (lnsHeuristicUpperBound < stats.upperBound)
     {
@@ -1257,12 +1264,12 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
       }
       iterationsWithoutImprovement = 0;
       currSolution = newBestRoutes;
-      numElementsDestroy = 1;
+      increasingParameter = 1;
       if (vrptw.problemType == ProblemType::PDP)
       {
-        numElementsDestroy = 2;
+        increasingParameter = 2;
       }
-      std::cout << "updated num elements destroy: " << numElementsDestroy << std::endl;
+      std::cout << "updated increasing parameter: " << increasingParameter << std::endl;
 
       if (stats.upperBound < vrptw.instanceUpperBound)
       {
@@ -1274,20 +1281,8 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
       iterationsWithoutImprovement += 1;
       if (iterationsWithoutImprovement % params.lnsIterationsToUpdateParams == 0)
       {
-        if (params.primalHeuristicLNS == PrimalHeuristicLNS::RESTRICTED_DD)
-        {
-          ++numElementsDestroy;
-          std::cout << "updated num elements destroy: " << numElementsDestroy << std::endl;
-        }
-        else
-        {
-          locationLimit = locationLimit + 1;
-          std::cout << "updated location limit: " << locationLimit << std::endl;
-          if (locationLimit > vrptw.numLocations)
-          {
-            break;
-          }
-        }
+        ++increasingParameter;
+        std::cout << "updated increasing parameter: " << increasingParameter << std::endl;
       }
     }
 

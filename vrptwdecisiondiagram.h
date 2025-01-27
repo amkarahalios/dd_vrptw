@@ -265,7 +265,7 @@ class VRPTWDecisionDiagram
     bool primalHeuristicGreedy(std::vector<std::vector<int>>& routesByLocation);
     void createTruncatedRoute(const std::vector<int>& route, std::vector<int>& truncatedRoute);
     bool largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
-    bool beamSearch(const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
+    bool beamSearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
     int addPrimalHeuristicSuffixArc(int fromNodeIndex, const std::vector<int>& suffix, int suffixIndex);
     void generateHeuristicRoutes(std::vector<std::vector<int>>& routes);
     void createMaximalSequence(const std::vector<int>& sequence, std::vector<int>& maximalSequence);
