@@ -256,8 +256,8 @@ class VRPTWDecisionDiagram
     void initializeColumnsByLPDecomp();
     double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, Dual& dual, bool removeConstraintsForTesting);
     double getDualObjectiveValue(const Dual& dual, LPSolveType lpSolveType);
-    double fixArcs(const Dual& dual, LPSolveType lpSolveType);
-    double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType);
+    double fixArcs(const Dual& dual, LPSolveType lpSolveType, double upperBound);
+    double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType, double upperBound);
 
     // primal heuristics
     int selectArcWithLargestFlowFromNode(int nodeIndex);
@@ -267,6 +267,7 @@ class VRPTWDecisionDiagram
     bool largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
     bool beamSearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
     bool reducedCostNeighborhood(int percentKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
+    bool reducedCostNeighborhoodV2(int percentKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
     int addPrimalHeuristicSuffixArc(int fromNodeIndex, const std::vector<int>& suffix, int suffixIndex);
     void generateHeuristicRoutes(std::vector<std::vector<int>>& routes);
     void createMaximalSequence(const std::vector<int>& sequence, std::vector<int>& maximalSequence);
@@ -309,6 +310,7 @@ class VRPTWDecisionDiagram
     const std::vector<VRPTWNode>& getNodes() const { return nodes; }
     const std::vector<VRPTWArc>& getArcs() const { return arcs; }
     bool checkAn32k5SolutionPossible() const;
+    bool checkAn37k5SolutionPossible() const;
     bool checkAn33k6SolutionPossible() const;
     bool checkAn36k5SolutionPossible() const;
     bool checkAn48k7SolutionPossible() const;

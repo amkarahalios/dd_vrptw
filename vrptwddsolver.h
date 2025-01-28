@@ -107,9 +107,9 @@ class VRPTWDDSolver
     bool solveIP(Dual& duals);
 
     void addRouteToPrimalRoutes(std::vector<int> route);
-    bool primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& routesByLocationPrimalHeuristic, Dual& duals);
+    bool primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& routesByLocationPrimalHeuristic);
     void localSearchAroundSequences(int locationLimit, const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences);
-    void largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution);
+    void largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual);
     bool localSearch(int locationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
 
     void initializeDual(Dual& dual);

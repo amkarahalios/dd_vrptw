@@ -53,7 +53,9 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
     if (params.primalHeuristicLNS != PrimalHeuristicLNS::NONE)
     {
-      largeNeighborhoodSearch(heuristicRoutes);
+      Dual dual;
+      dual.lambda.resize(vrptw.numLocations);
+      largeNeighborhoodSearch(heuristicRoutes, dual);
     }
 
     if (stats.upperBound < vrptw.instanceUpperBound)
@@ -85,7 +87,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "percent to start cuts: " << percentGapToStartCuts << std::endl;
 
   bestDualsArcFixingLagPercent = 0.0;
-  bestDualArcFixingLPPercent = 0.0;
+  bestDualArcFixingLPPercent = -1;
   bestDualValue = 0.0;
   stepSizeMultiplier = 1.0;
   stepSizeMultiplierIteration = 0;
@@ -548,31 +550,11 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           if (bestDualArcFixingLPPercent > 0)
           {
             repairMultipliers(bestDualArcFixingLP, LPSolveType::LPSolver);
-            percentArcsFixed = routeDD.fixArcs(bestDualArcFixingLP, LPSolveType::LPSolver);
-            /*
-            if (!routeDD.checkAn33k6SolutionPossible())
-            {
-              routeDD.printFixedArcs();
-              printMultipliers(bestDualArcFixingLP);
-              routeDD.print();
-              routeDD.printCuts();
-              return false;
-            }
-            */
+            percentArcsFixed = routeDD.fixArcs(bestDualArcFixingLP, LPSolveType::LPSolver, stats.upperBound);
           }
 
           repairMultipliers(dual, LPSolveType::LPSolver);
-          percentArcsFixed = routeDD.fixArcs(dual, LPSolveType::LPSolver);
-          /*
-          if (!routeDD.checkAn33k6SolutionPossible())
-          {
-            routeDD.printFixedArcs();
-            printMultipliers(dual);
-            routeDD.print();
-            routeDD.printCuts();
-            return false;
-          }
-          */
+          percentArcsFixed = routeDD.fixArcs(dual, LPSolveType::LPSolver, stats.upperBound);
           if (percentArcsFixed > bestDualArcFixingLPPercent)
           {
             bestDualArcFixingLPPercent = percentArcsFixed;
@@ -591,7 +573,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       // TODO(akarahal) store best duals for arc fixing better
       if (params.useVariableFixing)
       {
-        std::cout << "fix with best duals from LAG. Using: " << bestDualsArcFixingLag.size() << " duals" << std::endl;
+        std::cout << "fix with best duals from LAG. Using: " << bestDualsArcFixingLag.size() << " dual(s)" << std::endl;
         std::vector<Dual> dualsToUseForFixing;
         for (int dualMultiplierIndex=0; dualMultiplierIndex<bestDualsArcFixingLag.size(); ++dualMultiplierIndex)
         {
@@ -599,34 +581,12 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           repairMultipliers(dualToRepair, LPSolveType::LAGSolver);
           dualsToUseForFixing.push_back(dualToRepair);
         }
-        routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver);
-        /*
-        if (!routeDD.checkAn33k6SolutionPossible())
-        {
-          routeDD.printFixedArcs();
-          for (auto dualU : dualsToUseForFixing)
-          {
-            printMultipliers(dualU);
-          }
-          routeDD.print();
-          routeDD.printCuts();
-          return false;
-        }
-        */
+        routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver, stats.upperBound);
       }
 
       if (lpFlowType == FlowType::LP)
       {
         //routeDD.strengthenSRCs(averageRouteLength);
-        /*
-        if (!routeDD.checkAn33k6SolutionPossible())
-        {
-          routeDD.printFixedArcs();
-          routeDD.print();
-          routeDD.printCuts();
-          return false;
-        }
-        */
         solved = solveLP(dual);
       }
       else
@@ -663,8 +623,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
     }
     else if (params.primalHeuristic == PrimalHeuristic::MIP)
     {
-      Dual duals;
-      primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, routesByLocationPrimalHeuristic, duals);
+      primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, routesByLocationPrimalHeuristic);
     }
 
     if (primalHeuristicFeasible)
@@ -677,7 +636,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
         if (params.primalHeuristicLNS != PrimalHeuristicLNS::NONE)
         {
-          largeNeighborhoodSearch(routesByLocationPrimalHeuristic);
+          largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual);
         }
 
         if (stats.upperBound < vrptw.instanceUpperBound)
@@ -1029,7 +988,7 @@ void VRPTWDDSolver::addRouteToPrimalRoutes(std::vector<int> route)
 }
 
 // primal heuristic with MIP
-bool VRPTWDDSolver::primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& returnRoutes, Dual& duals)
+bool VRPTWDDSolver::primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& returnRoutes)
 {
   std::cout << "running primal heuristic MIP" << std::endl;
 
@@ -1125,24 +1084,6 @@ bool VRPTWDDSolver::primalHeuristicMIP(FlowType flowType, std::vector<std::vecto
       for (int loc : primalRoute)
       {
         std::cout << loc << " ";
-      }
-      std::cout << std::endl;
-    }
-
-    // store duals for LP
-    if (flowType == FlowType::LP)
-    {
-      IloNumArray lpDuals(env);
-      solver.getDuals(lpDuals, coverConstraints);
-      duals.lambda.resize(vrptw.numLocations);
-      for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
-      {
-        duals.lambda[dualIndex] = lpDuals[dualIndex];
-      }
-      std::cout << "DUALS: ";
-      for (int dualIndex=0; dualIndex<vrptw.numLocations; ++dualIndex)
-      {
-        std::cout << lpDuals[dualIndex] << ",";
       }
       std::cout << std::endl;
     }
@@ -1245,7 +1186,7 @@ void VRPTWDDSolver::localSearchAroundSequences(int locationLimit, const std::vec
   }
 }
 
-void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution)
+void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual)
 {
   std::vector<std::vector<int>> newBestRoutes;
   std::vector<std::vector<int>> currSolution = feasibleSolution;
@@ -1274,11 +1215,8 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
     else if (params.primalHeuristicLNS == PrimalHeuristicLNS::REDUCED_COST)
     {
       VRPTWDecisionDiagram heuristicDD(vrptw, params);
-      int nodesKeep = increasingParameter;
-      Dual duals;
-      std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
-      primalHeuristicMIP(FlowType::LP, routesByLocationPrimalHeuristic, duals);
-      heuristicDD.reducedCostNeighborhood(nodesKeep, duals, currSolution, newBestRoutes);
+      int widthRestrictionParameter = increasingParameter;
+      heuristicDD.reducedCostNeighborhood(widthRestrictionParameter, dual, currSolution, newBestRoutes);
     }
  
     // Accept improved solution, or increase increasingParameters if no improvement
@@ -1294,10 +1232,19 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
       }
       iterationsWithoutImprovement = 0;
       currSolution = newBestRoutes;
-      increasingParameter = 1;
-      if (vrptw.problemType == ProblemType::PDP)
+
+      // bring other lns methods back down, increase RC one
+      if (params.primalHeuristicLNS != PrimalHeuristicLNS::REDUCED_COST)
       {
-        increasingParameter = 2;
+        increasingParameter = 1;
+        if (vrptw.problemType == ProblemType::PDP)
+        {
+          increasingParameter = 2;
+        }
+      }
+      else
+      {
+        ++increasingParameter;
       }
       std::cout << "updated increasing parameter: " << increasingParameter << std::endl;
 
@@ -1309,7 +1256,7 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
     else
     {
       iterationsWithoutImprovement += 1;
-      if (iterationsWithoutImprovement % params.lnsIterationsToUpdateParams == 0)
+      if ((iterationsWithoutImprovement % params.lnsIterationsToUpdateParams == 0) || (params.primalHeuristicLNS == PrimalHeuristicLNS::REDUCED_COST))
       {
         ++increasingParameter;
         std::cout << "updated increasing parameter: " << increasingParameter << std::endl;
@@ -1536,6 +1483,7 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
     double longestShortestPathLength = 0;
     double shortestPathLength = routeDD.computeShortestPathBFSWang(treeByParentArcs, shortestPathByArc, longestShortestPathLength);
     shortestPathLength = shortestPathLength - repairedDual.fixedPathDual;
+    //std::cout << "spl: " << shortestPathLength << std::endl;
     if (shortestPathLength >= -0.0000000001)
     {
       break;
@@ -1575,7 +1523,9 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
       }
     }
   }
- 
+
+  printMultipliers(repairedDual);
+
   auto endTimeRepair = std::chrono::high_resolution_clock::now();
   auto totalTimeRepair = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeRepair - startTimeRepair).count();
   stats.millisecondsRepairingLAG += totalTimeRepair;
@@ -1616,6 +1566,8 @@ void VRPTWDDSolver::printMultipliers(Dual& dual)
     }
   }
   std::cout << std::endl;
+
+  std::cout << "fixed dual: " << dual.fixedPathDual << std::endl;
 }
 
 void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, int iteration)
@@ -1908,7 +1860,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           repairMultipliers(dualToRepair, LPSolveType::LAGSolver);
           dualsToUseForFixing.push_back(dualToRepair);
         }
-        routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver);
+        routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver, stats.upperBound);
         auto endTimeFix = std::chrono::high_resolution_clock::now();
         auto totalTimeFix = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeFix - startTimeFix).count();
         stats.millisecondsFix += totalTimeFix;
@@ -2086,8 +2038,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       {
         if (primalRoutes.size() > numPrimalRoutes)
         {
-          Dual duals;
-          primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, routesByLocationPrimalHeuristic, duals);
+          primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, routesByLocationPrimalHeuristic);
         }
       }
 
@@ -2101,7 +2052,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
           if (params.primalHeuristicLNS != PrimalHeuristicLNS::NONE)
           {
-            largeNeighborhoodSearch(routesByLocationPrimalHeuristic);
+            largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual);
           }
           if (stats.upperBound < vrptw.instanceUpperBound)
           {
@@ -2230,7 +2181,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         {
           double previousPercentFixed = percentFixed;
           repairMultipliers(repairedDual, LPSolveType::LAGSolver);
-          percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver);
+          percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver, stats.upperBound);
           std::cout << "percent fixed: " << percentFixed << std::endl;
           if (((percentFixed - previousPercentFixed) > 1) && (currDualsArcFixing.size() < 5))
           {
@@ -2289,7 +2240,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
             }
 
             double previousPercentFixed = percentFixed;
-            percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver);
+            percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver, stats.upperBound);
             if (((percentFixed - previousPercentFixed) > 1) && (currDualsArcFixing.size() < 5))
             {
               currDualsArcFixing.push_back(repairedDual);

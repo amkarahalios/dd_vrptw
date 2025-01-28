@@ -1790,6 +1790,7 @@ struct VRPTW
           std::cout << "fixed number of vehicles" << std::endl;
         }
         numVehicles = std::stoi(cvrpInstanceMatch[2]);
+        std::cout << "num vehicles: " << numVehicles << std::endl;
 
         circuitOrPath = CircuitOrPath::CIRCUIT;
         problemType = ProblemType::CVRP;
@@ -2311,6 +2312,8 @@ struct VRPTW
             }
           }
         }
+ 
+        std::cout << "num vehicles: " << numVehicles << std::endl;
 
         numLocations = demands.size();
         routeLengthUpperBound = numLocations;
