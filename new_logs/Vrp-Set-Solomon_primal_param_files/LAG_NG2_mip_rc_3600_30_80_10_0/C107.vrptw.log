@@ -1,0 +1,1494 @@
+relax capacity constraint
+num locations: 101
+instance upper bound: 827.3
+route length upper bound: 15
+DD random seed:204865112
+compiling DD
+time step mult: 10
+time step: 900
+cap step: 10
+adding terminal arcs
+num nodes: 2171
+num arcs: 66630
+done compiling DD
+generate initial heuristic routes
+initial primalRoute: 0 5 3 7 8 10 11 9 6 4 2 1 47 0 
+initial primalRoute: 0 13 17 18 19 15 16 14 12 23 0 
+initial primalRoute: 0 20 24 25 27 29 30 28 26 34 22 21 49 0 
+initial primalRoute: 0 32 33 31 35 37 38 39 36 51 50 0 
+initial primalRoute: 0 43 42 41 40 44 46 45 48 59 66 52 75 0 
+initial primalRoute: 0 57 55 54 53 56 58 60 64 0 
+initial primalRoute: 0 67 65 63 62 70 72 61 68 80 69 0 
+initial primalRoute: 0 81 78 76 71 74 73 77 79 91 0 
+initial primalRoute: 0 90 87 86 83 82 84 85 88 89 0 
+initial primalRoute: 0 98 96 95 94 92 93 97 100 99 0 
+added route to primal routes: 0,5,3,7,8,10,11,9,6,4,2,1,47,0,
+random seed: 1881211113
+added route to primal routes: 0,13,17,18,19,15,16,14,12,23,0,
+random seed: 1939925064
+added route to primal routes: 0,20,24,25,27,29,30,28,26,34,22,21,49,0,
+random seed: 1972384426
+added route to primal routes: 0,32,33,31,35,37,38,39,36,51,50,0,
+random seed: 2031969562
+added route to primal routes: 0,43,42,41,40,44,46,45,48,59,66,52,75,0,
+random seed: 2072204321
+added route to primal routes: 0,57,55,54,53,56,58,60,64,0,
+random seed: 2131243725
+added route to primal routes: 0,67,65,63,62,70,72,61,68,80,69,0,
+random seed: 2156672406
+added maximal sequence to primal routes: 0,67,65,63,62,70,72,61,68,80,69,47,0,
+added route to primal routes: 0,81,78,76,71,74,73,77,79,91,0,
+random seed: 2231858649
+added maximal sequence to primal routes: 0,81,78,76,71,74,73,77,79,91,49,47,0,
+added route to primal routes: 0,90,87,86,83,82,84,85,88,89,0,
+random seed: 2316137804
+added maximal sequence to primal routes: 0,90,87,86,83,82,84,85,88,89,22,21,0,
+added route to primal routes: 0,98,96,95,94,92,93,97,100,99,0,
+random seed: 2372977095
+added maximal sequence to primal routes: 0,98,96,95,94,92,93,97,100,99,66,0,
+improved ub initial primal heuristic: 1261.1
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1261.1] numArcs: [66630] numFixed: [0] time: [2]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1261.1] numArcs: [66630] numFixed: [0] time: [2]
+DD random seed:2416397525
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 35160
+running reduced cost neighborhood search mip
+num vars: 4670
+obj from reduced cost neighborhood search: 4263.8
+[loc arcIndex] route: 5 4 3 615 7 6168 8 12678 10 18910 11 24006 9 27847 6 31099 4 33195 2 34570 1 35340 75 35667 0 37974 
+[loc arcIndex] route: 12 11 0 35863 
+[loc arcIndex] route: 13 12 0 35864 
+[loc arcIndex] route: 14 13 0 35865 
+[loc arcIndex] route: 15 14 0 35866 
+[loc arcIndex] route: 16 15 0 35867 
+[loc arcIndex] route: 17 16 0 35868 
+[loc arcIndex] route: 18 17 0 35869 
+[loc arcIndex] route: 19 18 0 35870 
+[loc arcIndex] route: 20 19 24 122 25 5713 27 12312 29 18170 30 23241 28 27324 26 30428 23 32688 22 34290 21 35210 0 37758 
+[loc arcIndex] route: 31 30 0 35882 
+[loc arcIndex] route: 32 31 0 35883 
+[loc arcIndex] route: 33 32 0 35884 
+[loc arcIndex] route: 34 33 0 35885 
+[loc arcIndex] route: 35 34 0 35886 
+[loc arcIndex] route: 36 35 0 35887 
+[loc arcIndex] route: 37 36 0 35888 
+[loc arcIndex] route: 38 37 0 35889 
+[loc arcIndex] route: 39 38 0 35890 
+[loc arcIndex] route: 43 42 42 1106 41 7617 40 14878 44 20303 46 25031 45 28633 48 30976 51 32865 50 34388 52 35234 49 35651 47 35851 0 38152 
+[loc arcIndex] route: 53 52 0 35904 
+[loc arcIndex] route: 54 53 0 35905 
+[loc arcIndex] route: 55 54 0 35906 
+[loc arcIndex] route: 56 55 0 35907 
+[loc arcIndex] route: 57 56 0 35908 
+[loc arcIndex] route: 58 57 0 35909 
+[loc arcIndex] route: 59 58 0 35910 
+[loc arcIndex] route: 60 59 0 35911 
+[loc arcIndex] route: 67 66 65 400 63 5665 62 12198 74 18300 72 23492 61 27717 64 30753 68 32847 66 34365 69 35335 0 37830 
+[loc arcIndex] route: 70 69 0 35921 
+[loc arcIndex] route: 71 70 0 35922 
+[loc arcIndex] route: 73 72 0 35924 
+[loc arcIndex] route: 76 75 0 35927 
+[loc arcIndex] route: 77 76 0 35928 
+[loc arcIndex] route: 78 77 0 35929 
+[loc arcIndex] route: 79 78 0 35930 
+[loc arcIndex] route: 80 79 0 35931 
+[loc arcIndex] route: 81 80 0 35932 
+[loc arcIndex] route: 82 81 0 35933 
+[loc arcIndex] route: 83 82 0 35934 
+[loc arcIndex] route: 84 83 0 35935 
+[loc arcIndex] route: 85 84 0 35936 
+[loc arcIndex] route: 86 85 0 35937 
+[loc arcIndex] route: 88 87 0 35939 
+[loc arcIndex] route: 89 88 0 35940 
+[loc arcIndex] route: 90 89 87 2151 0 36142 
+[loc arcIndex] route: 91 90 0 35942 
+[loc arcIndex] route: 92 91 0 35943 
+[loc arcIndex] route: 93 92 0 35944 
+[loc arcIndex] route: 94 93 0 35945 
+[loc arcIndex] route: 95 94 0 35946 
+[loc arcIndex] route: 96 95 0 35947 
+[loc arcIndex] route: 97 96 0 35948 
+[loc arcIndex] route: 98 97 0 35949 
+[loc arcIndex] route: 99 98 0 35950 
+[loc arcIndex] route: 100 99 0 35951 
+done decomposing
+updated increasing parameter: 2
+DD random seed:1641624748
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 59384
+running reduced cost neighborhood search mip
+num vars: 9116
+obj from reduced cost neighborhood search: 4091.5
+[loc arcIndex] route: 5 4 3 615 7 6168 8 18291 11 29160 9 38573 6 46445 4 52106 2 55994 99 58731 1 60343 75 60866 0 65376 
+[loc arcIndex] route: 10 9 0 60895 
+[loc arcIndex] route: 12 11 0 60897 
+[loc arcIndex] route: 13 12 0 60898 
+[loc arcIndex] route: 14 13 0 60899 
+[loc arcIndex] route: 15 14 0 60900 
+[loc arcIndex] route: 16 15 0 60901 
+[loc arcIndex] route: 17 16 0 60902 
+[loc arcIndex] route: 18 17 0 60903 
+[loc arcIndex] route: 19 18 0 60904 
+[loc arcIndex] route: 20 19 25 123 27 5899 30 18066 28 29450 26 38707 23 45744 22 51450 21 55522 0 63800 
+[loc arcIndex] route: 24 23 32 465 0 61099 
+[loc arcIndex] route: 29 28 34 1663 0 61271 
+[loc arcIndex] route: 31 30 0 60916 
+[loc arcIndex] route: 33 32 0 60918 
+[loc arcIndex] route: 35 34 0 60920 
+[loc arcIndex] route: 36 35 0 60921 
+[loc arcIndex] route: 37 36 0 60922 
+[loc arcIndex] route: 38 37 0 60923 
+[loc arcIndex] route: 39 38 0 60924 
+[loc arcIndex] route: 43 42 42 1106 41 7617 40 20491 44 30552 46 39548 45 46810 48 51901 51 55631 50 58334 52 59759 49 60474 47 60885 0 65386 
+[loc arcIndex] route: 53 52 0 60938 
+[loc arcIndex] route: 54 53 0 60939 
+[loc arcIndex] route: 55 54 0 60940 
+[loc arcIndex] route: 56 55 0 60941 
+[loc arcIndex] route: 57 56 0 60942 
+[loc arcIndex] route: 58 57 0 60943 
+[loc arcIndex] route: 59 58 0 60944 
+[loc arcIndex] route: 60 59 0 60945 
+[loc arcIndex] route: 67 66 65 400 63 5665 62 17811 74 28549 72 38009 61 45894 64 51678 68 55613 66 58311 69 59860 0 64692 
+[loc arcIndex] route: 70 69 0 60955 
+[loc arcIndex] route: 71 70 0 60956 
+[loc arcIndex] route: 73 72 0 60958 
+[loc arcIndex] route: 76 75 0 60961 
+[loc arcIndex] route: 77 76 0 60962 
+[loc arcIndex] route: 78 77 0 60963 
+[loc arcIndex] route: 79 78 0 60964 
+[loc arcIndex] route: 80 79 0 60965 
+[loc arcIndex] route: 81 80 0 60966 
+[loc arcIndex] route: 82 81 0 60967 
+[loc arcIndex] route: 85 84 88 2717 0 61385 
+[loc arcIndex] route: 86 85 83 2642 0 61378 
+[loc arcIndex] route: 87 86 84 2560 0 61371 
+[loc arcIndex] route: 89 88 91 2475 0 61369 
+[loc arcIndex] route: 90 89 0 60975 
+[loc arcIndex] route: 92 91 0 60977 
+[loc arcIndex] route: 93 92 0 60978 
+[loc arcIndex] route: 94 93 0 60979 
+[loc arcIndex] route: 95 94 0 60980 
+[loc arcIndex] route: 96 95 0 60981 
+[loc arcIndex] route: 97 96 0 60982 
+[loc arcIndex] route: 98 97 0 60983 
+[loc arcIndex] route: 100 99 0 60985 
+done decomposing
+updated increasing parameter: 3
+DD random seed:144080542
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 101510
+running reduced cost neighborhood search mip
+num vars: 17889
+obj from reduced cost neighborhood search: 3394.7
+[loc arcIndex] route: 5 4 3 615 7 6168 8 33580 9 50470 6 65434 4 78143 2 88109 1 95324 75 99733 0 110796 
+[loc arcIndex] route: 10 9 14 1013 0 104756 
+[loc arcIndex] route: 11 10 12 1601 0 104936 
+[loc arcIndex] route: 13 12 15 2736 0 105128 
+[loc arcIndex] route: 16 15 0 104280 
+[loc arcIndex] route: 17 16 19 3174 0 105150 
+[loc arcIndex] route: 18 17 0 104282 
+[loc arcIndex] route: 20 19 25 123 27 5899 30 33355 28 50762 26 66079 23 78466 22 88299 21 95364 0 110039 
+[loc arcIndex] route: 24 23 32 465 0 104566 
+[loc arcIndex] route: 29 28 39 1668 0 104955 
+[loc arcIndex] route: 31 30 35 3281 0 105151 
+[loc arcIndex] route: 33 32 37 3370 0 105157 
+[loc arcIndex] route: 36 35 34 3827 0 105163 
+[loc arcIndex] route: 38 37 0 104302 
+[loc arcIndex] route: 43 42 42 1106 41 7617 40 35780 44 51864 46 66920 45 79532 48 88750 51 95473 50 99810 52 102187 49 103526 47 104264 0 113109 
+[loc arcIndex] route: 53 52 0 104317 
+[loc arcIndex] route: 55 54 54 3506 0 105158 
+[loc arcIndex] route: 56 55 0 104320 
+[loc arcIndex] route: 57 56 59 3609 0 105162 
+[loc arcIndex] route: 58 57 0 104322 
+[loc arcIndex] route: 60 59 0 104324 
+[loc arcIndex] route: 67 66 65 400 63 5665 62 33100 74 49861 72 65381 61 78616 64 88527 68 95455 66 99787 69 102288 0 111687 
+[loc arcIndex] route: 70 69 0 104334 
+[loc arcIndex] route: 71 70 0 104335 
+[loc arcIndex] route: 73 72 0 104337 
+[loc arcIndex] route: 76 75 0 104340 
+[loc arcIndex] route: 77 76 0 104341 
+[loc arcIndex] route: 78 77 0 104342 
+[loc arcIndex] route: 79 78 0 104343 
+[loc arcIndex] route: 80 79 0 104344 
+[loc arcIndex] route: 81 80 0 104345 
+[loc arcIndex] route: 83 82 82 3145 0 105144 
+[loc arcIndex] route: 84 83 85 2863 0 105132 
+[loc arcIndex] route: 87 86 86 2562 88 12567 0 105902 
+[loc arcIndex] route: 90 89 89 2153 91 11948 0 105847 
+[loc arcIndex] route: 92 91 0 104356 
+[loc arcIndex] route: 93 92 0 104357 
+[loc arcIndex] route: 94 93 0 104358 
+[loc arcIndex] route: 96 95 95 4000 0 105164 
+[loc arcIndex] route: 97 96 0 104361 
+[loc arcIndex] route: 98 97 99 2968 0 105137 
+[loc arcIndex] route: 100 99 0 104364 
+done decomposing
+updated increasing parameter: 4
+DD random seed:311997814
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 176960
+running reduced cost neighborhood search mip
+num vars: 35661
+obj from reduced cost neighborhood search: 2645.6
+[loc arcIndex] route: 5 4 3 615 7 6168 8 64065 11 97482 9 121210 6 141579 4 156913 2 167453 99 173904 1 178360 75 181256 0 198851 
+[loc arcIndex] route: 10 9 12 1012 0 182714 
+[loc arcIndex] route: 13 12 17 2738 18 18867 0 185267 
+[loc arcIndex] route: 16 15 14 4464 0 183659 
+[loc arcIndex] route: 19 18 15 4221 0 183646 
+[loc arcIndex] route: 20 19 24 122 29 5717 34 64252 0 185368 
+[loc arcIndex] route: 25 24 27 810 30 6423 28 66615 26 100902 23 123494 22 143131 21 157990 0 191930 
+[loc arcIndex] route: 31 30 35 3281 0 183564 
+[loc arcIndex] route: 32 31 33 3001 0 183537 
+[loc arcIndex] route: 37 36 38 4339 0 183651 
+[loc arcIndex] route: 39 38 36 4519 0 183661 
+[loc arcIndex] route: 43 42 42 1106 41 7617 40 66265 44 98874 46 122185 45 141944 48 156708 51 167090 50 173507 52 177560 49 180492 47 181980 0 199575 
+[loc arcIndex] route: 53 52 56 4952 0 183678 
+[loc arcIndex] route: 55 54 54 3506 0 183589 
+[loc arcIndex] route: 57 56 59 3609 0 183605 
+[loc arcIndex] route: 58 57 60 4837 0 183675 
+[loc arcIndex] route: 67 66 65 400 63 5665 62 63585 74 96871 72 120646 61 141028 64 156485 68 167072 66 173484 69 177661 0 196609 
+[loc arcIndex] route: 70 69 0 182050 
+[loc arcIndex] route: 71 70 0 182051 
+[loc arcIndex] route: 73 72 0 182053 
+[loc arcIndex] route: 76 75 0 182056 
+[loc arcIndex] route: 77 76 0 182057 
+[loc arcIndex] route: 79 78 0 182059 
+[loc arcIndex] route: 80 79 0 182060 
+[loc arcIndex] route: 81 80 78 5093 0 183680 
+[loc arcIndex] route: 84 83 85 2863 88 17801 0 185246 
+[loc arcIndex] route: 86 85 83 2642 82 17047 0 185217 
+[loc arcIndex] route: 90 89 87 2151 89 11922 91 76890 0 186760 
+[loc arcIndex] route: 92 91 93 4912 0 183676 
+[loc arcIndex] route: 95 94 94 4178 0 183639 
+[loc arcIndex] route: 97 96 100 4652 0 183668 
+[loc arcIndex] route: 98 97 96 2966 0 183526 
+done decomposing
+updated increasing parameter: 5
+primal heuristic timeout
+batch size for lag: 1
+deactivate cut value threshold: 0.01
+deactivate cut iter threshold: 1000000000
+percent arcs fixed to change to CPLEX: 97.5
+number arcs fixed to change to CPLEX: 100000
+kappa iterations: 20
+num lag cuts: 20
+mu percent improved: 0.001
+percent to start cuts: 0.95
+step size iteration cutoff: 5
+target bound increase: 1.01
+min step size multiplier: 0.0001
+ngSetSize: 2
+change to LP: 1
+var fixing: 1
+useSeparations: 1
+muSSP: 1
+repairDuals: 1
+robustCuts: 1
+nonRobustCuts: 0
+volume algo: 0
+use scaling: 0
+use sparse RCCs: 0
+use restarts: 0
+switch separations to cuts: 0
+primal heuristic: 2
+primal heuristic lns: 4
+lns timeout: 30
+lns iterations to update params: 10
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1261.1] numArcs: [66630] numFixed: [0] time: [53]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1261.1] numArcs: [66630] numFixed: [0] time: [53]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1261.1] numArcs: [66630] numFixed: [0] time: [53]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1261.1] numArcs: [66630] numFixed: [0] time: [53]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1261.1] numArcs: [66630] numFixed: [0] time: [53]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1261.1] numArcs: [66630] numFixed: [0] time: [53]
+lag: 561.51
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[561.51] ub[1261.1] numArcs: [66630] numFixed: [0] time: [53]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[561.51] ub[1261.1] numArcs: [66630] numFixed: [0] time: [53]
+lambda: 0,1.86,6.18,1.61,1.81,1.51,3.8,3.2,3.62,2,1.67,1.96,7.6,9.24,3.93,14.4,16.12,6.66,7.06,3.9,1,2.02,2.42,1.3,1.5,6.04,1.58,1.71,3.54,2,2.06,6.7,9.48,13.4,6.46,3.8,3.53,7.84,12.36,8.06,2.06,1.86,3.86,1.65,2.15,2.23,6.15,1.8,2.33,1.92,2.28,2.5,2.12,9.02,16,3.5,13.5,14,13.5,3.5,9.04,2.23,3.6,7.05,2.15,1.28,1.65,1.22,2.06,1.58,17.55,11.4,2.38,5.57,9.9,3.16,5.22,5.2,10.04,5.1,5.14,14.22,7.06,3.23,6.2,8.91,2.64,5.08,8.07,2.43,2.06,2.23,8.84,17.2,4.06,11.16,3.6,12.09,6.16,3.35,7.6,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 561.51
+[loc arcIndex] route: 98 97 96 1284 95 3567 94 11756 92 19181 93 27581 97 37876 100 46613 99 54456 2 60230 1 62539 75 63962 0 66543 
+best alpha: 1
+gamma: 1 val: 0
+gamma: 2 val: 0
+gamma: 3 val: 1
+gamma: 4 val: 1
+gamma: 5 val: 1
+gamma: 6 val: 1
+gamma: 7 val: 1
+gamma: 8 val: 1
+gamma: 9 val: 1
+gamma: 10 val: 1
+gamma: 11 val: 1
+gamma: 12 val: 1
+gamma: 13 val: 1
+gamma: 14 val: 1
+gamma: 15 val: 1
+gamma: 16 val: 1
+gamma: 17 val: 1
+gamma: 18 val: 1
+gamma: 19 val: 1
+gamma: 20 val: 1
+gamma: 21 val: 1
+gamma: 22 val: 1
+gamma: 23 val: 1
+gamma: 24 val: 1
+gamma: 25 val: 1
+gamma: 26 val: 1
+gamma: 27 val: 1
+gamma: 28 val: 1
+gamma: 29 val: 1
+gamma: 30 val: 1
+gamma: 31 val: 1
+gamma: 32 val: 1
+gamma: 33 val: 1
+gamma: 34 val: 1
+gamma: 35 val: 1
+gamma: 36 val: 1
+gamma: 37 val: 1
+gamma: 38 val: 1
+gamma: 39 val: 1
+gamma: 40 val: 1
+gamma: 41 val: 1
+gamma: 42 val: 1
+gamma: 43 val: 1
+gamma: 44 val: 1
+gamma: 45 val: 1
+gamma: 46 val: 1
+gamma: 47 val: 1
+gamma: 48 val: 1
+gamma: 49 val: 1
+gamma: 50 val: 1
+gamma: 51 val: 1
+gamma: 52 val: 1
+gamma: 53 val: 1
+gamma: 54 val: 1
+gamma: 55 val: 1
+gamma: 56 val: 1
+gamma: 57 val: 1
+gamma: 58 val: 1
+gamma: 59 val: 1
+gamma: 60 val: 1
+gamma: 61 val: 1
+gamma: 62 val: 1
+gamma: 63 val: 1
+gamma: 64 val: 1
+gamma: 65 val: 1
+gamma: 66 val: 1
+gamma: 67 val: 1
+gamma: 68 val: 1
+gamma: 69 val: 1
+gamma: 70 val: 1
+gamma: 71 val: 1
+gamma: 72 val: 1
+gamma: 73 val: 1
+gamma: 74 val: 1
+gamma: 75 val: 0
+gamma: 76 val: 1
+gamma: 77 val: 1
+gamma: 78 val: 1
+gamma: 79 val: 1
+gamma: 80 val: 1
+gamma: 81 val: 1
+gamma: 82 val: 1
+gamma: 83 val: 1
+gamma: 84 val: 1
+gamma: 85 val: 1
+gamma: 86 val: 1
+gamma: 87 val: 1
+gamma: 88 val: 1
+gamma: 89 val: 1
+gamma: 90 val: 1
+gamma: 91 val: 1
+gamma: 92 val: 0
+gamma: 93 val: 0
+gamma: 94 val: 0
+gamma: 95 val: 0
+gamma: 96 val: 0
+gamma: 97 val: 0
+gamma: 98 val: 0
+gamma: 99 val: 0
+gamma: 100 val: 0
+alpha: 0.315881
+psiStar: 589.308
+lagLB: 561.51
+||gamma||^2: 88
+lambda: 0,1.86,6.18,1.61,1.81,1.51,3.8,3.2,3.62,2,1.67,1.96,7.6,9.24,3.93,14.4,16.12,6.66,7.06,3.9,1,2.02,2.42,1.3,1.5,6.04,1.58,1.71,3.54,2,2.06,6.7,9.48,13.4,6.46,3.8,3.53,7.84,12.36,8.06,2.06,1.86,3.86,1.65,2.15,2.23,6.15,1.8,2.33,1.92,2.28,2.5,2.12,9.02,16,3.5,13.5,14,13.5,3.5,9.04,2.23,3.6,7.05,2.15,1.28,1.65,1.22,2.06,1.58,17.55,11.4,2.38,5.57,9.9,3.16,5.22,5.2,10.04,5.1,5.14,14.22,7.06,3.23,6.2,8.91,2.64,5.08,8.07,2.43,2.06,2.23,8.84,17.2,4.06,11.16,3.6,12.09,6.16,3.35,7.6,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+lambda: 0,1.86,6.18,1.61,1.81,1.51,3.8,3.2,3.62,2,1.67,1.96,7.6,9.24,3.93,14.4,16.12,6.66,7.06,3.9,1,2.02,2.42,1.3,1.5,6.04,1.58,1.71,3.54,2,2.06,6.7,9.48,13.4,6.46,3.8,3.53,7.84,12.36,8.06,2.06,1.86,3.86,1.65,2.15,2.23,6.15,1.8,2.33,1.92,2.28,2.5,2.12,9.02,16,3.5,13.5,14,13.5,3.5,9.04,2.23,3.6,7.05,2.15,1.28,1.65,1.22,2.06,1.58,17.55,11.4,2.38,5.57,9.9,3.16,5.22,5.2,10.04,5.1,5.14,14.22,7.06,3.23,6.2,8.91,2.64,5.08,8.07,2.43,2.06,2.23,8.84,17.2,4.06,11.16,3.6,12.09,6.16,3.35,7.6,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+switching from LAG to LP solver
+fix with best duals from LAG. Using: 0 dual(s)
+num vars: 66630
+DUALS: -0,1.8,2.6,3.6,2.15556,3.1,2.04444,7.4,14.1889,5.88889,10.8222,3.9,26.0444,8,1.94444,8.68889,8.68889,20.2222,7.88889,14.3222,7.08889,0,2.1,4.5,1.7,14.7111,0,8.98889,3.6,6.3,7.8,6.51111,25.4,6.68889,9.3,14.7,19.1889,5.5,3.21111,5,5.21429,15.4857,2.6,5.81111,5.5873,5.3873,10.4143,2.05,4.8,1.25,1.71111,3.61111,3.88889,14.5032,7.4,18.05,10.5032,18.65,10.5032,5.8873,13.9032,7.46296,8.86296,10.2127,1.51111,2.5,2.3,2.9,3.3,1.3,8.425,13.8875,8.86296,6.725,10.463,1.9,6.225,6.65,38.9625,0.5,40,5.8625,9,6.475,9.7125,7.7125,19.2125,6.0625,1.1,2.7625,5.0625,8.8,11.275,2,11.975,23.875,10.5,6.475,9.7,10.1,5,
+lp dual value: 828.413
+obj val: 818.6
+WARNING dual values for unit upper bounds on arcs
+STATS - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[818.6] ub[1261.1] numArcs: [66630] numFixed: [0] time: [54]
+STATS1 - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[818.6] ub[1261.1] numArcs: [66630] numFixed: [0] time: [54]
+running primal heuristic MIP
+primal heuristic num vars: 14
+primal heuristic MIP obj: 1261.1
+feasible primal routes: 
+route: 
+0 5 3 7 8 10 11 9 6 4 2 1 47 0 
+route: 
+0 13 17 18 19 15 16 14 12 23 0 
+route: 
+0 20 24 25 27 29 30 28 26 34 22 21 49 0 
+route: 
+0 32 33 31 35 37 38 39 36 51 50 0 
+route: 
+0 43 42 41 40 44 46 45 48 59 66 52 75 0 
+route: 
+0 57 55 54 53 56 58 60 64 0 
+route: 
+0 67 65 63 62 70 72 61 68 80 69 0 
+route: 
+0 81 78 76 71 74 73 77 79 91 0 
+route: 
+0 90 87 86 83 82 84 85 88 89 0 
+route: 
+0 98 96 95 94 92 93 97 100 99 0 
+checking cuts, max violation: 1, num cuts: 3
+new capacity cutset: 1 2 75 92 93 94 95 96 97 98 99 100 <= 10
+adding RCC type 1 with rhs: 10
+new capacity cutset: 21 22 24 31 32 33 34 35 36 37 38 39 <= 10
+adding RCC type 1 with rhs: 10
+new capacity cutset: 53 54 55 56 57 58 59 60 68 69 <= 8
+adding RCC type 1 with rhs: 8
+no comb cuts found
+[loc arcIndex] route: 5 4 3 399 7 3924 8 8731 10 17831 11 27644 9 36749 6 46067 4 54056 0 66031 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 25 123 27 4989 29 12202 30 20005 28 29106 26 38452 23 47653 0 65779 
+[loc arcIndex] route: 24 23 32 526 33 2511 31 10328 35 18833 37 28351 38 36938 39 46735 36 54624 34 59898 22 62677 21 63970 0 66545 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 57 56 55 1639 54 4456 53 9263 56 18227 58 27352 60 37692 59 46946 68 54278 69 59956 0 66248 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 0 66045 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 98 97 96 1284 95 3567 94 11756 92 19181 93 27581 97 37876 100 46613 99 54456 2 60230 1 62539 75 63962 0 66543 
+added route to primal routes: 0,5,3,7,8,10,11,9,6,4,0,
+random seed: 3485036252
+added maximal sequence to primal routes: 0,5,3,7,8,10,11,9,6,4,22,69,49,0,
+added route to primal routes: 0,13,17,18,19,15,16,14,12,0,
+random seed: 3568531309
+added maximal sequence to primal routes: 0,13,17,18,19,15,16,14,12,91,0,
+added route to primal routes: 0,20,25,27,29,30,28,26,23,0,
+random seed: 3601653520
+added maximal sequence to primal routes: 0,20,7,25,27,29,30,28,26,23,2,75,47,0,
+added route to primal routes: 0,24,32,0,
+random seed: 3681895095
+added maximal sequence to primal routes: 0,24,32,94,73,100,34,2,21,47,0,
+added route to primal routes: 0,43,42,41,40,44,46,45,48,51,50,52,49,47,0,
+random seed: 3729944579
+added route to primal routes: 0,57,55,54,53,56,58,60,59,0,
+random seed: 3800142658
+added route to primal routes: 0,67,65,63,62,74,72,61,64,66,0,
+random seed: 3825800098
+added maximal sequence to primal routes: 0,67,65,63,62,74,72,61,64,91,66,52,0,
+added route to primal routes: 0,81,78,76,71,70,73,77,79,80,0,
+random seed: 3885681625
+added maximal sequence to primal routes: 0,81,78,76,71,70,73,77,79,80,52,49,0,
+added route to primal routes: 0,90,87,86,83,82,84,85,88,89,91,0,
+random seed: 3941992394
+added maximal sequence to primal routes: 0,90,87,86,83,82,84,85,88,89,91,75,47,0,
+[loc arcIndex] route: 5 4 3 399 7 3924 8 8731 10 17831 11 27644 9 36749 6 46067 4 54056 0 66031 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 25 123 27 4989 29 12202 30 20005 28 29106 26 38452 23 47653 0 65779 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 57 56 55 1639 54 4456 53 9263 56 18227 58 27352 60 37692 59 46946 68 54278 69 59956 0 66248 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 0 66045 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 98 97 96 1284 95 3567 94 11756 92 19181 93 27581 97 37876 100 46613 99 54456 2 60230 1 62539 75 63962 0 66543 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 0 66045 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 98 97 96 1284 95 3567 94 11756 92 19181 93 27581 97 37876 100 46613 99 54456 2 60230 1 62539 75 63962 0 66543 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 0 66045 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+separating route arcs: 23 526 2511 
+separating route locations: 24 32 33 
+separating route arcs: 56 1639 4456 9263 18227 27352 37692 46946 54278 
+separating route locations: 57 55 54 53 56 58 60 59 68 
+separating route arcs: 97 1284 3567 11756 19181 27581 37876 46613 54456 60230 
+separating route locations: 98 96 95 94 92 93 97 100 99 2 
+Dual needs repair, spl: -6.08889
+Dual needs repair, spl: -4.7358
+Dual needs repair, spl: -3.21111
+Dual needs repair, spl: -2.91919
+Dual needs repair, spl: -0.922551
+Dual needs repair, spl: -0.450022
+Dual needs repair, spl: -0.1375
+Dual needs repair, spl: -0.0837412
+Dual needs repair, spl: -0.067355
+lambda: -0,1.8,2.6,3.6,2.15556,3.1,2.04444,7.4,14.1889,5.88889,10.8222,3.9,25.9944,7.95,1.89444,8.63889,8.63889,20.1722,7.83889,14.2722,5.80002,0,0.992927,3.69166,1.02346,13.9028,0,8.18055,2.79166,5.49166,6.99166,6.08058,24.9695,6.25836,8.86947,14.2695,18.7584,5.06947,2.78058,4.56947,4.98973,15.2612,2.37545,5.28851,5.36275,5.16275,10.1897,1.82545,4.57545,1.02545,1.48656,3.38656,3.66433,14.2051,7.10196,17.752,10.2051,18.352,10.2051,5.58926,13.6051,7.45366,8.85366,10.2034,1.50181,2.49069,1.99877,2.89069,3.00196,1.29388,8.40781,13.8703,8.85366,6.70781,10.4537,1.9,6.20781,6.63281,38.9453,0.5,39.9828,5.84531,9,6.475,9.7125,7.7125,19.2125,6.0625,1.1,2.7625,5.0625,8.8,11.275,2,11.975,23.875,10.5,6.475,9.7,10.1,5,
+mu: 0,0,0,
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 809.797
+update best LP dual for fixing. Percent: 95.0461
+fix with best duals from LAG. Using: 0 dual(s)
+num vars: 3354
+DUALS: -0,1.7,6.1,1.3,4.1,0.8,0.1,16,2.7,13.75,11.95,2.4,38.85,5.15,1.15,4.15,8,29.65,4.15,4.7,0.475,0.7,2.1,1.8,3.275,7.1,4.05,8.15,4.85,13.3,5.6,18,-0,30.1,33.25,4.375,-0,1.725,4,10.875,2.3,18.6,2.3,2.3,9.9,10.9,3.7,0.8,1.2,5.8,0.3,2.4,4.1,5.3,7,34.1,5,4.2,3,45.4,4.7,16.9,15.2,1.7,3.5,2.7,1.3,2.6,3.3,1.3,5,14.1,5.4,3,5.4,1.9,5.8,6.8,31.5,46.3,8.6,6,12.8333,5.03333,-0,0.5,23.3333,4.03333,11.8333,3.8,4.23333,10.3,11.75,7.85,9.05,-0,9.9,7.85,33.1,18.2833,10.7167,
+cap dual [0]: -1.7
+cap dual [1]: -0.7
+cap dual [2]: -1
+lp dual value: 824.425
+obj val: 824.2
+WARNING dual values for unit upper bounds on arcs
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[824.2] ub[1261.1] numArcs: [67704] numFixed: [64350] time: [56]
+STATS1 - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[824.2] ub[1261.1] numArcs: [67704] numFixed: [64350] time: [56]
+running primal heuristic MIP
+primal heuristic num vars: 30
+primal heuristic MIP obj: 1196.6
+feasible primal routes: 
+route: 
+0 5 3 7 8 10 11 9 6 4 2 1 47 0 
+route: 
+0 13 17 18 19 15 16 14 12 23 0 
+route: 
+0 20 24 25 27 29 30 28 26 34 22 21 49 0 
+route: 
+0 32 33 31 35 37 38 39 36 51 50 0 
+route: 
+0 67 65 63 62 70 72 61 68 80 69 0 
+route: 
+0 98 96 95 94 92 93 97 100 99 0 
+route: 
+0 43 42 41 40 44 46 45 48 51 50 52 49 47 0 
+route: 
+0 57 55 54 53 56 58 60 59 0 
+route: 
+0 67 65 63 62 74 72 61 64 66 0 
+route: 
+0 81 78 76 71 70 73 77 79 80 0 
+route: 
+0 90 87 86 83 82 84 85 88 89 91 75 47 0 
+improved ub from MIP primal heuristic: 1196.6
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[824.2] ub[1196.6] numArcs: [67704] numFixed: [64350] time: [56]
+STATS1 - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[824.2] ub[1196.6] numArcs: [67704] numFixed: [64350] time: [56]
+DD random seed:990195176
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 26165
+running reduced cost neighborhood search mip
+num vars: 4286
+obj from reduced cost neighborhood search: 3637.8
+[loc arcIndex] route: 2 1 0 26509 
+[loc arcIndex] route: 3 2 0 26510 
+[loc arcIndex] route: 4 3 0 26511 
+[loc arcIndex] route: 5 4 0 26512 
+[loc arcIndex] route: 7 6 9 233 6 5990 0 26857 
+[loc arcIndex] route: 8 7 0 26515 
+[loc arcIndex] route: 10 9 11 884 0 26696 
+[loc arcIndex] route: 13 12 0 26520 
+[loc arcIndex] route: 14 13 12 4892 0 26803 
+[loc arcIndex] route: 15 14 0 26522 
+[loc arcIndex] route: 16 15 0 26523 
+[loc arcIndex] route: 17 16 19 619 0 26680 
+[loc arcIndex] route: 18 17 0 26525 
+[loc arcIndex] route: 20 19 0 26527 
+[loc arcIndex] route: 21 20 0 26528 
+[loc arcIndex] route: 22 21 0 26529 
+[loc arcIndex] route: 23 22 0 26530 
+[loc arcIndex] route: 24 23 27 1608 0 26738 
+[loc arcIndex] route: 25 24 28 1120 0 26711 
+[loc arcIndex] route: 26 25 0 26533 
+[loc arcIndex] route: 29 28 30 1056 0 26705 
+[loc arcIndex] route: 32 31 0 26539 
+[loc arcIndex] route: 33 32 31 731 35 6172 0 26866 
+[loc arcIndex] route: 36 35 34 4631 0 26802 
+[loc arcIndex] route: 37 36 0 26544 
+[loc arcIndex] route: 38 37 0 26545 
+[loc arcIndex] route: 39 38 0 26546 
+[loc arcIndex] route: 40 39 0 26547 
+[loc arcIndex] route: 41 40 46 389 45 9229 0 26938 
+[loc arcIndex] route: 42 41 0 26549 
+[loc arcIndex] route: 43 42 41 2212 44 7977 0 26914 
+[loc arcIndex] route: 53 52 0 26560 
+[loc arcIndex] route: 55 54 54 487 59 7336 64 13470 68 19339 66 21969 69 23523 47 24436 0 27902 
+[loc arcIndex] route: 56 55 0 26563 
+[loc arcIndex] route: 57 56 55 3858 59 7563 48 13436 51 19193 50 21830 52 23328 49 24330 0 27849 
+[loc arcIndex] route: 58 57 0 26565 
+[loc arcIndex] route: 60 59 0 26567 
+[loc arcIndex] route: 62 61 72 582 61 10748 0 26967 
+[loc arcIndex] route: 63 62 0 26570 
+[loc arcIndex] route: 65 64 0 26572 
+[loc arcIndex] route: 67 66 0 26574 
+[loc arcIndex] route: 70 69 0 26577 
+[loc arcIndex] route: 71 70 0 26578 
+[loc arcIndex] route: 73 72 0 26580 
+[loc arcIndex] route: 74 73 0 26581 
+[loc arcIndex] route: 75 74 0 26582 
+[loc arcIndex] route: 76 75 0 26583 
+[loc arcIndex] route: 77 76 79 5335 0 26807 
+[loc arcIndex] route: 78 77 79 3169 80 5641 0 26839 
+[loc arcIndex] route: 81 80 0 26588 
+[loc arcIndex] route: 82 81 0 26589 
+[loc arcIndex] route: 83 82 0 26590 
+[loc arcIndex] route: 84 83 0 26591 
+[loc arcIndex] route: 85 84 0 26592 
+[loc arcIndex] route: 87 86 86 3295 88 8172 0 26919 
+[loc arcIndex] route: 90 89 0 26597 
+[loc arcIndex] route: 95 94 0 26602 
+[loc arcIndex] route: 98 97 96 224 94 6446 92 16432 93 21111 97 22444 100 23388 99 24295 89 24860 91 25563 1 26197 0 28408 
+done decomposing
+updated increasing parameter: 2
+DD random seed:3671857465
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 47071
+running reduced cost neighborhood search mip
+num vars: 7941
+obj from reduced cost neighborhood search: 3190.3
+[loc arcIndex] route: 3 2 2 1975 0 48320 
+[loc arcIndex] route: 5 4 4 2076 0 48328 
+[loc arcIndex] route: 7 6 6 231 0 48059 
+[loc arcIndex] route: 8 7 0 47927 
+[loc arcIndex] route: 10 9 11 884 9 12472 0 48703 
+[loc arcIndex] route: 13 12 0 47932 
+[loc arcIndex] route: 14 13 12 4892 0 48409 
+[loc arcIndex] route: 15 14 0 47934 
+[loc arcIndex] route: 16 15 0 47935 
+[loc arcIndex] route: 17 16 19 619 0 48143 
+[loc arcIndex] route: 18 17 0 47937 
+[loc arcIndex] route: 20 19 21 1267 0 48236 
+[loc arcIndex] route: 23 22 22 1567 0 48277 
+[loc arcIndex] route: 24 23 27 1608 29 13295 0 48719 
+[loc arcIndex] route: 25 24 30 1122 0 48218 
+[loc arcIndex] route: 28 27 26 1819 0 48307 
+[loc arcIndex] route: 32 31 0 47951 
+[loc arcIndex] route: 33 32 31 731 35 6172 0 48511 
+[loc arcIndex] route: 36 35 34 4631 0 48407 
+[loc arcIndex] route: 37 36 0 47956 
+[loc arcIndex] route: 38 37 0 47957 
+[loc arcIndex] route: 39 38 34 3738 0 48396 
+[loc arcIndex] route: 41 40 40 386 44 7695 45 27023 59 35775 51 37625 50 42668 52 45351 49 46430 47 47199 0 51289 
+[loc arcIndex] route: 42 41 0 47961 
+[loc arcIndex] route: 43 42 0 47962 
+[loc arcIndex] route: 46 45 0 47965 
+[loc arcIndex] route: 53 52 0 47972 
+[loc arcIndex] route: 55 54 56 488 59 12832 48 21432 0 48952 
+[loc arcIndex] route: 57 56 55 3858 54 7560 59 29453 64 31262 68 38454 66 42319 69 45115 0 50541 
+[loc arcIndex] route: 58 57 59 5117 0 48413 
+[loc arcIndex] route: 60 59 0 47979 
+[loc arcIndex] route: 62 61 72 582 61 10748 0 48669 
+[loc arcIndex] route: 63 62 74 1906 0 48314 
+[loc arcIndex] route: 67 66 65 1429 0 48259 
+[loc arcIndex] route: 70 69 0 47989 
+[loc arcIndex] route: 73 72 0 47992 
+[loc arcIndex] route: 76 75 0 47995 
+[loc arcIndex] route: 77 76 79 5335 80 9204 0 48631 
+[loc arcIndex] route: 78 77 71 3162 0 48381 
+[loc arcIndex] route: 81 80 0 48000 
+[loc arcIndex] route: 84 83 0 48003 
+[loc arcIndex] route: 85 84 0 48004 
+[loc arcIndex] route: 86 85 83 866 82 11675 0 48692 
+[loc arcIndex] route: 87 86 86 3295 88 8172 0 48598 
+[loc arcIndex] route: 90 89 91 2835 0 48367 
+[loc arcIndex] route: 95 94 0 48014 
+[loc arcIndex] route: 98 97 96 224 94 6446 92 25289 93 34646 97 39503 100 42895 99 44793 89 46208 1 47260 75 47762 0 51710 
+done decomposing
+updated increasing parameter: 3
+DD random seed:277629003
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 92054
+running reduced cost neighborhood search mip
+num vars: 15669
+obj from reduced cost neighborhood search: 2820.9
+[loc arcIndex] route: 1 0 75 2597 0 95154 
+[loc arcIndex] route: 5 4 3 2075 0 95075 
+[loc arcIndex] route: 6 5 4 2925 0 95208 
+[loc arcIndex] route: 7 6 8 232 11 8348 9 54411 0 96863 
+[loc arcIndex] route: 10 9 15 887 0 94772 
+[loc arcIndex] route: 13 12 17 3445 18 9066 0 95643 
+[loc arcIndex] route: 14 13 0 94407 
+[loc arcIndex] route: 17 16 16 617 12 12889 2 35629 0 96335 
+[loc arcIndex] route: 19 18 0 94412 
+[loc arcIndex] route: 20 19 21 1267 0 94879 
+[loc arcIndex] route: 23 22 22 1567 0 94962 
+[loc arcIndex] route: 24 23 33 1614 39 9615 0 95670 
+[loc arcIndex] route: 25 24 27 1119 30 9345 0 95658 
+[loc arcIndex] route: 28 27 26 1819 0 95026 
+[loc arcIndex] route: 29 28 36 1059 34 32298 0 96069 
+[loc arcIndex] route: 31 30 35 2479 0 95142 
+[loc arcIndex] route: 32 31 33 4121 34 11265 52 35924 0 96383 
+[loc arcIndex] route: 37 36 0 94430 
+[loc arcIndex] route: 38 37 0 94431 
+[loc arcIndex] route: 41 40 40 386 44 7695 45 42582 0 96645 
+[loc arcIndex] route: 42 41 46 2642 0 95163 
+[loc arcIndex] route: 53 52 0 94446 
+[loc arcIndex] route: 55 54 54 487 56 7334 59 49731 64 57050 68 74671 66 84108 69 90130 0 100063 
+[loc arcIndex] route: 57 56 55 3858 59 7563 48 34959 51 58101 50 72367 49 81584 47 86983 0 99417 
+[loc arcIndex] route: 58 57 59 5117 0 95286 
+[loc arcIndex] route: 60 59 0 94453 
+[loc arcIndex] route: 62 61 74 584 72 8532 61 52231 0 96825 
+[loc arcIndex] route: 65 64 63 1526 0 94949 
+[loc arcIndex] route: 67 66 43 1407 0 94917 
+[loc arcIndex] route: 70 69 0 94463 
+[loc arcIndex] route: 71 70 0 94464 
+[loc arcIndex] route: 73 72 0 94466 
+[loc arcIndex] route: 77 76 79 5335 80 9204 0 95646 
+[loc arcIndex] route: 78 77 76 3167 0 95230 
+[loc arcIndex] route: 81 80 0 94474 
+[loc arcIndex] route: 84 83 0 94477 
+[loc arcIndex] route: 85 84 88 3798 0 95265 
+[loc arcIndex] route: 87 86 86 3295 83 8169 82 51943 0 96819 
+[loc arcIndex] route: 90 89 89 2834 0 95190 
+[loc arcIndex] route: 98 97 96 224 95 6447 94 44708 92 68392 93 77700 97 82845 100 87164 99 90386 91 92699 0 100900 
+done decomposing
+updated increasing parameter: 4
+DD random seed:3199174476
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 188224
+running reduced cost neighborhood search mip
+num vars: 31985
+obj from reduced cost neighborhood search: 2171.2
+[loc arcIndex] route: 3 2 6 1978 0 195348 
+[loc arcIndex] route: 5 4 0 194195 
+[loc arcIndex] route: 7 6 8 232 10 8347 11 71662 9 129840 4 149500 2 173822 1 182679 75 189238 0 206949 
+[loc arcIndex] route: 13 12 15 3443 0 195794 
+[loc arcIndex] route: 16 15 14 4265 12 61965 0 197479 
+[loc arcIndex] route: 17 16 18 618 19 10106 0 196561 
+[loc arcIndex] route: 20 19 22 1268 0 194955 
+[loc arcIndex] route: 24 23 33 1614 31 9609 35 69283 34 124285 52 140070 49 173248 47 182635 0 205309 
+[loc arcIndex] route: 25 24 27 1119 29 9344 28 71755 0 198347 
+[loc arcIndex] route: 26 25 23 1689 0 195214 
+[loc arcIndex] route: 30 29 36 2420 34 60881 0 197475 
+[loc arcIndex] route: 32 31 39 4127 0 195846 
+[loc arcIndex] route: 33 32 37 736 38 14543 0 196836 
+[loc arcIndex] route: 41 40 40 386 44 7695 46 72609 45 130053 59 152414 48 159108 51 176318 50 184920 21 190496 0 207481 
+[loc arcIndex] route: 42 41 43 2639 0 195588 
+[loc arcIndex] route: 54 53 53 4349 0 195856 
+[loc arcIndex] route: 55 54 58 490 60 14465 59 107862 68 110489 0 199659 
+[loc arcIndex] route: 57 56 55 3858 56 7561 59 92296 69 109247 0 199464 
+[loc arcIndex] route: 62 61 74 584 72 8532 61 83727 64 120875 0 200320 
+[loc arcIndex] route: 63 62 66 1899 0 195313 
+[loc arcIndex] route: 65 64 67 1529 0 195122 
+[loc arcIndex] route: 70 69 0 194260 
+[loc arcIndex] route: 73 72 0 194263 
+[loc arcIndex] route: 77 76 79 5335 80 9204 0 196460 
+[loc arcIndex] route: 78 77 76 3167 71 23091 0 197102 
+[loc arcIndex] route: 81 80 0 194271 
+[loc arcIndex] route: 83 82 82 3685 0 195813 
+[loc arcIndex] route: 84 83 85 3944 0 195834 
+[loc arcIndex] route: 90 89 87 2832 86 25987 88 75410 89 123081 91 158881 0 202280 
+[loc arcIndex] route: 98 97 96 224 95 6447 94 74850 92 124682 93 148371 97 164687 100 176990 99 184438 0 205654 
+done decomposing
+updated increasing parameter: 5
+primal heuristic timeout
+checking cuts, max violation: 1, num cuts: 1
+new capacity cutset: 21 22 31 32 33 34 35 36 37 38 39 <= 9
+adding RCC type 1 with rhs: 9
+no comb cuts found
+[loc arcIndex] route: 3 2 98 691 96 3652 95 9651 94 19245 92 28328 93 37263 97 47025 100 54432 99 60057 2 62717 1 64007 0 66547 
+[loc arcIndex] route: 5 4 3 399 7 3924 8 8731 10 17831 11 27644 9 36749 6 46067 4 54056 75 59817 0 66249 
+[loc arcIndex] route: 5 4 98 493 96 3652 95 9651 94 19245 92 28328 93 37263 97 47025 100 54432 99 60057 2 62717 1 64007 0 66547 
+[loc arcIndex] route: 7 6 8 5053 10 12396 11 20762 9 28997 6 38328 4 47387 75 55128 0 65796 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 24 122 25 2422 27 9029 29 18769 30 27866 28 36891 26 46215 23 54541 0 66035 
+[loc arcIndex] route: 32 31 33 1319 31 4197 35 9105 37 18896 38 27239 39 37596 36 46803 34 54195 22 60135 21 62551 0 66434 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 55 54 57 1838 54 4537 53 9263 56 18227 58 27352 60 37692 59 46946 68 54278 66 59955 0 66247 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 69 60780 0 66299 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 69 60178 0 66248 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+added route to primal routes: 0,3,98,0,
+random seed: 3864896282
+added maximal sequence to primal routes: 0,3,98,86,83,37,45,68,23,22,49,0,
+added route to primal routes: 0,5,3,7,8,10,11,9,6,4,75,0,
+random seed: 3919397647
+added maximal sequence to primal routes: 0,5,3,7,8,10,11,9,6,4,66,1,75,0,
+added route to primal routes: 0,5,98,0,
+random seed: 3987352038
+added maximal sequence to primal routes: 0,5,98,54,38,30,26,51,22,47,49,0,
+added route to primal routes: 0,7,8,10,11,9,6,4,75,0,
+random seed: 4047969833
+added maximal sequence to primal routes: 0,3,7,83,8,10,11,9,6,4,47,75,0,
+added route to primal routes: 0,20,24,25,27,29,30,28,26,23,0,
+random seed: 4105937406
+added maximal sequence to primal routes: 0,20,24,25,27,29,30,28,26,23,34,21,75,0,
+added route to primal routes: 0,32,33,31,35,37,38,39,36,34,0,
+random seed: 4190345384
+added route to primal routes: 0,55,57,54,53,56,58,60,59,0,
+random seed: 4223065317
+added route to primal routes: 0,67,65,63,62,74,72,61,64,66,69,0,
+random seed: 4249312295
+added maximal sequence to primal routes: 0,67,65,63,62,74,72,61,64,59,66,69,0,
+added route to primal routes: 0,67,65,63,62,74,72,61,64,68,69,0,
+random seed: 5953477
+added maximal sequence to primal routes: 0,67,65,63,62,74,72,61,64,68,69,49,0,
+[loc arcIndex] route: 5 4 3 399 7 3924 8 8731 10 17831 11 27644 9 36749 6 46067 4 54056 75 59817 0 66249 
+[loc arcIndex] route: 5 4 98 493 96 3652 95 9651 94 19245 92 28328 93 37263 97 47025 100 54432 99 60057 2 62717 1 64007 0 66547 
+[loc arcIndex] route: 7 6 8 5053 10 12396 11 20762 9 28997 6 38328 4 47387 75 55128 0 65796 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 24 122 25 2422 27 9029 29 18769 30 27866 28 36891 26 46215 23 54541 0 66035 
+[loc arcIndex] route: 32 31 33 1319 31 4197 35 9105 37 18896 38 27239 39 37596 36 46803 34 54195 22 60135 21 62551 0 66434 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 55 54 57 1838 54 4537 53 9263 56 18227 58 27352 60 37692 59 46946 68 54278 66 59955 0 66247 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 69 60780 0 66299 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 69 60178 0 66248 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 5 4 3 399 7 3924 8 8731 10 17831 11 27644 9 36749 6 46067 4 54056 75 59817 0 66249 
+[loc arcIndex] route: 7 6 8 5053 10 12396 11 20762 9 28997 6 38328 4 47387 75 55128 0 65796 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 24 122 25 2422 27 9029 29 18769 30 27866 28 36891 26 46215 23 54541 0 66035 
+[loc arcIndex] route: 32 31 33 1319 31 4197 35 9105 37 18896 38 27239 39 37596 36 46803 34 54195 22 60135 21 62551 0 66434 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 55 54 57 1838 54 4537 53 9263 56 18227 58 27352 60 37692 59 46946 68 54278 66 59955 0 66247 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 69 60780 0 66299 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 69 60178 0 66248 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 7 6 8 5053 10 12396 11 20762 9 28997 6 38328 4 47387 75 55128 0 65796 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 24 122 25 2422 27 9029 29 18769 30 27866 28 36891 26 46215 23 54541 0 66035 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 55 54 57 1838 54 4537 53 9263 56 18227 58 27352 60 37692 59 46946 68 54278 66 59955 0 66247 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 69 60780 0 66299 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 69 60178 0 66248 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 69 60780 0 66299 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 69 60178 0 66248 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 69 60780 0 66299 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 69 60178 0 66248 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+separating route arcs: 2 691 3652 
+separating route locations: 3 98 96 
+separating route arcs: 4 493 3652 
+separating route locations: 5 98 96 
+separating route arcs: 31 1319 4197 9105 18896 27239 37596 46803 54195 60135 
+separating route locations: 32 33 31 35 37 38 39 36 34 22 
+separating route arcs: 54 1838 4537 9263 18227 27352 37692 46946 54278 
+separating route locations: 55 57 54 53 56 58 60 59 68 
+lambda: -0,1.8,2.6,3.6,2.15556,3.1,2.04444,7.4,14.1889,5.88889,10.8222,3.9,25.9944,7.95,1.89444,8.63889,8.63889,20.1722,7.83889,14.2722,5.80002,0,0.992927,3.69166,1.02346,13.9028,0,8.18055,2.79166,5.49166,6.99166,6.08058,24.9695,6.25836,8.86947,14.2695,18.7584,5.06947,2.78058,4.56947,4.98973,15.2612,2.37545,5.28851,5.36275,5.16275,10.1897,1.82545,4.57545,1.02545,1.48656,3.38656,3.66433,14.2051,7.10196,17.752,10.2051,18.352,10.2051,5.58926,13.6051,7.45366,8.85366,10.2034,1.50181,2.49069,1.99877,2.89069,3.00196,1.29388,8.40781,13.8703,8.85366,6.70781,10.4537,1.9,6.20781,6.63281,38.9453,0.5,39.9828,5.84531,9,6.475,9.7125,7.7125,19.2125,6.0625,1.1,2.7625,5.0625,8.8,11.275,2,11.975,23.875,10.5,6.475,9.7,10.1,5,
+mu: 0,0,0,0,
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 809.797
+lambda: -0,1.7,6.1,1.3,4.1,0.8,0.1,16,2.7,13.75,11.95,2.4,38.85,5.15,1.15,4.15,8,29.65,4.15,4.7,0.475,0.7,2.1,1.8,3.275,7.1,4.05,8.15,4.85,13.3,5.6,18,-0,30.1,33.25,4.375,-0,1.725,4,10.875,2.3,18.6,2.3,2.3,9.9,10.9,3.7,0.8,1.2,5.8,0.3,2.4,4.1,5.3,7,34.1,5,4.2,3,45.4,4.7,16.9,15.2,1.7,3.5,2.7,1.3,2.6,3.3,1.3,5,14.1,5.4,3,5.4,1.9,5.8,6.8,31.5,46.3,8.6,6,12.8333,5.03333,-0,0.5,23.3333,4.03333,11.8333,3.8,4.23333,10.3,11.75,7.85,9.05,-0,9.9,7.85,33.1,18.2833,10.7167,
+mu: -1.7,-0.7,-1,0,
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 824.425
+update best LP dual for fixing. Percent: 98.7672
+fix with best duals from LAG. Using: 0 dual(s)
+num vars: 850
+DUALS: -0,0.45,7.4,10.15,-0,9.35,2.7,-0,10.75,2.9,-0,15.95,24.4,7.8,11.0333,10.7667,1.23333,16.2667,13.7333,10.7667,-0,0.7,2.1,1.8,1.9,15.1,-0,2,19.2,3.6,5,-0,2.7,33.5,34.85,19.7,5.45,2.85,3.75,-0,18.45,3.525,1.45,1.45,-0,2.175,21.475,7.95,1.825,-0,1.4,2.4,2.5,6.575,6.3,-0,6.575,36.15,2.575,41.575,5.975,20,5,14.55,4.775,0.25,1.725,0.65,3.3,1.3,2.2,-0,5,-0,3,0.65,-0,4,57.2,1,56.7,6,0,6,22.3,22.8,15.2,6.2,3,2.8,5.2,3.6,4.05,2.45,4.05,8.2,-0,44.1,36.55,-0,-0,
+cap dual [0]: -0.45
+cap dual [2]: -0.575
+cap dual [3]: -0.7
+lp dual value: 838.575
+obj val: 826.725
+WARNING dual values for unit upper bounds on arcs
+STATS - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[7] numCuts[4] compileTime[1] sspSolveTime[0] lpSolveTime[1] lb[826.725] ub[1196.6] numArcs: [68948] numFixed: [68098] time: [108]
+STATS1 - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[7] numCuts[4] compileTime[1] sspSolveTime[0] lpSolveTime[1] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[826.725] ub[1196.6] numArcs: [68948] numFixed: [68098] time: [108]
+running primal heuristic MIP
+primal heuristic num vars: 46
+primal heuristic MIP obj: 988.9
+feasible primal routes: 
+route: 
+0 5 3 7 8 10 11 9 6 4 2 1 47 0 
+route: 
+0 90 87 86 83 82 84 85 88 89 22 21 0 
+route: 
+0 98 96 95 94 92 93 97 100 99 66 0 
+route: 
+0 13 17 18 19 15 16 14 12 91 0 
+route: 
+0 43 42 41 40 44 46 45 48 51 50 52 49 47 0 
+route: 
+0 57 55 54 53 56 58 60 59 0 
+route: 
+0 81 78 76 71 70 73 77 79 80 0 
+route: 
+0 7 8 10 11 9 6 4 75 0 
+route: 
+0 20 24 25 27 29 30 28 26 23 0 
+route: 
+0 32 33 31 35 37 38 39 36 34 0 
+route: 
+0 67 65 63 62 74 72 61 64 68 69 0 
+improved ub from MIP primal heuristic: 988.9
+STATS - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[7] numCuts[4] compileTime[1] sspSolveTime[0] lpSolveTime[1] lb[826.725] ub[988.9] numArcs: [68948] numFixed: [68098] time: [108]
+STATS1 - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[7] numCuts[4] compileTime[1] sspSolveTime[0] lpSolveTime[1] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[826.725] ub[988.9] numArcs: [68948] numFixed: [68098] time: [108]
+DD random seed:1303146718
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 28569
+running reduced cost neighborhood search mip
+num vars: 3753
+obj from reduced cost neighborhood search: 4108.7
+[loc arcIndex] route: 3 2 98 1091 95 6159 97 17722 9 18442 6 23713 4 26471 2 28114 21 28437 49 28942 0 30808 
+[loc arcIndex] route: 5 4 98 1190 95 6371 97 18087 14 18483 12 24701 2 25099 1 27754 75 28588 0 30612 
+[loc arcIndex] route: 7 6 0 28963 
+[loc arcIndex] route: 8 7 11 1238 0 29166 
+[loc arcIndex] route: 10 9 0 28966 
+[loc arcIndex] route: 13 12 0 28969 
+[loc arcIndex] route: 15 14 0 28971 
+[loc arcIndex] route: 16 15 0 28972 
+[loc arcIndex] route: 17 16 0 28973 
+[loc arcIndex] route: 18 17 0 28974 
+[loc arcIndex] route: 19 18 0 28975 
+[loc arcIndex] route: 20 19 0 28976 
+[loc arcIndex] route: 22 21 0 28978 
+[loc arcIndex] route: 23 22 0 28979 
+[loc arcIndex] route: 24 23 0 28980 
+[loc arcIndex] route: 25 24 27 550 0 29105 
+[loc arcIndex] route: 26 25 0 28982 
+[loc arcIndex] route: 29 28 0 28985 
+[loc arcIndex] route: 30 29 28 2182 0 29204 
+[loc arcIndex] route: 31 30 0 28987 
+[loc arcIndex] route: 32 31 33 3905 35 8572 0 29357 
+[loc arcIndex] route: 36 35 34 4061 0 29246 
+[loc arcIndex] route: 37 36 0 28993 
+[loc arcIndex] route: 38 37 0 28994 
+[loc arcIndex] route: 39 38 0 28995 
+[loc arcIndex] route: 41 40 40 2249 0 29206 
+[loc arcIndex] route: 42 41 0 28998 
+[loc arcIndex] route: 43 42 0 28999 
+[loc arcIndex] route: 44 43 0 29000 
+[loc arcIndex] route: 45 44 0 29001 
+[loc arcIndex] route: 46 45 48 730 0 29124 
+[loc arcIndex] route: 50 49 0 29006 
+[loc arcIndex] route: 51 50 0 29007 
+[loc arcIndex] route: 52 51 0 29008 
+[loc arcIndex] route: 53 52 0 29009 
+[loc arcIndex] route: 55 54 57 4313 59 11765 47 14124 0 29530 
+[loc arcIndex] route: 56 55 0 29012 
+[loc arcIndex] route: 57 56 54 485 59 8715 64 14101 0 29526 
+[loc arcIndex] route: 58 57 0 29014 
+[loc arcIndex] route: 60 59 0 29016 
+[loc arcIndex] route: 62 61 0 29018 
+[loc arcIndex] route: 63 62 74 816 0 29137 
+[loc arcIndex] route: 65 64 0 29021 
+[loc arcIndex] route: 66 65 0 29022 
+[loc arcIndex] route: 67 66 0 29023 
+[loc arcIndex] route: 69 68 0 29025 
+[loc arcIndex] route: 70 69 0 29026 
+[loc arcIndex] route: 71 70 0 29027 
+[loc arcIndex] route: 72 71 61 3121 0 29233 
+[loc arcIndex] route: 73 72 0 29029 
+[loc arcIndex] route: 77 76 0 29033 
+[loc arcIndex] route: 78 77 76 168 0 29060 
+[loc arcIndex] route: 79 78 0 29035 
+[loc arcIndex] route: 81 80 78 5152 80 6225 68 13585 0 29459 
+[loc arcIndex] route: 82 81 0 29038 
+[loc arcIndex] route: 83 82 0 29039 
+[loc arcIndex] route: 86 85 84 1655 85 7407 88 14900 89 20973 0 29830 
+[loc arcIndex] route: 87 86 0 29043 
+[loc arcIndex] route: 90 89 0 29046 
+[loc arcIndex] route: 91 90 0 29047 
+[loc arcIndex] route: 92 91 0 29048 
+[loc arcIndex] route: 93 92 0 29049 
+[loc arcIndex] route: 96 95 0 29052 
+[loc arcIndex] route: 98 97 94 329 97 10393 100 14054 99 19825 0 29799 
+done decomposing
+updated increasing parameter: 2
+DD random seed:3936284218
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 50787
+running reduced cost neighborhood search mip
+num vars: 7483
+obj from reduced cost neighborhood search: 3529.9
+[loc arcIndex] route: 3 2 98 1091 95 6159 97 26044 9 30870 6 40174 4 45667 2 49321 1 50381 75 51396 0 55138 
+[loc arcIndex] route: 5 4 7 1099 0 52068 
+[loc arcIndex] route: 8 7 10 1237 0 52093 
+[loc arcIndex] route: 11 10 15 952 0 52038 
+[loc arcIndex] route: 13 12 0 51767 
+[loc arcIndex] route: 14 13 12 3771 0 52228 
+[loc arcIndex] route: 16 15 0 51770 
+[loc arcIndex] route: 17 16 18 2788 0 52192 
+[loc arcIndex] route: 19 18 0 51773 
+[loc arcIndex] route: 20 19 21 1369 0 52103 
+[loc arcIndex] route: 23 22 22 1473 0 52119 
+[loc arcIndex] route: 24 23 0 51778 
+[loc arcIndex] route: 25 24 27 550 0 51949 
+[loc arcIndex] route: 26 25 0 51780 
+[loc arcIndex] route: 29 28 0 51783 
+[loc arcIndex] route: 30 29 28 2182 0 52159 
+[loc arcIndex] route: 31 30 0 51785 
+[loc arcIndex] route: 32 31 0 51786 
+[loc arcIndex] route: 33 32 35 643 38 5849 0 52319 
+[loc arcIndex] route: 36 35 34 4061 0 52232 
+[loc arcIndex] route: 37 36 0 51791 
+[loc arcIndex] route: 39 38 0 51793 
+[loc arcIndex] route: 41 40 0 51795 
+[loc arcIndex] route: 42 41 0 51796 
+[loc arcIndex] route: 43 42 47 2342 0 52171 
+[loc arcIndex] route: 44 43 0 51798 
+[loc arcIndex] route: 53 52 0 51807 
+[loc arcIndex] route: 54 53 0 51808 
+[loc arcIndex] route: 55 54 57 4313 59 11765 64 21463 68 35890 0 53405 
+[loc arcIndex] route: 56 55 0 51810 
+[loc arcIndex] route: 57 56 40 471 46 7729 45 23513 59 37243 48 38234 51 45869 50 49072 52 50686 49 51444 0 55186 
+[loc arcIndex] route: 58 57 59 5201 0 52249 
+[loc arcIndex] route: 60 59 0 51814 
+[loc arcIndex] route: 62 61 0 51816 
+[loc arcIndex] route: 63 62 74 816 0 52003 
+[loc arcIndex] route: 65 64 0 51819 
+[loc arcIndex] route: 67 66 0 51821 
+[loc arcIndex] route: 70 69 0 51824 
+[loc arcIndex] route: 71 70 0 51825 
+[loc arcIndex] route: 72 71 61 3121 0 52203 
+[loc arcIndex] route: 73 72 0 51827 
+[loc arcIndex] route: 76 75 0 51830 
+[loc arcIndex] route: 78 77 81 172 79 6490 80 29723 66 30817 0 53068 
+[loc arcIndex] route: 81 80 78 5152 77 6223 80 27150 69 30789 0 53062 
+[loc arcIndex] route: 82 81 0 51836 
+[loc arcIndex] route: 83 82 0 51837 
+[loc arcIndex] route: 87 86 86 3238 84 15521 85 27647 88 33076 89 39468 91 44824 0 54064 
+[loc arcIndex] route: 90 89 0 51844 
+[loc arcIndex] route: 92 91 0 51846 
+[loc arcIndex] route: 94 93 0 51848 
+[loc arcIndex] route: 96 95 0 51850 
+[loc arcIndex] route: 98 97 93 328 97 13951 100 21668 99 33672 0 53339 
+done decomposing
+updated increasing parameter: 3
+DD random seed:604263843
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 102983
+running reduced cost neighborhood search mip
+num vars: 15326
+obj from reduced cost neighborhood search: 2900.6
+[loc arcIndex] route: 3 2 98 1091 94 6158 97 47216 4 57698 0 107920 
+[loc arcIndex] route: 5 4 98 1190 93 6369 97 55286 100 58310 99 75070 2 88134 1 98919 75 103029 0 111808 
+[loc arcIndex] route: 7 6 10 1998 0 106037 
+[loc arcIndex] route: 8 7 11 1238 9 7567 0 106500 
+[loc arcIndex] route: 15 14 14 3646 0 106220 
+[loc arcIndex] route: 16 15 12 4853 0 106246 
+[loc arcIndex] route: 17 16 13 2784 0 106145 
+[loc arcIndex] route: 18 17 19 3304 0 106196 
+[loc arcIndex] route: 20 19 21 1369 0 105897 
+[loc arcIndex] route: 24 23 22 1897 0 106011 
+[loc arcIndex] route: 25 24 30 553 28 10686 0 106634 
+[loc arcIndex] route: 26 25 23 2078 0 106050 
+[loc arcIndex] route: 27 26 29 2118 0 106058 
+[loc arcIndex] route: 31 30 0 105390 
+[loc arcIndex] route: 32 31 33 3905 36 8573 34 55760 0 107827 
+[loc arcIndex] route: 33 32 35 643 38 5849 0 106350 
+[loc arcIndex] route: 37 36 0 105396 
+[loc arcIndex] route: 39 38 34 4946 0 106248 
+[loc arcIndex] route: 41 40 40 2249 46 10075 45 39989 59 69820 64 73378 68 90291 66 97500 69 102515 49 104351 0 112391 
+[loc arcIndex] route: 42 41 57 2926 59 11685 48 36534 51 65329 0 108485 
+[loc arcIndex] route: 43 42 44 2339 0 106087 
+[loc arcIndex] route: 52 51 47 3087 0 106173 
+[loc arcIndex] route: 55 54 57 4313 59 11765 50 36681 0 107220 
+[loc arcIndex] route: 56 55 0 105415 
+[loc arcIndex] route: 57 56 54 485 53 8712 0 106552 
+[loc arcIndex] route: 58 57 59 5201 0 106253 
+[loc arcIndex] route: 60 59 0 105419 
+[loc arcIndex] route: 62 61 72 1716 61 22279 0 106946 
+[loc arcIndex] route: 63 62 74 816 0 105722 
+[loc arcIndex] route: 65 64 67 1801 0 105994 
+[loc arcIndex] route: 70 69 80 5441 0 106258 
+[loc arcIndex] route: 73 72 0 105432 
+[loc arcIndex] route: 78 77 77 169 79 6860 0 106456 
+[loc arcIndex] route: 81 80 78 5152 71 6217 0 106400 
+[loc arcIndex] route: 82 81 0 105441 
+[loc arcIndex] route: 86 85 83 1654 84 19813 85 47918 88 62361 89 78561 91 90580 0 110143 
+[loc arcIndex] route: 87 86 78 3230 76 7272 0 106481 
+[loc arcIndex] route: 90 89 0 105449 
+[loc arcIndex] route: 92 91 0 105451 
+[loc arcIndex] route: 98 97 96 331 95 10472 97 49244 6 57883 0 107967 
+done decomposing
+updated increasing parameter: 4
+DD random seed:91854630
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 206677
+running reduced cost neighborhood search mip
+num vars: 31018
+obj from reduced cost neighborhood search: 2229
+[loc arcIndex] route: 3 2 98 1091 95 6159 92 71432 97 141608 6 142164 4 177730 2 199407 1 205177 75 210566 0 227111 
+[loc arcIndex] route: 5 4 3 1096 8 7789 11 74662 9 121186 0 219161 
+[loc arcIndex] route: 7 6 10 1998 0 214389 
+[loc arcIndex] route: 13 12 17 3504 18 18898 0 216022 
+[loc arcIndex] route: 15 14 14 3646 12 34313 0 216376 
+[loc arcIndex] route: 19 18 16 3816 0 214869 
+[loc arcIndex] route: 20 19 21 1369 0 214098 
+[loc arcIndex] route: 24 23 22 1897 0 214342 
+[loc arcIndex] route: 25 24 27 550 30 9453 28 90068 0 217713 
+[loc arcIndex] route: 26 25 23 2078 0 214422 
+[loc arcIndex] route: 29 28 36 2604 34 48415 0 216491 
+[loc arcIndex] route: 32 31 31 3904 0 214874 
+[loc arcIndex] route: 33 32 35 643 37 5848 38 73335 0 217358 
+[loc arcIndex] route: 39 38 34 4946 0 214927 
+[loc arcIndex] route: 41 40 40 2249 44 10073 46 101345 47 131984 0 219512 
+[loc arcIndex] route: 43 42 42 2338 0 214515 
+[loc arcIndex] route: 54 53 53 4202 0 214896 
+[loc arcIndex] route: 55 54 57 4313 59 11765 64 66352 68 119579 0 219059 
+[loc arcIndex] route: 57 56 56 487 58 12477 59 102255 0 217984 
+[loc arcIndex] route: 60 59 0 213298 
+[loc arcIndex] route: 63 62 62 807 40 9767 46 84569 45 125643 59 163377 48 167215 51 194055 50 204938 52 210259 49 212654 0 227963 
+[loc arcIndex] route: 65 64 78 1812 76 8048 0 215358 
+[loc arcIndex] route: 67 66 78 1565 71 7952 0 215348 
+[loc arcIndex] route: 74 73 72 2716 61 26248 0 216229 
+[loc arcIndex] route: 78 77 70 162 73 9260 0 215460 
+[loc arcIndex] route: 81 80 78 5152 77 6223 79 72559 80 139173 66 141679 69 177577 0 222617 
+[loc arcIndex] route: 83 82 82 3754 0 214858 
+[loc arcIndex] route: 90 89 87 2484 86 23270 84 95984 85 129765 88 145849 89 169294 91 189006 0 223510 
+[loc arcIndex] route: 96 95 0 213334 
+[loc arcIndex] route: 98 97 94 329 93 10392 97 98044 100 112440 99 148811 0 220727 
+done decomposing
+updated increasing parameter: 5
+primal heuristic timeout
+checking cuts, max violation: 0.5, num cuts: 9
+new capacity cutset: 42 43 53 54 55 56 57 58 59 60 <= 8
+adding RCC type 1 with rhs: 8
+new capacity cutset: 43 53 54 55 56 57 58 59 60 <= 7
+adding RCC type 1 with rhs: 7
+new capacity cutset: 53 54 55 56 57 58 59 60 68 <= 7
+adding RCC type 1 with rhs: 7
+new capacity cutset: 42 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 72 74 <= 17
+adding RCC type 1 with rhs: 17
+new capacity cutset: 42 53 54 55 56 57 58 59 60 <= 7
+adding RCC type 1 with rhs: 7
+new capacity cutset: 43 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 72 74 <= 17
+adding RCC type 1 with rhs: 17
+new capacity cutset: 42 43 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 72 74 <= 18
+adding RCC type 1 with rhs: 18
+new capacity cutset: 42 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 72 74 <= 16
+adding RCC type 1 with rhs: 16
+new capacity cutset: 42 43 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 72 74 <= 17
+adding RCC type 1 with rhs: 17
+no comb cuts found
+[loc arcIndex] route: 5 4 3 67885 7 3924 8 8731 10 17831 11 27644 9 36749 6 46067 4 54056 2 59806 1 62539 75 63962 0 66543 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 24 122 25 2422 27 9029 29 18769 30 27866 28 36891 26 46215 23 54541 22 59843 21 62551 0 66434 
+[loc arcIndex] route: 32 31 33 68071 31 68167 35 68247 37 68319 38 68380 39 68431 36 68471 34 68505 0 68522 
+[loc arcIndex] route: 41 40 40 5317 44 12763 46 21017 45 29603 48 39082 51 47979 50 55450 52 60667 49 63078 47 64118 0 66562 
+[loc arcIndex] route: 42 41 57 848 55 2944 54 10928 53 18969 56 27932 58 37560 60 47048 59 54783 68 59938 69 62672 0 66429 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 43 42 57 749 55 2944 54 10928 53 18969 56 27932 58 37560 60 47048 59 54783 68 59938 69 62672 0 66429 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 0 66045 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 66 60177 69 62600 0 66437 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 98 97 96 67334 95 67415 94 67486 92 67546 93 67598 97 67640 100 67673 99 67693 0 67703 
+added route to primal routes: 0,5,3,7,8,10,11,9,6,4,2,1,75,0,
+random seed: 3938877566
+added route to primal routes: 0,20,24,25,27,29,30,28,26,23,22,21,0,
+random seed: 3997782186
+added maximal sequence to primal routes: 0,20,24,25,27,29,30,28,26,23,22,21,75,0,
+added route to primal routes: 0,41,40,44,46,45,48,51,50,52,49,47,0,
+random seed: 4059392328
+added maximal sequence to primal routes: 0,78,41,40,44,46,45,48,51,50,52,49,47,0,
+added route to primal routes: 0,42,57,0,
+random seed: 4121204402
+added maximal sequence to primal routes: 0,42,57,7,70,77,79,99,1,52,75,0,
+added route to primal routes: 0,43,57,0,
+random seed: 4192166081
+added maximal sequence to primal routes: 0,43,57,40,27,37,100,36,91,49,0,
+added route to primal routes: 0,67,65,63,62,74,72,61,64,68,66,69,0,
+random seed: 4232118454
+[loc arcIndex] route: 5 4 3 67885 7 3924 8 8731 10 17831 11 27644 9 36749 6 46067 4 54056 2 59806 1 62539 75 63962 0 66543 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 24 122 25 2422 27 9029 29 18769 30 27866 28 36891 26 46215 23 54541 22 59843 21 62551 0 66434 
+[loc arcIndex] route: 32 31 33 68071 31 68167 35 68247 37 68319 38 68380 39 68431 36 68471 34 68505 0 68522 
+[loc arcIndex] route: 41 40 40 5317 44 12763 46 21017 45 29603 48 39082 51 47979 50 55450 52 60667 49 63078 47 64118 0 66562 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 43 42 57 749 55 2944 54 10928 53 18969 56 27932 58 37560 60 47048 59 54783 68 59938 69 62672 0 66429 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 0 66045 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 66 60177 69 62600 0 66437 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 98 97 96 67334 95 67415 94 67486 92 67546 93 67598 97 67640 100 67673 99 67693 0 67703 
+[loc arcIndex] route: 43 42 42 735 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 0 66045 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 66 60177 69 62600 0 66437 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 98 97 96 67334 95 67415 94 67486 92 67546 93 67598 97 67640 100 67673 99 67693 0 67703 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 66 54682 0 66045 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 66 60177 69 62600 0 66437 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 98 97 96 67334 95 67415 94 67486 92 67546 93 67598 97 67640 100 67673 99 67693 0 67703 
+separating route arcs: 41 848 2944 
+separating route locations: 42 57 55 
+separating route arcs: 42 749 2944 
+separating route locations: 43 57 55 
+Dual needs repair, spl: -25.6
+Dual needs repair, spl: -18.8333
+Dual needs repair, spl: -11.8611
+Dual needs repair, spl: -8.13333
+Dual needs repair, spl: -4.3
+Dual needs repair, spl: -3.98055
+Dual needs repair, spl: -0.809254
+Dual needs repair, spl: -0.204036
+lambda: -0,1.7,5.62222,1.3,4.1,0.8,0.1,16,2.7,13.75,11.95,2.4,38.85,5.15,1.15,4.15,8,29.65,4.15,4.7,0.475,0.7,2.1,1.8,3.275,7.1,4.05,8.15,4.85,13.3,5.6,15.8667,-0,27.9667,33.25,4.375,-0,1.725,4,10.875,0.166666,16.0244,1.85772,1.85772,7.32438,8.32438,3.25772,0.8,1.2,4.23055,0.3,0.830555,2.53055,5.3,7,31.5659,5,1.66593,3,38.7209,4.7,15.3306,13.6306,1.7,1.32642,1.13055,0,1.03055,0,0,4.26061,13.3606,3.83055,2.26061,3.83055,1.9,5.06061,6.06061,30.7606,45.5606,8.6,5.26061,12.8107,5.01066,-0,0.5,23.3107,4.01066,11.0713,3.03793,4.21066,9.53793,11.2722,7.37222,8.57222,-0,9.42222,7.37222,32.5995,17.8056,10.2389,
+mu: -1.7,-0.7,-1,0,0,0,0,0,0,0,0,0,0,
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 762.388
+Dual needs repair, spl: -44.85
+Dual needs repair, spl: -24.9
+Dual needs repair, spl: -16.5364
+Dual needs repair, spl: -14
+Dual needs repair, spl: -11.155
+Dual needs repair, spl: -9.75
+Dual needs repair, spl: -4.31166
+Dual needs repair, spl: -4.1
+Dual needs repair, spl: -1.92857
+Dual needs repair, spl: -1.83737
+Dual needs repair, spl: -0.8
+Dual needs repair, spl: -0.666667
+Dual needs repair, spl: -0.202357
+Dual needs repair, spl: -0.192851
+lambda: -0,0.45,5.33295,4.00568,-0,3.20568,2.7,-0,10.75,2.9,-0,15.95,24.3048,7.70476,10.9381,10.6714,1.23333,16.1714,13.6381,10.6714,-0,0.7,0.707142,1.64,1.51429,14.94,-0,1.84,19.04,3.6,4.84,-0,1.26857,31.6829,33.0329,17.8829,3.63286,1.45714,3.75,-0,15.96,3.525,0,1.45,-0,0,18.985,4.22055,1.825,-0,1.4,2.4,2.5,6.575,6.3,-0,6.575,32.5315,2.575,36.717,5.975,18.7606,3.76055,13.3106,2.45764,0.25,1.725,0.65,0.759409,1.3,2.2,-0,3.76055,-0,1.76055,0,-0,0.846665,54.0467,0,53.5467,3.66667,0,6,18.2227,16.6557,11.1227,5.38,0,0,4.38,0,4.05,2.45,4.05,6.13295,-0,37.9557,30.4057,-0,-0,
+mu: -0.45,0,-0.575,-0.7,0,0,0,0,0,0,0,0,0,
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 725.877
+fix with best duals from LAG. Using: 0 dual(s)
+num vars: 42148
+DUALS: -0,2.4,5.4,5.2125,1.3,2.7875,2.7,8.5875,9.45,6.0875,11.3875,6.7875,10.9,8,15.8375,7.3875,7.3875,22.8,11.4875,12,0.2,0.7,2.1,2.3,2.3,10.1,5.7,4.2,9.9,9.05,4.85,10.6,15.75,15.65,8.7,9.9,19.5,8.6,8.2,5.7,6.3125,9.89375,6.7125,4.2125,4.5125,5.2125,6.8125,4.5,7.33125,1.5,1.4,3.6,3.6,20.0922,16.0922,31.1641,15.1922,18.3922,15.0875,18.6812,26.1922,6.08229,8.7,9.8,0.26875,2.7,3.6,3.1,5.13125,1.5,8.86667,10.9667,9.08229,6.66667,11.3354,1.9,6.33333,25.3667,39.9,5.96667,17.0333,6,11.4,15.1,3.6,2.8,11.1,6.2,12.1333,2.5,5.2,5.86667,11.75,6.95,9.9125,8.7125,9,7.95,27.425,17.6,10.1,
+cap dual [0]: -1.7
+cap dual [3]: -0.7
+cap dual [5]: -0.3125
+cap dual [6]: -5.03125
+cap dual [8]: -2.9125
+cap dual [9]: -0.2
+lp dual value: 829.5
+obj val: 827.3
+WARNING dual values for unit upper bounds on arcs
+STATS - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[9] numCuts[13] compileTime[1] sspSolveTime[0] lpSolveTime[1] lb[827.3] ub[988.9] numArcs: [69310] numFixed: [27162] time: [160]
+STATS1 - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[9] numCuts[13] compileTime[1] sspSolveTime[0] lpSolveTime[1] repairTime[0] cutsTime[1] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[827.3] ub[988.9] numArcs: [69310] numFixed: [27162] time: [160]
+running primal heuristic MIP
+primal heuristic num vars: 56
+primal heuristic MIP obj: 827.3
+feasible primal routes: 
+route: 
+0 98 96 95 94 92 93 97 100 99 0 
+route: 
+0 13 17 18 19 15 16 14 12 0 
+route: 
+0 43 42 41 40 44 46 45 48 51 50 52 49 47 0 
+route: 
+0 57 55 54 53 56 58 60 59 0 
+route: 
+0 81 78 76 71 70 73 77 79 80 0 
+route: 
+0 90 87 86 83 82 84 85 88 89 91 0 
+route: 
+0 32 33 31 35 37 38 39 36 34 0 
+route: 
+0 5 3 7 8 10 11 9 6 4 2 1 75 0 
+route: 
+0 20 24 25 27 29 30 28 26 23 22 21 0 
+route: 
+0 67 65 63 62 74 72 61 64 68 66 69 0 
+improved ub from MIP primal heuristic: 827.3
+STATS - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[9] numCuts[13] compileTime[1] sspSolveTime[0] lpSolveTime[1] lb[827.3] ub[827.3] numArcs: [69310] numFixed: [27162] time: [160]
+STATS1 - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[9] numCuts[13] compileTime[1] sspSolveTime[0] lpSolveTime[1] repairTime[0] cutsTime[1] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[827.3] ub[827.3] numArcs: [69310] numFixed: [27162] time: [160]
+DD random seed:1701154537
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 48002
+running reduced cost neighborhood search mip
+num vars: 4376
+obj from reduced cost neighborhood search: 2723.2
+[loc arcIndex] route: 1 0 0 49578 
+[loc arcIndex] route: 2 1 0 49579 
+[loc arcIndex] route: 3 2 4 1127 0 49778 
+[loc arcIndex] route: 5 4 98 1719 95 8125 0 50007 
+[loc arcIndex] route: 7 6 8 519 6 6408 0 49943 
+[loc arcIndex] route: 10 9 11 382 9 6853 0 49964 
+[loc arcIndex] route: 13 12 17 3569 18 8330 19 18321 0 50218 
+[loc arcIndex] route: 16 15 0 49593 
+[loc arcIndex] route: 17 16 15 1238 14 11034 12 20382 0 50245 
+[loc arcIndex] route: 20 19 21 859 0 49753 
+[loc arcIndex] route: 23 22 22 1327 0 49795 
+[loc arcIndex] route: 24 23 27 1797 0 49821 
+[loc arcIndex] route: 25 24 28 456 26 6119 0 49924 
+[loc arcIndex] route: 29 28 30 1388 0 49798 
+[loc arcIndex] route: 31 30 0 49608 
+[loc arcIndex] route: 32 31 33 2486 37 7066 36 21823 34 28895 0 50470 
+[loc arcIndex] route: 35 34 0 49612 
+[loc arcIndex] route: 38 37 0 49615 
+[loc arcIndex] route: 39 38 0 49616 
+[loc arcIndex] route: 41 40 40 733 0 49742 
+[loc arcIndex] route: 42 41 44 1982 0 49830 
+[loc arcIndex] route: 43 42 47 2084 0 49839 
+[loc arcIndex] route: 46 45 45 2207 0 49841 
+[loc arcIndex] route: 55 54 54 153 53 5820 56 15518 58 24831 60 32224 59 37710 64 42816 68 46846 69 48801 49 49503 0 51608 
+[loc arcIndex] route: 57 56 55 2997 53 5639 56 15450 58 24773 60 32177 59 37672 48 42782 51 46404 50 48514 52 49378 0 51484 
+[loc arcIndex] route: 62 61 66 1001 0 49764 
+[loc arcIndex] route: 63 62 74 356 72 6092 61 17780 0 50201 
+[loc arcIndex] route: 65 64 67 1497 0 49803 
+[loc arcIndex] route: 70 69 0 49647 
+[loc arcIndex] route: 73 72 0 49650 
+[loc arcIndex] route: 75 74 0 49652 
+[loc arcIndex] route: 78 77 76 1599 71 9595 77 23386 79 28477 80 36974 0 50677 
+[loc arcIndex] route: 81 80 0 49658 
+[loc arcIndex] route: 84 83 0 49661 
+[loc arcIndex] route: 85 84 0 49662 
+[loc arcIndex] route: 86 85 83 2698 82 9872 0 50042 
+[loc arcIndex] route: 87 86 0 49664 
+[loc arcIndex] route: 89 88 0 49666 
+[loc arcIndex] route: 90 89 88 2798 0 49854 
+[loc arcIndex] route: 91 90 0 49668 
+[loc arcIndex] route: 96 95 98 4391 97 8929 99 19276 0 50234 
+[loc arcIndex] route: 98 97 94 292 92 7182 93 17923 0 50205 
+[loc arcIndex] route: 100 99 0 49677 
+done decomposing
+updated increasing parameter: 2
+DD random seed:1828051209
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 83815
+running reduced cost neighborhood search mip
+num vars: 8766
+obj from reduced cost neighborhood search: 2059.5
+[loc arcIndex] route: 2 1 1 2394 0 87336 
+[loc arcIndex] route: 3 2 4 1127 0 87189 
+[loc arcIndex] route: 5 4 75 1696 0 87252 
+[loc arcIndex] route: 7 6 8 519 9 6409 6 26066 0 88039 
+[loc arcIndex] route: 10 9 11 382 0 87073 
+[loc arcIndex] route: 13 12 17 3569 18 8330 15 25613 0 88017 
+[loc arcIndex] route: 17 16 19 1241 16 7976 14 34683 12 45970 0 88558 
+[loc arcIndex] route: 20 19 21 859 0 87150 
+[loc arcIndex] route: 23 22 22 1327 0 87209 
+[loc arcIndex] route: 24 23 28 1798 26 11461 0 87726 
+[loc arcIndex] route: 25 24 27 455 30 7235 0 87561 
+[loc arcIndex] route: 29 28 34 1389 0 87219 
+[loc arcIndex] route: 32 31 33 2486 37 7066 38 29252 36 49134 0 88593 
+[loc arcIndex] route: 33 32 32 3152 31 8232 35 28352 0 88106 
+[loc arcIndex] route: 39 38 0 86952 
+[loc arcIndex] route: 41 40 44 734 45 10764 0 87709 
+[loc arcIndex] route: 42 41 40 1979 0 87280 
+[loc arcIndex] route: 43 42 55 2092 54 7486 56 24014 58 42095 60 56963 59 65610 48 73983 51 81741 50 85689 52 86703 49 86842 0 91056 
+[loc arcIndex] route: 46 45 47 2208 0 87315 
+[loc arcIndex] route: 57 56 55 2997 53 5639 56 22448 58 39255 60 54163 59 64682 64 73536 68 80776 66 84733 69 86343 0 90694 
+[loc arcIndex] route: 63 62 62 347 74 6387 72 24323 61 44536 0 88538 
+[loc arcIndex] route: 65 64 67 1497 0 87227 
+[loc arcIndex] route: 73 72 0 86986 
+[loc arcIndex] route: 78 77 71 1594 70 10437 77 35049 79 43681 80 60668 0 89004 
+[loc arcIndex] route: 81 80 78 5234 76 8991 0 87652 
+[loc arcIndex] route: 84 83 0 86997 
+[loc arcIndex] route: 85 84 0 86998 
+[loc arcIndex] route: 87 86 86 3459 83 12404 82 29895 0 88135 
+[loc arcIndex] route: 88 87 89 2390 0 87334 
+[loc arcIndex] route: 90 89 91 2800 0 87360 
+[loc arcIndex] route: 96 95 98 4391 97 8929 100 26638 99 47829 0 88582 
+[loc arcIndex] route: 98 97 95 293 94 6332 92 25157 93 43846 0 88512 
+done decomposing
+updated increasing parameter: 3
+DD random seed:1901281707
+running reduced cost neighborhood dd
+reduced cost neighborhood dd compilation
+num nodes: 152547
+running reduced cost neighborhood search mip
+num vars: 17493
+obj from reduced cost neighborhood search: 1723.3
+[loc arcIndex] route: 2 1 1 2394 0 158594 
+[loc arcIndex] route: 3 2 98 1221 97 6728 100 50367 99 88661 0 161152 
+[loc arcIndex] route: 5 4 75 1696 0 158433 
+[loc arcIndex] route: 7 6 8 519 4 6407 0 158900 
+[loc arcIndex] route: 10 9 11 382 9 6853 6 44885 0 160049 
+[loc arcIndex] route: 13 12 17 3569 15 8328 16 47532 14 91378 12 108864 0 161964 
+[loc arcIndex] route: 20 19 17 856 18 17209 19 56308 0 160294 
+[loc arcIndex] route: 22 21 21 947 0 158277 
+[loc arcIndex] route: 24 23 31 1801 0 158461 
+[loc arcIndex] route: 25 24 27 455 29 7234 30 42613 0 159941 
+[loc arcIndex] route: 28 27 26 604 23 7627 0 159027 
+[loc arcIndex] route: 32 31 33 2486 39 7068 36 54562 34 76143 0 160978 
+[loc arcIndex] route: 33 32 32 3152 35 8234 37 42551 38 81350 0 161091 
+[loc arcIndex] route: 41 40 40 733 44 7715 45 48886 0 160192 
+[loc arcIndex] route: 42 41 55 1993 54 6774 53 39098 56 68387 60 96478 59 117027 64 133447 68 148573 66 154935 69 157415 0 165922 
+[loc arcIndex] route: 43 42 46 2083 47 12997 0 159380 
+[loc arcIndex] route: 57 56 55 2997 54 5640 58 37780 60 67380 59 94036 48 116649 51 134136 50 146757 52 153972 49 156746 0 165459 
+[loc arcIndex] route: 63 62 62 347 74 6387 72 39974 61 73132 0 160894 
+[loc arcIndex] route: 65 64 67 1497 0 158400 
+[loc arcIndex] route: 78 77 70 1593 73 12736 77 58314 79 72058 80 103314 0 161892 
+[loc arcIndex] route: 81 80 78 5234 76 8991 71 46558 0 160116 
+[loc arcIndex] route: 85 84 88 4142 0 158755 
+[loc arcIndex] route: 86 85 83 2698 82 9872 84 43225 0 159970 
+[loc arcIndex] route: 87 86 89 3461 0 158714 
+[loc arcIndex] route: 90 89 91 2800 0 158641 
+[loc arcIndex] route: 98 97 96 294 95 6224 94 40327 92 72663 93 101855 0 161853 
+done decomposing
+updated increasing parameter: 4
+primal heuristic timeout
+integral solution - no cut added
+no comb cuts found
+[loc arcIndex] route: 5 4 3 67885 7 3924 8 8731 10 17831 11 27644 9 36749 6 46067 4 54056 2 59806 1 62539 75 63962 0 66543 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 24 122 25 2422 27 9029 29 18769 30 27866 28 36891 26 46215 23 54541 22 59843 21 62551 0 66434 
+[loc arcIndex] route: 32 31 33 68071 31 68167 35 68247 37 68319 38 68380 39 68431 36 68471 34 68505 0 68522 
+[loc arcIndex] route: 43 42 42 69130 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 66 60177 69 62600 0 66437 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 98 97 96 67334 95 67415 94 67486 92 67546 93 67598 97 67640 100 67673 99 67693 0 67703 
+[loc arcIndex] route: 5 4 3 67885 7 3924 8 8731 10 17831 11 27644 9 36749 6 46067 4 54056 2 59806 1 62539 75 63962 0 66543 
+[loc arcIndex] route: 13 12 17 1105 18 2334 19 10029 15 18701 16 27807 14 36842 12 46656 0 65808 
+[loc arcIndex] route: 20 19 24 122 25 2422 27 9029 29 18769 30 27866 28 36891 26 46215 23 54541 22 59843 21 62551 0 66434 
+[loc arcIndex] route: 32 31 33 68071 31 68167 35 68247 37 68319 38 68380 39 68431 36 68471 34 68505 0 68522 
+[loc arcIndex] route: 43 42 42 69130 41 2682 40 10478 44 19399 46 27293 45 37026 48 46838 51 54249 50 59917 52 62690 49 64029 47 64407 0 66624 
+[loc arcIndex] route: 57 56 55 66865 54 66954 53 67029 56 67095 58 67151 60 67198 59 67227 0 67238 
+[loc arcIndex] route: 67 66 65 263 63 3798 62 11080 74 18302 72 28158 61 37122 64 46435 68 54683 66 60177 69 62600 0 66437 
+[loc arcIndex] route: 81 80 78 1953 76 3220 71 11525 70 18360 73 27412 77 37782 79 46472 80 54710 0 66064 
+[loc arcIndex] route: 90 89 87 978 86 3392 83 11676 82 18430 84 28269 85 37215 88 46988 89 54404 91 60227 0 66260 
+[loc arcIndex] route: 98 97 96 67334 95 67415 94 67486 92 67546 93 67598 97 67640 100 67673 99 67693 0 67703 
+routes: 
+flow {1}: 0 5 3 7 8 10 11 9 6 4 2 1 75 
+flow {1}: 0 13 17 18 19 15 16 14 12 
+flow {1}: 0 20 24 25 27 29 30 28 26 23 22 21 
+flow {1}: 0 32 33 31 35 37 38 39 36 34 
+flow {1}: 0 43 42 41 40 44 46 45 48 51 50 52 49 47 
+flow {1}: 0 57 55 54 53 56 58 60 59 
+flow {1}: 0 67 65 63 62 74 72 61 64 68 66 69 
+flow {1}: 0 81 78 76 71 70 73 77 79 80 
+flow {1}: 0 90 87 86 83 82 84 85 88 89 91 
+flow {1}: 0 98 96 95 94 92 93 97 100 99 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[9] numCuts[13] compileTime[1] sspSolveTime[0] lpSolveTime[1] lb[827.3] ub[827.3] numArcs: [69310] numFixed: [27162] time: [194]
+STATS1 - lpIterations[5] lagIterations[1] sspIterations[1] numSeparations[9] numCuts[13] compileTime[1] sspSolveTime[0] lpSolveTime[1] repairTime[0] cutsTime[1] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[827.3] ub[827.3] numArcs: [69310] numFixed: [27162] time: [194]
+finished solving - complete
+time elapsed: 194
