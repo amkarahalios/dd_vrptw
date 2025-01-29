@@ -1,0 +1,554 @@
+relax capacity constraint
+num locations: 101
+instance upper bound: 827.3
+route length upper bound: 15
+DD random seed:2008142901
+compiling DD
+time step mult: 10
+time step: 900
+cap step: 10
+adding terminal arcs
+num nodes: 1699
+num arcs: 45146
+done compiling DD
+generate initial heuristic routes
+initial primalRoute: 0 5 3 7 8 10 11 9 6 4 2 1 47 0 
+initial primalRoute: 0 13 17 18 19 15 16 14 12 49 0 
+initial primalRoute: 0 20 24 25 27 29 30 28 26 23 22 21 75 0 
+initial primalRoute: 0 32 33 31 35 37 38 39 36 34 0 
+initial primalRoute: 0 43 42 41 40 44 46 45 48 51 50 52 0 
+initial primalRoute: 0 57 55 54 53 56 58 60 59 0 
+initial primalRoute: 0 67 65 63 62 70 61 64 68 66 69 0 
+initial primalRoute: 0 78 76 71 72 73 77 79 80 0 
+initial primalRoute: 0 81 86 74 82 84 85 88 89 0 
+initial primalRoute: 0 90 87 83 94 92 93 97 99 91 0 
+initial primalRoute: 0 98 96 95 100 0 
+added route to primal routes: 0,5,3,7,8,10,11,9,6,4,2,1,47,0,
+random seed: 3374184707
+added route to primal routes: 0,13,17,18,19,15,16,14,12,49,0,
+random seed: 3433013583
+added route to primal routes: 0,20,24,25,27,29,30,28,26,23,22,21,75,0,
+random seed: 3477258409
+added route to primal routes: 0,32,33,31,35,37,38,39,36,34,0,
+random seed: 3536138091
+added route to primal routes: 0,43,42,41,40,44,46,45,48,51,50,52,0,
+random seed: 3568084355
+added maximal sequence to primal routes: 0,43,42,41,40,44,46,45,48,51,50,52,49,47,0,
+added route to primal routes: 0,57,55,54,53,56,58,60,59,0,
+random seed: 3711592715
+added route to primal routes: 0,67,65,63,62,70,61,64,68,66,69,0,
+random seed: 3737104651
+added maximal sequence to primal routes: 0,67,65,63,62,70,61,64,68,66,69,75,0,
+added route to primal routes: 0,78,76,71,72,73,77,79,80,0,
+random seed: 3789135616
+added maximal sequence to primal routes: 0,78,76,71,72,73,77,79,80,1,75,0,
+added route to primal routes: 0,81,86,74,82,84,85,88,89,0,
+random seed: 3873159008
+added route to primal routes: 0,90,87,83,94,92,93,97,99,91,0,
+random seed: 3930093251
+added maximal sequence to primal routes: 0,90,87,83,94,92,93,97,99,91,1,47,0,
+added route to primal routes: 0,98,96,95,100,0,
+random seed: 4057771298
+added maximal sequence to primal routes: 0,98,96,95,8,10,84,100,2,1,75,47,0,
+improved ub initial primal heuristic: 1270.8
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1270.8] numArcs: [45146] numFixed: [0] time: [2]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1270.8] numArcs: [45146] numFixed: [0] time: [2]
+batch size for lag: 1
+deactivate cut value threshold: 0.01
+deactivate cut iter threshold: 1000000000
+percent arcs fixed to change to CPLEX: 97.5
+number arcs fixed to change to CPLEX: 100000
+kappa iterations: 20
+num lag cuts: 20
+mu percent improved: 0.001
+percent to start cuts: 0.95
+step size iteration cutoff: 5
+target bound increase: 1.01
+min step size multiplier: 0.0001
+ngSetSize: 2
+change to LP: 1
+var fixing: 1
+useSeparations: 1
+muSSP: 1
+repairDuals: 1
+robustCuts: 1
+nonRobustCuts: 0
+volume algo: 0
+use scaling: 0
+use sparse RCCs: 0
+use restarts: 0
+switch separations to cuts: 0
+primal heuristic: 2
+primal heuristic lns: 0
+lns timeout: 10
+lns iterations to update params: 32766
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1270.8] numArcs: [45146] numFixed: [0] time: [2]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1270.8] numArcs: [45146] numFixed: [0] time: [2]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1270.8] numArcs: [45146] numFixed: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1270.8] numArcs: [45146] numFixed: [0] time: [2]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[1270.8] numArcs: [45146] numFixed: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[1270.8] numArcs: [45146] numFixed: [0] time: [2]
+lag: 561.51
+STATS - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[561.51] ub[1270.8] numArcs: [45133] numFixed: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[561.51] ub[1270.8] numArcs: [45133] numFixed: [0] time: [2]
+lambda: 0,1.86,6.18,1.61,1.81,1.51,3.8,3.2,3.62,2,1.67,1.96,7.6,9.24,3.93,14.4,16.12,6.66,7.06,3.9,1,2.02,2.42,1.3,1.5,6.04,1.58,1.71,3.54,2,2.06,6.7,9.48,13.4,6.46,3.8,3.53,7.84,12.36,8.06,2.06,1.86,3.86,1.65,2.15,2.23,6.15,1.8,2.33,1.92,2.28,2.5,2.12,9.02,16,3.5,13.5,14,13.5,3.5,9.04,2.23,3.6,7.05,2.15,1.28,1.65,1.22,2.06,1.58,17.55,11.4,2.38,5.57,9.9,3.16,5.22,5.2,10.04,5.1,5.14,14.22,7.06,3.23,6.2,8.91,2.64,5.08,8.07,2.43,2.06,2.23,8.84,17.2,4.06,11.16,3.6,12.09,6.16,3.35,7.6,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 561.51
+[loc arcIndex] route: 98 97 96 1053 95 3345 94 8720 92 14090 93 19788 97 25790 100 31498 99 37030 2 40947 1 42597 75 43258 0 45067 
+added route to primal routes: 0,98,96,95,94,92,93,97,100,99,0,
+random seed: 4224879118
+added maximal sequence to primal routes: 0,98,96,95,94,92,93,97,100,99,91,0,
+running primal heuristic MIP
+primal heuristic num vars: 18
+primal heuristic MIP obj: 1270.8
+feasible primal routes: 
+route: 
+0 5 3 7 8 10 11 9 6 4 2 1 47 0 
+route: 
+0 13 17 18 19 15 16 14 12 49 0 
+route: 
+0 20 24 25 27 29 30 28 26 23 22 21 75 0 
+route: 
+0 32 33 31 35 37 38 39 36 34 0 
+route: 
+0 43 42 41 40 44 46 45 48 51 50 52 0 
+route: 
+0 57 55 54 53 56 58 60 59 0 
+route: 
+0 67 65 63 62 70 61 64 68 66 69 0 
+route: 
+0 78 76 71 72 73 77 79 80 0 
+route: 
+0 81 86 74 82 84 85 88 89 0 
+route: 
+0 90 87 83 94 92 93 97 99 91 0 
+route: 
+0 98 96 95 100 0 
+best alpha: 1
+gamma: 1 val: 0
+gamma: 2 val: 0
+gamma: 3 val: 1
+gamma: 4 val: 1
+gamma: 5 val: 1
+gamma: 6 val: 1
+gamma: 7 val: 1
+gamma: 8 val: 1
+gamma: 9 val: 1
+gamma: 10 val: 1
+gamma: 11 val: 1
+gamma: 12 val: 1
+gamma: 13 val: 1
+gamma: 14 val: 1
+gamma: 15 val: 1
+gamma: 16 val: 1
+gamma: 17 val: 1
+gamma: 18 val: 1
+gamma: 19 val: 1
+gamma: 20 val: 1
+gamma: 21 val: 1
+gamma: 22 val: 1
+gamma: 23 val: 1
+gamma: 24 val: 1
+gamma: 25 val: 1
+gamma: 26 val: 1
+gamma: 27 val: 1
+gamma: 28 val: 1
+gamma: 29 val: 1
+gamma: 30 val: 1
+gamma: 31 val: 1
+gamma: 32 val: 1
+gamma: 33 val: 1
+gamma: 34 val: 1
+gamma: 35 val: 1
+gamma: 36 val: 1
+gamma: 37 val: 1
+gamma: 38 val: 1
+gamma: 39 val: 1
+gamma: 40 val: 1
+gamma: 41 val: 1
+gamma: 42 val: 1
+gamma: 43 val: 1
+gamma: 44 val: 1
+gamma: 45 val: 1
+gamma: 46 val: 1
+gamma: 47 val: 1
+gamma: 48 val: 1
+gamma: 49 val: 1
+gamma: 50 val: 1
+gamma: 51 val: 1
+gamma: 52 val: 1
+gamma: 53 val: 1
+gamma: 54 val: 1
+gamma: 55 val: 1
+gamma: 56 val: 1
+gamma: 57 val: 1
+gamma: 58 val: 1
+gamma: 59 val: 1
+gamma: 60 val: 1
+gamma: 61 val: 1
+gamma: 62 val: 1
+gamma: 63 val: 1
+gamma: 64 val: 1
+gamma: 65 val: 1
+gamma: 66 val: 1
+gamma: 67 val: 1
+gamma: 68 val: 1
+gamma: 69 val: 1
+gamma: 70 val: 1
+gamma: 71 val: 1
+gamma: 72 val: 1
+gamma: 73 val: 1
+gamma: 74 val: 1
+gamma: 75 val: 0
+gamma: 76 val: 1
+gamma: 77 val: 1
+gamma: 78 val: 1
+gamma: 79 val: 1
+gamma: 80 val: 1
+gamma: 81 val: 1
+gamma: 82 val: 1
+gamma: 83 val: 1
+gamma: 84 val: 1
+gamma: 85 val: 1
+gamma: 86 val: 1
+gamma: 87 val: 1
+gamma: 88 val: 1
+gamma: 89 val: 1
+gamma: 90 val: 1
+gamma: 91 val: 1
+gamma: 92 val: 0
+gamma: 93 val: 0
+gamma: 94 val: 0
+gamma: 95 val: 0
+gamma: 96 val: 0
+gamma: 97 val: 0
+gamma: 98 val: 0
+gamma: 99 val: 0
+gamma: 100 val: 0
+alpha: 0.315881
+psiStar: 589.308
+lagLB: 561.51
+||gamma||^2: 88
+lambda: 0,1.86,6.18,1.61,1.81,1.51,3.8,3.2,3.62,2,1.67,1.96,7.6,9.24,3.93,14.4,16.12,6.66,7.06,3.9,1,2.02,2.42,1.3,1.5,6.04,1.58,1.71,3.54,2,2.06,6.7,9.48,13.4,6.46,3.8,3.53,7.84,12.36,8.06,2.06,1.86,3.86,1.65,2.15,2.23,6.15,1.8,2.33,1.92,2.28,2.5,2.12,9.02,16,3.5,13.5,14,13.5,3.5,9.04,2.23,3.6,7.05,2.15,1.28,1.65,1.22,2.06,1.58,17.55,11.4,2.38,5.57,9.9,3.16,5.22,5.2,10.04,5.1,5.14,14.22,7.06,3.23,6.2,8.91,2.64,5.08,8.07,2.43,2.06,2.23,8.84,17.2,4.06,11.16,3.6,12.09,6.16,3.35,7.6,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+lambda: 0,1.86,6.18,1.61,1.81,1.51,3.8,3.2,3.62,2,1.67,1.96,7.6,9.24,3.93,14.4,16.12,6.66,7.06,3.9,1,2.02,2.42,1.3,1.5,6.04,1.58,1.71,3.54,2,2.06,6.7,9.48,13.4,6.46,3.8,3.53,7.84,12.36,8.06,2.06,1.86,3.86,1.65,2.15,2.23,6.15,1.8,2.33,1.92,2.28,2.5,2.12,9.02,16,3.5,13.5,14,13.5,3.5,9.04,2.23,3.6,7.05,2.15,1.28,1.65,1.22,2.06,1.58,17.55,11.4,2.38,5.57,9.9,3.16,5.22,5.2,10.04,5.1,5.14,14.22,7.06,3.23,6.2,8.91,2.64,5.08,8.07,2.43,2.06,2.23,8.84,17.2,4.06,11.16,3.6,12.09,6.16,3.35,7.6,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+switching from LAG to LP solver
+fix with best duals from LAG. Using: 0 dual(s)
+num vars: 45146
+DUALS: -0,1.8,2.6,6.67778,3.37778,6.17778,2.17778,5.97778,5.97778,5.27778,10.0778,7.37778,19.8,20.9283,4.73056,10.2306,16.3917,16.9778,9.43056,10.2306,3.28,0.7,1.4,3.36,10.08,4.48,3.13,5.43,4.31,9.53,5,15.08,10.58,12.88,16.26,6.77,5,5.99,7.19,17.65,5.70541,14.4703,4.80541,4.80541,3.40541,6.10541,5.70541,4.5,4.20541,2.8,0.5,5.09189,2.5,10.9784,6.37297,17.7946,7.87297,18.7892,7.77838,18.2108,11.6973,7.78919,5.01081,12.1,12.2784,2.7,2.3,3.1,3.3,1.3,7.06739,9.86739,4.71081,5.56739,4.71081,1.9,6.86739,40.1,39.5326,5.25893,6.83889,6,14.1,14.2,5.8,2.8,18.2,6.2,4.66111,1.4,5.2,3.33889,14.3537,7.4537,6.8537,7.7537,8.2537,6.6537,22.0926,3.63889,13.8463,
+lp dual value: 833.515
+obj val: 818.9
+WARNING dual values for unit upper bounds on arcs
+STATS - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[818.9] ub[1270.8] numArcs: [45133] numFixed: [0] time: [2]
+STATS1 - lpIterations[2] lagIterations[1] sspIterations[1] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[818.9] ub[1270.8] numArcs: [45133] numFixed: [0] time: [2]
+running primal heuristic MIP
+primal heuristic num vars: 18
+primal heuristic MIP obj: 1270.8
+feasible primal routes: 
+route: 
+0 5 3 7 8 10 11 9 6 4 2 1 47 0 
+route: 
+0 13 17 18 19 15 16 14 12 49 0 
+route: 
+0 20 24 25 27 29 30 28 26 23 22 21 75 0 
+route: 
+0 32 33 31 35 37 38 39 36 34 0 
+route: 
+0 43 42 41 40 44 46 45 48 51 50 52 0 
+route: 
+0 57 55 54 53 56 58 60 59 0 
+route: 
+0 67 65 63 62 70 61 64 68 66 69 0 
+route: 
+0 78 76 71 72 73 77 79 80 0 
+route: 
+0 81 86 74 82 84 85 88 89 0 
+route: 
+0 90 87 83 94 92 93 97 99 91 0 
+route: 
+0 98 96 95 100 0 
+checking cuts, max violation: 1, num cuts: 3
+new capacity cutset: 1 2 75 92 93 94 95 96 97 98 99 100 <= 10
+adding RCC type 1 with rhs: 10
+new capacity cutset: 21 22 31 32 33 34 35 36 37 38 39 <= 9
+adding RCC type 1 with rhs: 9
+new capacity cutset: 53 54 55 56 57 58 59 60 68 69 <= 8
+adding RCC type 1 with rhs: 8
+no comb cuts found
+[loc arcIndex] route: 5 4 3 299 7 3594 8 7183 10 13259 11 19347 9 24834 6 31227 4 36855 0 44675 
+[loc arcIndex] route: 13 12 17 889 18 2158 19 7962 15 13863 16 20502 14 24876 12 32229 0 44510 
+[loc arcIndex] route: 20 19 24 122 25 2243 27 7336 29 13930 30 19856 28 24921 26 31262 23 37038 0 44679 
+[loc arcIndex] route: 32 31 33 1085 31 3854 35 8956 37 14355 38 19459 39 26207 36 31845 34 37786 22 41071 21 42605 0 45001 
+[loc arcIndex] route: 43 42 42 435 41 2498 40 8117 44 14118 46 19512 45 24965 48 31511 51 36933 50 40826 52 42658 49 43275 47 43447 0 45144 
+[loc arcIndex] route: 57 56 55 1195 54 3953 53 7497 56 13586 58 19569 60 25215 59 31548 68 36957 69 40853 0 44852 
+[loc arcIndex] route: 67 66 65 262 63 3560 62 8345 74 13658 72 19927 61 25054 64 31395 66 37112 0 44688 
+[loc arcIndex] route: 81 80 78 1301 76 3008 71 8421 70 13714 73 19627 77 25262 79 31431 80 37629 0 44704 
+[loc arcIndex] route: 90 89 87 575 86 3178 83 8642 82 13783 84 20034 85 25145 88 31618 89 37005 91 40944 0 44859 
+[loc arcIndex] route: 98 97 96 1053 95 3345 94 8720 92 14090 93 19788 97 25790 100 31498 99 37030 2 40947 1 42597 75 43258 0 45067 
+added route to primal routes: 0,5,3,7,8,10,11,9,6,4,0,
+random seed: 757689951
+added maximal sequence to primal routes: 0,5,3,7,8,10,11,9,6,4,22,69,75,0,
+added route to primal routes: 0,13,17,18,19,15,16,14,12,0,
+random seed: 824601298
+added route to primal routes: 0,20,24,25,27,29,30,28,26,23,0,
+random seed: 860275508
+added maximal sequence to primal routes: 0,20,24,25,27,29,30,28,26,23,1,75,47,0,
+added route to primal routes: 0,67,65,63,62,74,72,61,64,66,0,
+random seed: 946743241
+added maximal sequence to primal routes: 0,67,65,63,62,74,72,61,64,50,66,49,0,
+added route to primal routes: 0,81,78,76,71,70,73,77,79,80,0,
+random seed: 1003623365
+added maximal sequence to primal routes: 0,81,78,76,71,70,73,77,79,80,75,49,0,
+added route to primal routes: 0,90,87,86,83,82,84,85,88,89,91,0,
+random seed: 1060033976
+added maximal sequence to primal routes: 0,90,87,86,83,82,84,85,88,89,91,21,47,0,
+[loc arcIndex] route: 5 4 3 299 7 3594 8 7183 10 13259 11 19347 9 24834 6 31227 4 36855 0 44675 
+[loc arcIndex] route: 13 12 17 889 18 2158 19 7962 15 13863 16 20502 14 24876 12 32229 0 44510 
+[loc arcIndex] route: 20 19 24 122 25 2243 27 7336 29 13930 30 19856 28 24921 26 31262 23 37038 0 44679 
+[loc arcIndex] route: 43 42 42 435 41 2498 40 8117 44 14118 46 19512 45 24965 48 31511 51 36933 50 40826 52 42658 49 43275 47 43447 0 45144 
+[loc arcIndex] route: 57 56 55 1195 54 3953 53 7497 56 13586 58 19569 60 25215 59 31548 68 36957 69 40853 0 44852 
+[loc arcIndex] route: 67 66 65 262 63 3560 62 8345 74 13658 72 19927 61 25054 64 31395 66 37112 0 44688 
+[loc arcIndex] route: 81 80 78 1301 76 3008 71 8421 70 13714 73 19627 77 25262 79 31431 80 37629 0 44704 
+[loc arcIndex] route: 90 89 87 575 86 3178 83 8642 82 13783 84 20034 85 25145 88 31618 89 37005 91 40944 0 44859 
+[loc arcIndex] route: 98 97 96 1053 95 3345 94 8720 92 14090 93 19788 97 25790 100 31498 99 37030 2 40947 1 42597 75 43258 0 45067 
+[loc arcIndex] route: 43 42 42 435 41 2498 40 8117 44 14118 46 19512 45 24965 48 31511 51 36933 50 40826 52 42658 49 43275 47 43447 0 45144 
+[loc arcIndex] route: 67 66 65 262 63 3560 62 8345 74 13658 72 19927 61 25054 64 31395 66 37112 0 44688 
+[loc arcIndex] route: 81 80 78 1301 76 3008 71 8421 70 13714 73 19627 77 25262 79 31431 80 37629 0 44704 
+[loc arcIndex] route: 90 89 87 575 86 3178 83 8642 82 13783 84 20034 85 25145 88 31618 89 37005 91 40944 0 44859 
+[loc arcIndex] route: 98 97 96 1053 95 3345 94 8720 92 14090 93 19788 97 25790 100 31498 99 37030 2 40947 1 42597 75 43258 0 45067 
+[loc arcIndex] route: 67 66 65 262 63 3560 62 8345 74 13658 72 19927 61 25054 64 31395 66 37112 0 44688 
+[loc arcIndex] route: 81 80 78 1301 76 3008 71 8421 70 13714 73 19627 77 25262 79 31431 80 37629 0 44704 
+[loc arcIndex] route: 90 89 87 575 86 3178 83 8642 82 13783 84 20034 85 25145 88 31618 89 37005 91 40944 0 44859 
+separating route arcs: 31 1085 3854 8956 14355 19459 26207 31845 37786 41071 
+separating route locations: 32 33 31 35 37 38 39 36 34 22 
+separating route arcs: 56 1195 3953 7497 13586 19569 25215 31548 36957 
+separating route locations: 57 55 54 53 56 58 60 59 68 
+separating route arcs: 97 1053 3345 8720 14090 19788 25790 31498 37030 40947 
+separating route locations: 98 96 95 94 92 93 97 100 99 2 
+Dual needs repair, spl: -12.92
+Dual needs repair, spl: -0.4
+Dual needs repair, spl: -0.0945946
+Dual needs repair, spl: -0.0105025
+lambda: -0,1.8,2.6,6.67778,3.37778,6.17778,2.17778,5.97778,5.97778,5.27778,10.0778,7.37778,18.185,19.3133,3.11555,8.61555,14.7767,15.3628,7.81555,8.61555,3.28,0.7,1.4,3.36,10.08,4.48,3.13,5.43,4.31,9.53,5,15.0356,10.5356,12.8356,16.2156,6.72555,4.95555,5.94555,7.14555,17.6056,5.70541,14.4703,4.80541,4.80541,3.40541,6.10541,5.70541,4.5,4.20541,2.8,0.5,5.09189,2.5,10.9668,6.36141,17.783,7.86141,18.7776,7.77838,18.1992,11.6857,7.78919,5.01081,12.1,12.2668,2.7,2.28949,3.1,3.29895,1.29895,7.06739,9.86739,4.71081,5.56739,4.71081,1.9,6.86739,40.1,39.5326,5.25893,6.83889,6,14.1,14.2,5.8,2.8,18.2,6.2,4.66111,1.4,5.2,3.33889,14.3537,7.4537,6.8537,7.7537,8.2537,6.6537,22.0926,3.63889,13.8463,
+mu: 0,0,0,
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 820.089
+update best LP dual for fixing. Percent: 98.308
+fix with best duals from LAG. Using: 0 dual(s)
+num vars: 772
+DUALS: -0,0.7,5.9,4.86,3.6,4.06,2.9,4.46,5.46,14.54,7.56,5.16,-0,30.8,21.5,24.5,-0,0,28.7,24.5,5,0.7,2.1,5.1,-0,8.7,7.9,5.3,-0,9.4,7.2,11.9,21.1,8.9,36,8,5.7,6.7,5.4,-0,1.825,18.775,2.05,6.45,19,1.625,3.225,0.8,0.65,5.175,3.725,3.2,2.5,8.775,4.975,-0,2,35.55,2,43.25,5.4,16.65,15.5,-0,3.95,2.15,2.3,2.55,3.3,1.3,5,3,5.8,3,5.8,0.2,4,4,50.15,52,5.7,0.8,-0,6,0,11.6,20.75,5.65,3,2.8,4.65,25.9,-0,-0,38.89,18.75,19.35,14,-0,11.6,5,
+cap dual [1]: -0.7
+lp dual value: 884.04
+obj val: 827.3
+WARNING dual values for unit upper bounds on arcs
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[827.3] ub[1270.8] numArcs: [46370] numFixed: [45609] time: [4]
+STATS1 - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[827.3] ub[1270.8] numArcs: [46370] numFixed: [45609] time: [4]
+running primal heuristic MIP
+primal heuristic num vars: 29
+primal heuristic MIP obj: 1022.1
+feasible primal routes: 
+route: 
+0 5 3 7 8 10 11 9 6 4 2 1 47 0 
+route: 
+0 20 24 25 27 29 30 28 26 23 22 21 75 0 
+route: 
+0 32 33 31 35 37 38 39 36 34 0 
+route: 
+0 43 42 41 40 44 46 45 48 51 50 52 49 47 0 
+route: 
+0 57 55 54 53 56 58 60 59 0 
+route: 
+0 67 65 63 62 70 61 64 68 66 69 0 
+route: 
+0 98 96 95 94 92 93 97 100 99 0 
+route: 
+0 13 17 18 19 15 16 14 12 0 
+route: 
+0 67 65 63 62 74 72 61 64 66 0 
+route: 
+0 81 78 76 71 70 73 77 79 80 0 
+route: 
+0 90 87 86 83 82 84 85 88 89 91 0 
+improved ub from MIP primal heuristic: 1022.1
+STATS - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[827.3] ub[1022.1] numArcs: [46370] numFixed: [45609] time: [4]
+STATS1 - lpIterations[3] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[827.3] ub[1022.1] numArcs: [46370] numFixed: [45609] time: [4]
+integral solution - no cut added
+no comb cuts found
+[loc arcIndex] route: 5 4 3 299 7 3594 8 7183 10 13259 11 19347 9 24834 6 31227 4 36855 2 40753 1 42597 75 43258 0 45067 
+[loc arcIndex] route: 13 12 17 889 18 2158 19 7962 15 13863 16 20502 14 24876 12 32229 0 44510 
+[loc arcIndex] route: 20 19 24 122 25 2243 27 7336 29 13930 30 19856 28 24921 26 31262 23 37038 22 40782 21 42605 0 45001 
+[loc arcIndex] route: 32 31 33 45187 31 45272 35 45347 37 45411 38 45464 39 45506 36 45540 34 45561 0 45573 
+[loc arcIndex] route: 43 42 42 435 41 2498 40 8117 44 14118 46 19512 45 24965 48 31511 51 36933 50 40826 52 42658 49 43275 47 43447 0 45144 
+[loc arcIndex] route: 57 56 55 45623 54 45706 53 45776 56 45837 58 45887 60 45929 59 45956 0 45967 
+[loc arcIndex] route: 67 66 65 262 63 3560 62 8345 74 13658 72 19927 61 25054 64 31395 68 37113 66 40916 69 42623 0 45003 
+[loc arcIndex] route: 81 80 78 1301 76 3008 71 8421 70 13714 73 19627 77 25262 79 31431 80 37629 0 44704 
+[loc arcIndex] route: 90 89 87 575 86 3178 83 8642 82 13783 84 20034 85 25145 88 31618 89 37005 91 40944 0 44859 
+[loc arcIndex] route: 98 97 96 46059 95 46136 94 46202 92 46258 93 46304 97 46341 100 46369 99 46386 0 46393 
+added route to primal routes: 0,5,3,7,8,10,11,9,6,4,2,1,75,0,
+random seed: 2002230100
+added route to primal routes: 0,20,24,25,27,29,30,28,26,23,22,21,0,
+random seed: 2061523663
+added maximal sequence to primal routes: 0,20,24,25,27,29,30,28,26,23,22,21,47,0,
+added route to primal routes: 0,67,65,63,62,74,72,61,64,68,66,69,0,
+random seed: 2151548501
+[loc arcIndex] route: 5 4 3 299 7 3594 8 7183 10 13259 11 19347 9 24834 6 31227 4 36855 2 40753 1 42597 75 43258 0 45067 
+[loc arcIndex] route: 13 12 17 889 18 2158 19 7962 15 13863 16 20502 14 24876 12 32229 0 44510 
+[loc arcIndex] route: 20 19 24 122 25 2243 27 7336 29 13930 30 19856 28 24921 26 31262 23 37038 22 40782 21 42605 0 45001 
+[loc arcIndex] route: 32 31 33 45187 31 45272 35 45347 37 45411 38 45464 39 45506 36 45540 34 45561 0 45573 
+[loc arcIndex] route: 43 42 42 435 41 2498 40 8117 44 14118 46 19512 45 24965 48 31511 51 36933 50 40826 52 42658 49 43275 47 43447 0 45144 
+[loc arcIndex] route: 57 56 55 45623 54 45706 53 45776 56 45837 58 45887 60 45929 59 45956 0 45967 
+[loc arcIndex] route: 67 66 65 262 63 3560 62 8345 74 13658 72 19927 61 25054 64 31395 68 37113 66 40916 69 42623 0 45003 
+[loc arcIndex] route: 81 80 78 1301 76 3008 71 8421 70 13714 73 19627 77 25262 79 31431 80 37629 0 44704 
+[loc arcIndex] route: 90 89 87 575 86 3178 83 8642 82 13783 84 20034 85 25145 88 31618 89 37005 91 40944 0 44859 
+[loc arcIndex] route: 98 97 96 46059 95 46136 94 46202 92 46258 93 46304 97 46341 100 46369 99 46386 0 46393 
+routes: 
+flow {1}: 0 5 3 7 8 10 11 9 6 4 2 1 75 
+flow {1}: 0 13 17 18 19 15 16 14 12 
+flow {1}: 0 20 24 25 27 29 30 28 26 23 22 21 
+flow {1}: 0 32 33 31 35 37 38 39 36 34 
+flow {1}: 0 43 42 41 40 44 46 45 48 51 50 52 49 47 
+flow {1}: 0 57 55 54 53 56 58 60 59 
+flow {1}: 0 67 65 63 62 74 72 61 64 68 66 69 
+flow {1}: 0 81 78 76 71 70 73 77 79 80 
+flow {1}: 0 90 87 86 83 82 84 85 88 89 91 
+flow {1}: 0 98 96 95 94 92 93 97 100 99 
+no more separations possible
+no more separations or cuts possible
+LP solved - switching to IP
+lambda: -0,1.8,2.6,6.67778,3.37778,6.17778,2.17778,5.97778,5.97778,5.27778,10.0778,7.37778,18.185,19.3133,3.11555,8.61555,14.7767,15.3628,7.81555,8.61555,3.28,0.7,1.4,3.36,10.08,4.48,3.13,5.43,4.31,9.53,5,15.0356,10.5356,12.8356,16.2156,6.72555,4.95555,5.94555,7.14555,17.6056,5.70541,14.4703,4.80541,4.80541,3.40541,6.10541,5.70541,4.5,4.20541,2.8,0.5,5.09189,2.5,10.9668,6.36141,17.783,7.86141,18.7776,7.77838,18.1992,11.6857,7.78919,5.01081,12.1,12.2668,2.7,2.28949,3.1,3.29895,1.29895,7.06739,9.86739,4.71081,5.56739,4.71081,1.9,6.86739,40.1,39.5326,5.25893,6.83889,6,14.1,14.2,5.8,2.8,18.2,6.2,4.66111,1.4,5.2,3.33889,14.3537,7.4537,6.8537,7.7537,8.2537,6.6537,22.0926,3.63889,13.8463,
+mu: 0,0,0,
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 820.089
+Dual needs repair, spl: -34.2
+Dual needs repair, spl: -12.825
+Dual needs repair, spl: -11.79
+Dual needs repair, spl: -5.69999
+Dual needs repair, spl: -4.45
+Dual needs repair, spl: -4.4
+Dual needs repair, spl: -3.96
+Dual needs repair, spl: -3.92999
+Dual needs repair, spl: -2.13749
+Dual needs repair, spl: -1.30999
+Dual needs repair, spl: -1.1
+Dual needs repair, spl: -0.824992
+Dual needs repair, spl: -0.801555
+Dual needs repair, spl: -0.552494
+Dual needs repair, spl: -0.55
+Dual needs repair, spl: -0.494436
+Dual needs repair, spl: -0.436658
+Dual needs repair, spl: -0.300578
+Dual needs repair, spl: -0.145547
+Dual needs repair, spl: -0.122214
+Dual needs repair, spl: -0.112712
+Dual needs repair, spl: -0.103601
+Dual needs repair, spl: -0.0549294
+Dual needs repair, spl: -0.0485096
+Dual needs repair, spl: -0.0422619
+Dual needs repair, spl: -0.0161639
+Dual needs repair, spl: -0.0158432
+Dual needs repair, spl: -0.0135714
+Dual needs repair, spl: -0.0103511
+Dual needs repair, spl: -0.00609526
+Dual needs repair, spl: -0.00593621
+Dual needs repair, spl: -0.00538195
+Dual needs repair, spl: -0.00222108
+Dual needs repair, spl: -0.00178798
+Dual needs repair, spl: -0.00149993
+Dual needs repair, spl: -0.00121105
+Dual needs repair, spl: -0.00102611
+Dual needs repair, spl: -0.000827904
+Dual needs repair, spl: -0.000589995
+Dual needs repair, spl: -0.000197904
+Dual needs repair, spl: -0.000158659
+Dual needs repair, spl: -0.000126561
+Dual needs repair, spl: -9.36112e-05
+lambda: -0,0.7,5.9,4.86,3.6,4.06,2.9,4.46,5.46,14.54,7.56,5.16,-0,23.9599,14.6599,17.6599,-0,0,21.8599,17.6599,5,0.7,2.1,3.675,-0,8.7,7.9,5.3,-0,9.4,7.2,11.7624,20.9624,8.76241,35.8624,7.86241,5.56241,6.56241,5.26241,-0,1.33,18.2186,1.49361,5.35951,18.4436,1.56361,2.73,0.304999,0.588611,4.61861,3.66361,3.13861,2.5,8.2409,4.4409,-0,1.5484,35.0159,1.9059,42.7159,4.8775,16.65,15.5,-0,3.95,2.15,1.86,2.55,2.7659,1.2059,4.92143,3,5.8,2.92143,5.8,0.2,3.92143,3.92143,50.0714,51.9214,5.7,0.721428,-0,5.44365,0,11.0437,20.1937,5.09365,2.44365,2.24365,4.09365,25.3437,-0,-0,36.925,16.785,17.385,12.035,-0,9.63499,3.03499,
+mu: 0,-0.7,0,
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 821.204
+update best LP dual for fixing. Percent: 98.7477
+fix with best duals from LAG. Using: 0 dual(s)
+solving IP
+num vars: 568
+STATS - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[827.3] ub[1022.1] numArcs: [46370] numFixed: [45813] time: [4]
+STATS1 - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[827.3] ub[1022.1] numArcs: [46370] numFixed: [45813] time: [4]
+running primal heuristic MIP
+primal heuristic num vars: 33
+primal heuristic MIP obj: 827.3
+feasible primal routes: 
+route: 
+0 32 33 31 35 37 38 39 36 34 0 
+route: 
+0 43 42 41 40 44 46 45 48 51 50 52 49 47 0 
+route: 
+0 57 55 54 53 56 58 60 59 0 
+route: 
+0 98 96 95 94 92 93 97 100 99 0 
+route: 
+0 13 17 18 19 15 16 14 12 0 
+route: 
+0 81 78 76 71 70 73 77 79 80 0 
+route: 
+0 90 87 86 83 82 84 85 88 89 91 0 
+route: 
+0 5 3 7 8 10 11 9 6 4 2 1 75 0 
+route: 
+0 20 24 25 27 29 30 28 26 23 22 21 0 
+route: 
+0 67 65 63 62 74 72 61 64 68 66 69 0 
+improved ub from MIP primal heuristic: 827.3
+STATS - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[827.3] ub[827.3] numArcs: [46370] numFixed: [45813] time: [4]
+STATS1 - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[827.3] ub[827.3] numArcs: [46370] numFixed: [45813] time: [4]
+[loc arcIndex] route: 5 4 3 299 7 3594 8 7183 10 13259 11 19347 9 24834 6 31227 4 36855 2 40753 1 42597 75 43258 0 45067 
+[loc arcIndex] route: 13 12 17 889 18 2158 19 7962 15 13863 16 20502 14 24876 12 32229 0 44510 
+[loc arcIndex] route: 20 19 24 122 25 2243 27 7336 29 13930 30 19856 28 24921 26 31262 23 37038 22 40782 21 42605 0 45001 
+[loc arcIndex] route: 32 31 33 45187 31 45272 35 45347 37 45411 38 45464 39 45506 36 45540 34 45561 0 45573 
+[loc arcIndex] route: 43 42 42 435 41 2498 40 8117 44 14118 46 19512 45 24965 48 31511 51 36933 50 40826 52 42658 49 43275 47 43447 0 45144 
+[loc arcIndex] route: 57 56 55 45623 54 45706 53 45776 56 45837 58 45887 60 45929 59 45956 0 45967 
+[loc arcIndex] route: 67 66 65 262 63 3560 62 8345 74 13658 72 19927 61 25054 64 31395 68 37113 66 40916 69 42623 0 45003 
+[loc arcIndex] route: 81 80 78 1301 76 3008 71 8421 70 13714 73 19627 77 25262 79 31431 80 37629 0 44704 
+[loc arcIndex] route: 90 89 87 575 86 3178 83 8642 82 13783 84 20034 85 25145 88 31618 89 37005 91 40944 0 44859 
+[loc arcIndex] route: 98 97 96 46059 95 46136 94 46202 92 46258 93 46304 97 46341 100 46369 99 46386 0 46393 
+[loc arcIndex] route: 5 4 3 299 7 3594 8 7183 10 13259 11 19347 9 24834 6 31227 4 36855 2 40753 1 42597 75 43258 0 45067 
+[loc arcIndex] route: 13 12 17 889 18 2158 19 7962 15 13863 16 20502 14 24876 12 32229 0 44510 
+[loc arcIndex] route: 20 19 24 122 25 2243 27 7336 29 13930 30 19856 28 24921 26 31262 23 37038 22 40782 21 42605 0 45001 
+[loc arcIndex] route: 32 31 33 45187 31 45272 35 45347 37 45411 38 45464 39 45506 36 45540 34 45561 0 45573 
+[loc arcIndex] route: 43 42 42 435 41 2498 40 8117 44 14118 46 19512 45 24965 48 31511 51 36933 50 40826 52 42658 49 43275 47 43447 0 45144 
+[loc arcIndex] route: 57 56 55 45623 54 45706 53 45776 56 45837 58 45887 60 45929 59 45956 0 45967 
+[loc arcIndex] route: 67 66 65 262 63 3560 62 8345 74 13658 72 19927 61 25054 64 31395 68 37113 66 40916 69 42623 0 45003 
+[loc arcIndex] route: 81 80 78 1301 76 3008 71 8421 70 13714 73 19627 77 25262 79 31431 80 37629 0 44704 
+[loc arcIndex] route: 90 89 87 575 86 3178 83 8642 82 13783 84 20034 85 25145 88 31618 89 37005 91 40944 0 44859 
+[loc arcIndex] route: 98 97 96 46059 95 46136 94 46202 92 46258 93 46304 97 46341 100 46369 99 46386 0 46393 
+routes: 
+flow {1}: 0 5 3 7 8 10 11 9 6 4 2 1 75 
+flow {1}: 0 13 17 18 19 15 16 14 12 
+flow {1}: 0 20 24 25 27 29 30 28 26 23 22 21 
+flow {1}: 0 32 33 31 35 37 38 39 36 34 
+flow {1}: 0 43 42 41 40 44 46 45 48 51 50 52 49 47 
+flow {1}: 0 57 55 54 53 56 58 60 59 
+flow {1}: 0 67 65 63 62 74 72 61 64 68 66 69 
+flow {1}: 0 81 78 76 71 70 73 77 79 80 
+flow {1}: 0 90 87 86 83 82 84 85 88 89 91 
+flow {1}: 0 98 96 95 94 92 93 97 100 99 
+no more separations possible
+no more separations or cuts possible
+STATS - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[827.3] ub[827.3] numArcs: [46370] numFixed: [45813] time: [4]
+STATS1 - lpIterations[4] lagIterations[1] sspIterations[1] numSeparations[3] numCuts[3] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[827.3] ub[827.3] numArcs: [46370] numFixed: [45813] time: [4]
+finished solving - complete
+time elapsed: 4
