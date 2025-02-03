@@ -242,9 +242,9 @@ int main(int argc, char** argv)
             {
               params.primalHeuristicLNS = PrimalHeuristicLNS::DESTROY_REPAIR;
             }
-            else if (paramValueString == "BEAM")
+            else if (paramValueString == "LDS")
             {
-              params.primalHeuristicLNS = PrimalHeuristicLNS::BEAM;
+              params.primalHeuristicLNS = PrimalHeuristicLNS::LDS;
             }
             else if (paramValueString == "REDUCED_COST")
             {

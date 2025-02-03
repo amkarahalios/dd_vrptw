@@ -296,8 +296,234 @@ int VRPTWDecisionDiagram::addPrimalHeuristicSuffixArc(int fromNodeIndex, const s
   return newArcIndex;
 }
 
-// Insert into best position repeatedly
-void VRPTWDecisionDiagram::generateHeuristicRoutes(std::vector<std::vector<int>>& routes)
+void VRPTWDecisionDiagram::calculateInsertionCost(const std::vector<int>& route, InsertionCriteria insertionCriteria, double gamma, int location, int& returnIndex, double& returnCost)
+{
+  int bestInsertionIndex = -1;
+  double bestInsertionCost = INF;
+  for (int insertionIndex=1; insertionIndex<route.size(); ++insertionIndex)
+  {
+    std::vector<int> newRoute;
+    for (int routeIndex=0; routeIndex<route.size(); ++routeIndex)
+    {
+      if (insertionIndex == routeIndex)
+      {
+        newRoute.push_back(location);
+      }
+      newRoute.push_back(route[routeIndex]);
+    }
+
+    bool isFeasible = isRouteFeasible(newRoute);
+    if (isFeasible)
+    {
+      double cost = 0.0;
+      if (insertionCriteria == InsertionCriteria::NFIC)
+      {
+        cost = vrptw.distances[location][newRoute[insertionIndex-1]];
+      }
+      else if (insertionCriteria == InsertionCriteria::MCFIC)
+      {
+        int locationBefore = newRoute[insertionIndex-1];
+        int locationAfter = newRoute[insertionIndex+1];
+        cost = vrptw.distances[locationBefore][location] + vrptw.distances[location][locationAfter] - vrptw.distances[locationBefore][locationAfter];
+        cost = cost + (gamma * vrptw.distances[location][0]*2);
+      }
+
+      if (cost < bestInsertionCost)
+      {
+        bestInsertionCost = cost;
+        bestInsertionIndex = insertionIndex;
+      }
+    }
+  }
+
+  if (bestInsertionIndex != -1)
+  {
+    returnIndex = bestInsertionIndex;
+    returnCost = bestInsertionCost;
+  }
+  else
+  {
+    returnCost = INF;
+  }
+}
+
+void VRPTWDecisionDiagram::parallelInsertion(std::vector<std::vector<int>>& routes, std::vector<int> candidateList, InsertionCriteria insertionCriteria)
+{
+  double gamma = 0.0;
+  if (insertionCriteria == InsertionCriteria::MCFIC)
+  {
+    int randomInteger = std::rand();
+    int randomMultiplier = randomInteger % 18;
+    gamma = 0.1 * randomMultiplier;
+  }
+
+  while (!candidateList.empty())
+  {
+    std::cout << "size: " << candidateList.size() << std::endl;
+    bool insertedLocation = false;
+    double bestInsertionCost = INF;
+    int bestInsertionLocation = -1;
+    int bestInsertionIndex = -1;
+    int bestInsertionRouteIndex = -1;
+    for (int routeIndex=0; routeIndex<routes.size(); ++routeIndex)
+    {
+      for (int insertionLocation : candidateList)
+      {
+        int insertionIndex;
+        double insertionCost;
+        std::vector<int> insertionRoute = routes[routeIndex];
+        calculateInsertionCost(insertionRoute, insertionCriteria, gamma, insertionLocation, insertionIndex, insertionCost);
+        if (insertionCost < bestInsertionCost)
+        {
+          bestInsertionCost = insertionCost;
+          bestInsertionLocation = insertionLocation;
+          bestInsertionIndex = insertionIndex;
+          bestInsertionRouteIndex = routeIndex;
+        }
+      }
+    }
+
+    if (bestInsertionIndex != -1)
+    {
+      std::vector<int> newRoute = routes[bestInsertionRouteIndex];
+      newRoute.insert(newRoute.begin()+bestInsertionIndex, bestInsertionLocation);
+      candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), bestInsertionLocation), candidateList.end());
+      routes[bestInsertionRouteIndex] = newRoute;
+      insertedLocation = true;
+    }
+
+    if (!insertedLocation)
+    {
+      std::vector<int> emptyRoute;
+      emptyRoute.push_back(0);
+      emptyRoute.push_back(0);
+      routes.push_back(emptyRoute);
+    }
+  }
+}
+
+void VRPTWDecisionDiagram::sequentialInsertion(std::vector<std::vector<int>>& routes, std::vector<int> candidateList, InsertionCriteria insertionCriteria)
+{
+  double gamma = 0.0;
+  if (insertionCriteria == InsertionCriteria::MCFIC)
+  {
+    int randomInteger = std::rand();
+    int randomMultiplier = randomInteger % 18;
+    gamma = 0.1 * randomMultiplier;
+  }
+
+  while (!candidateList.empty())
+  {
+    std::cout << "size: " << candidateList.size() << std::endl;
+    bool insertedLocation = false;
+    for (int routeIndex=0; routeIndex<routes.size(); ++routeIndex)
+    {
+      double bestInsertionCost = INF;
+      int bestInsertionLocation = -1;
+      int bestInsertionIndex = -1;
+      for (int insertionLocation : candidateList)
+      {
+        int insertionIndex;
+        double insertionCost;
+        std::vector<int> insertionRoute = routes[routeIndex];
+        calculateInsertionCost(insertionRoute, insertionCriteria, gamma, insertionLocation, insertionIndex, insertionCost);
+        if (insertionCost < bestInsertionCost)
+        {
+          bestInsertionCost = insertionCost;
+          bestInsertionLocation = insertionLocation;
+          bestInsertionIndex = insertionIndex;
+        }
+      }
+
+      if (bestInsertionIndex != -1)
+      {
+        std::vector<int> newRoute = routes[routeIndex];
+        newRoute.insert(newRoute.begin()+bestInsertionIndex, bestInsertionLocation);
+        candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), bestInsertionLocation), candidateList.end());
+        routes[routeIndex] = newRoute;
+        insertedLocation = true;
+      }
+    }
+
+    if (!insertedLocation)
+    {
+      std::vector<int> emptyRoute;
+      emptyRoute.push_back(0);
+      emptyRoute.push_back(0);
+      routes.push_back(emptyRoute);
+    }
+  }
+}
+
+void VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::vector<int>>& routes)
+{
+  // initialize candidate list
+  std::vector<int> candidateList;
+  for (int location=1; location<vrptw.numLocations; ++location)
+  {
+    candidateList.push_back(location);
+  }
+
+  // initialize empty routes
+  for (int vehicleIndex=0; vehicleIndex<vrptw.numVehicles; ++vehicleIndex)
+  {
+    std::vector<int> emptyRoute;
+    emptyRoute.push_back(0);
+    emptyRoute.push_back(0);
+    routes.push_back(emptyRoute);
+  }
+
+  // put random location in each route
+  for (int routeIndex=0; routeIndex<routes.size(); ++routeIndex)
+  {
+    std::vector<int> newRoute = routes[routeIndex];
+    while (newRoute.size() == 2)
+    {
+      int randomInteger0 = std::rand();
+      int randomCandidateListIndex = randomInteger0 % candidateList.size();
+      int randomLocation = candidateList[randomCandidateListIndex];
+      newRoute.insert(newRoute.begin()+1, randomLocation);
+      candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), randomLocation), candidateList.end());
+      if (!isRouteFeasible(newRoute))
+      {
+        newRoute = {0,0};
+      }
+    }
+    routes[routeIndex] = newRoute;
+  }
+
+  // choose random insertion criteria and strategy
+  int randomInteger1 = std::rand();
+  bool insertionStrategyBoolean = ((randomInteger1 % 2) == 0);
+
+  int randomInteger2 = std::rand();
+  int randomBoolean2 = randomInteger2 % 2;
+  InsertionCriteria insertionCriteria = (randomBoolean2 == 0) ? InsertionCriteria::MCFIC : InsertionCriteria::NFIC;
+
+  // run insertion heuristic
+  if (insertionStrategyBoolean)
+  {
+    std::cout << "using sequential insertion strategy" << std::endl;
+    sequentialInsertion(routes, candidateList, insertionCriteria);
+  }
+  else
+  {
+    std::cout << "using parallel insertion strategy" << std::endl;
+    parallelInsertion(routes, candidateList, insertionCriteria);
+  }
+
+  for (auto primalRoute : routes)
+  {
+    std::cout << "initial primalRoute: ";
+    for (int loc : primalRoute)
+    {
+      std::cout << loc << " ";
+    }
+    std::cout << std::endl;
+  }
+}
+
+void VRPTWDecisionDiagram::generateHeuristicRoutesGreedy(std::vector<std::vector<int>>& routes)
 {
   std::set<int> locationsUsed;
   locationsUsed.insert(0);
@@ -2196,7 +2422,7 @@ void VRPTWDecisionDiagram::initializeColumnsByLPDecomp()
 // can we merge nodes to reduce problem size?
 // can we warm start with a solution? dual solution?
 // can we reduce memory?
-double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, Dual& duals, bool removeForTesting)
+double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, const std::set<int>& initialPrimalArcIndices, Dual& duals, bool removeForTesting)
 {
   // setup model
   IloEnv env;
@@ -2208,6 +2434,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   IloRangeArray combConstraints(env);
   IloRangeArray srcConstraints(env);
   IloNumVarArray x(env, arcs.size());
+  IloNumArray initialPrimal(env);
   IloExpr objective(env);
 
   // setup variables and objective
@@ -2226,6 +2453,14 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
         //{
         //  objective += x[arcIndex] * 1;
         //}
+        if (initialPrimalArcIndices.find(arcIndex) != initialPrimalArcIndices.end())
+        {
+          initialPrimal.add(1);
+        }
+        else
+        {
+          initialPrimal.add(0);
+        }
         ++numNonZeroVars;
       }
       else
@@ -2407,6 +2642,10 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       startDuals.add(dual);
     }
     solver.setStart(NULL, NULL, x, NULL, startDuals, coverConstraints);
+  }
+  else
+  {
+    solver.addMIPStart(x, initialPrimal);
   }
   solver.solve();
 
@@ -3131,6 +3370,285 @@ void VRPTWDecisionDiagram::createTruncatedRoute(const std::vector<int>& route, s
   truncatedRoute.push_back(0);
 }
 
+bool VRPTWDecisionDiagram::prefixIntraRouteSwaps(std::vector<int>& route, double& routeCost)
+{
+  std::cout << "size: " << route.size() << std::endl;
+
+  std::cout << "step 1" << std::endl;
+  for (int removalIndex=1; removalIndex<(int)route.size(); ++removalIndex)
+  {
+    int removedElement = route[removalIndex];
+    for (int insertionIndex=1; insertionIndex<route.size()-1; ++insertionIndex)
+    {
+      std::vector<int> newRoute = route;
+      newRoute.erase(newRoute.begin() + removalIndex);
+      std::cout << "erase" << std::endl;
+      newRoute.insert(newRoute.begin() + insertionIndex, removedElement);
+      std::cout << "insert" << std::endl;
+      if (isRouteFeasible(newRoute))
+      {
+        std::cout << "feasible route" << std::endl;
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        std::cout << "cost calculated" << std::endl;
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "prefix improved with intra-route reinsertion" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+
+  std::cout << "step 2" << std::endl;
+  for (int removalIndex=1; removalIndex<(int)route.size()-1; ++removalIndex)
+  {
+    int removedElement1 = route[removalIndex];
+    int removedElement2 = route[removalIndex+1];
+    for (int insertionIndex=1; insertionIndex<route.size()-1; ++insertionIndex)
+    {
+      std::vector<int> newRoute = route;
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.insert(newRoute.begin() + insertionIndex, removedElement1);
+      newRoute.insert(newRoute.begin() + insertionIndex+1, removedElement2);
+      if (isRouteFeasible(newRoute))
+      {
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "prefix improved with intra-route Or-opt2" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+
+  std::cout << "step 3" << std::endl;
+  for (int removalIndex=1; removalIndex<(int)route.size()-2; ++removalIndex)
+  {
+    int removedElement1 = route[removalIndex];
+    int removedElement2 = route[removalIndex+1];
+    int removedElement3 = route[removalIndex+2];
+    for (int insertionIndex=1; insertionIndex<route.size()-2; ++insertionIndex)
+    {
+      std::vector<int> newRoute = route;
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.insert(newRoute.begin() + insertionIndex, removedElement1);
+      newRoute.insert(newRoute.begin() + insertionIndex+1, removedElement2);
+      newRoute.insert(newRoute.begin() + insertionIndex+2, removedElement3);
+      if (isRouteFeasible(newRoute))
+      {
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "prefix improved with intra-route Or-opt3" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+
+  std::cout << "step 4" << std::endl;
+  for (int index1=1; index1<(int)route.size(); ++index1)
+  {
+    int element1 = route[index1];
+    for (int index2=1; index2<(int)route.size(); ++index2)
+    {
+      int element2 = route[index2];
+
+      std::vector<int> newRoute = route;
+      newRoute[index2] = element1;
+      newRoute[index1] = element2;
+      if (isRouteFeasible(newRoute))
+      {
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "prefix improved with intra-route exchange" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+
+  std::cout << "step 5" << std::endl;
+  for (int index1=1; index1<(int)route.size()-2; ++index1)
+  {
+    for (int index2=index1+1; index2<(int)route.size(); ++index2)
+    {
+      std::vector<int> newRoute;
+      for (int i=0; i<=index1; ++i)
+      {
+        newRoute.push_back(route[i]);
+      }
+      for (int i=index2; i>index1; --i)
+      {
+        newRoute.push_back(route[i]);
+      }
+      for (int i=index2+1; i<(int)route.size(); ++i)
+      {
+        newRoute.push_back(route[i]);
+      }
+
+      if (isRouteFeasible(newRoute))
+      {
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "prefix improved with intra-route 2-opt" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+}
+
+bool VRPTWDecisionDiagram::intraRouteSwaps(std::vector<int>& route, double& routeCost)
+{
+  for (int removalIndex=1; removalIndex<route.size()-1; ++removalIndex)
+  {
+    int removedElement = route[removalIndex];
+    for (int insertionIndex=1; insertionIndex<route.size()-2; ++insertionIndex)
+    {
+      std::vector<int> newRoute = route;
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.insert(newRoute.begin() + insertionIndex, removedElement);
+      if (isRouteFeasible(newRoute))
+      {
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "improved with intra-route reinsertion" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+
+  for (int removalIndex=1; removalIndex<route.size()-2; ++removalIndex)
+  {
+    int removedElement1 = route[removalIndex];
+    int removedElement2 = route[removalIndex+1];
+    for (int insertionIndex=1; insertionIndex<route.size()-2; ++insertionIndex)
+    {
+      std::vector<int> newRoute = route;
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.insert(newRoute.begin() + insertionIndex, removedElement1);
+      newRoute.insert(newRoute.begin() + insertionIndex+1, removedElement2);
+      if (isRouteFeasible(newRoute))
+      {
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "improved with intra-route Or-opt2" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+
+  for (int removalIndex=1; removalIndex<route.size()-3; ++removalIndex)
+  {
+    int removedElement1 = route[removalIndex];
+    int removedElement2 = route[removalIndex+1];
+    int removedElement3 = route[removalIndex+2];
+    for (int insertionIndex=1; insertionIndex<route.size()-3; ++insertionIndex)
+    {
+      std::vector<int> newRoute = route;
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.erase(newRoute.begin() + removalIndex);
+      newRoute.insert(newRoute.begin() + insertionIndex, removedElement1);
+      newRoute.insert(newRoute.begin() + insertionIndex+1, removedElement2);
+      newRoute.insert(newRoute.begin() + insertionIndex+2, removedElement3);
+      if (isRouteFeasible(newRoute))
+      {
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "improved with intra-route Or-opt3" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+
+  for (int index1=1; index1<route.size()-1; ++index1)
+  {
+    int element1 = route[index1];
+    for (int index2=1; index2<route.size()-1; ++index2)
+    {
+      int element2 = route[index2];
+
+      std::vector<int> newRoute = route;
+      newRoute[index2] = element1;
+      newRoute[index1] = element2;
+      if (isRouteFeasible(newRoute))
+      {
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "improved with intra-route exchange" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+
+  for (int index1=1; index1<route.size()-3; ++index1)
+  {
+    for (int index2=index1+1; index2<route.size()-1; ++index2)
+    {
+      std::vector<int> newRoute;
+      for (int i=0; i<=index1; ++i)
+      {
+        newRoute.push_back(route[i]);
+      }
+      for (int i=index2; i>index1; --i)
+      {
+        newRoute.push_back(route[i]);
+      }
+      for (int i=index2+1; i<route.size(); ++i)
+      {
+        newRoute.push_back(route[i]);
+      }
+
+      if (isRouteFeasible(newRoute))
+      {
+        double newRouteCost = vrptw.evaluateRouteDistance(newRoute);
+        if (newRouteCost < routeCost)
+        {
+          routeCost = newRouteCost;
+          route = newRoute;
+          std::cout << "improved with intra-route 2-opt" << std::endl;
+          return true;
+        }
+      }
+    }
+  }
+}
+
 typedef std::pair<std::pair<int,int>,int> rcKeyType;
 bool VRPTWDecisionDiagram::reducedCostNeighborhood(int parameter, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
 {
@@ -3241,7 +3759,8 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhood(int parameter, const Dual& du
   std::cout << "running reduced cost neighborhood search mip" << std::endl;
   setCoeffsAsDistances();
   Dual duals1;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, duals1, false);
+  std::set<int> initialPrimalArcIndices;
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals1, false);
   if (lnsObjectiveValue >= 0)
   {
     std::cout << "obj from reduced cost neighborhood search: " << lnsObjectiveValue << std::endl;
@@ -3389,7 +3908,8 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& 
   std::cout << "running reduced cost neighborhood search mip" << std::endl;
   setCoeffsAsDistances();
   Dual duals1;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, duals1, false);
+  std::set<int> initialPrimalArcIndices;
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals1, false);
   if (lnsObjectiveValue >= 0)
   {
     std::cout << "obj from reduced cost neighborhood search: " << lnsObjectiveValue << std::endl;
@@ -3422,12 +3942,11 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& 
   return true;
 }
 
-bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes)
 {
-  std::cout << "running beam search dd" << std::endl;
+  std::cout << "running lds search dd" << std::endl;
 
   // 1. Create DP of current solutions
-  std::cout << "forward frontier" << std::endl;
   std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
   std::map<int,int> nodeDiscrepancies;
   std::map<int,int> nodeRouteIndex;
@@ -3454,6 +3973,7 @@ bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::ve
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
  
+  std::set<int> initialPrimalArcIndices;
   for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
   {
     auto route = feasibleSolution[routeIndex];
@@ -3490,10 +4010,36 @@ bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::ve
         }
       }
 
-      addArc(currNodeIndex, nextNodeIndex);
+      int newArcIndex = addArc(currNodeIndex, nextNodeIndex);
+      initialPrimalArcIndices.insert(newArcIndex);
       currState = newState;
       currNodeIndex = nextNodeIndex;
     }
+  }
+
+  // orderings for elements can be pre-cached
+  std::cout << "pre-caching ordering of reduced costs for locations" << std::endl;
+  std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
+  for (int location1=0; location1<vrptw.numLocations; ++location1)
+  {
+    std::vector<std::pair<int,double>> possibleElementReducedCost;
+    for (int location2=1; location2<vrptw.numLocations; ++location2)
+    {
+      if (location1 == location2)
+      {
+        continue;
+      }
+      double additionalReducedCost = vrptw.distances[location1][location2] - dual.lambda[location2];
+      std::pair<int,double> possiblePair = std::make_pair(location2, additionalReducedCost);
+      possibleElementReducedCost.push_back(possiblePair);
+    }
+    std::sort(possibleElementReducedCost.begin(), possibleElementReducedCost.end(), sort_by_second);
+    std::vector<int> orderedVector;
+    for (auto locationDistance : possibleElementReducedCost)
+    {
+      orderedVector.push_back(locationDistance.first);
+    }
+    locationNextLocationReducedCostOrdering.push_back(orderedVector);
   }
 
   // 3. Create a restricted DD using the frontier states
@@ -3501,7 +4047,7 @@ bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::ve
   // Allow some randomness in which transition(s) are chosen
   // Use an ordering to determine which transition(s) to try
   // Limit number of insertions/deletions with counter on states
-  std::cout << "restricted beam dd compilation" << std::endl;
+  std::cout << "restricted lds dd compilation" << std::endl;
   while (!pq.empty())
   {
     keyType queueItemToCheck = pq.top();
@@ -3509,16 +4055,8 @@ bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::ve
     pq.pop();
     const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
 
-    std::vector<std::pair<int,double>> possibleElementDistance;
-    for (int location=1; location<vrptw.numLocations; ++location)
-    {
-      double distance = vrptw.distances[location][stateToCheck.lastVisited];
-      std::pair<int,double> possiblePair = std::make_pair(location, distance);
-      possibleElementDistance.push_back(possiblePair);
-    }
-    std::sort(possibleElementDistance.begin(), possibleElementDistance.end(), sort_by_second);
-
-    for (auto pair : possibleElementDistance)
+    int numTransitionsAddedFromNode = 0;
+    for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
     {
       int randomInteger2 = std::rand();
       bool randomSkip = (randomInteger2 % 100) >= params.lnsRandomPercent;
@@ -3527,8 +4065,6 @@ bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::ve
         break;
       }
 
-      int location = pair.first;
- 
       // don't allow duplicate location arcs
       bool locationArcAlreadyExists = false;
       for (int arcIndex : nodes[nodeIndex].outArcs)
@@ -3594,6 +4130,12 @@ bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::ve
         }
 
         addArc(nodeIndex, newNodeIndex);
+        ++numTransitionsAddedFromNode;
+      }
+ 
+      if (numTransitionsAddedFromNode > limitedDiscrepancyValue * 5)
+      {
+        break;
       }
     }
   }
@@ -3617,11 +4159,11 @@ bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::ve
   }
 
   // 4. Solve the Arc Flow Formulation as a MIP
-  std::cout << "running dd beam search mip" << std::endl;
+  std::cout << "running dd lds search mip" << std::endl;
   setCoeffsAsDistances();
   Dual duals;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, duals, false);
-  std::cout << "obj from beam search: " << lnsObjectiveValue << std::endl;
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false);
+  std::cout << "obj from lds search: " << lnsObjectiveValue << std::endl;
 
   // 5. Return the solution
   std::vector<int> infeasibleRoute;
@@ -3646,7 +4188,7 @@ bool VRPTWDecisionDiagram::beamSearch(int limitedDiscrepancyValue, const std::ve
   return true;
 }
 
-bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes)
 {
   std::cout << "running lns dd" << std::endl;
 
@@ -3744,6 +4286,34 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
  
+  // extra step: resort/reoroder prefixes and suffixes, because of the disconnection
+  /*
+  std::cout << "reordering prefixes" << std::endl;
+  std::vector<std::vector<int>> reorderedPrefixes;
+  for (auto prefix : prefixes)
+  {
+    std::vector<int> newPrefix = prefix;
+    double prefixCost = vrptw.evaluateRouteDistance(newPrefix);
+    prefixIntraRouteSwaps(newPrefix, prefixCost);
+    reorderedPrefixes.push_back(newPrefix);
+  }
+  prefixes = reorderedPrefixes;
+ 
+  std::cout << "reordering suffixes" << std::endl;
+  std::vector<std::vector<int>> reorderedSuffixes;
+  for (auto suffix : suffixes)
+  {
+    std::vector<int> newSuffix = suffix;
+    std::reverse(newSuffix.begin(), newSuffix.end());
+    double suffixCost = vrptw.evaluateRouteDistance(newSuffix);
+    prefixIntraRouteSwaps(newSuffix, suffixCost);
+    std::reverse(newSuffix.begin(), newSuffix.end());
+    reorderedSuffixes.push_back(newSuffix);
+  }
+  suffixes = reorderedSuffixes;
+  */
+ 
+  std::set<int> initialPrimalArcIndices;
   for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
   {
     auto route = feasibleSolution[routeIndex];
@@ -3793,10 +4363,36 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
         }
       }
 
-      addArc(currNodeIndex, nextNodeIndex);
+      int newArcIndex = addArc(currNodeIndex, nextNodeIndex);
+      initialPrimalArcIndices.insert(newArcIndex);
       currState = newState;
       currNodeIndex = nextNodeIndex;
     }
+  }
+
+  // orderings for elements can be pre-cached
+  std::cout << "pre-caching ordering of reduced costs for locations" << std::endl;
+  std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
+  for (int location1=0; location1<vrptw.numLocations; ++location1)
+  {
+    std::vector<std::pair<int,double>> possibleElementReducedCost;
+    for (int location2 : destroyedElements)
+    {
+      if (location1 == location2)
+      {
+        continue;
+      }
+      double additionalReducedCost = vrptw.distances[location1][location2] - dual.lambda[location2];
+      std::pair<int,double> possiblePair = std::make_pair(location2, additionalReducedCost);
+      possibleElementReducedCost.push_back(possiblePair);
+    }
+    std::sort(possibleElementReducedCost.begin(), possibleElementReducedCost.end(), sort_by_second);
+    std::vector<int> orderedVector;
+    for (auto locationDistance : possibleElementReducedCost)
+    {
+      orderedVector.push_back(locationDistance.first);
+    }
+    locationNextLocationReducedCostOrdering.push_back(orderedVector);
   }
 
   // 3. Create a restricted DD using the frontier states
@@ -3805,25 +4401,16 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
   // Use an ordering to determine which transition(s) to try
   // Limit number of insertions/deletions with counter on states
   std::cout << "restricted destroy-repair dd compilation" << std::endl;
+  int depthAllowed = 2;
   while (!pq.empty())
   {
     keyType queueItemToCheck = pq.top();
     int nodeIndex = queueItemToCheck.second;
     pq.pop();
-    const VRPTWNodeState& stateToCheck = nodes[nodeIndex].state;
+    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
 
-    std::vector<std::pair<int,double>> possibleElementDistance;
-    for (int index=0; index<destroyedElements.size(); ++index)
-    {
-      int location = destroyedElements[index];
-      double distance = vrptw.distances[location][stateToCheck.lastVisited];
-      std::pair<int,double> possiblePair = std::make_pair(location, distance);
-      possibleElementDistance.push_back(possiblePair);
-    }
-
-    std::sort(possibleElementDistance.begin(), possibleElementDistance.end(), sort_by_second);
-
-    for (auto pair : possibleElementDistance)
+    int numTransitionsAddedFromNode = 0;
+    for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
     {
       int randomInteger2 = std::rand();
       bool randomSkip = (randomInteger2 % 100) >= params.lnsRandomPercent;
@@ -3831,7 +4418,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
       {
         break;
       }
-      int location = pair.first;
+
       VRPTWNodeState newState(stateToCheck);
       bool newNodeFeasible = generateNewStateFromExact(newState, location);
       if (newNodeFeasible)
@@ -3841,9 +4428,9 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
         int newNumNodes = nodes.size();
         if (newNumNodes > numNodes)
         {
-          // allow up to depth of 2, should make parameter
+          // allow up to depth of x, should make parameter
           newNodeDepths[newNodeIndex] = newNodeDepths[nodeIndex] + 1;
-          if (newNodeDepths[newNodeIndex] < numElementsDestroy + 2)
+          if (newNodeDepths[newNodeIndex] < numElementsDestroy + depthAllowed)
           {
             if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
             {
@@ -3856,9 +4443,16 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
               pq.push(newElement);
             }
           }
+
+          ++numTransitionsAddedFromNode;
         }
 
         addArc(nodeIndex, newNodeIndex);
+      }
+
+      if (numTransitionsAddedFromNode > numElementsDestroy)
+      {
+        break;
       }
     }
   }
@@ -3904,7 +4498,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
   std::cout << "running dd lns mip" << std::endl;
   setCoeffsAsDistances();
   Dual duals;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, duals, false);
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false);
   std::cout << "obj from lns: " << lnsObjectiveValue << std::endl;
 
   // 5. Return the solution

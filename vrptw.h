@@ -140,8 +140,14 @@ enum PrimalHeuristicLNS
   NONE = 0,
   LOCAL_SEARCH = 1,
   DESTROY_REPAIR = 2,
-  BEAM = 3,
+  LDS = 3,
   REDUCED_COST = 4
+};
+
+enum InsertionCriteria
+{
+  MCFIC = 0,
+  NFIC = 1
 };
 
 struct VRPTWDDParameters
