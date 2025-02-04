@@ -254,25 +254,27 @@ class VRPTWDecisionDiagram
 
     // network flow for lp/ip
     void initializeColumnsByLPDecomp();
-    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, const std::set<int>& initialPrimalArcIndices, Dual& dual, bool removeConstraintsForTesting);
+    double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, const std::set<int>& initialPrimalArcIndices, Dual& dual, bool removeConstraintsForTesting, int timeoutSeconds);
     double getDualObjectiveValue(const Dual& dual, LPSolveType lpSolveType);
     double fixArcs(const Dual& dual, LPSolveType lpSolveType, double upperBound);
     double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType, double upperBound);
 
     // primal heuristics
+    bool largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
+    bool limitedDiscrepancySearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
+    bool reducedCostNeighborhood(int percentKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
+    bool reducedCostNeighborhoodV2(int percentKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
+ 
     int selectArcWithLargestFlowFromNode(int nodeIndex);
     bool addLocationToRoute(int location, std::vector<int>& route);
     bool primalHeuristicGreedy(std::vector<std::vector<int>>& routesByLocation);
     void createTruncatedRoute(const std::vector<int>& route, std::vector<int>& truncatedRoute);
     bool prefixIntraRouteSwaps(std::vector<int>& route, double& routeCost);
     bool intraRouteSwaps(std::vector<int>& route, double& routeCost);
-    bool largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes);
-    bool limitedDiscrepancySearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes);
-    bool reducedCostNeighborhood(int percentKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
-    bool reducedCostNeighborhoodV2(int percentKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
+
     int addPrimalHeuristicSuffixArc(int fromNodeIndex, const std::vector<int>& suffix, int suffixIndex);
     void generateHeuristicRoutesGreedy(std::vector<std::vector<int>>& routes);
-    void generateHeuristicRoutesLiterature(std::vector<std::vector<int>>& routes);
+    bool generateHeuristicRoutesLiterature(std::vector<std::vector<int>>& routes);
     void calculateInsertionCost(const std::vector<int>& route, InsertionCriteria insertionCriteria, double gamma, int location, int& index, double& cost);
     void sequentialInsertion(std::vector<std::vector<int>>& routes, std::vector<int> candidateList, InsertionCriteria insertionCriteria);
     void parallelInsertion(std::vector<std::vector<int>>& routes, std::vector<int> candidateList, InsertionCriteria insertionCriteria);

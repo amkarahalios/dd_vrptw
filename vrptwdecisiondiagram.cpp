@@ -129,10 +129,6 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
 
   setTimeStepSize();
   separatedFeasibleRouteCounter = 0;
-
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::srand(seed);
-  std::cout << "DD random seed:" << seed << std::endl;
 };
 
 void VRPTWDecisionDiagram::setTimeStepSize()
@@ -453,7 +449,7 @@ void VRPTWDecisionDiagram::sequentialInsertion(std::vector<std::vector<int>>& ro
   }
 }
 
-void VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::vector<int>>& routes)
+bool VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::vector<int>>& routes)
 {
   while (true)
   {
@@ -526,6 +522,14 @@ void VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::ve
     }
   }
 
+  for (auto route : routes)
+  {
+    if (!isRouteFeasible(route))
+    {
+      return false;
+    }
+  }
+
   for (auto primalRoute : routes)
   {
     std::cout << "initial primalRoute: ";
@@ -535,6 +539,7 @@ void VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::ve
     }
     std::cout << std::endl;
   }
+  return true;
 }
 
 void VRPTWDecisionDiagram::generateHeuristicRoutesGreedy(std::vector<std::vector<int>>& routes)
@@ -593,7 +598,6 @@ void VRPTWDecisionDiagram::createMaximalSequence(const std::vector<int>& sequenc
     locationsToTry.push_back(location);
   }
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::cout << "random seed: " << seed << std::endl;
   std::shuffle(locationsToTry.begin(), locationsToTry.end(), std::default_random_engine(seed));
 
   std::vector<int> updatedSequence = sequence;
@@ -2436,7 +2440,7 @@ void VRPTWDecisionDiagram::initializeColumnsByLPDecomp()
 // can we merge nodes to reduce problem size?
 // can we warm start with a solution? dual solution?
 // can we reduce memory?
-double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, const std::set<int>& initialPrimalArcIndices, Dual& duals, bool removeForTesting)
+double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, const std::set<int>& initialPrimalArcIndices, Dual& duals, bool removeForTesting, int timeoutSeconds)
 {
   // setup model
   IloEnv env;
@@ -2640,10 +2644,10 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   solver.setOut(env.getNullStream());
   solver.setWarning(env.getNullStream());
   solver.setError(env.getNullStream());
-  //solver.setParam(IloCplex::Param::TimeLimit, timelimit);
+  solver.setParam(IloCplex::Param::TimeLimit, timeoutSeconds);
   //solver.setParam(IloCplex::Param::RootAlgorithm, IloCplex::Barrier);
-  solver.setParam(IloCplex::Param::Threads, 1);
   //solver.setParam(IloCplex::Param::RootAlgorithm, IloCplex::Primal);
+  solver.setParam(IloCplex::Param::Threads, 1);
   solver.exportModel("LPflowmodel.lp");
 
   // x is var[i], dj[i] reduced cost, pi[i] specifes starting dual for rng[i]
@@ -3223,8 +3227,6 @@ bool VRPTWDecisionDiagram::addLocationToRoute(int location, std::vector<int>& ro
 // can try adding element anywhere in each sequence, and use the best one
 bool VRPTWDecisionDiagram::primalHeuristicGreedy(std::vector<std::vector<int>>& routesByLocationPrimalHeuristic)
 {
-  std::cout << "running primal heuristic greedy" << std::endl;
-
   bool rootFlowExists = true;
   std::set<int> locationsCovered;
   locationsCovered.insert(0);
@@ -3525,6 +3527,8 @@ bool VRPTWDecisionDiagram::prefixIntraRouteSwaps(std::vector<int>& route, double
       }
     }
   }
+
+  return false;
 }
 
 bool VRPTWDecisionDiagram::intraRouteSwaps(std::vector<int>& route, double& routeCost)
@@ -3659,13 +3663,13 @@ bool VRPTWDecisionDiagram::intraRouteSwaps(std::vector<int>& route, double& rout
       }
     }
   }
+ 
+  return false;
 }
 
 typedef std::pair<std::pair<int,int>,int> rcKeyType;
-bool VRPTWDecisionDiagram::reducedCostNeighborhood(int parameter, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDecisionDiagram::reducedCostNeighborhood(int parameter, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
 {
-  std::cout << "running reduced cost neighborhood dd" << std::endl;
-
   std::priority_queue<rcKeyType, std::vector<rcKeyType>, std::greater<rcKeyType>> pq;
   nodes.reserve(std::pow(vrptw.numLocations,2));
   arcs.reserve(std::pow(vrptw.numLocations,2)/100);
@@ -3768,21 +3772,17 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhood(int parameter, const Dual& du
   }
 
   // Solve the Arc Flow Formulation as a MIP
-  std::cout << "running reduced cost neighborhood search mip" << std::endl;
   setCoeffsAsDistances();
   Dual duals1;
   std::set<int> initialPrimalArcIndices;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals1, false);
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals1, false, timeoutSeconds);
   if (lnsObjectiveValue >= 0)
   {
-    std::cout << "obj from reduced cost neighborhood search: " << lnsObjectiveValue << std::endl;
- 
     std::vector<int> infeasibleRoute;
     std::vector<std::vector<int>> decomposedArcs;
     std::vector<double> routeFlows;
     std::vector<std::vector<int>> decomposedRoutes;
     decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-    std::cout << "done decomposing" << std::endl;
 
     newBestRoutes.clear();
     for (auto route : decomposedRoutes)
@@ -3805,10 +3805,8 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhood(int parameter, const Dual& du
   return true;
 }
  
-bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
 {
-  std::cout << "running reduced cost neighborhood dd" << std::endl;
-
   std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
   nodes.reserve(std::pow(vrptw.numLocations,2));
   arcs.reserve(std::pow(vrptw.numLocations,2)/100);
@@ -3834,7 +3832,6 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& 
   terminalNodeIndex = 1;
 
   // orderings for elements can be pre-cached
-  std::cout << "pre-caching ordering of reduced costs for locations" << std::endl;
   std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
   for (int location1=0; location1<vrptw.numLocations; ++location1)
   {
@@ -3858,8 +3855,6 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& 
     locationNextLocationReducedCostOrdering.push_back(orderedVector);
   }
 
-  std::cout << "reduced cost neighborhood dd compilation" << std::endl;
- 
   // only keep x elements
   int nodeLimit = nodesKeep * 100000;
   while (!pq.empty() && (nodes.size() < nodeLimit))
@@ -3917,21 +3912,17 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& 
   }
 
   // Solve the Arc Flow Formulation as a MIP
-  std::cout << "running reduced cost neighborhood search mip" << std::endl;
   setCoeffsAsDistances();
   Dual duals1;
   std::set<int> initialPrimalArcIndices;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals1, false);
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals1, false, timeoutSeconds);
   if (lnsObjectiveValue >= 0)
   {
-    std::cout << "obj from reduced cost neighborhood search: " << lnsObjectiveValue << std::endl;
- 
     std::vector<int> infeasibleRoute;
     std::vector<std::vector<int>> decomposedArcs;
     std::vector<double> routeFlows;
     std::vector<std::vector<int>> decomposedRoutes;
     decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-    std::cout << "done decomposing" << std::endl;
 
     newBestRoutes.clear();
     for (auto route : decomposedRoutes)
@@ -3947,17 +3938,14 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& 
   }
   else
   {
-    std::cout << "no improvement found" << std::endl;
     newBestRoutes = feasibleSolution;
   }
 
   return true;
 }
 
-bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
 {
-  std::cout << "running lds search dd" << std::endl;
-
   // 1. Create DP of current solutions
   std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
   std::map<int,int> nodeDiscrepancies;
@@ -4030,7 +4018,6 @@ bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue,
   }
 
   // orderings for elements can be pre-cached
-  std::cout << "pre-caching ordering of reduced costs for locations" << std::endl;
   std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
   for (int location1=0; location1<vrptw.numLocations; ++location1)
   {
@@ -4059,7 +4046,6 @@ bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue,
   // Allow some randomness in which transition(s) are chosen
   // Use an ordering to determine which transition(s) to try
   // Limit number of insertions/deletions with counter on states
-  std::cout << "restricted lds dd compilation" << std::endl;
   while (!pq.empty())
   {
     keyType queueItemToCheck = pq.top();
@@ -4152,7 +4138,6 @@ bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue,
     }
   }
 
-  std::cout << "num nodes: " << nodes.size() << std::endl;
   int nodeIndex = 2;
   while (nodeIndex < nodes.size())
   {
@@ -4171,11 +4156,9 @@ bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue,
   }
 
   // 4. Solve the Arc Flow Formulation as a MIP
-  std::cout << "running dd lds search mip" << std::endl;
   setCoeffsAsDistances();
   Dual duals;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false);
-  std::cout << "obj from lds search: " << lnsObjectiveValue << std::endl;
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false, timeoutSeconds);
 
   // 5. Return the solution
   std::vector<int> infeasibleRoute;
@@ -4183,7 +4166,6 @@ bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue,
   std::vector<double> routeFlows;
   std::vector<std::vector<int>> decomposedRoutes;
   decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-  std::cout << "done decomposing" << std::endl;
 
   newBestRoutes.clear();
   for (auto route : decomposedRoutes)
@@ -4200,15 +4182,12 @@ bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue,
   return true;
 }
 
-bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes)
+bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
 {
-  std::cout << "running lns dd" << std::endl;
-
   // 1. Destroy
   // Use a parameter numElementsDestroy to determine how much to destroy
   // Allow some randomness in what gets destroyed (using an ordering of relevance)
   // Allow some randomness to determine where to start destroying each sequence
-  std::cout << "destroy phase" << std::endl;
   std::vector<std::vector<int>> prefixes;
   std::vector<std::vector<int>> suffixes;
   std::vector<int> destroyedElements;
@@ -4245,9 +4224,12 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
         suffix.push_back(route[index]);
       }
     }
-
+ 
     prefixes.push_back(prefix);
     suffixes.push_back(suffix);
+  }
+
+/*
     std::cout << "prefix: ";
     for (int p : prefix)
     {
@@ -4260,19 +4242,14 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
       std::cout << s << " ";
     }
     std::cout << std::endl;
-  }
-
-  //std::cout << "num prefixes: " << prefixes.size() << std::endl;
-  //std::cout << "num suffixes: " << suffixes.size() << std::endl;
-  //std::cout << "num destroyed elements: " << destroyedElements.size() << std::endl;
   for (int e : destroyedElements)
   {
     std::cout << e << " ";
   }
   std::cout << std::endl;
+*/
 
   // 2. Create DP up to forward frontier
-  std::cout << "forward frontier" << std::endl;
   std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
   std::map<int,int> newNodeDepths;
   nodes.reserve(std::pow(vrptw.numLocations,2));
@@ -4326,9 +4303,9 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
   */
  
   std::set<int> initialPrimalArcIndices;
-  for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
+  for (int routeIndex=0; routeIndex<(int)feasibleSolution.size(); ++routeIndex)
   {
-    auto route = feasibleSolution[routeIndex];
+    std::vector<int> route = feasibleSolution[routeIndex];
 
     VRPTWNodeState currState = nodes[rootNodeIndex].state;
     int currNodeIndex = rootNodeIndex;
@@ -4383,7 +4360,6 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
   }
 
   // orderings for elements can be pre-cached
-  std::cout << "pre-caching ordering of reduced costs for locations" << std::endl;
   std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
   for (int location1=0; location1<vrptw.numLocations; ++location1)
   {
@@ -4412,7 +4388,6 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
   // Allow some randomness in which transition(s) are chosen
   // Use an ordering to determine which transition(s) to try
   // Limit number of insertions/deletions with counter on states
-  std::cout << "restricted destroy-repair dd compilation" << std::endl;
   int depthAllowed = 2;
   while (!pq.empty())
   {
@@ -4469,7 +4444,6 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
     }
   }
 
-  std::cout << "restricted dd compilation - suffixes" << std::endl;
   int nodeIndex = 2;
   while (nodeIndex < nodes.size())
   {
@@ -4507,11 +4481,9 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
   }
 
   // 4. Solve the Arc Flow Formulation as a MIP
-  std::cout << "running dd lns mip" << std::endl;
   setCoeffsAsDistances();
   Dual duals;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false);
-  std::cout << "obj from lns: " << lnsObjectiveValue << std::endl;
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false, timeoutSeconds);
 
   // 5. Return the solution
   std::vector<int> infeasibleRoute;
@@ -4759,15 +4731,15 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
     flows.push_back(routeFlow);
     routeDecomposition.push_back(routeByLoc);
     decomposedArcs.push_back(route);
-
-    std::cout << "[loc arcIndex] route: ";
+    
+    //std::cout << "[loc arcIndex] route: ";
     for (int arcIndex : route)
     {
-      std::cout << arcs[arcIndex].location << " ";
-      std::cout << arcIndex << " ";
+      //std::cout << arcs[arcIndex].location << " ";
+      //std::cout << arcIndex << " ";
       arcs[arcIndex].decompositionFlow = arcs[arcIndex].decompositionFlow - routeFlow;
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
   }
 };
 
