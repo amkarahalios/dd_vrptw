@@ -359,7 +359,6 @@ void VRPTWDecisionDiagram::parallelInsertion(std::vector<std::vector<int>>& rout
 
   while (!candidateList.empty())
   {
-    std::cout << "size: " << candidateList.size() << std::endl;
     bool insertedLocation = false;
     double bestInsertionCost = INF;
     int bestInsertionLocation = -1;
@@ -414,7 +413,6 @@ void VRPTWDecisionDiagram::sequentialInsertion(std::vector<std::vector<int>>& ro
 
   while (!candidateList.empty())
   {
-    std::cout << "size: " << candidateList.size() << std::endl;
     bool insertedLocation = false;
     for (int routeIndex=0; routeIndex<routes.size(); ++routeIndex)
     {
@@ -457,59 +455,75 @@ void VRPTWDecisionDiagram::sequentialInsertion(std::vector<std::vector<int>>& ro
 
 void VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::vector<int>>& routes)
 {
-  // initialize candidate list
-  std::vector<int> candidateList;
-  for (int location=1; location<vrptw.numLocations; ++location)
+  while (true)
   {
-    candidateList.push_back(location);
-  }
-
-  // initialize empty routes
-  for (int vehicleIndex=0; vehicleIndex<vrptw.numVehicles; ++vehicleIndex)
-  {
-    std::vector<int> emptyRoute;
-    emptyRoute.push_back(0);
-    emptyRoute.push_back(0);
-    routes.push_back(emptyRoute);
-  }
-
-  // put random location in each route
-  for (int routeIndex=0; routeIndex<routes.size(); ++routeIndex)
-  {
-    std::vector<int> newRoute = routes[routeIndex];
-    while (newRoute.size() == 2)
+    // initialize candidate list
+    std::vector<int> candidateList;
+    for (int location=1; location<vrptw.numLocations; ++location)
     {
-      int randomInteger0 = std::rand();
-      int randomCandidateListIndex = randomInteger0 % candidateList.size();
-      int randomLocation = candidateList[randomCandidateListIndex];
-      newRoute.insert(newRoute.begin()+1, randomLocation);
-      candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), randomLocation), candidateList.end());
-      if (!isRouteFeasible(newRoute))
+      candidateList.push_back(location);
+    }
+
+    // initialize empty routes
+    routes.clear();
+    for (int vehicleIndex=0; vehicleIndex<vrptw.numVehicles; ++vehicleIndex)
+    {
+      std::vector<int> emptyRoute;
+      emptyRoute.push_back(0);
+      emptyRoute.push_back(0);
+      routes.push_back(emptyRoute);
+    }
+
+    // put random location in each route
+    for (int routeIndex=0; routeIndex<routes.size(); ++routeIndex)
+    {
+      std::vector<int> newRoute = routes[routeIndex];
+      while (newRoute.size() == 2)
       {
-        newRoute = {0,0};
+        int randomInteger0 = std::rand();
+        int randomCandidateListIndex = randomInteger0 % candidateList.size();
+        int randomLocation = candidateList[randomCandidateListIndex];
+        newRoute.insert(newRoute.begin()+1, randomLocation);
+        candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), randomLocation), candidateList.end());
+        if (!isRouteFeasible(newRoute))
+        {
+          newRoute = {0,0};
+        }
+      }
+      routes[routeIndex] = newRoute;
+    }
+
+    // choose random insertion criteria and strategy
+    int randomInteger1 = std::rand();
+    bool insertionStrategyBoolean = ((randomInteger1 % 2) == 0);
+
+    int randomInteger2 = std::rand();
+    int randomBoolean2 = randomInteger2 % 2;
+    InsertionCriteria insertionCriteria = (randomBoolean2 == 0) ? InsertionCriteria::MCFIC : InsertionCriteria::NFIC;
+
+    // run insertion heuristic
+    if (insertionStrategyBoolean)
+    {
+      std::cout << "using sequential insertion strategy" << std::endl;
+      sequentialInsertion(routes, candidateList, insertionCriteria);
+    }
+    else
+    {
+      std::cout << "using parallel insertion strategy" << std::endl;
+      parallelInsertion(routes, candidateList, insertionCriteria);
+    }
+
+    if (vrptw.fixedNumPaths == FixedNumPaths::FLEXIBLE_NUM_PATHS)
+    {
+      break;
+    }
+    else
+    {
+      if (routes.size() == vrptw.numVehicles)
+      {
+        break;
       }
     }
-    routes[routeIndex] = newRoute;
-  }
-
-  // choose random insertion criteria and strategy
-  int randomInteger1 = std::rand();
-  bool insertionStrategyBoolean = ((randomInteger1 % 2) == 0);
-
-  int randomInteger2 = std::rand();
-  int randomBoolean2 = randomInteger2 % 2;
-  InsertionCriteria insertionCriteria = (randomBoolean2 == 0) ? InsertionCriteria::MCFIC : InsertionCriteria::NFIC;
-
-  // run insertion heuristic
-  if (insertionStrategyBoolean)
-  {
-    std::cout << "using sequential insertion strategy" << std::endl;
-    sequentialInsertion(routes, candidateList, insertionCriteria);
-  }
-  else
-  {
-    std::cout << "using parallel insertion strategy" << std::endl;
-    parallelInsertion(routes, candidateList, insertionCriteria);
   }
 
   for (auto primalRoute : routes)
@@ -3372,8 +3386,6 @@ void VRPTWDecisionDiagram::createTruncatedRoute(const std::vector<int>& route, s
 
 bool VRPTWDecisionDiagram::prefixIntraRouteSwaps(std::vector<int>& route, double& routeCost)
 {
-  std::cout << "size: " << route.size() << std::endl;
-
   std::cout << "step 1" << std::endl;
   for (int removalIndex=1; removalIndex<(int)route.size(); ++removalIndex)
   {
