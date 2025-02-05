@@ -22,7 +22,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "Random seed:" << seed << std::endl;
 
   // Compile DD
-  if (params.lnsTimeout < params.timeoutSeconds)
+  if (params.lnsTimeoutSeconds < params.timeoutSeconds)
   {
     std::cout << "compiling DD" << std::endl;
     auto startCompileTime = std::chrono::high_resolution_clock::now();
@@ -47,7 +47,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   // Run Heuristic + MIP Pool + LNS in a loop
   int heuristicTimeSeconds = 0;
   auto heuristicStartTime = std::chrono::high_resolution_clock::now();
-  while (heuristicTimeSeconds < params.lnsTimeout)
+  while (heuristicTimeSeconds < params.lnsTimeoutSeconds)
   {
     // Heuristic for Initial Routes
     std::cout << "generate initial heuristic routes" << std::endl;
@@ -79,10 +79,12 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     }
  
     // LNS
-    int iterationTimeoutSeconds = 10;
     Dual dual;
     dual.lambda.resize(vrptw.numLocations);
-    largeNeighborhoodSearch(heuristicRoutes, dual, iterationTimeoutSeconds);
+    largeNeighborhoodSearch(heuristicRoutes, dual, params.lnsHeuristicTimeoutSeconds);
+ 
+    auto heuristicCurrTime = std::chrono::high_resolution_clock::now();
+    heuristicTimeSeconds = std::chrono::duration_cast<std::chrono::seconds>(heuristicCurrTime- heuristicStartTime).count();
   }
 
   // set and log parameters
@@ -150,7 +152,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   // primal heuristic params
   std::cout << "primal heuristic: " << params.primalHeuristic << std::endl;
   std::cout << "primal heuristic lns: " << params.primalHeuristicLNS << std::endl;
-  std::cout << "lns timeout: " << params.lnsTimeout << std::endl;
+  std::cout << "lns timeout: " << params.lnsTimeoutSeconds << std::endl;
   std::cout << "lns iterations to update params: " << params.lnsIterationsToUpdateParams << std::endl;
 
   /*
@@ -660,7 +662,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         // Run LNS
         if (params.primalHeuristicLNS != PrimalHeuristicLNS::NONE)
         {
-          largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeout);
+          largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeoutSeconds);
         }
       }
     }
@@ -2092,7 +2094,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           // Run LNS
           if (params.primalHeuristicLNS != PrimalHeuristicLNS::NONE)
           {
-            largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeout);
+            largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeoutSeconds);
           }
         }
       }

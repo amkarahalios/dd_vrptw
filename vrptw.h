@@ -174,9 +174,10 @@ struct VRPTWDDParameters
 
   PrimalHeuristic primalHeuristic;
   PrimalHeuristicLNS primalHeuristicLNS;
-  int lnsTimeout;
+  int lnsTimeoutSeconds;
   int lnsRandomPercent;
   int lnsIterationsToUpdateParams;
+  int lnsHeuristicTimeoutSeconds;
 };
 
 struct VRPTWSolution

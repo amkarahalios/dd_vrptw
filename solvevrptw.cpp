@@ -253,7 +253,7 @@ int main(int argc, char** argv)
           }
           else if (lineIndex == 22)
           {
-            params.lnsTimeout = std::stoi(paramValueString);
+            params.lnsTimeoutSeconds = std::stoi(paramValueString);
           }
           else if (lineIndex == 23)
           {
@@ -262,6 +262,10 @@ int main(int argc, char** argv)
           else if (lineIndex == 24)
           {
             params.lnsIterationsToUpdateParams = std::stoi(paramValueString);
+          }
+          else if (lineIndex == 25)
+          {
+            params.lnsHeuristicTimeoutSeconds = std::stoi(paramValueString);
           }
         }
         wordIndex = wordIndex + 1;

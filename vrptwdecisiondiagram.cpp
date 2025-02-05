@@ -2437,12 +2437,9 @@ void VRPTWDecisionDiagram::initializeColumnsByLPDecomp()
   }
 }
 
-// can we merge nodes to reduce problem size?
-// can we warm start with a solution? dual solution?
-// can we reduce memory?
 double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, const std::set<int>& initialPrimalArcIndices, Dual& duals, bool removeForTesting, int timeoutSeconds)
 {
-  // setup model
+  // Setup model
   IloEnv env;
   IloModel flowModel(env);
   IloRangeArray coverConstraints(env);
@@ -2455,7 +2452,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   IloNumArray initialPrimal(env);
   IloExpr objective(env);
 
-  // setup variables and objective
+  // Setup variables and objective
   int numNonZeroVars = 0;
   for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
   {
@@ -2490,8 +2487,6 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
         else
         {
           ++numNonZeroVars;
-          // NOTE(akarahal) try seeing if upper bounds get dual values
-          //x[arcIndex] = IloNumVar(env, 0, IloInfinity);
           x[arcIndex] = IloNumVar(env, 0, 1);
           objective += x[arcIndex] * arcs[arcIndex].coeff;
         }
@@ -2507,7 +2502,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   flowModel.add(IloMinimize(env, objective));
   objective.end();
 
-  // setup coverConstraints
+  // Cover Constraints
   if (includeCoverConstraints == IncludeCoverConstraints::Y)
   {
     for (int location=0; location<vrptw.numLocations; ++location)
@@ -2533,8 +2528,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   }
   flowModel.add(coverConstraints);
 
-  // setup flow conservation constraints (skip root and terminal)
-  // deal with fixed nodes
+  // Flow Conservation Constraints
   for (int nodeIndex=2; nodeIndex<nodes.size(); ++nodeIndex)
   {
     IloExpr sumInMinusOutNode(env);
@@ -2552,7 +2546,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   }
   flowModel.add(flowConservationConstraints);
 
-  // set fixed number of vehicles
+  // Fixed Number of Vehicles
   if (vrptw.fixedNumPaths == FIXED_NUM_PATHS)
   {
     IloExpr fixedNumPaths(env);
@@ -2565,6 +2559,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
     flowModel.add(fixedPathConstraint);
   }
 
+  // Cuts for LP only
   if (flowType == FlowType::LP)
   {
     // RCC - rounded capacity cuts, might even need to use for IPs
@@ -2639,7 +2634,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
     flowModel.add(srcConstraints);
   }
 
-  // solve model
+  // Solver
   IloCplex solver(flowModel);
   solver.setOut(env.getNullStream());
   solver.setWarning(env.getNullStream());
@@ -2650,8 +2645,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   solver.setParam(IloCplex::Param::Threads, 1);
   solver.exportModel("LPflowmodel.lp");
 
-  // x is var[i], dj[i] reduced cost, pi[i] specifes starting dual for rng[i]
-  //solver.setVectors(x, dj, var, slack, pi, rng)
+  // Warm starts
   if (flowType == FlowType::LP)
   {
     IloNumArray startDuals(env);
@@ -2663,15 +2657,17 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   }
   else
   {
-    solver.addMIPStart(x, initialPrimal);
+    if (!initialPrimalArcIndices.empty())
+    {
+      solver.addMIPStart(x, initialPrimal);
+    }
   }
   solver.solve();
 
-  // get results
+  // Get results
   IloAlgorithm::Status solverStatus = solver.getStatus();
   if (solverStatus == IloAlgorithm::Optimal)
   {
-    // store results
     for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
     {
       if (!arcs[arcIndex].isReverseArc)
@@ -2687,6 +2683,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       */
     }
 
+    // Get duals for LP
     double objValue = solver.getObjValue();
     if (flowType == FlowType::LP)
     {
