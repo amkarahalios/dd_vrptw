@@ -132,12 +132,13 @@ enum PrimalHeuristic
 {
   GREEDY = 0,
   BEST_UB = 1,
-  MIP = 2
+  NO_PRIMAL = 2,
+  MIP = 3
 };
 
 enum PrimalHeuristicLNS
 {
-  NONE = 0,
+  NO_LNS = 0,
   LOCAL_SEARCH = 1,
   DESTROY_REPAIR = 2,
   LDS = 3,
@@ -186,6 +187,161 @@ struct VRPTWSolution
 
   std::vector<std::vector<int>> routes;
   double totalDistance;
+};
+
+const static std::set<std::string> closedInstances =
+{
+"C101.vrptw",
+"C102.vrptw",
+"C103.vrptw",
+"C104.vrptw",
+"C105.vrptw",
+"C106.vrptw",
+"C107.vrptw",
+"C108.vrptw",
+"C109.vrptw",
+"C201.vrptw",
+"C202.vrptw",
+"C203.vrptw",
+"C204.vrptw",
+"C205.vrptw",
+"C206.vrptw",
+"C207.vrptw",
+"C208.vrptw",
+"R101.vrptw",
+"R102.vrptw",
+"R103.vrptw",
+"R104.vrptw",
+"R105.vrptw",
+"R106.vrptw",
+"R107.vrptw",
+"R108.vrptw",
+"R109.vrptw",
+"R110.vrptw",
+"R111.vrptw",
+"R112.vrptw",
+"R201.vrptw",
+"R202.vrptw",
+"R203.vrptw",
+"R204.vrptw",
+"R205.vrptw",
+"R206.vrptw",
+"R207.vrptw",
+"R208.vrptw",
+"R209.vrptw",
+"R210.vrptw",
+"R211.vrptw",
+"RC101.vrptw",
+"RC102.vrptw",
+"RC103.vrptw",
+"RC104.vrptw",
+"RC105.vrptw",
+"RC106.vrptw",
+"RC107.vrptw",
+"RC108.vrptw",
+"RC201.vrptw",
+"RC202.vrptw",
+"RC203.vrptw",
+"RC204.vrptw",
+"RC205.vrptw",
+"RC206.vrptw",
+"RC207.vrptw",
+"RC208.vrptw",
+"A-n32-k5.vrp",
+"A-n33-k5.vrp",
+"A-n33-k6.vrp",
+"A-n34-k5.vrp",
+"A-n36-k5.vrp",
+"A-n37-k5.vrp",
+"A-n37-k6.vrp",
+"A-n38-k5.vrp",
+"A-n39-k5.vrp",
+"A-n39-k6.vrp",
+"A-n44-k6.vrp",
+"A-n45-k6.vrp",
+"A-n45-k7.vrp",
+"A-n46-k7.vrp",
+"A-n48-k7.vrp",
+"A-n53-k7.vrp",
+"A-n54-k7.vrp",
+"A-n55-k9.vrp",
+"A-n60-k9.vrp",
+"A-n61-k9.vrp",
+"A-n62-k8.vrp",
+"A-n63-k10.vrp",
+"A-n63-k9.vrp",
+"A-n64-k9.vrp",
+"A-n65-k9.vrp",
+"A-n69-k9.vrp",
+"A-n80-k10.vrp",
+"B-n31-k5.vrp",
+"B-n34-k5.vrp",
+"B-n35-k5.vrp",
+"B-n38-k6.vrp",
+"B-n39-k5.vrp",
+"B-n41-k6.vrp",
+"B-n43-k6.vrp",
+"B-n44-k7.vrp",
+"B-n45-k5.vrp",
+"B-n45-k6.vrp",
+"B-n50-k7.vrp",
+"B-n50-k8.vrp",
+"B-n51-k7.vrp",
+"B-n52-k7.vrp",
+"B-n56-k7.vrp",
+"B-n57-k7.vrp",
+"B-n57-k9.vrp",
+"B-n63-k10.vrp",
+"B-n64-k9.vrp",
+"B-n66-k9.vrp",
+"B-n67-k10.vrp",
+"B-n68-k9.vrp",
+"B-n78-k10.vrp",
+"E-n101-k14.vrp",
+"E-n101-k8.vrp",
+"E-n13-k4.vrp",
+"E-n22-k4.vrp",
+"E-n23-k3.vrp",
+"E-n30-k3.vrp",
+"E-n31-k7.vrp",
+"E-n33-k4.vrp",
+"E-n51-k5.vrp",
+"E-n76-k10.vrp",
+"E-n76-k14.vrp",
+"E-n76-k7.vrp",
+"E-n76-k8.vrp",
+"F-n135-k7.vrp",
+"F-n45-k4.vrp",
+"F-n72-k4.vrp",
+"P-n101-k4.vrp",
+"P-n16-k8.vrp",
+"P-n19-k2.vrp",
+"P-n20-k2.vrp",
+"P-n21-k2.vrp",
+"P-n22-k2.vrp",
+"P-n22-k8.vrp",
+"P-n23-k8.vrp",
+"P-n40-k5.vrp",
+"P-n45-k5.vrp",
+"P-n50-k10.vrp",
+"P-n50-k7.vrp",
+"P-n50-k8.vrp",
+"P-n51-k10.vrp",
+"P-n55-k10.vrp",
+"P-n55-k15.vrp",
+"P-n55-k7.vrp",
+"P-n55-k8.vrp",
+"P-n60-k10.vrp",
+"P-n60-k15.vrp",
+"P-n65-k10.vrp",
+"P-n70-k10.vrp",
+"P-n76-k4.vrp",
+"P-n76-k5.vrp",
+"M-n101-k10.vrp",
+"M-n121-k7.vrp",
+"M-n151-k12.vrp",
+"M-n200-k16.vrp",
+"M-n200-k17.vrp",
 };
 
 const static std::map<std::string,double> instanceOptimalSolutions =
@@ -1702,13 +1858,14 @@ struct VRPTW
           if (vehicleCapacitySection)
           {
             std::istringstream iss(line);
-            int number, truckCapacity;
-            if (!(iss >> number >> truckCapacity))
+            int numberOfVehicles, truckCapacity;
+            if (!(iss >> numberOfVehicles >> truckCapacity))
             {
               continue;
             }
             else
             {
+              numVehicles = numberOfVehicles;
               capacity = truckCapacity;
             }
           }
@@ -1757,17 +1914,23 @@ struct VRPTW
         int minServiceTime = *std::min_element(serviceTimes.begin()+1, serviceTimes.end());
         int minDistanceDepot = (*std::min_element(distances[0].begin()+1, distances[0].end())) + 1;
         timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
-        //timeStateDiscretization = 500;
 
         numLocations = demands.size();
         std::cout << "num locations: " << numLocations << std::endl;
         routeLengthUpperBound = numLocations;
 
-        // formally add if this works
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
           instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          if (closedInstances.find(instanceName) != closedInstances.end())
+          {
+            isInstanceClosed = true;
+          }
+          else
+          {
+            isInstanceClosed = false;
+          }
         }
         else
         {
@@ -1896,25 +2059,6 @@ struct VRPTW
           }
         }
 
-        /*
-        if (capacity >= 100)
-        {
-          vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
-          counterType = VRPTWCounterType::USE_COUNTER;
-
-          capacityDiscretization = 10;
-          if (capacity >= 200)
-          {
-            capacityDiscretization = 20;
-          }
-
-          if (capacity >= 500)
-          {
-            capacityDiscretization = 50;
-          }
-        }
-        */
-
         precedences.resize(demands.size());
         distances.resize(demands.size());
         for (int i=0; i < demands.size(); ++i)
@@ -1953,11 +2097,18 @@ struct VRPTW
           }
         )
 
-        // formally add if this works
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
           instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          if (closedInstances.find(instanceName) != closedInstances.end())
+          {
+            isInstanceClosed = true;
+          }
+          else
+          {
+            isInstanceClosed = false;
+          }
         }
         else
         {
@@ -2100,11 +2251,18 @@ struct VRPTW
           }
         }
 
-        // formally add if this works
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
           instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          if (closedInstances.find(instanceName) != closedInstances.end())
+          {
+            isInstanceClosed = true;
+          }
+          else
+          {
+            isInstanceClosed = false;
+          }
 
           // rounding in TSPTW
           instanceUpperBound += 0.01;
@@ -2219,11 +2377,18 @@ struct VRPTW
           }
         })
 
-        // formally add if this works
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
           instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          if (closedInstances.find(instanceName) != closedInstances.end())
+          {
+            isInstanceClosed = true;
+          }
+          else
+          {
+            isInstanceClosed = false;
+          }
         }
         else
         {
@@ -2254,9 +2419,7 @@ struct VRPTW
         circuitOrPath = CircuitOrPath::CIRCUIT;
         problemType = ProblemType::PDP;
         std::vector<std::pair<double,double> > coordinates;
-        // maybe relax capacity here because of drop offs?
         vrptwCapacityType = VRPTWCapacityType::RELAX_CAPACITY;
-        // allow us to use LAG because capacity can go back in time...
         counterType = VRPTWCounterType::USE_COUNTER;
         vrptwTimeWindowType = VRPTWTimeWindowType::TIME_WINDOWS;
 
@@ -2351,11 +2514,18 @@ struct VRPTW
         std::cout << "min service time: " << minServiceTime << std::endl;
         timeStateDiscretization = std::max(timeStateDiscretization, minServiceTime);
 
-        // formally add if this works
         std::string instanceName = fileName.substr(fileName.find_last_of("/") + 1);
         if (instanceOptimalSolutions.find(instanceName) != instanceOptimalSolutions.end())
         {
           instanceUpperBound = instanceOptimalSolutions.find(instanceName)->second;
+          if (closedInstances.find(instanceName) != closedInstances.end())
+          {
+            isInstanceClosed = true;
+          }
+          else
+          {
+            isInstanceClosed = false;
+          }
 
           // rounding in TSPTW
           //instanceUpperBound += 0.01;
@@ -2537,6 +2707,7 @@ struct VRPTW
     }
 
     std::string fileName;
+    bool isInstanceClosed;
 
     int capacity;
     std::vector<std::vector<double> > distances;

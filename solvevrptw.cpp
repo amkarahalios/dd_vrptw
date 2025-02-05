@@ -225,7 +225,7 @@ int main(int argc, char** argv)
           }
           else if (lineIndex == 20)
           {
-            params.primalHeuristic = PrimalHeuristic::BEST_UB;
+            params.primalHeuristic = PrimalHeuristic::NO_PRIMAL;
             if (paramValueString == "GREEDY")
             {
               params.primalHeuristic = PrimalHeuristic::GREEDY;
@@ -234,10 +234,14 @@ int main(int argc, char** argv)
             {
               params.primalHeuristic = PrimalHeuristic::MIP;
             }
+            else if (paramValueString == "BEST_UB")
+            {
+              params.primalHeuristic = PrimalHeuristic::BEST_UB;
+            }
           }
           else if (lineIndex == 21)
           {
-            params.primalHeuristicLNS = PrimalHeuristicLNS::NONE;
+            params.primalHeuristicLNS = PrimalHeuristicLNS::NO_LNS;
             if (paramValueString == "DESTROY_REPAIR")
             {
               params.primalHeuristicLNS = PrimalHeuristicLNS::DESTROY_REPAIR;

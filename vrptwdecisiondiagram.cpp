@@ -304,6 +304,13 @@ void VRPTWDecisionDiagram::calculateInsertionCost(const std::vector<int>& route,
       if (insertionIndex == routeIndex)
       {
         newRoute.push_back(location);
+        if (!vrptw.reliances.empty())
+        {
+          for (int relianceLocation : vrptw.reliances[location])
+          {
+            newRoute.push_back(relianceLocation);
+          }
+        }
       }
       newRoute.push_back(route[routeIndex]);
     }
@@ -383,10 +390,19 @@ void VRPTWDecisionDiagram::parallelInsertion(std::vector<std::vector<int>>& rout
       std::vector<int> newRoute = routes[bestInsertionRouteIndex];
       newRoute.insert(newRoute.begin()+bestInsertionIndex, bestInsertionLocation);
       candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), bestInsertionLocation), candidateList.end());
+      if (!vrptw.reliances.empty())
+      {
+        for (int relianceLocation : vrptw.reliances[bestInsertionLocation])
+        {
+          newRoute.insert(newRoute.begin()+bestInsertionIndex+1, relianceLocation);
+          candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), relianceLocation), candidateList.end());
+        }
+      }
       routes[bestInsertionRouteIndex] = newRoute;
       insertedLocation = true;
     }
 
+    // Add new vehicle if needed
     if (!insertedLocation)
     {
       std::vector<int> emptyRoute;
@@ -434,11 +450,20 @@ void VRPTWDecisionDiagram::sequentialInsertion(std::vector<std::vector<int>>& ro
         std::vector<int> newRoute = routes[routeIndex];
         newRoute.insert(newRoute.begin()+bestInsertionIndex, bestInsertionLocation);
         candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), bestInsertionLocation), candidateList.end());
+        if (!vrptw.reliances.empty())
+        {
+          for (int relianceLocation : vrptw.reliances[bestInsertionLocation])
+          {
+            newRoute.insert(newRoute.begin()+bestInsertionIndex+1, relianceLocation);
+            candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), relianceLocation), candidateList.end());
+          }
+        }
         routes[routeIndex] = newRoute;
         insertedLocation = true;
       }
     }
 
+    // Add new vehicle if needed
     if (!insertedLocation)
     {
       std::vector<int> emptyRoute;
@@ -481,8 +506,23 @@ bool VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::ve
         int randomLocation = candidateList[randomCandidateListIndex];
         newRoute.insert(newRoute.begin()+1, randomLocation);
         candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), randomLocation), candidateList.end());
+        if (!vrptw.reliances.empty())
+        {
+          for (int relianceLocation : vrptw.reliances[randomLocation])
+          {
+            newRoute.insert(newRoute.end()-1, relianceLocation);
+            candidateList.erase(std::remove(candidateList.begin(), candidateList.end(), relianceLocation), candidateList.end());
+          }
+        }
         if (!isRouteFeasible(newRoute))
         {
+          for (int newRouteLocation : newRoute)
+          {
+            if (newRouteLocation != 0)
+            {
+              candidateList.push_back(newRouteLocation);
+            }
+          }
           newRoute = {0,0};
         }
       }
@@ -526,6 +566,10 @@ bool VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::ve
   {
     if (!isRouteFeasible(route))
     {
+      for (int loc : route)
+      {
+        std::cout << loc << std::endl;
+      }
       return false;
     }
   }
@@ -3105,7 +3149,7 @@ double VRPTWDecisionDiagram::fixArcs(const Dual& dual, LPSolveType solveType, do
         }
       }
 
-      bool removeReducedCost = (lowerBound + bestPossibleReducedCost) > (vrptw.instanceUpperBound + 0.00001);
+      bool removeReducedCost = (lowerBound + bestPossibleReducedCost) > (upperBound + 0.00001);
       //bool removeReducedCost = (lowerBound + bestPossibleReducedCost) > upperBound;
       if (removeReducedCost || removeAllDown)
       {

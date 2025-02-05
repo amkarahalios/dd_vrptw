@@ -87,8 +87,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     heuristicTimeSeconds = std::chrono::duration_cast<std::chrono::seconds>(heuristicCurrTime- heuristicStartTime).count();
   }
 
-  // set and log parameters
-  // static parameters
+  // Set and Log Parameters
   infeasibleRoutesBatchSize = 1;
   deactivateCutValueThreshold = 0.01;
   deactivateCutIterThreshold = 1000000000;
@@ -522,23 +521,6 @@ void VRPTWDDSolver::initializeDual(Dual& dual)
       dual.lambda[location] = 2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
     }
   }
-
-/*
-  for (int index=0; index<dual.capDuals.size(); ++index)
-  {
-    dual.capDuals[index] = 0;
-  }
-  for (int index=0; index<dual.combDuals.size(); ++index)
-  {
-    dual.combDuals[index] = 0;
-  }
-  for (int index=0; index<dual.srcDuals.size(); ++index)
-  {
-    dual.srcDuals[index] = 0;
-  }
-
-  dual.fixedPathDual = 0;
-*/
 }
 
 bool VRPTWDDSolver::solve(bool shouldSolveIP)
@@ -660,7 +642,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
 
         // Run LNS
-        if (params.primalHeuristicLNS != PrimalHeuristicLNS::NONE)
+        if (params.primalHeuristicLNS != PrimalHeuristicLNS::NO_LNS)
         {
           largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeoutSeconds);
         }
@@ -2092,7 +2074,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
 
           // Run LNS
-          if (params.primalHeuristicLNS != PrimalHeuristicLNS::NONE)
+          if (params.primalHeuristicLNS != PrimalHeuristicLNS::NO_LNS)
           {
             largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeoutSeconds);
           }
