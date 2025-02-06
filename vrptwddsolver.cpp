@@ -1231,7 +1231,8 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
     {
       VRPTWDecisionDiagram heuristicDD(vrptw, params);
       int numElementsDestroy = increasingParameter;
-      heuristicDD.largeNeighborhoodSearch(numElementsDestroy, currSolution, dual, newBestRoutes, remainingSeconds);
+      heuristicDD.searchDestroyAndRepairNeighborhood(numElementsDestroy, numElementsDestroy+2, currSolution, dual, newBestRoutes, remainingSeconds);
+      //heuristicDD.largeNeighborhoodSearch(numElementsDestroy, currSolution, dual, newBestRoutes, remainingSeconds);
     }
     else if (params.primalHeuristicLNS == PrimalHeuristicLNS::LDS)
     {
@@ -1261,6 +1262,7 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
       // Update current stats
       stats.upperBound = std::min(stats.upperBound, lnsHeuristicUpperBound);
       currUpperBound = lnsHeuristicUpperBound;
+      stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
 
       // Update parameters
       iterationsWithoutImprovement = 0;

@@ -641,8 +641,7 @@ void VRPTWDecisionDiagram::createMaximalSequence(const std::vector<int>& sequenc
   {
     locationsToTry.push_back(location);
   }
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-  std::shuffle(locationsToTry.begin(), locationsToTry.end(), std::default_random_engine(seed));
+  std::random_shuffle(locationsToTry.begin(), locationsToTry.end());
 
   std::vector<int> updatedSequence = sequence;
   while (true)
@@ -4215,6 +4214,327 @@ bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue,
     for (int loc : route)
     {
       newRoute.push_back(loc);
+    }
+
+    newBestRoutes.push_back(newRoute);
+  }
+
+  return true;
+}
+
+bool VRPTWDecisionDiagram::searchDestroyAndRepairNeighborhood(int numElementsDestroy, int numRoutesDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
+{
+  // 1. Destroy
+  // Choose which routes to destroy from
+  std::vector<std::vector<int>> prefixes;
+  std::vector<std::vector<int>> suffixes;
+  std::vector<int> destroyedElements;
+  std::set<int> routeIndicesToDestroy;
+  while (routeIndicesToDestroy.size() < numRoutesDestroy)
+  {
+    int randomIntegerDestroy = std::rand();
+    int randomIndexDestroy = randomIntegerDestroy % feasibleSolution.size();
+    routeIndicesToDestroy.insert(randomIndexDestroy);
+  }
+
+  // Create prefixes and suffixes by destroying some elements
+  for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
+  {
+    auto route = feasibleSolution[routeIndex];
+
+    std::vector<int> prefix;
+    std::vector<int> suffix;
+    if (routeIndicesToDestroy.find(routeIndex) != routeIndicesToDestroy.end())
+    {
+      int routeNumLocations = route.size() - 2;
+      int numLocationsToDestroy = std::min(routeNumLocations, numElementsDestroy);
+      int randomInteger1 = std::rand();
+      int randomValue = 0;
+      int latestDestroyStartingIndex = route.size() - numLocationsToDestroy - 1;
+      if (route.size() > 3)
+      {
+        randomValue = randomInteger1 % std::min((int)(route.size()-3), latestDestroyStartingIndex);
+      }
+      int randomStartingIndex = 1 + randomValue;
+
+      for (int index=0; index<route.size(); ++index)
+      {
+        if (index < randomStartingIndex)
+        {
+          prefix.push_back(route[index]);
+        }
+        else if ((index >= randomStartingIndex) && (index < std::min((int)route.size()-1,randomStartingIndex+numLocationsToDestroy)))
+        {
+          destroyedElements.push_back(route[index]);
+        }
+        else
+        {
+          suffix.push_back(route[index]);
+        }
+      }
+    }
+    else
+    {
+      for (int location : route)
+      {
+        prefix.push_back(location);
+      }
+      suffix = {0};
+    }
+ 
+    std::cout << "prefix: ";
+    for (int p : prefix)
+    {
+      std::cout << p << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "suffix: ";
+    for (int s : suffix)
+    {
+      std::cout << s << " ";
+    }
+    std::cout << std::endl;
+    prefixes.push_back(prefix);
+    suffixes.push_back(suffix);
+  }
+
+  for (int e : destroyedElements)
+  {
+    std::cout << e << " ";
+  }
+  std::cout << std::endl;
+
+  // 2. Create Dynamic Program with Routes from the Current Feasible Solution
+  std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
+  std::map<int,int> newNodeDepths;
+  nodes.reserve(std::pow(vrptw.numLocations,2));
+  arcs.reserve(std::pow(vrptw.numLocations,2)/100);
+
+  std::set<int> initialDeque = {};
+  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
+  addNode(rootNodeState);
+  rootNodeIndex = 0;
+  newNodeDepths[rootNodeIndex] = 0;
+
+  int terminalNodeLoc = 0;
+  if (vrptw.circuitOrPath == CircuitOrPath::PATH)
+  {
+    terminalNodeLoc = vrptw.numLocations-1;
+  }
+  double terminalEndTime = 0;
+  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+  {
+    terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
+  }
+  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
+  addNode(terminalNodeState);
+  terminalNodeIndex = 1;
+ 
+  std::set<int> initialPrimalArcIndices;
+  for (int routeIndex=0; routeIndex<(int)feasibleSolution.size(); ++routeIndex)
+  {
+    std::vector<int> route = feasibleSolution[routeIndex];
+
+    VRPTWNodeState currState = nodes[rootNodeIndex].state;
+    int currNodeIndex = rootNodeIndex;
+    for (int index=1; index<route.size()-1; ++index)
+    {
+      VRPTWNodeState newState(currState);
+      int nextLocation = route[index];
+      generateNewStateFromExact(newState, nextLocation);
+      int numNodes = nodes.size();
+
+      int nextNodeIndex = addNode(newState);
+      int newNumNodes = nodes.size();
+      if (newNumNodes > numNodes)
+      {
+        // Only put end of prefix in queue
+        int numPrefixLocations = prefixes[routeIndex].size() - 1;
+        int numSuffixLocations = suffixes[routeIndex].size() - 1;
+        int numRemovedElements = route.size() - numPrefixLocations - numSuffixLocations - 2;
+        if ((index >= numPrefixLocations) && (index <= numPrefixLocations + numRemovedElements))
+        {
+          if (newNodeDepths.find(currNodeIndex) == newNodeDepths.end())
+          {
+            newNodeDepths[nextNodeIndex] = 0;
+          }
+          else
+          {
+            newNodeDepths[nextNodeIndex] = newNodeDepths[currNodeIndex] + 1;
+          }
+
+          if (routeIndicesToDestroy.find(routeIndex) != routeIndicesToDestroy.end())
+          {
+            if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+            {
+              const auto newElement = std::make_pair(newState.timeWithMultiplier, nextNodeIndex);
+              pq.push(newElement);
+            }
+            else
+            {
+              const auto newElement = std::make_pair(newState.capacity, nextNodeIndex);
+              pq.push(newElement);
+            }
+          }
+        }
+      }
+
+      int newArcIndex = addArc(currNodeIndex, nextNodeIndex);
+      initialPrimalArcIndices.insert(newArcIndex);
+      currState = newState;
+      currNodeIndex = nextNodeIndex;
+    }
+  }
+
+  // Order some transitions from locations by using distance and/or reduced cost given a dual
+  std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
+  for (int location1=0; location1<vrptw.numLocations; ++location1)
+  {
+    std::vector<std::pair<int,double>> possibleElementReducedCost;
+    for (int location2 : destroyedElements)
+    {
+      if (location1 == location2)
+      {
+        continue;
+      }
+      double additionalReducedCost = vrptw.distances[location1][location2] - dual.lambda[location2];
+      std::pair<int,double> possiblePair = std::make_pair(location2, additionalReducedCost);
+      possibleElementReducedCost.push_back(possiblePair);
+    }
+    std::sort(possibleElementReducedCost.begin(), possibleElementReducedCost.end(), sort_by_second);
+    std::vector<int> orderedVector;
+    for (auto locationDistance : possibleElementReducedCost)
+    {
+      orderedVector.push_back(locationDistance.first);
+    }
+    locationNextLocationReducedCostOrdering.push_back(orderedVector);
+  }
+
+  // 3. Create a Restricted Dynamic Program defined by the Destroy-Repair-Neighborhood
+  int depthAllowed = 2;
+  while (!pq.empty())
+  {
+    keyType queueItemToCheck = pq.top();
+    int nodeIndex = queueItemToCheck.second;
+    pq.pop();
+    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
+
+    int numTransitionsAddedFromNode = 0;
+    for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
+    {
+      int randomInteger2 = std::rand();
+      bool randomSkip = (randomInteger2 % 100) >= params.lnsRandomPercent;
+      if (randomSkip)
+      {
+        break;
+      }
+
+      VRPTWNodeState newState(stateToCheck);
+      bool newNodeFeasible = generateNewStateFromExact(newState, location);
+      if (newNodeFeasible)
+      {
+        int numNodes = nodes.size();
+        int newNodeIndex = addNode(newState);
+        int newNumNodes = nodes.size();
+        if (newNumNodes > numNodes)
+        {
+          // allow up to depth of x, should make parameter
+          newNodeDepths[newNodeIndex] = newNodeDepths[nodeIndex] + 1;
+          if (newNodeDepths[newNodeIndex] < numElementsDestroy + depthAllowed)
+          {
+            if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+            {
+              const auto newElement = std::make_pair(newState.timeWithMultiplier, newNodeIndex);
+              pq.push(newElement);
+            }
+            else
+            {
+              const auto newElement = std::make_pair(newState.capacity, newNodeIndex);
+              pq.push(newElement);
+            }
+          }
+
+          ++numTransitionsAddedFromNode;
+        }
+
+        addArc(nodeIndex, newNodeIndex);
+      }
+
+      if (numTransitionsAddedFromNode > numElementsDestroy)
+      {
+        break;
+      }
+    }
+  }
+
+  int nodeIndex = 2;
+  while (nodeIndex < nodes.size())
+  {
+    for (int suffixIndex=0; suffixIndex<suffixes.size(); ++suffixIndex)
+    {
+      auto suffix = suffixes[suffixIndex];
+ 
+      bool isSuffixFeasible = true;
+      VRPTWNodeState currState = nodes[nodeIndex].state;
+      for (int index=0; index<suffix.size(); ++index)
+      {
+        int nextLocation = suffix[index];
+        if (nextLocation == 0)
+        {
+          continue;
+        }
+
+        VRPTWNodeState newState(currState);
+        bool newNodeFeasible = generateNewStateFromExact(newState, nextLocation);
+        if (!newNodeFeasible)
+        {
+          isSuffixFeasible = false;
+          break;
+        }
+
+        currState = newState;
+      }
+
+      if (isSuffixFeasible)
+      {
+        addPrimalHeuristicSuffixArc(nodeIndex, suffix, suffixIndex);
+      }
+    }
+    nodeIndex = nodeIndex + 1;
+  }
+
+  // 4. Solve the Arc Flow Formulation as a MIP
+  setCoeffsAsDistances();
+  Dual duals;
+  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false, timeoutSeconds);
+
+  // 5. Return the solution
+  std::vector<int> infeasibleRoute;
+  std::vector<std::vector<int>> decomposedArcs;
+  std::vector<double> routeFlows;
+  std::vector<std::vector<int>> decomposedRoutes;
+  decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
+
+  newBestRoutes.clear();
+  for (auto route : decomposedRoutes)
+  {
+    std::vector<int> newRoute;
+    for (int loc : route)
+    {
+      if (loc >= 0)
+      {
+        newRoute.push_back(loc);
+      }
+      else
+      {
+        // suffix indicator, change index by 1 so 0 isn't like going to the depot
+        int suffixIndex = (-1 * loc) - 1;
+        auto suffix = suffixes[suffixIndex];
+        for (int suffixLoc : suffix)
+        {
+          newRoute.push_back(suffixLoc);
+        }
+      }
     }
 
     newBestRoutes.push_back(newRoute);
