@@ -511,6 +511,11 @@ void VRPTWDDSolver::initializeDual(Dual& dual)
         double splitUpperBound = vrptw.instanceUpperBound * 1.0 / vrptw.numLocations;
         dual.lambda[location] = splitUpperBound;
       }
+      else if (stats.upperBound < INF)
+      {
+        double splitUpperBound = stats.upperBound * 1.0 / vrptw.numLocations;
+        dual.lambda[location] = splitUpperBound;
+      }
       else
       {
         dual.lambda[location] = 0;
