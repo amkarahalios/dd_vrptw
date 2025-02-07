@@ -7,7 +7,7 @@
 
 VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _params), params(_params)
 {
-  if (params.primalHeuristic == PrimalHeuristic::BEST_UB)
+  if (params.primalHeuristic == PrimalHeuristic::BEST_KNOWN)
   {
     stats.upperBound = vrptw.instanceUpperBound + 1;
   }
@@ -22,9 +22,9 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "Random seed:" << seed << std::endl;
 
   // Compile DD
-  if (params.lnsTimeoutSeconds < params.timeoutSeconds)
+  std::cout << "compiling DD" << std::endl;
+  if (params.primalHeuristic != PrimalHeuristic::STANDALONE)
   {
-    std::cout << "compiling DD" << std::endl;
     auto startCompileTime = std::chrono::high_resolution_clock::now();
     if (params.stateSpace == StateSpace::Q)
     {
@@ -37,20 +37,25 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     auto endCompileTime = std::chrono::high_resolution_clock::now();
     auto compileSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endCompileTime - startCompileTime).count();
     stats.millisecondsCompiling = stats.millisecondsCompiling + compileSolveTime;
-    std::cout << "done compiling DD" << std::endl;
   }
   else
   {
     routeDD.compileEmpty();
   }
+  std::cout << "done compiling DD" << std::endl;
  
-  // Run Heuristic + MIP Pool + LNS in a loop
+  // Standalone solver runs Heuristic + MIP Pool + LNS in a loop
+  int timeToRunHeuristics = params.lnsTimeoutSeconds;
+  if (params.primalHeuristic == PrimalHeuristic::STANDALONE)
+  {
+    timeToRunHeuristics = params.timeoutSeconds;
+  }
+
   int heuristicTimeSeconds = 0;
   auto heuristicStartTime = std::chrono::high_resolution_clock::now();
-  while (heuristicTimeSeconds < params.lnsTimeoutSeconds)
+  while (heuristicTimeSeconds < timeToRunHeuristics)
   {
     // Heuristic for Initial Routes
-    std::cout << "generate initial heuristic routes" << std::endl;
     std::vector<std::vector<int>> heuristicRoutes;
     bool isHeuristicFeasible = routeDD.generateHeuristicRoutesLiterature(heuristicRoutes);
     if (!isHeuristicFeasible)
@@ -81,7 +86,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     // LNS
     Dual dual;
     dual.lambda.resize(vrptw.numLocations);
-    largeNeighborhoodSearch(heuristicRoutes, dual, params.lnsHeuristicTimeoutSeconds);
+    largeNeighborhoodSearch(heuristicRoutes, dual, params.lnsTimeoutSeconds);
  
     auto heuristicCurrTime = std::chrono::high_resolution_clock::now();
     heuristicTimeSeconds = std::chrono::duration_cast<std::chrono::seconds>(heuristicCurrTime- heuristicStartTime).count();
@@ -120,11 +125,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   targetBoundIncrease = 1.01;
   minStepSizeMultiplier = 0.0001;
 
-  //shouldRestart = false;
-  //numCapCutUpdateGroups = 5;
-  //numIterationsRestart = 5;
-  //numIterationsDeactivations = 2;
-
   // va parameters
   std::cout << "step size iteration cutoff: " << stepSizeMultiplierIterationCutoff << std::endl;
   std::cout << "target bound increase: " << targetBoundIncrease << std::endl;
@@ -150,9 +150,13 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
 
   // primal heuristic params
   std::cout << "primal heuristic: " << params.primalHeuristic << std::endl;
-  std::cout << "primal heuristic lns: " << params.primalHeuristicLNS << std::endl;
   std::cout << "lns timeout: " << params.lnsTimeoutSeconds << std::endl;
+  std::cout << "lns destroy elements limit: " << params.lnsDestroyElementsLimit << std::endl;
+  std::cout << "lns destroy routes limit: " << params.lnsDestroyRoutesLimit << std::endl;
   std::cout << "lns iterations to update params: " << params.lnsIterationsToUpdateParams << std::endl;
+  std::cout << "lns use crossovers: " << params.lnsUseCrossovers << std::endl;
+  std::cout << "lns insertion depth: " << params.lnsInsertionDepth << std::endl;
+  std::cout << "lns node limit method: " << params.lnsNodeLimitMethod << std::endl;
 
   /*
   if (params.switchSepToCuts)
@@ -627,11 +631,11 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
     // Primal Heuristic
     std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
     bool primalHeuristicFeasible = false;
-    if (params.primalHeuristic == PrimalHeuristic::GREEDY)
+    if (params.primalHeuristic == PrimalHeuristic::CE_GREEDY)
     {
       primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
     }
-    else if (params.primalHeuristic == PrimalHeuristic::MIP)
+    else if ((params.primalHeuristic == PrimalHeuristic::CE_MIP) || (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS))
     {
       primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, routesByLocationPrimalHeuristic);
     }
@@ -647,7 +651,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
 
         // Run LNS
-        if (params.primalHeuristicLNS != PrimalHeuristicLNS::NO_LNS)
+        if (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS)
         {
           largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeoutSeconds);
         }
@@ -1216,7 +1220,8 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   
   // Parameter setup
   int iterationsWithoutImprovement = 0;
-  int increasingParameter = 1;
+  int numElementsDestroy = 1;
+  int numRoutesDestroy = 2;
 
   // Run LNS in loop for timeout
   auto startTime = std::chrono::high_resolution_clock::now();
@@ -1227,26 +1232,9 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
 
     // Run LNS
     std::vector<std::vector<int>> newBestRoutes;
-    if (params.primalHeuristicLNS == PrimalHeuristicLNS::DESTROY_REPAIR)
-    {
-      VRPTWDecisionDiagram heuristicDD(vrptw, params);
-      int numElementsDestroy = increasingParameter;
-      heuristicDD.searchDestroyAndRepairNeighborhood(numElementsDestroy, numElementsDestroy+2, currSolution, dual, newBestRoutes, remainingSeconds);
-      //heuristicDD.largeNeighborhoodSearch(numElementsDestroy, currSolution, dual, newBestRoutes, remainingSeconds);
-    }
-    else if (params.primalHeuristicLNS == PrimalHeuristicLNS::LDS)
-    {
-      VRPTWDecisionDiagram heuristicDD(vrptw, params);
-      int limitedDiscrepancyValue = increasingParameter;
-      heuristicDD.limitedDiscrepancySearch(limitedDiscrepancyValue, currSolution, dual, newBestRoutes, remainingSeconds);
-    }
-    else if (params.primalHeuristicLNS == PrimalHeuristicLNS::REDUCED_COST)
-    {
-      VRPTWDecisionDiagram heuristicDD(vrptw, params);
-      int widthRestrictionParameter = increasingParameter;
-      heuristicDD.reducedCostNeighborhood(widthRestrictionParameter, dual, currSolution, newBestRoutes, remainingSeconds);
-    }
- 
+    VRPTWDecisionDiagram heuristicDD(vrptw, params);
+    heuristicDD.searchDestroyAndRepairNeighborhood(numElementsDestroy, numRoutesDestroy, currSolution, dual, newBestRoutes, remainingSeconds);
+
     // Handle solution
     double lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(newBestRoutes);
     if (lnsHeuristicUpperBound < currUpperBound)
@@ -1266,25 +1254,29 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
 
       // Update parameters
       iterationsWithoutImprovement = 0;
-      increasingParameter = 1;
+      numElementsDestroy = 1;
     }
     else
     {
       iterationsWithoutImprovement += 1;
-      if (params.primalHeuristicLNS == PrimalHeuristicLNS::DESTROY_REPAIR)
+      if (iterationsWithoutImprovement % params.lnsIterationsToUpdateParams == 0)
       {
-        if (iterationsWithoutImprovement % params.lnsIterationsToUpdateParams == 0)
+        ++numElementsDestroy;
+        std::cout << "updated increasing num elements destroy: " << numElementsDestroy << std::endl;
+      }
+
+      if (numElementsDestroy >= params.lnsDestroyElementsLimit)
+      {
+        numElementsDestroy = 1;
+        ++numRoutesDestroy;
+        std::cout << "increasing num routes destroy: " << numRoutesDestroy << std::endl;
+        std::cout << "num elements destroy back to : " << numElementsDestroy << std::endl;
+        if (numRoutesDestroy >= params.lnsDestroyRoutesLimit)
         {
-          ++increasingParameter;
-          std::cout << "updated increasing parameter: " << increasingParameter << std::endl;
+          std::cout << "primal heuristic terminate - parameters at maximum" << std::endl;
+          break;
         }
       }
-      else
-      {
-        ++increasingParameter;
-        std::cout << "updated increasing parameter: " << increasingParameter << std::endl;
-      }
-      //std::cout << "iterations without improvement: " << iterationsWithoutImprovement << std::endl;
     }
 
     // Check time
@@ -2058,11 +2050,11 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       // Primal Heuristic
       std::vector<std::vector<int>> routesByLocationPrimalHeuristic;
       bool primalHeuristicFeasible = false;
-      if (params.primalHeuristic == PrimalHeuristic::GREEDY)
+      if (params.primalHeuristic == PrimalHeuristic::CE_GREEDY)
       {
         primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
       }
-      else if (params.primalHeuristic == PrimalHeuristic::MIP)
+      else if ((params.primalHeuristic == PrimalHeuristic::CE_MIP) || (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS))
       {
         if (primalRoutes.size() > numPrimalRoutes)
         {
@@ -2081,7 +2073,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
 
           // Run LNS
-          if (params.primalHeuristicLNS != PrimalHeuristicLNS::NO_LNS)
+          if (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS)
           {
             largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeoutSeconds);
           }

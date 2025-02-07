@@ -3906,13 +3906,6 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& 
     const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
     for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
     {
-      int randomInteger2 = std::rand();
-      bool randomSkip = (randomInteger2 % 100) >= params.lnsRandomPercent;
-      if (randomSkip)
-      {
-        break;
-      }
-
       VRPTWNodeState newState(stateToCheck);
       bool newNodeFeasible = generateNewStateFromExact(newState, location);
       if (newNodeFeasible)
@@ -4096,13 +4089,6 @@ bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue,
     int numTransitionsAddedFromNode = 0;
     for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
     {
-      int randomInteger2 = std::rand();
-      bool randomSkip = (randomInteger2 % 100) >= params.lnsRandomPercent;
-      if (randomSkip)
-      {
-        break;
-      }
-
       // don't allow duplicate location arcs
       bool locationArcAlreadyExists = false;
       for (int arcIndex : nodes[nodeIndex].outArcs)
@@ -4397,8 +4383,16 @@ bool VRPTWDecisionDiagram::searchDestroyAndRepairNeighborhood(int numElementsDes
       {
         continue;
       }
-      double additionalReducedCost = vrptw.distances[location1][location2] - dual.lambda[location2];
-      std::pair<int,double> possiblePair = std::make_pair(location2, additionalReducedCost);
+      double additionalCost = 0.0;
+      if (params.lnsNodeLimitMethod == LNSNodeLimitMethod::NUM_DESTROYED_REDUCED_COST)
+      {
+        additionalCost = vrptw.distances[location1][location2] - dual.lambda[location2];
+      }
+      else if (params.lnsNodeLimitMethod == LNSNodeLimitMethod::NUM_DESTROYED_DISTANCE)
+      {
+        additionalCost = vrptw.distances[location1][location2];
+      }
+      std::pair<int,double> possiblePair = std::make_pair(location2, additionalCost);
       possibleElementReducedCost.push_back(possiblePair);
     }
     std::sort(possibleElementReducedCost.begin(), possibleElementReducedCost.end(), sort_by_second);
@@ -4411,7 +4405,6 @@ bool VRPTWDecisionDiagram::searchDestroyAndRepairNeighborhood(int numElementsDes
   }
 
   // 3. Create a Restricted Dynamic Program defined by the Destroy-Repair-Neighborhood
-  int depthAllowed = 2;
   while (!pq.empty())
   {
     keyType queueItemToCheck = pq.top();
@@ -4422,13 +4415,6 @@ bool VRPTWDecisionDiagram::searchDestroyAndRepairNeighborhood(int numElementsDes
     int numTransitionsAddedFromNode = 0;
     for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
     {
-      int randomInteger2 = std::rand();
-      bool randomSkip = (randomInteger2 % 100) >= params.lnsRandomPercent;
-      if (randomSkip)
-      {
-        break;
-      }
-
       VRPTWNodeState newState(stateToCheck);
       bool newNodeFeasible = generateNewStateFromExact(newState, location);
       if (newNodeFeasible)
@@ -4440,7 +4426,7 @@ bool VRPTWDecisionDiagram::searchDestroyAndRepairNeighborhood(int numElementsDes
         {
           // allow up to depth of x, should make parameter
           newNodeDepths[newNodeIndex] = newNodeDepths[nodeIndex] + 1;
-          if (newNodeDepths[newNodeIndex] < numElementsDestroy + depthAllowed)
+          if (newNodeDepths[newNodeIndex] < numElementsDestroy + params.lnsInsertionDepth)
           {
             if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
             {
@@ -4460,9 +4446,12 @@ bool VRPTWDecisionDiagram::searchDestroyAndRepairNeighborhood(int numElementsDes
         addArc(nodeIndex, newNodeIndex);
       }
 
-      if (numTransitionsAddedFromNode > numElementsDestroy)
+      if ((params.lnsNodeLimitMethod == LNSNodeLimitMethod::NUM_DESTROYED_REDUCED_COST) || (params.lnsNodeLimitMethod == LNSNodeLimitMethod::NUM_DESTROYED_DISTANCE))
       {
-        break;
+        if (numTransitionsAddedFromNode > numElementsDestroy)
+        {
+          break;
+        }
       }
     }
   }
@@ -4749,7 +4738,6 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
   // Allow some randomness in which transition(s) are chosen
   // Use an ordering to determine which transition(s) to try
   // Limit number of insertions/deletions with counter on states
-  int depthAllowed = 2;
   while (!pq.empty())
   {
     keyType queueItemToCheck = pq.top();
@@ -4760,13 +4748,6 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
     int numTransitionsAddedFromNode = 0;
     for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
     {
-      int randomInteger2 = std::rand();
-      bool randomSkip = (randomInteger2 % 100) >= params.lnsRandomPercent;
-      if (randomSkip)
-      {
-        break;
-      }
-
       VRPTWNodeState newState(stateToCheck);
       bool newNodeFeasible = generateNewStateFromExact(newState, location);
       if (newNodeFeasible)
@@ -4778,7 +4759,7 @@ bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const
         {
           // allow up to depth of x, should make parameter
           newNodeDepths[newNodeIndex] = newNodeDepths[nodeIndex] + 1;
-          if (newNodeDepths[newNodeIndex] < numElementsDestroy + depthAllowed)
+          if (newNodeDepths[newNodeIndex] < numElementsDestroy + params.lnsInsertionDepth)
           {
             if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
             {

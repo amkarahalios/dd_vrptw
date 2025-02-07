@@ -18,9 +18,11 @@ UseSparseRCCs:N
 UseRestarts:N
 SwitchSepToCuts:N
 
-PrimalHeuristic:MIP
-PrimalHeuristicLNS:DESTROY_REPAIR
-PrimalHeuristicLNSTimeout:3600
-PrimalHeuristicRandomPercent:100
+PrimalHeuristic:CE_MIP_LNS
+PrimalHeuristicLNSTimeout:30
+PrimalHeuristicLNSDestroyElementsLimit:2
+PrimalHeuristicLNSDestroyRoutesLimit:2
 PrimalHeuristicIterationsToUpdateParams:50
-PrimalHeuristicHeuristicTimeout:30
+PrimalHeuristicInsertionDepth:2
+PrimalHeuristicAllowCrossovers:Y
+LNSNodeLimitMethod:NUM_DESTROYED_REDUCED_COST

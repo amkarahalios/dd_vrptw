@@ -225,43 +225,35 @@ int main(int argc, char** argv)
           }
           else if (lineIndex == 20)
           {
-            params.primalHeuristic = PrimalHeuristic::NO_PRIMAL;
-            if (paramValueString == "GREEDY")
+            params.primalHeuristic = PrimalHeuristic::STANDALONE;
+            if (paramValueString == "CE_MIP")
             {
-              params.primalHeuristic = PrimalHeuristic::GREEDY;
+              params.primalHeuristic = PrimalHeuristic::CE_MIP;
             }
-            else if (paramValueString == "MIP")
+            else if (paramValueString == "CE_MIP_LNS")
             {
-              params.primalHeuristic = PrimalHeuristic::MIP;
+              params.primalHeuristic = PrimalHeuristic::CE_MIP_LNS;
             }
-            else if (paramValueString == "BEST_UB")
+            else if (paramValueString == "CE_GREEDY")
             {
-              params.primalHeuristic = PrimalHeuristic::BEST_UB;
+              params.primalHeuristic = PrimalHeuristic::CE_GREEDY;
+            }
+            else if (paramValueString == "BEST_KNOWN")
+            {
+              params.primalHeuristic = PrimalHeuristic::BEST_KNOWN;
             }
           }
           else if (lineIndex == 21)
           {
-            params.primalHeuristicLNS = PrimalHeuristicLNS::NO_LNS;
-            if (paramValueString == "DESTROY_REPAIR")
-            {
-              params.primalHeuristicLNS = PrimalHeuristicLNS::DESTROY_REPAIR;
-            }
-            else if (paramValueString == "LDS")
-            {
-              params.primalHeuristicLNS = PrimalHeuristicLNS::LDS;
-            }
-            else if (paramValueString == "REDUCED_COST")
-            {
-              params.primalHeuristicLNS = PrimalHeuristicLNS::REDUCED_COST;
-            }
+            params.lnsTimeoutSeconds = std::stoi(paramValueString);
           }
           else if (lineIndex == 22)
           {
-            params.lnsTimeoutSeconds = std::stoi(paramValueString);
+            params.lnsDestroyElementsLimit = std::stoi(paramValueString);
           }
           else if (lineIndex == 23)
           {
-            params.lnsRandomPercent = std::stoi(paramValueString);
+            params.lnsDestroyRoutesLimit = std::stoi(paramValueString);
           }
           else if (lineIndex == 24)
           {
@@ -269,7 +261,27 @@ int main(int argc, char** argv)
           }
           else if (lineIndex == 25)
           {
-            params.lnsHeuristicTimeoutSeconds = std::stoi(paramValueString);
+            params.lnsInsertionDepth = std::stoi(paramValueString);
+          }
+          else if (lineIndex == 26)
+          {
+            params.lnsUseCrossovers = false;
+            if (paramValueString == "Y")
+            {
+              params.lnsUseCrossovers = true;
+            }
+          }
+          else if (lineIndex == 27)
+          {
+            params.lnsNodeLimitMethod = LNSNodeLimitMethod::ALL;
+            if (paramValueString == "NUM_DESTROYED_REDUCED_COST")
+            {
+              params.lnsNodeLimitMethod = LNSNodeLimitMethod::NUM_DESTROYED_REDUCED_COST;
+            }
+            else if (paramValueString == "NUM_DESTROYED_DISTANCE")
+            {
+              params.lnsNodeLimitMethod = LNSNodeLimitMethod::NUM_DESTROYED_DISTANCE;
+            }
           }
         }
         wordIndex = wordIndex + 1;

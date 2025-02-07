@@ -130,25 +130,24 @@ enum VRPTWTimeWindowType
 
 enum PrimalHeuristic
 {
-  GREEDY = 0,
-  BEST_UB = 1,
-  NO_PRIMAL = 2,
-  MIP = 3
-};
-
-enum PrimalHeuristicLNS
-{
-  NO_LNS = 0,
-  LOCAL_SEARCH = 1,
-  DESTROY_REPAIR = 2,
-  LDS = 3,
-  REDUCED_COST = 4
+  STANDALONE = 0,
+  CE_MIP = 1,
+  CE_MIP_LNS = 2,
+  CE_GREEDY = 3,
+  BEST_KNOWN = 4
 };
 
 enum InsertionCriteria
 {
   MCFIC = 0,
   NFIC = 1
+};
+
+enum LNSNodeLimitMethod
+{
+  ALL = 0,
+  NUM_DESTROYED_REDUCED_COST = 1,
+  NUM_DESTROYED_DISTANCE = 2
 };
 
 struct VRPTWDDParameters
@@ -174,11 +173,13 @@ struct VRPTWDDParameters
   bool switchSepToCuts;
 
   PrimalHeuristic primalHeuristic;
-  PrimalHeuristicLNS primalHeuristicLNS;
   int lnsTimeoutSeconds;
-  int lnsRandomPercent;
+  int lnsDestroyElementsLimit;
+  int lnsDestroyRoutesLimit;
   int lnsIterationsToUpdateParams;
-  int lnsHeuristicTimeoutSeconds;
+  bool lnsUseCrossovers;
+  int lnsInsertionDepth;
+  LNSNodeLimitMethod lnsNodeLimitMethod;
 };
 
 struct VRPTWSolution
