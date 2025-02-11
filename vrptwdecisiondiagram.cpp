@@ -3400,7 +3400,7 @@ void VRPTWDecisionDiagram::createTruncatedRoute(const std::vector<int>& route, s
 {
   VRPTWNodeState currState = nodes[rootNodeIndex].state;
   truncatedRoute.push_back(0);
-  for (int index=0; index<route.size(); ++index)
+  for (int index=0; index<(int)route.size(); ++index)
   {
     int nextLocation = route[index];
     if (nextLocation == 0)
@@ -3482,7 +3482,7 @@ bool VRPTWDecisionDiagram::prefixIntraRouteSwaps(std::vector<int>& route, double
   }
 
   std::cout << "step 3" << std::endl;
-  for (int removalIndex=1; removalIndex<(int)route.size()-2; ++removalIndex)
+  for (int removalIndex=1; removalIndex<static_cast<int>(route.size())-2; ++removalIndex)
   {
     int removedElement1 = route[removalIndex];
     int removedElement2 = route[removalIndex+1];
@@ -3620,7 +3620,7 @@ bool VRPTWDecisionDiagram::intraRouteSwaps(std::vector<int>& route, double& rout
     }
   }
 
-  for (int removalIndex=1; removalIndex<route.size()-3; ++removalIndex)
+  for (int removalIndex=1; removalIndex<static_cast<int>(route.size())-3; ++removalIndex)
   {
     int removedElement1 = route[removalIndex];
     int removedElement2 = route[removalIndex+1];
@@ -3672,7 +3672,7 @@ bool VRPTWDecisionDiagram::intraRouteSwaps(std::vector<int>& route, double& rout
     }
   }
 
-  for (int index1=1; index1<route.size()-3; ++index1)
+  for (int index1=1; index1<static_cast<int>(route.size())-3; ++index1)
   {
     for (int index2=index1+1; index2<route.size()-1; ++index2)
     {
@@ -4225,7 +4225,7 @@ bool VRPTWDecisionDiagram::searchDestroyAndRepairSingleRouteNeighborhood(const s
     int randomIntegerDestroy = std::rand();
     int randomIndexDestroy = randomIntegerDestroy % feasibleSolution.size();
     auto route = feasibleSolution[randomIndexDestroy];
-    if (route.size() == minNumberLocations)
+    if (route.size() <= minNumberLocations)
     {
       for (int location : route)
       {

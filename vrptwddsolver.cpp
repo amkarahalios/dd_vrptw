@@ -79,8 +79,9 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
         std::cout << "improved ub from MIP pool: " << mipPoolUpperBound << std::endl;
         stats.upperBound = mipPoolUpperBound;
         stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-        heuristicRoutes = mipPoolSolution;
       }
+ 
+      heuristicRoutes = mipPoolSolution;
     }
  
     // LNS
@@ -960,6 +961,12 @@ bool VRPTWDDSolver::solveLP(Dual& duals)
 
 void VRPTWDDSolver::addRouteToPrimalRoutes(std::vector<int> route)
 {
+  // ensure it's a real route to add it
+  if (route.size() <= 2)
+  {
+    return;
+  }
+
   if (routeDD.isRouteFeasible(route))
   {
     // Try to improve with intra-route swaps
@@ -1225,9 +1232,6 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   int numElementsDestroy = 1;
   int numRoutesDestroy = 2;
 
-  int randomZeroOne = std::rand() % 2;
-  bool useSingleRouteDestroy = (randomZeroOne == 0);
-
   // Run LNS in loop for timeout
   auto startTime = std::chrono::high_resolution_clock::now();
   int secondsElapsed = 0;
@@ -1238,7 +1242,7 @@ void VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
     // Run LNS
     std::vector<std::vector<int>> newBestRoutes;
     VRPTWDecisionDiagram heuristicDD(vrptw, params);
-    if (useSingleRouteDestroy)
+    if (iterationsWithoutImprovement == 0)
     {
       heuristicDD.searchDestroyAndRepairSingleRouteNeighborhood(currSolution, dual, newBestRoutes, remainingSeconds);
     }
@@ -1697,7 +1701,8 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
   double eta = 0.05 * 100 / (100 + iteration);
 
   // psi_(star) = psi_(best) * (1 + eta_(k))
-  double psiStar = std::min(stats.upperBound, lagrangeanLowerBound * (1 + eta));
+  double lbGoal = std::max(lagrangeanLowerBound * (1 + eta), lagrangeanLowerBound * (1 - eta));
+  double psiStar = std::min(stats.upperBound, lbGoal);
 
   // alpha_(k) = (psi_(star) - psi(lambda(k))) / ||gamma_(k)||_(2)^2
   double alpha = (psiStar - lagrangeanLowerBound) / normGammaSquared;

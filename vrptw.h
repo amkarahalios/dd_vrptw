@@ -125,7 +125,7 @@ enum VRPTWCounterType
 enum VRPTWTimeWindowType
 {
   TIME_WINDOWS = 0,
-  NO_TIME_WINDOWS = 1,
+  NO_TIME_WINDOWS = 1
 };
 
 enum PrimalHeuristic
@@ -2681,7 +2681,7 @@ struct VRPTW
         while (greedyTime < endTimes[0])
         {
           double minDistance = 1e9;
-          int minLoc = 0;
+          int minLoc = -1;
           for (int index1=0; index1<numLocations; ++index1)
           {
             if (greedyLocations.find(index1) != greedyLocations.end())
@@ -2690,11 +2690,16 @@ struct VRPTW
             }
             for (int index2=0; index2<numLocations; ++index2)
             {
+              if (index1 == index2)
+              {
+                continue;
+              }
+
               double distance = distances[index1][index2] + serviceTimes[index1];
               if (distance < minDistance)
               {
                 minDistance = distance;
-                minLoc = index2;
+                minLoc = index1;
               }
             }
           }
