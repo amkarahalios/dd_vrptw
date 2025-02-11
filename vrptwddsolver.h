@@ -14,7 +14,7 @@
 struct DDStats
 {
   public:
-    DDStats() : lpIterations(0), numLagIterations(0), numLagIterationsWithResets(0), numSSPIterations(0), numSeparations(0), millisecondsCompiling(0), millisecondsSolvingSSP(0), millisecondsSolvingLP(0), millisecondsRepairingLAG(0), millisecondsFindingCuts(0), millisecondsTryingAlpha(0), millisecondsDecompose(0), millisecondsYellow(0), millisecondsUpdateDual(0), millisecondsFix(0), lowerBound(0), upperBound(INF), numCuts(0)
+    DDStats() : lpIterations(0), numLagIterations(0), numLagIterationsWithResets(0), numSSPIterations(0), numSeparations(0), millisecondsCompiling(0), millisecondsSolvingSSP(0), millisecondsSolvingLP(0), millisecondsRepairingLAG(0), millisecondsFindingCuts(0), millisecondsTryingAlpha(0), millisecondsDecompose(0), millisecondsYellow(0), millisecondsUpdateDual(0), millisecondsFix(0), lowerBound(0), numHeuristicIPs(0), numHeuristicLNSs(0), upperBound(INF), numCuts(0)
     {
       startTime = std::chrono::high_resolution_clock::now();
     };
@@ -30,6 +30,8 @@ struct DDStats
       std::cout << "] lb[" << lowerBound << "] ub[" << upperBound << "]";
       std::cout << " numArcs: [" << ddNumArcs << "]";
       std::cout << " numFixed: [" << ddNumFixedArcs << "]";
+      std::cout << " numHeuristicIPs: [" << numHeuristicIPs << "]";
+      std::cout << " numHeuristicLNS: [" << numHeuristicLNSs << "]";
       std::cout << " time: [" << getNumSeconds() << "]" << std::endl;
 
       std::cout << "STATS1 - lpIterations[" << lpIterations << "] lagIterations[";
@@ -78,6 +80,8 @@ struct DDStats
     double lowerBound;
     double upperBound;
     int numCuts;
+    int numHeuristicIPs;
+    int numHeuristicLNSs;
 };
 
 class VRPTWDDSolver

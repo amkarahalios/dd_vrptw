@@ -261,6 +261,7 @@ class VRPTWDecisionDiagram
 
     // primal heuristics
     bool searchDestroyAndRepairNeighborhood(int numElementsDestroy, int numRoutesDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
+    bool searchDestroyAndRepairSingleRouteNeighborhood(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
     bool largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
     bool limitedDiscrepancySearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
     bool reducedCostNeighborhood(int percentKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
