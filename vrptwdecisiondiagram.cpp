@@ -197,8 +197,6 @@ int VRPTWDecisionDiagram::addNode(const VRPTWNodeState& state)
   {
     VRPTWNode newNode(state);
     int newNodeIndex = nodes.size();
-    //std::cout << nodes.size() << std::endl;
-    //newNode.print();
 
     nodes.push_back(newNode);
     stateToNodes.insert(std::make_pair(state, newNodeIndex));
@@ -1135,7 +1133,6 @@ void VRPTWDecisionDiagram::compileEmpty()
   terminalNodeIndex = 1;
 }
 
-typedef std::pair<int,int> keyType;
 void VRPTWDecisionDiagram::compileNgRoute(int s)
 {
   std::cout << "time step mult: " << vrptw.timeStateMultiplier << std::endl;
@@ -1156,15 +1153,15 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   // setup ng sets
   setupNgSets(s);
 
-  // queue to iterate in BFS order to maintain appropriate reduced cost analyses
-  std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
+  // setup queue as dictionary
+  std::map<int,std::vector<int>> priorityQueue;
 
   // root node r
   std::set<int> initialDeque = {};
   VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
-  pq.push(std::make_pair(0,0));
+  priorityQueue.insert(std::make_pair(0,std::vector<int>(1,0)));
   compilationAllVisitedDown.push_back(initialDeque);
 
   // terminal node t
@@ -1183,65 +1180,90 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
+  int maxPriorityValue = 0;
   if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
   {
-    pq.push(std::make_pair(terminalEndTime,1));
+    priorityQueue.insert(std::make_pair(terminalEndTime,std::vector<int>(1,1)));
+    maxPriorityValue = terminalEndTime;
   }
   else
   {
-    pq.push(std::make_pair(vrptw.capacity+1,1));
+    priorityQueue.insert(std::make_pair(vrptw.capacity+1,std::vector<int>(1,1)));
+    maxPriorityValue = vrptw.capacity + 1;
   }
   compilationAllVisitedDown.push_back(initialDeque);
 
   // create nodes except r/t
-  while (!pq.empty())
+  int priorityIteratorValue = -1;
+  while (priorityIteratorValue <= maxPriorityValue) 
   {
-    keyType queueItemToCheck = pq.top();
-    int nodeIndex = queueItemToCheck.second;
-    pq.pop();
-    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
-
-    const auto allVisited = compilationAllVisitedDown[nodeIndex];
-    for (int location=1; location<largestLocationIndex; ++location)
+    ++priorityIteratorValue;
+    if (priorityQueue.find(priorityIteratorValue) == priorityQueue.end())
     {
-      if (allVisited.find(location) != allVisited.end())
-      {
-        continue;
-      }
+      continue;
+    }
 
-      VRPTWNodeState newState(stateToCheck);
-      bool newNodeFeasible = generateNewStateRelaxation(newState, location, nodeIndex);
-      if (newNodeFeasible)
+    std::vector<int> priorityItems = priorityQueue.find(priorityIteratorValue)->second;
+    for (int nodeIndex : priorityItems)
+    {
+      const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
+
+      const auto allVisited = compilationAllVisitedDown[nodeIndex];
+      for (int location=1; location<largestLocationIndex; ++location)
       {
-        int numNodes = nodes.size();
-        int newNodeIndex = addNode(newState);
-        int newNumNodes = nodes.size();
-        if (newNumNodes > numNodes)
+        if (allVisited.find(location) != allVisited.end())
         {
-          if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+          continue;
+        }
+
+        VRPTWNodeState newState(stateToCheck);
+        bool newNodeFeasible = generateNewStateRelaxation(newState, location, nodeIndex);
+        if (newNodeFeasible)
+        {
+          int numNodes = static_cast<int>(nodes.size());
+          int newNodeIndex = addNode(newState);
+          int newNumNodes = static_cast<int>(nodes.size());
+          if (newNumNodes > numNodes)
           {
-            const auto newElement = std::make_pair(newState.timeWithMultiplier, newNodeIndex);
-            pq.push(newElement);
+            if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+            {
+              if (priorityQueue.find(newState.timeWithMultiplier) != priorityQueue.end())
+              {
+                priorityQueue.find(newState.timeWithMultiplier)->second.push_back(newNodeIndex);
+              }
+              else
+              {
+                const auto newElement = std::make_pair(newState.timeWithMultiplier, std::vector<int>(1,newNodeIndex));
+                priorityQueue.insert(newElement);
+              }
+            }
+            else
+            {
+              if (priorityQueue.find(newState.capacity) != priorityQueue.end())
+              {
+                priorityQueue[newState.capacity].push_back(newNodeIndex);
+              }
+              else
+              {
+                const auto newElement = std::make_pair(newState.capacity, std::vector<int>(1,newNodeIndex));
+                priorityQueue.insert(newElement);
+              }
+            }
+
+            compilationAllVisitedDown.push_back(compilationAllVisitedDown[nodeIndex]);
+            compilationAllVisitedDown[newNodeIndex].insert(location);
           }
           else
           {
-            const auto newElement = std::make_pair(newState.capacity, newNodeIndex);
-            pq.push(newElement);
+            std::set<int> intersection;
+            std::set<int> allDownCurrNode = compilationAllVisitedDown[nodeIndex];
+            allDownCurrNode.insert(location);
+            std::set_intersection(compilationAllVisitedDown[newNodeIndex].begin(), compilationAllVisitedDown[newNodeIndex].end(), allDownCurrNode.begin(), allDownCurrNode.end(), std::inserter(intersection,intersection.begin()));
+            compilationAllVisitedDown[newNodeIndex] = intersection;
           }
 
-          compilationAllVisitedDown.push_back(compilationAllVisitedDown[nodeIndex]);
-          compilationAllVisitedDown[newNodeIndex].insert(location);
+          addArc(nodeIndex, newNodeIndex);
         }
-        else
-        {
-          std::set<int> intersection;
-          std::set<int> allDownCurrNode = compilationAllVisitedDown[nodeIndex];
-          allDownCurrNode.insert(location);
-          std::set_intersection(compilationAllVisitedDown[newNodeIndex].begin(), compilationAllVisitedDown[newNodeIndex].end(), allDownCurrNode.begin(), allDownCurrNode.end(), std::inserter(intersection,intersection.begin()));
-          compilationAllVisitedDown[newNodeIndex] = intersection;
-        }
-
-        addArc(nodeIndex, newNodeIndex);
       }
     }
   }
@@ -3844,7 +3866,8 @@ bool VRPTWDecisionDiagram::reducedCostNeighborhood(int parameter, const Dual& du
 
   return true;
 }
- 
+
+typedef std::pair<int,int> keyType; 
 bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
 {
   std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
