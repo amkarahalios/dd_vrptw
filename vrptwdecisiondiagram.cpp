@@ -6605,6 +6605,61 @@ bool VRPTWDecisionDiagram::checkAn48k7SolutionPossible() const
   return true;
 }
 
+bool VRPTWDecisionDiagram::checkLC145SolutionCost()
+{
+  std::vector<std::vector<int>> routesByLocation;
+  routesByLocation.push_back({290, 182, 236, 61, 218, 11, 369, 406, 110, 35, 223, 240,0});
+  routesByLocation.push_back({49, 298, 87, 70, 302, 201, 25, 96, 413, 353,0});
+  routesByLocation.push_back({5, 160, 337, 330, 143, 215, 46, 147, 153, 89, 166, 258,0});
+  routesByLocation.push_back({17, 326, 214, 355, 117, 247, 162, 320, 168, 283, 289, 158, 104, 227,0});
+  routesByLocation.push_back({23, 371, 38, 333, 111, 420, 194, 363, 251, 316, 276, 142,0});
+  routesByLocation.push_back({33, 255, 29, 157, 212, 169, 237, 28,0});
+  routesByLocation.push_back({51, 403, 181, 389, 1, 116, 127, 245, 242, 259,0});
+  routesByLocation.push_back({56, 141, 252, 370, 274, 138, 170, 4, 190, 275,0});
+  routesByLocation.push_back({63, 213, 121, 233, 173, 161, 50, 383, 261, 131,0});
+  routesByLocation.push_back({73, 265, 380, 85, 328, 177, 95, 30,0});
+  routesByLocation.push_back({80, 315, 221, 284, 351, 58, 356, 134, 107, 401,0});
+  routesByLocation.push_back({92, 266, 165, 308, 146, 268, 418, 79,0});
+  routesByLocation.push_back({94, 54, 180, 179, 386, 379, 312, 414, 246, 81, 197, 84,0});
+  routesByLocation.push_back({97, 422, 375, 149, 101, 7, 257, 300, 13, 15,0});
+  routesByLocation.push_back({102, 69, 222, 159, 304, 71, 113, 211, 59, 253,0});
+  routesByLocation.push_back({105, 155, 395, 361, 272, 306, 412, 377, 124, 2, 347, 376,0});
+  routesByLocation.push_back({114, 44, 348, 235, 388, 281, 129, 263, 176, 137, 384, 409,0});
+  routesByLocation.push_back({126, 115, 331, 398, 66, 277, 325, 368, 37, 20,0});
+  routesByLocation.push_back({186, 154, 381, 202, 342, 309, 118, 21, 346, 45,0});
+  routesByLocation.push_back({189, 174, 390, 271, 244, 57, 402, 48, 345, 98, 250, 234,0});
+  routesByLocation.push_back({267, 364, 340, 373, 167, 148, 378, 164, 367, 391,0});
+  routesByLocation.push_back({286, 88, 217, 209, 185, 10, 152, 336,0});
+  routesByLocation.push_back({287, 31, 362, 108, 248, 171, 243, 239, 192, 128, 27, 408,0});
+  routesByLocation.push_back({291, 52, 407, 16, 314, 136, 317, 22, 399, 132, 311, 415,0});
+  routesByLocation.push_back({292, 226, 109, 172, 26, 350, 282, 352, 40, 405, 183, 123, 75, 228,0});
+  routesByLocation.push_back({301, 139, 280, 392, 36, 419, 191, 349, 344, 91, 130, 372,0});
+  routesByLocation.push_back({303, 144, 24, 93, 229, 204, 295, 103, 220, 122,0});
+  routesByLocation.push_back({322, 151, 270, 193, 19, 55, 120, 294,0});
+  routesByLocation.push_back({324, 156, 133, 210, 382, 338, 256, 205,0});
+  routesByLocation.push_back({332, 310, 339, 262, 400, 8, 417, 319, 260, 43, 230, 41,0});
+  routesByLocation.push_back({334, 216, 358, 195, 285, 18, 238, 297, 329, 411, 163, 410,0});
+  routesByLocation.push_back({335, 385, 199, 82, 296, 359, 254, 293, 60, 53, 313, 86,0});
+  routesByLocation.push_back({343, 269, 64, 208, 100, 145, 318, 106,0});
+  routesByLocation.push_back({357, 77, 74, 394, 68, 14, 288, 6, 178, 327,0});
+  routesByLocation.push_back({360, 198, 12, 9, 47, 299, 305, 219, 416, 249,0});
+  routesByLocation.push_back({366, 150, 83, 354, 206, 99, 184, 175, 3, 421,0});
+  routesByLocation.push_back({374, 32, 62, 39, 67, 404, 65, 396, 307, 264,0});
+  routesByLocation.push_back({387, 278, 78, 231, 188, 125, 225, 323, 34, 224,0});
+  routesByLocation.push_back({393, 112, 135, 140, 279, 90, 196, 321, 76, 241,0});
+  routesByLocation.push_back({397, 72, 203, 365, 273, 341, 207, 187, 200, 119, 232, 42,0});
+  double totalCost = 0.0;
+  for (int routeIndex=0; routeIndex<routesByLocation.size(); ++routeIndex)
+  {
+    double cost = vrptw.evaluateRouteDistance(routesByLocation[routeIndex]);
+  std::cout << "cost: " << cost << std::endl;
+    totalCost += cost;
+  }
+  std::cout << "total cost: " << totalCost << std::endl;
+
+  return true;
+}
+
 bool VRPTWDecisionDiagram::checkSinglePathPossible() const
 {
   std::vector<std::vector<int>> routesByLocation;

@@ -968,6 +968,13 @@ void VRPTWDDSolver::addRouteToPrimalRoutes(std::vector<int> route)
   {
     return;
   }
+  else
+  {
+    if ((route[0] != 0) || (route[-1] != 0))
+    {
+      return;
+    }
+  }
 
   if (routeDD.isRouteFeasible(route))
   {

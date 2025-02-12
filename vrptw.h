@@ -2489,9 +2489,11 @@ struct VRPTW
         numLocations = demands.size();
         routeLengthUpperBound = numLocations;
         distances.resize(numLocations);
+        preciseDistances.resize(numLocations);
         for (int i=0; i < distances.size(); ++i)
         {
           distances[i].resize(distances.size());
+          preciseDistances[i].resize(distances.size());
         }
         for (int i=0; i < demands.size(); ++i)
         {
@@ -2501,6 +2503,10 @@ struct VRPTW
             distance = (int)( timeStateMultiplier * distance ) / (timeStateMultiplier * 1.00);
             distances[i][j] = distance;
             distances[j][i] = distance;
+            double preciseDistance = std::sqrt(std::pow((coordinates[i].first - coordinates[j].first),2) + std::pow((coordinates[i].second - coordinates[j].second),2));
+            preciseDistance = (int)( finalTimeStateMultiplier * preciseDistance ) / (finalTimeStateMultiplier * 1.00);
+            preciseDistances[i][j] = preciseDistance;
+            preciseDistances[j][i] = preciseDistance;
           }
         }
 
@@ -2549,7 +2555,14 @@ struct VRPTW
       int previousLoc = 0;
       for (int loc : routeByLocation)
       {
-        cost = cost + distances[loc][previousLoc];
+        if (problemType == ProblemType::PDP)
+        {
+          cost = cost + preciseDistances[loc][previousLoc];
+        }
+        else
+        {
+          cost = cost + distances[loc][previousLoc];
+        }
         previousLoc = loc;
       }
 
@@ -2717,6 +2730,7 @@ struct VRPTW
 
     int capacity;
     std::vector<std::vector<double> > distances;
+    std::vector<std::vector<double> > preciseDistances;
     std::vector<std::set<int> > precedences;
     std::vector<std::set<int> > reliances;
     std::vector<int> demands;
