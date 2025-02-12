@@ -1181,7 +1181,12 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
   int maxPriorityValue = 0;
-  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+  if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
+  {
+    priorityQueue.insert(std::make_pair(vrptw.routeLengthUpperBound+1,std::vector<int>(1,1)));
+    maxPriorityValue = vrptw.routeLengthUpperBound+1;
+  }
+  else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
   {
     priorityQueue.insert(std::make_pair(terminalEndTime,std::vector<int>(1,1)));
     maxPriorityValue = terminalEndTime;
@@ -1225,29 +1230,28 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
           int newNumNodes = static_cast<int>(nodes.size());
           if (newNumNodes > numNodes)
           {
-            if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+            int priorityQueueKeyValue = -1;
+            if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
             {
-              if (priorityQueue.find(newState.timeWithMultiplier) != priorityQueue.end())
-              {
-                priorityQueue.find(newState.timeWithMultiplier)->second.push_back(newNodeIndex);
-              }
-              else
-              {
-                const auto newElement = std::make_pair(newState.timeWithMultiplier, std::vector<int>(1,newNodeIndex));
-                priorityQueue.insert(newElement);
-              }
+              priorityQueueKeyValue = newState.counter;
+            }
+            else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+            {
+              priorityQueueKeyValue = newState.timeWithMultiplier;
             }
             else
             {
-              if (priorityQueue.find(newState.capacity) != priorityQueue.end())
-              {
-                priorityQueue[newState.capacity].push_back(newNodeIndex);
-              }
-              else
-              {
-                const auto newElement = std::make_pair(newState.capacity, std::vector<int>(1,newNodeIndex));
-                priorityQueue.insert(newElement);
-              }
+              priorityQueueKeyValue = newState.capacity;
+            }
+
+            if (priorityQueue.find(priorityQueueKeyValue) != priorityQueue.end())
+            {
+              priorityQueue[priorityQueueKeyValue].push_back(newNodeIndex);
+            }
+            else
+            {
+              const auto newElement = std::make_pair(priorityQueueKeyValue, std::vector<int>(1,newNodeIndex));
+              priorityQueue.insert(newElement);
             }
 
             compilationAllVisitedDown.push_back(compilationAllVisitedDown[nodeIndex]);

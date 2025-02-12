@@ -507,6 +507,7 @@ void VRPTWDDSolver::initializeDual(Dual& dual)
   dual.lambda.resize(vrptw.numLocations);
 
   dual.lambda[0] = 0;
+  /*
   for (int location=1; location<vrptw.numLocations; ++location)
   {
     if ((vrptw.fixedNumPaths == FixedNumPaths::FIXED_NUM_PATHS) && (vrptw.numVehicles == 1))
@@ -531,6 +532,7 @@ void VRPTWDDSolver::initializeDual(Dual& dual)
       dual.lambda[location] = 2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
     }
   }
+  */
 }
 
 bool VRPTWDDSolver::solve(bool shouldSolveIP)
