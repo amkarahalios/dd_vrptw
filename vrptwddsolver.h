@@ -113,6 +113,13 @@ class VRPTWDDSolver
     void addRouteToPrimalRoutes(std::vector<int> route);
     bool intraRouteSwaps(std::vector<int>& route, double& routeCost);
     bool primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& routesByLocationPrimalHeuristic);
+    double computeShawRelatedness(int location1, int location2);
+    void destroySolution(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    void destroyByRoute(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    void destroyByShaw(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    void destroyByWorst(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    void destroyRandomly(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    void chooseRandomLocationsFromRoutes(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& randomElementsChosen);
     void localSearchAroundSequences(int locationLimit, const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences);
     void largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, int timeoutSeconds);
     bool localSearch(int locationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);

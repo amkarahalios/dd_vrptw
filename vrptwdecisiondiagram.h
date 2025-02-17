@@ -49,12 +49,12 @@ struct Primal
 
 struct VRPTWNodeState
 {
-  VRPTWNodeState(int _counter, int _capacity, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited) : counter(_counter), capacity(_capacity), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited) {};
-  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), capacity(state.capacity), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited) {};
+  VRPTWNodeState(int _counter, int _load, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited) : counter(_counter), load(_load), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited) {};
+  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), load(state.load), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited) {};
 
   bool operator==(const VRPTWNodeState & rhs) const
   {
-    if ((counter == rhs.counter) && (capacity == rhs.capacity) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
+    if ((counter == rhs.counter) && (load == rhs.load) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
     {
       return true;
     }
@@ -77,11 +77,11 @@ struct VRPTWNodeState
     }
     else
     {
-      if (capacity < rhs.capacity)
+      if (load < rhs.load)
       {
         return true;
       }
-      else if (capacity > rhs.capacity)
+      else if (load > rhs.load)
       {
         return false;
       }
@@ -100,7 +100,7 @@ struct VRPTWNodeState
   }
 
   int counter;
-  int capacity;
+  int load;
   int timeWithMultiplier;
   int lastVisited;
   std::set<int> visited;
@@ -111,7 +111,7 @@ struct hash_state
   std::size_t operator()(const VRPTWNodeState& state) const
   {
     std::size_t h1 = std::hash<int>()(state.counter);
-    std::size_t h2 = std::hash<int>()(state.capacity);
+    std::size_t h2 = std::hash<int>()(state.load);
     std::size_t h3 = std::hash<int>()(state.timeWithMultiplier);
     std::size_t h4 = std::hash<int>()(state.lastVisited);
     std::size_t h5 = 0;
@@ -260,6 +260,7 @@ class VRPTWDecisionDiagram
     double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType, double upperBound);
 
     // primal heuristics
+    bool repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
     bool searchDestroyAndRepairNeighborhood(int numElementsDestroy, int numRoutesDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
     bool searchDestroyAndRepairSingleRouteNeighborhood(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
     bool largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
@@ -402,7 +403,7 @@ class VRPTWDecisionDiagram
 
     // bucket parameters
     int timeStepSize;
-    int capacityStepSize;
+    int loadStepSize;
 
     // data structures for cuts
     // Rounded Capacity Cuts

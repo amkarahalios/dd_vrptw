@@ -53,20 +53,23 @@ CCFLAGS = $(CCOPT) -I$(CPLEXINCDIR) -I$(CONCERTINCDIR) -I$(VRPTWSEPDIR) -I$(CLIQ
 
 all: solver
 
-solver: solvevrptw.o vrptwdecisiondiagram.o vrptwcolgen.o vrptwddsolver.o
-	$(CCC) $(CCFLAGS) $(CCLNDIRS) -o solver solvevrptw.o vrptwdecisiondiagram.o vrptwcolgen.o vrptwddsolver.o $(CCLNFLAGS)
+solver: solvevrptw.o vrptwdecisiondiagram.o vrptwcolgen.o vrptwddsolver.o vrptw.o
+	$(CCC) $(CCFLAGS) $(CCLNDIRS) -o solver solvevrptw.o vrptwdecisiondiagram.o vrptwcolgen.o vrptwddsolver.o vrptw.o $(CCLNFLAGS)
 
-solvevrptw.o: solvevrptw.cpp vrptw.h
+solvevrptw.o: solvevrptw.cpp
 	$(CCC) -c $(CCFLAGS) solvevrptw.cpp -o solvevrptw.o
 
-vrptwdecisiondiagram.o: vrptwdecisiondiagram.cpp vrptwdecisiondiagram.h vrptw.h
+vrptwdecisiondiagram.o: vrptwdecisiondiagram.cpp
 	$(CCC) -c $(CCFLAGS) vrptwdecisiondiagram.cpp -o vrptwdecisiondiagram.o
 
-vrptwcolgen.o: vrptwcolgen.cpp vrptwcolgen.h vrptw.h vrptwdecisiondiagram.h
+vrptwcolgen.o: vrptwcolgen.cpp
 	$(CCC) -c $(CCFLAGS) vrptwcolgen.cpp -o vrptwcolgen.o
 
-vrptwddsolver.o: vrptwddsolver.cpp vrptwddsolver.h vrptw.h vrptwdecisiondiagram.h
+vrptwddsolver.o: vrptwddsolver.cpp
 	$(CCC) -c $(CCFLAGS) vrptwddsolver.cpp -o vrptwddsolver.o
+
+vrptw.o: vrptw.cpp
+	$(CCC) -c $(CCFLAGS) vrptw.cpp -o vrptw.o
 
 clean:
 	rm -f *.o solver
