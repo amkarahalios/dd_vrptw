@@ -218,6 +218,7 @@ class VRPTWDecisionDiagram
 
     // set arc coeffs to different values
     void setCoeffsAsDistances();
+    void setCoeffsAsPreciseDistances();
     void setCoeffsAsDistancesMinusLagrangean(const std::vector<double>& lambda);
     void setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(const Dual& dual, LPSolveType lpSolveType);
 
@@ -260,7 +261,7 @@ class VRPTWDecisionDiagram
     double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType, double upperBound);
 
     // primal heuristics
-    bool repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
+    bool repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int insertionLimit, int timeoutSeconds);
     bool searchDestroyAndRepairNeighborhood(int numElementsDestroy, int numRoutesDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
     bool searchDestroyAndRepairSingleRouteNeighborhood(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
     bool largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
@@ -278,8 +279,11 @@ class VRPTWDecisionDiagram
     int addPrimalHeuristicSuffixArc(int fromNodeIndex, const std::vector<int>& suffix, int suffixIndex);
     void generateHeuristicRoutesGreedy(std::vector<std::vector<int>>& routes);
     bool generateHeuristicRoutesLiterature(std::vector<std::vector<int>>& routes);
-    void calculateInsertionCost(const std::vector<int>& route, InsertionCriteria insertionCriteria, double gamma, int location, int& index, double& cost);
+    double calculateInsertionCost(std::vector<int>& bestRoute, InsertionCriteria insertionCriteria, double gamma, int location);
+    double insertLocationIntoRoute(std::vector<int>& bestRoute, int location);
+    void populateEmptyRouteWithRandomLocation(std::vector<int>& route, std::vector<int>& candidateList);
     void sequentialInsertion(std::vector<std::vector<int>>& routes, std::vector<int> candidateList, InsertionCriteria insertionCriteria);
+    void sequentialInsertionSimple(std::vector<std::vector<int>>& routes, std::vector<int> candidateList);
     void parallelInsertion(std::vector<std::vector<int>>& routes, std::vector<int> candidateList, InsertionCriteria insertionCriteria);
     void createMaximalSequence(const std::vector<int>& sequence, std::vector<int>& maximalSequence);
 

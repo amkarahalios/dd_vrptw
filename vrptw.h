@@ -242,6 +242,7 @@ struct VRPTW
     int maxStartTime;
     int maxDemand;
     double maxDistance;
+    int fixedRouteCost;
 };
 
 #endif

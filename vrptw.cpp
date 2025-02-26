@@ -750,6 +750,13 @@ VRPTW::VRPTW(std::string _fileName)
   calculateMaxValues();
   calculateRouteLengthUpperBound();
   std::cout << "route length upper bound: " << routeLengthUpperBound << std::endl;
+
+  fixedRouteCost = 0;
+  if (problemType = ProblemType::PDP)
+  {
+    fixedRouteCost = 10000;
+  }
+  std::cout << "fixed route cost: " << fixedRouteCost << std::endl;
 };
 
 double VRPTW::evaluateRouteDistance(const std::vector<int>& routeByLocation)
@@ -769,6 +776,7 @@ double VRPTW::evaluateRouteDistance(const std::vector<int>& routeByLocation)
     previousLoc = loc;
   }
 
+  cost = cost + fixedRouteCost;
   return cost;
 }
 
