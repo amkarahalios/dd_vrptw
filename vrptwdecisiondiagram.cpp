@@ -349,7 +349,7 @@ double VRPTWDecisionDiagram::calculateInsertionCost(std::vector<int>& route, Ins
     {
       newRouteFinal = newRoute;
     }
- 
+
     if (isRouteFeasible(newRouteFinal))
     {
       double routeCost = vrptw.evaluateRouteDistance(newRouteFinal);
@@ -631,7 +631,7 @@ void VRPTWDecisionDiagram::sequentialInsertion(std::vector<std::vector<int>>& ro
       newRoute.push_back(0);
 
       // Randomly assign it locations
-      while (newRoute.size() == 2)
+      while (static_cast<int>(newRoute.size()) == 2)
       {
         int randomInteger0 = std::rand();
         int randomCandidateListIndex = randomInteger0 % candidateList.size();
@@ -751,8 +751,10 @@ bool VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::ve
     }
     else
     {
-      std::cout << "using parallel insertion strategy" << std::endl;
-      parallelInsertion(routes, candidateList, insertionCriteria);
+      //std::cout << "using parallel insertion strategy" << std::endl;
+      //parallelInsertion(routes, candidateList, insertionCriteria);
+      std::cout << "using sequential insertion strategy" << std::endl;
+      sequentialInsertion(routes, candidateList, insertionCriteria);
     }
 
     if (vrptw.fixedNumPaths == FixedNumPaths::FLEXIBLE_NUM_PATHS)
@@ -2773,16 +2775,23 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
 
         // PDP minimize number of vehicles used as first objective
         // Additional term in objective for smaller routes
-        objective += x[arcIndex] * arcs[arcIndex].coeff;
-        if ((arcs[arcIndex].fromNodeIndex == rootNodeIndex) && (vrptw.problemType == ProblemType::PDP))
+        if (vrptw.problemType == ProblemType::PDP)
         {
-          objective += x[arcIndex] * vrptw.fixedRouteCost;
+          objective += x[arcIndex] * arcs[arcIndex].coeff;
+          if (arcs[arcIndex].fromNodeIndex == rootNodeIndex)
+          {
+            objective += x[arcIndex] * vrptw.fixedRouteCost;
+          }
           /*
-          if (arcs[arcIndex].toNodeIndex == terminalNodeIndex)
+          else if (arcs[arcIndex].toNodeIndex == terminalNodeIndex)
           {
             objective -= x[arcIndex] * std::pow(nodes[arcs[arcIndex].fromNodeIndex].state.counter,2);
           }
           */
+        }
+        else
+        {
+          objective += x[arcIndex] * arcs[arcIndex].coeff;
         }
 
         // Initial solution values
@@ -3983,515 +3992,19 @@ bool VRPTWDecisionDiagram::intraRouteSwaps(std::vector<int>& route, double& rout
   return false;
 }
 
-typedef std::pair<std::pair<int,int>,int> rcKeyType;
-bool VRPTWDecisionDiagram::reducedCostNeighborhood(int parameter, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
-{
-  std::priority_queue<rcKeyType, std::vector<rcKeyType>, std::greater<rcKeyType>> pq;
-  nodes.reserve(std::pow(vrptw.numLocations,2));
-  arcs.reserve(std::pow(vrptw.numLocations,2)/100);
-
-  std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
-  addNode(rootNodeState);
-  rootNodeIndex = 0;
-  pq.push(std::make_pair(std::make_pair(0,0),0));
-
-  int terminalNodeLoc = 0;
-  if (vrptw.circuitOrPath == CircuitOrPath::PATH)
-  {
-    terminalNodeLoc = vrptw.numLocations-1;
-  }
-  double terminalEndTime = 0;
-  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-  {
-    terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
-  }
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
-  addNode(terminalNodeState);
-  terminalNodeIndex = 1;
-
-  std::cout << "reduced cost neighborhood dd compilation" << std::endl;
-
-  std::map<int,int> nodeLayerCounts;
-  for (int i=0; i<vrptw.numLocations; ++i)
-  {
-    nodeLayerCounts[i] = 0;
-  }
-  std::set<int> skippedNodeIndices;
-  while (!pq.empty())
-  {
-    rcKeyType queueItemToCheck = pq.top();
-    int layer = queueItemToCheck.first.first;
-    int reducedCost = queueItemToCheck.first.second;
-    int nodeIndex = queueItemToCheck.second;
-    pq.pop();
-    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
-
-    nodeLayerCounts[layer] = nodeLayerCounts[layer] + 1;
-    int layerLimit = 100*std::pow(2,parameter);
-    if (nodeLayerCounts[layer] > layerLimit)
-    {
-      for (int arcIndex : nodes[nodeIndex].inArcs)
-      {
-        removeArc(arcIndex);
-      }
-      for (int arcIndex : nodes[nodeIndex].outArcs)
-      {
-        removeArc(arcIndex);
-      }
-      skippedNodeIndices.insert(nodeIndex);
-      continue;
-    }
-
-    for (int location=1; location<vrptw.numLocations; ++location)
-    {
-      VRPTWNodeState newState(stateToCheck);
-      bool newNodeFeasible = generateNewStateFromExact(newState, location);
-      if (newNodeFeasible)
-      {
-        int numNodes = nodes.size();
-        int newNodeIndex = addNode(newState);
-        int newNumNodes = nodes.size();
-        if (newNumNodes > numNodes)
-        {
-          double additionalReducedCost = vrptw.distances[location][stateToCheck.lastVisited] - dual.lambda[location];
-          int newNodeLayer = (int)newState.visited.size();
-          const auto newElement = std::make_pair(std::make_pair(newNodeLayer, std::ceil(reducedCost + additionalReducedCost)), newNodeIndex);
-          pq.push(newElement);
-        }
-
-        addArc(nodeIndex, newNodeIndex);
-      }
-    }
-  }
-
-  // arcs to terminal
-  std::cout << "num nodes: " << nodes.size() << std::endl;
-  int nodeIndex = 2;
-  while (nodeIndex < nodes.size())
-  {
-    if (skippedNodeIndices.find(nodeIndex) == skippedNodeIndices.end())
-    {
-      if (vrptw.circuitOrPath == CircuitOrPath::PATH)
-      {
-        if (nodes[nodeIndex].state.counter == vrptw.numLocations - 1)
-        {
-          addArc(nodeIndex, terminalNodeIndex);
-        }
-      }
-      else
-      {
-        addArc(nodeIndex, terminalNodeIndex);
-      }
-    }
-    nodeIndex = nodeIndex + 1;
-  }
-
-  // Solve the Arc Flow Formulation as a MIP
-  setCoeffsAsPreciseDistances();
-  Dual duals1;
-  std::set<int> initialPrimalArcIndices;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals1, false, timeoutSeconds);
-  if (lnsObjectiveValue >= 0)
-  {
-    std::vector<int> infeasibleRoute;
-    std::vector<std::vector<int>> decomposedArcs;
-    std::vector<double> routeFlows;
-    std::vector<std::vector<int>> decomposedRoutes;
-    decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-
-    newBestRoutes.clear();
-    for (auto route : decomposedRoutes)
-    {
-      std::vector<int> newRoute;
-      for (int loc : route)
-      {
-        newRoute.push_back(loc);
-      }
-
-      newBestRoutes.push_back(newRoute);
-    }
-  }
-  else
-  {
-    std::cout << "no improvement found" << std::endl;
-    newBestRoutes = feasibleSolution;
-  }
-
-  return true;
-}
-
-typedef std::pair<int,int> keyType; 
-bool VRPTWDecisionDiagram::reducedCostNeighborhoodV2(int nodesKeep, const Dual& dual, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
-{
-  std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
-  nodes.reserve(std::pow(vrptw.numLocations,2));
-  arcs.reserve(std::pow(vrptw.numLocations,2)/100);
-
-  std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
-  addNode(rootNodeState);
-  rootNodeIndex = 0;
-  pq.push(std::make_pair(0,0));
-
-  int terminalNodeLoc = 0;
-  if (vrptw.circuitOrPath == CircuitOrPath::PATH)
-  {
-    terminalNodeLoc = vrptw.numLocations-1;
-  }
-  double terminalEndTime = 0;
-  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-  {
-    terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
-  }
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
-  addNode(terminalNodeState);
-  terminalNodeIndex = 1;
-
-  // orderings for elements can be pre-cached
-  std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
-  for (int location1=0; location1<vrptw.numLocations; ++location1)
-  {
-    std::vector<std::pair<int,double>> possibleElementReducedCost;
-    for (int location2=1; location2<vrptw.numLocations; ++location2)
-    {
-      if (location1 == location2)
-      {
-        continue;
-      }
-      double additionalReducedCost = vrptw.distances[location1][location2] - dual.lambda[location2];
-      std::pair<int,double> possiblePair = std::make_pair(location2, additionalReducedCost);
-      possibleElementReducedCost.push_back(possiblePair);
-    }
-    std::sort(possibleElementReducedCost.begin(), possibleElementReducedCost.end(), sort_by_second);
-    std::vector<int> orderedVector;
-    for (auto locationDistance : possibleElementReducedCost)
-    {
-      orderedVector.push_back(locationDistance.first);
-    }
-    locationNextLocationReducedCostOrdering.push_back(orderedVector);
-  }
-
-  // only keep x elements
-  int nodeLimit = nodesKeep * 100000;
-  while (!pq.empty() && (nodes.size() < nodeLimit))
-  {
-    keyType queueItemToCheck = pq.top();
-    int reducedCost = queueItemToCheck.first;
-    int nodeIndex = queueItemToCheck.second;
-    pq.pop();
-    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
-    for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
-    {
-      VRPTWNodeState newState(stateToCheck);
-      bool newNodeFeasible = generateNewStateFromExact(newState, location);
-      if (newNodeFeasible)
-      {
-        int numNodes = nodes.size();
-        int newNodeIndex = addNode(newState);
-        int newNumNodes = nodes.size();
-        if (newNumNodes > numNodes)
-        {
-          double additionalReducedCost = vrptw.distances[location][stateToCheck.lastVisited] - dual.lambda[location];
-          const auto newElement = std::make_pair(std::ceil(reducedCost + additionalReducedCost), newNodeIndex);
-          pq.push(newElement);
-        }
-
-        addArc(nodeIndex, newNodeIndex);
-      }
-    }
-  }
-
-  // arcs to terminal
-  std::cout << "num nodes: " << nodes.size() << std::endl;
-  int nodeIndex = 2;
-  while (nodeIndex < nodes.size())
-  {
-    if (vrptw.circuitOrPath == CircuitOrPath::PATH)
-    {
-      if (nodes[nodeIndex].state.counter == vrptw.numLocations - 1)
-      {
-        addArc(nodeIndex, terminalNodeIndex);
-      }
-    }
-    else
-    {
-      addArc(nodeIndex, terminalNodeIndex);
-    }
-    nodeIndex = nodeIndex + 1;
-  }
-
-  // Solve the Arc Flow Formulation as a MIP
-  setCoeffsAsPreciseDistances();
-  Dual duals1;
-  std::set<int> initialPrimalArcIndices;
-  double lnsObjectiveValue = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals1, false, timeoutSeconds);
-  if (lnsObjectiveValue >= 0)
-  {
-    std::vector<int> infeasibleRoute;
-    std::vector<std::vector<int>> decomposedArcs;
-    std::vector<double> routeFlows;
-    std::vector<std::vector<int>> decomposedRoutes;
-    decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-
-    newBestRoutes.clear();
-    for (auto route : decomposedRoutes)
-    {
-      std::vector<int> newRoute;
-      for (int loc : route)
-      {
-        newRoute.push_back(loc);
-      }
-
-      newBestRoutes.push_back(newRoute);
-    }
-  }
-  else
-  {
-    newBestRoutes = feasibleSolution;
-  }
-
-  return true;
-}
-
-bool VRPTWDecisionDiagram::limitedDiscrepancySearch(int limitedDiscrepancyValue, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
-{
-  // 1. Create DP of current solutions
-  std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
-  std::map<int,int> nodeDiscrepancies;
-  std::map<int,int> nodeRouteIndex;
-  nodes.reserve(std::pow(vrptw.numLocations,2));
-  arcs.reserve(std::pow(vrptw.numLocations,2)/100);
-
-  std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
-  addNode(rootNodeState);
-  rootNodeIndex = 0;
-  nodeDiscrepancies[rootNodeIndex] = 0;
-
-  int terminalNodeLoc = 0;
-  if (vrptw.circuitOrPath == CircuitOrPath::PATH)
-  {
-    terminalNodeLoc = vrptw.numLocations-1;
-  }
-  double terminalEndTime = 0;
-  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-  {
-    terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
-  }
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
-  addNode(terminalNodeState);
-  terminalNodeIndex = 1;
- 
-  std::set<int> initialPrimalArcIndices;
-  for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
-  {
-    auto route = feasibleSolution[routeIndex];
-
-    VRPTWNodeState currState = nodes[rootNodeIndex].state;
-    int currNodeIndex = rootNodeIndex;
-    // Start at index 1 because first location is the depot
-    for (int index=1; index<route.size()-1; ++index)
-    {
-      VRPTWNodeState newState(currState);
-      int nextLocation = route[index];
-      generateNewStateFromExact(newState, nextLocation);
-      int numNodes = nodes.size();
-
-      // add nodes for all routes
-      int nextNodeIndex = addNode(newState);
-      int newNumNodes = nodes.size();
-      if (newNumNodes > numNodes)
-      {
-        // keep track of discrepancies from current route
-        nodeDiscrepancies[nextNodeIndex] = 0;
-        nodeRouteIndex[nextNodeIndex] = routeIndex;
-
-        // push to queue
-        if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-        {
-          const auto newElement = std::make_pair(newState.timeWithMultiplier, nextNodeIndex);
-          pq.push(newElement);
-        }
-        else
-        {
-          const auto newElement = std::make_pair(newState.load, nextNodeIndex);
-          pq.push(newElement);
-        }
-      }
-
-      int newArcIndex = addArc(currNodeIndex, nextNodeIndex);
-      initialPrimalArcIndices.insert(newArcIndex);
-      currState = newState;
-      currNodeIndex = nextNodeIndex;
-    }
-  }
-
-  // orderings for elements can be pre-cached
-  std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
-  for (int location1=0; location1<vrptw.numLocations; ++location1)
-  {
-    std::vector<std::pair<int,double>> possibleElementReducedCost;
-    for (int location2=1; location2<vrptw.numLocations; ++location2)
-    {
-      if (location1 == location2)
-      {
-        continue;
-      }
-      double additionalReducedCost = vrptw.distances[location1][location2] - dual.lambda[location2];
-      std::pair<int,double> possiblePair = std::make_pair(location2, additionalReducedCost);
-      possibleElementReducedCost.push_back(possiblePair);
-    }
-    std::sort(possibleElementReducedCost.begin(), possibleElementReducedCost.end(), sort_by_second);
-    std::vector<int> orderedVector;
-    for (auto locationDistance : possibleElementReducedCost)
-    {
-      orderedVector.push_back(locationDistance.first);
-    }
-    locationNextLocationReducedCostOrdering.push_back(orderedVector);
-  }
-
-  // 3. Create a restricted DD using the frontier states
-  // Allow up to t feasible transitions... some may be infeasible if we select, so check these!
-  // Allow some randomness in which transition(s) are chosen
-  // Use an ordering to determine which transition(s) to try
-  // Limit number of insertions/deletions with counter on states
-  while (!pq.empty())
-  {
-    keyType queueItemToCheck = pq.top();
-    int nodeIndex = queueItemToCheck.second;
-    pq.pop();
-    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
-
-    int numTransitionsAddedFromNode = 0;
-    for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
-    {
-      // don't allow duplicate location arcs
-      bool locationArcAlreadyExists = false;
-      for (int arcIndex : nodes[nodeIndex].outArcs)
-      {
-        if (arcs[arcIndex].location == location)
-        {
-          locationArcAlreadyExists = true;
-          break;
-        }
-      }
-
-      if (locationArcAlreadyExists)
-      {
-        continue;
-      }
-
-      VRPTWNodeState newState(stateToCheck);
-      bool newNodeFeasible = generateNewStateFromExact(newState, location);
-      if (newNodeFeasible)
-      {
-        int numNodes = nodes.size();
-        int newNodeIndex = addNode(newState);
-        nodeRouteIndex[newNodeIndex] = nodeRouteIndex[nodeIndex];
-        int newNumNodes = nodes.size();
-        if (newNumNodes > numNodes)
-        {
-          // allow limited discrepancy
-          bool isDiscrepancy = false;
-          int routeIndex = newState.counter + 1;
-          auto originalRouteSize = feasibleSolution[nodeRouteIndex[newNodeIndex]].size();
-          if (routeIndex < originalRouteSize)
-          {
-            int routeLocation = feasibleSolution[nodeRouteIndex[newNodeIndex]][routeIndex];
-            isDiscrepancy = (location != routeLocation);
-          }
-          else
-          {
-            isDiscrepancy = true;
-          }
-
-          if (isDiscrepancy)
-          {
-            nodeDiscrepancies[newNodeIndex] = nodeDiscrepancies[nodeIndex] + 1;
-          }
-          else
-          {
-            nodeDiscrepancies[newNodeIndex] = nodeDiscrepancies[nodeIndex];
-          }
-
-          if (nodeDiscrepancies[newNodeIndex] <= limitedDiscrepancyValue)
-          {
-            if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-            {
-              const auto newElement = std::make_pair(newState.timeWithMultiplier, newNodeIndex);
-              pq.push(newElement);
-            }
-            else
-            {
-              const auto newElement = std::make_pair(newState.load, newNodeIndex);
-              pq.push(newElement);
-            }
-          }
-        }
-
-        addArc(nodeIndex, newNodeIndex);
-        ++numTransitionsAddedFromNode;
-      }
- 
-      if (numTransitionsAddedFromNode > limitedDiscrepancyValue * 5)
-      {
-        break;
-      }
-    }
-  }
-
-  int nodeIndex = 2;
-  while (nodeIndex < nodes.size())
-  {
-    if (vrptw.circuitOrPath == CircuitOrPath::PATH)
-    {
-      if (nodes[nodeIndex].state.counter == vrptw.numLocations - 1)
-      {
-        addArc(nodeIndex, terminalNodeIndex);
-      }
-    }
-    else
-    {
-      addArc(nodeIndex, terminalNodeIndex);
-    }
-    nodeIndex = nodeIndex + 1;
-  }
-
-  // 4. Solve the Arc Flow Formulation as a MIP
-  setCoeffsAsPreciseDistances();
-  Dual duals;
-  setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false, timeoutSeconds);
-
-  // 5. Return the solution
-  std::vector<int> infeasibleRoute;
-  std::vector<std::vector<int>> decomposedArcs;
-  std::vector<double> routeFlows;
-  std::vector<std::vector<int>> decomposedRoutes;
-  decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-
-  newBestRoutes.clear();
-  for (auto route : decomposedRoutes)
-  {
-    std::vector<int> newRoute;
-    for (int loc : route)
-    {
-      newRoute.push_back(loc);
-    }
-
-    newBestRoutes.push_back(newRoute);
-  }
-
-  return true;
-}
-
 bool sort_by_second2(const std::pair<std::pair<int,int>,double>& a, const std::pair<std::pair<int,int>,double>& b)
 {
   return (a.second < b.second);
 }
 
-bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int insertionLimit, int timeoutSeconds)
+double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int insertionLimit, int timeoutSeconds)
 {
+  double feasibleSolutionValue = vrptw.evaluateSolutionCost(feasibleSolution);
+  int feasibleSolutionNumVehicles = static_cast<int>(feasibleSolution.size());
+  feasibleSolutionValue -= vrptw.fixedRouteCost * feasibleSolutionNumVehicles;
+  double routeCostUpperBound = (1.2 * feasibleSolutionValue) / (feasibleSolutionNumVehicles-1);
+  int numSkipped = 0;
+
   // 1. Build a partial route one-at-a-time, and consider adding destroyed elements
   nodes.reserve(std::pow(vrptw.numLocations,2));
   arcs.reserve(std::pow(vrptw.numLocations,2)/100);
@@ -4514,30 +4027,11 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
   VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
-  int maxPriorityValue = 0;
-  if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
-  {
-    maxPriorityValue = vrptw.routeLengthUpperBound+1;
-  }
-  else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-  {
-    maxPriorityValue = terminalEndTime;
-  }
-  else
-  {
-    maxPriorityValue = vrptw.capacity + 1;
-  }
+  int maxPriorityValue = terminalEndTime + 1;
 
   // Keep the initial solution to warm start the MIP
   std::set<int> initialPrimalArcIndices;
   std::set<std::pair<int,int>> generatedArcs;
-
-  // TODO(akarahal) We need a rule to not add some routes/nodes/arcs
-  std::map<int,int> opportunitiesToInsert;
-  for (int i=0; i<vrptw.numLocations; ++i)
-  {
-    opportunitiesToInsert[i] = 0;
-  }
 
   // Loop over routes
   for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
@@ -4551,6 +4045,10 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
         destroyedRoute.push_back(loc);
       }
     }
+
+    // Get costs
+    double initialRouteCost = vrptw.evaluateRouteDistance(feasibleSolution[routeIndex]) - vrptw.fixedRouteCost;
+    double destroyedRouteCost= vrptw.evaluateRouteDistance(destroyedRoute) - vrptw.fixedRouteCost;
 
     // Start creating DP
     std::map<int,std::vector<int>> priorityQueue;
@@ -4580,11 +4078,8 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
         int numNodes = nodes.size();
         int nextNodeIndex = addNode(newState);
         int newNumNodes = nodes.size();
-        //nodeRouteIndex[nextNodeIndex] = nodeRouteIndex[currNodeIndex] + 1;
-        //nodeNumNewPickups[nextNodeIndex] = 0;
 
         // Create next arc
-        //opportunitiesToInsert[location] = opportunitiesToInsert[location] + 1;
         int arcIndex = addArc(currNodeIndex, nextNodeIndex);
         auto nodePair = std::make_pair(currNodeIndex, nextNodeIndex);
         generatedArcs.insert(nodePair);
@@ -4602,15 +4097,103 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
     generatedArcs.insert(nodePair1);
     initialPrimalArcIndices.insert(fullRouteArcIndex);
 
-    // Skip totally destroyed routes
+    // Allow totally destroyed routes to have removals
     if (destroyedRoute.size() == 2)
     {
+      std::map<int,std::vector<int>> priorityQueue1;
+      std::map<int,int> nodeRouteIndex1;
+
+      // Start with root node
+      priorityQueue1.insert(std::make_pair(0,std::vector<int>(1,0)));
+      nodeRouteIndex1[rootNodeIndex] = 0;
+
+      int priorityIteratorValue = -1;
+      while (priorityIteratorValue <= maxPriorityValue)
+      {
+        ++priorityIteratorValue;
+        if (priorityQueue1.find(priorityIteratorValue) == priorityQueue1.end())
+        {
+          continue;
+        }
+
+        std::vector<int> priorityItems = priorityQueue1.find(priorityIteratorValue)->second;
+        for (int nodeIndex : priorityItems)
+        {
+          const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
+
+          // Transition with destroyed elements
+          auto route = feasibleSolution[routeIndex];
+          int currIndex = nodeRouteIndex1[nodeIndex];
+          for (int index=currIndex+1; index<route.size(); ++index)
+          {
+            int location = route[index];
+            if (location == 0)
+            {
+              continue;
+            }
+
+            VRPTWNodeState newState(stateToCheck);
+            bool newNodeFeasible = generateNewStateFromExact(newState, location);
+            if (newNodeFeasible)
+            {
+              int numNodes = nodes.size();
+              int nextNodeIndex = addNode(newState);
+              int newNumNodes = nodes.size();
+              int priorityQueueKeyValue = -1;
+              if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
+              {
+                priorityQueueKeyValue = newState.counter;
+              }
+              else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+              {
+                priorityQueueKeyValue = newState.timeWithMultiplier;
+              }
+              else
+              {
+                priorityQueueKeyValue = newState.load;
+              }
+
+              if (priorityQueue1.find(priorityQueueKeyValue) != priorityQueue1.end())
+              {
+                priorityQueue1[priorityQueueKeyValue].push_back(nextNodeIndex);
+              }
+              else
+              {
+                const auto newElement = std::make_pair(priorityQueueKeyValue, std::vector<int>(1,nextNodeIndex));
+                priorityQueue1.insert(newElement);
+              }
+
+              nodeRouteIndex1[nextNodeIndex] = index;
+
+              // Create arc from state to state
+              std::pair<int,int> nodePair = std::make_pair(nodeIndex, nextNodeIndex);
+              if (generatedArcs.find(nodePair) == generatedArcs.end())
+              {
+                generatedArcs.insert(nodePair);
+                addArc(nodePair.first, nodePair.second);
+              }
+
+              // Create arcs to terminal node
+              if (newState.counter % 2 == 1)
+              {
+                auto nodePair = std::make_pair(nextNodeIndex, terminalNodeIndex);
+                if (generatedArcs.find(nodePair) == generatedArcs.end())
+                {
+                  generatedArcs.insert(nodePair);
+                  addArc(nextNodeIndex, terminalNodeIndex);
+                }
+              }
+            }
+          }
+        }
+      }
       continue;
     }
  
     // Create the initial destroyed route
     currState = nodes[rootNodeIndex].state;
     currNodeIndex = rootNodeIndex;
+    int currCost = 0;
     for (int location : destroyedRoute)
     {
       if (location == 0)
@@ -4623,25 +4206,14 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
       bool newNodeFeasible = generateNewStateFromExact(newState, location);
       if (newNodeFeasible)
       {
+        currCost += vrptw.distances[currState.lastVisited][location];
         int numNodes = nodes.size();
         int nextNodeIndex = addNode(newState);
         int newNumNodes = nodes.size();
         nodeRouteIndex[nextNodeIndex] = nodeRouteIndex[currNodeIndex] + 1;
         nodeNumNewPickups[nextNodeIndex] = 0;
-        int priorityQueueKeyValue = -1;
-        if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
-        {
-          priorityQueueKeyValue = newState.counter;
-        }
-        else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-        {
-          priorityQueueKeyValue = newState.timeWithMultiplier;
-        }
-        else
-        {
-          priorityQueueKeyValue = newState.load;
-        }
-
+        int priorityQueueKeyValue = currCost;
+    
         if (priorityQueue.find(priorityQueueKeyValue) != priorityQueue.end())
         {
           priorityQueue[priorityQueueKeyValue].push_back(nextNodeIndex);
@@ -4653,7 +4225,6 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
         }
 
         // Create next arc
-        opportunitiesToInsert[location] = opportunitiesToInsert[location] + 1;
         auto nodePair = std::make_pair(currNodeIndex, nextNodeIndex);
         if (generatedArcs.find(nodePair) == generatedArcs.end())
         {
@@ -4675,10 +4246,20 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
       addArc(nodePair2.first, nodePair2.second);
     }
 
+    // Limit time and number of nodes
+    auto startTime = std::chrono::high_resolution_clock::now();
+
     // Create restricted dp with possible insertions of destroyed elements in the route
     int priorityIteratorValue = -1;
     while (priorityIteratorValue <= maxPriorityValue)
     {
+      auto currTime = std::chrono::high_resolution_clock::now();
+      auto numSeconds = std::chrono::duration_cast<std::chrono::seconds>(currTime - startTime).count();
+      if (numSeconds > 30)
+      {
+        break;
+      }
+
       ++priorityIteratorValue;
       if (priorityQueue.find(priorityIteratorValue) == priorityQueue.end())
       {
@@ -4709,36 +4290,52 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
             }
             else
             {
-              continue;
+              pickup = location;
+              if (vrptw.problemType == ProblemType::PDP)
+              {
+                continue;
+              }
             }
 
-            // Only do pickups, need to be able to deliver and finish route
+            // For pickups, check all possible delivery indices, add the new full route if possible
+            int newStateCost = priorityIteratorValue + vrptw.distances[newState.lastVisited][location];
             for (int insertDeliveryIndex=index+1; insertDeliveryIndex<destroyedRoute.size(); ++insertDeliveryIndex)
             {
+              if ((vrptw.problemType != ProblemType::PDP) && (insertDeliveryIndex > index+1))
+              {
+                continue;
+              }
+
               std::vector<VRPTWNodeState> newStates = {newState};
               std::vector<int> newStateRouteIndices = {index};
+              std::vector<int> newStateCosts = {newStateCost};
               VRPTWNodeState suffixState(newState);
               bool isSuffixFeasible = true;
               for (int suffixIndex=index+1; suffixIndex<destroyedRoute.size(); ++suffixIndex)
               {
                 // Insert delivery index
-                if (insertDeliveryIndex == suffixIndex)
+                int suffixLocation = destroyedRoute[suffixIndex];
+                if (vrptw.problemType == ProblemType::PDP)
                 {
-                  bool newNodeFeasible1 = generateNewStateFromExact(suffixState, delivery);
-                  if (newNodeFeasible1)
+                  if (insertDeliveryIndex == suffixIndex)
                   {
-                    newStates.push_back(suffixState);
-                    newStateRouteIndices.push_back(suffixIndex-1);
-                  }
-                  else
-                  {
-                    isSuffixFeasible = false;
-                    break;
+                    bool newNodeFeasible1 = generateNewStateFromExact(suffixState, delivery);
+                    if (newNodeFeasible1)
+                    {
+                      newStates.push_back(suffixState);
+                      newStateRouteIndices.push_back(suffixIndex-1);
+                      newStateCost += vrptw.distances[suffixLocation][delivery];
+                      newStateCosts.push_back(newStateCost);
+                    }
+                    else
+                    {
+                      isSuffixFeasible = false;
+                      break;
+                    }
                   }
                 }
 
                 // Insert suffix location
-                int suffixLocation = destroyedRoute[suffixIndex];
                 if (suffixLocation != 0)
                 {
                   bool newNodeFeasible2 = generateNewStateFromExact(suffixState, suffixLocation);
@@ -4746,6 +4343,8 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
                   {
                     newStates.push_back(suffixState);
                     newStateRouteIndices.push_back(suffixIndex);
+                    newStateCost += vrptw.distances[suffixLocation][delivery];
+                    newStateCosts.push_back(newStateCost);
                   }
                   else
                   {
@@ -4762,13 +4361,25 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
               }
               else
               {
-              /*
-                std::cout << "suffix feasible" << std::endl;
-                std::cout << "pickup: " << pickup << " delivery: " << delivery << std::endl;
-                std::cout << "index: " << index << " insert index: " << insertDeliveryIndex << std::endl;
-                std::cout << "size: " << newStates.size() << std::endl;
-              */
-                opportunitiesToInsert[location] = opportunitiesToInsert[location] + 1;
+                // Limit with cost analysis during route creation (check UB vs. # routes)
+                if (newStateCost > routeCostUpperBound)
+                {
+                  ++numSkipped;
+                  continue;
+                }
+
+                // Limit options with randomness
+                // Use idea from Pisiginer, and check for how much the insertion changes obj?
+                // Granular neighborhood idea?
+                /*
+                int limitingRandomInteger = std::rand();
+                int limitingRandomIntegerModTen = limitingRandomInteger % 10;
+                if (limitingRandomIntegerModTen <= 0)
+                {
+                  continue;
+                }
+                */
+
                 int previousNodeIndex = -1;
                 for (int newStateIndex=0; newStateIndex<newStates.size(); ++newStateIndex)
                 {
@@ -4779,19 +4390,7 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
                   int stateRouteIndex = newStateRouteIndices[newStateIndex];
                   nodeRouteIndex[newNodeIndex] = stateRouteIndex;
                   nodeNumNewPickups[newNodeIndex] = numPickups + 1;
-                  int priorityQueueKeyValue = -1;
-                  if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
-                  {
-                    priorityQueueKeyValue = newState.counter;
-                  }
-                  else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-                  {
-                    priorityQueueKeyValue = newState.timeWithMultiplier;
-                  }
-                  else
-                  {
-                    priorityQueueKeyValue = newState.load;
-                  }
+                  int priorityQueueKeyValue = newStateCosts[newStateIndex];
 
                   if (priorityQueue.find(priorityQueueKeyValue) != priorityQueue.end())
                   {
@@ -4838,22 +4437,22 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
         }
       }
     }
-    //break;
   }
 
-  // Allow some routes that are only created from destroyed elements
-  std::map<int,std::vector<int>> priorityQueue;
-  priorityQueue.insert(std::make_pair(0,std::vector<int>(1,0)));
+  // Add some short routes with only destroyed elements
+  std::map<int,std::vector<int>> priorityQueue2;
+  priorityQueue2.insert(std::make_pair(0,std::vector<int>(1,0)));
+  std::set<std::set<int>> stateSets;
   int priorityIteratorValue = -1;
   while (priorityIteratorValue <= maxPriorityValue)
   {
     ++priorityIteratorValue;
-    if (priorityQueue.find(priorityIteratorValue) == priorityQueue.end())
+    if (priorityQueue2.find(priorityIteratorValue) == priorityQueue2.end())
     {
       continue;
     }
 
-    std::vector<int> priorityItems = priorityQueue.find(priorityIteratorValue)->second;
+    std::vector<int> priorityItems = priorityQueue2.find(priorityIteratorValue)->second;
     for (int nodeIndex : priorityItems)
     {
       const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
@@ -4868,28 +4467,33 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
           int numNodes = nodes.size();
           int nextNodeIndex = addNode(newState);
           int newNumNodes = nodes.size();
-          int priorityQueueKeyValue = -1;
-          if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
-          {
-            priorityQueueKeyValue = newState.counter;
-          }
-          else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-          {
-            priorityQueueKeyValue = newState.timeWithMultiplier;
-          }
-          else
-          {
-            priorityQueueKeyValue = newState.load;
-          }
 
-          if (priorityQueue.find(priorityQueueKeyValue) != priorityQueue.end())
+          bool inserted = stateSets.insert(newState.visited).second;
+          if (inserted)
           {
-            priorityQueue[priorityQueueKeyValue].push_back(nextNodeIndex);
-          }
-          else
-          {
-            const auto newElement = std::make_pair(priorityQueueKeyValue, std::vector<int>(1,nextNodeIndex));
-            priorityQueue.insert(newElement);
+            int priorityQueueKeyValue = -1;
+            if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
+            {
+              priorityQueueKeyValue = newState.counter;
+            }
+            else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+            {
+              priorityQueueKeyValue = newState.timeWithMultiplier;
+            }
+            else
+            {
+              priorityQueueKeyValue = newState.load;
+            }
+
+            if (priorityQueue2.find(priorityQueueKeyValue) != priorityQueue2.end())
+            {
+              priorityQueue2[priorityQueueKeyValue].push_back(nextNodeIndex);
+            }
+            else
+            {
+              const auto newElement = std::make_pair(priorityQueueKeyValue, std::vector<int>(1,nextNodeIndex));
+              priorityQueue2.insert(newElement);
+            }
           }
 
           // Create arc from state to state
@@ -4916,16 +4520,24 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
   }
 
   //print();
+  std::cout << "num skipped: " << numSkipped << std::endl;
 
   // 2. Solve the Arc Flow Formulation as a MIP
-  setCoeffsAsPreciseDistances();
+  if (vrptw.problemType == ProblemType::PDP)
+  {
+    setCoeffsAsPreciseDistances();
+  }
+  else
+  {
+    setCoeffsAsDistances();
+  }
   Dual duals;
-  double result = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false, std::max(1,std::min(5,timeoutSeconds)));
-  if (result < 0)
+  double mipObjective = setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false, std::max(1,std::min(5,timeoutSeconds)));
+  if (mipObjective < 0)
   {
     std::cout << "repair solution issue" << std::endl;
     print();
-    return false;
+    return mipObjective;
   }
 
   // 3. Return the solution
@@ -4947,695 +4559,7 @@ bool VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& f
     newBestRoutes.push_back(newRoute);
   }
 
-  return true;
-}
-
-bool VRPTWDecisionDiagram::searchDestroyAndRepairNeighborhood(int numElementsDestroy, int numRoutesDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
-{
-  // 1. Destroy
-  // Choose which routes to destroy from
-  std::vector<std::vector<int>> prefixes;
-  std::vector<std::vector<int>> suffixes;
-  std::vector<int> destroyedElements;
-  std::set<int> routeIndicesToDestroy;
-  while (routeIndicesToDestroy.size() < numRoutesDestroy)
-  {
-    int randomIntegerDestroy = std::rand();
-    int randomIndexDestroy = randomIntegerDestroy % feasibleSolution.size();
-    routeIndicesToDestroy.insert(randomIndexDestroy);
-  }
-
-  // Create prefixes and suffixes by destroying some elements
-  std::vector<int> routeDestroyStartIndex;
-  for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
-  {
-    auto route = feasibleSolution[routeIndex];
-
-    std::vector<int> prefix;
-    std::vector<int> suffix;
-    if (routeIndicesToDestroy.find(routeIndex) != routeIndicesToDestroy.end())
-    {
-      int routeNumLocations = route.size() - 2;
-      int numLocationsToDestroy = std::min(routeNumLocations, numElementsDestroy);
-      int randomInteger1 = std::rand();
-      int randomValue = 0;
-      int latestDestroyStartingIndex = route.size() - numLocationsToDestroy - 1;
-      if (route.size() > 3)
-      {
-        randomValue = randomInteger1 % std::min((int)(route.size()-3), latestDestroyStartingIndex);
-      }
-      int randomStartingIndex = 1 + randomValue;
-      routeDestroyStartIndex.push_back(randomStartingIndex);
-
-      // Find elements to destroy, including precedences and reliances
-      std::set<int> routeDestroyElements;
-      for (int index=randomStartingIndex; index < std::min((int)route.size()-1,randomStartingIndex+numLocationsToDestroy); ++index)
-      {
-        int location = route[index];
-        routeDestroyElements.insert(location);
-
-        if (!vrptw.reliances.empty() && !vrptw.precedences.empty())
-        {
-          for (int relianceLocation : vrptw.reliances[location])
-          {
-            routeDestroyElements.insert(relianceLocation);
-          }
-          for (int precedenceLocation : vrptw.precedences[location])
-          {
-            routeDestroyElements.insert(precedenceLocation);
-          }
-        }
-      }
-
-      // Partition the elements into prefix, destroyed, and suffix
-      for (int index=0; index<route.size(); ++index)
-      {
-        int location = route[index];
-        if (routeDestroyElements.find(location) != routeDestroyElements.end())
-        {
-          destroyedElements.push_back(location);
-        }
-        else
-        {
-          if (index < randomStartingIndex)
-          {
-            prefix.push_back(location);
-          }
-          else if (index >= std::min((int)route.size()-1,randomStartingIndex+numLocationsToDestroy))
-          {
-            suffix.push_back(location);
-          }
-        }
-      }
-    }
-    else
-    {
-      routeDestroyStartIndex.push_back(0);
-      for (int location : route)
-      {
-        prefix.push_back(location);
-      }
-      suffix = {0};
-    }
- 
-    std::cout << "prefix: ";
-    for (int p : prefix)
-    {
-      std::cout << p << " ";
-    }
-    std::cout << std::endl;
-    std::cout << "suffix: ";
-    for (int s : suffix)
-    {
-      std::cout << s << " ";
-    }
-    std::cout << std::endl;
-    prefixes.push_back(prefix);
-    suffixes.push_back(suffix);
-  }
-
-  for (int e : destroyedElements)
-  {
-    std::cout << e << " ";
-  }
-  std::cout << std::endl;
-
-  // 2. Create Dynamic Program with Routes from the Current Feasible Solution
-  std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
-  std::map<int,int> newNodeDepths;
-  nodes.reserve(std::pow(vrptw.numLocations,2));
-  arcs.reserve(std::pow(vrptw.numLocations,2)/100);
-
-  std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
-  addNode(rootNodeState);
-  rootNodeIndex = 0;
-  newNodeDepths[rootNodeIndex] = 0;
-
-  int terminalNodeLoc = 0;
-  if (vrptw.circuitOrPath == CircuitOrPath::PATH)
-  {
-    terminalNodeLoc = vrptw.numLocations-1;
-  }
-  double terminalEndTime = 0;
-  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-  {
-    terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
-  }
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
-  addNode(terminalNodeState);
-  terminalNodeIndex = 1;
- 
-  std::set<int> initialPrimalArcIndices;
-  for (int routeIndex=0; routeIndex<(int)feasibleSolution.size(); ++routeIndex)
-  {
-    std::vector<int> route = feasibleSolution[routeIndex];
-
-    VRPTWNodeState currState = nodes[rootNodeIndex].state;
-    int currNodeIndex = rootNodeIndex;
-    for (int index=1; index<route.size()-1; ++index)
-    {
-      VRPTWNodeState newState(currState);
-      int nextLocation = route[index];
-      generateNewStateFromExact(newState, nextLocation);
-      int numNodes = nodes.size();
-
-      int nextNodeIndex = addNode(newState);
-      int newNumNodes = nodes.size();
-      if (newNumNodes > numNodes)
-      {
-        // Only put end of prefix in queue
-        int numPrefixLocations = prefixes[routeIndex].size() - 1;
-        int numSuffixLocations = suffixes[routeIndex].size() - 1;
-        int numRemovedElements = route.size() - numPrefixLocations - numSuffixLocations - 2;
-        if ((index >= numPrefixLocations) && (index <= numPrefixLocations + numRemovedElements))
-        {
-          if (newNodeDepths.find(currNodeIndex) == newNodeDepths.end())
-          {
-            newNodeDepths[nextNodeIndex] = 0;
-          }
-          else
-          {
-            newNodeDepths[nextNodeIndex] = newNodeDepths[currNodeIndex] + 1;
-          }
-
-          if (routeIndicesToDestroy.find(routeIndex) != routeIndicesToDestroy.end())
-          {
-            if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-            {
-              const auto newElement = std::make_pair(newState.timeWithMultiplier, nextNodeIndex);
-              pq.push(newElement);
-            }
-            else
-            {
-              const auto newElement = std::make_pair(newState.load, nextNodeIndex);
-              pq.push(newElement);
-            }
-          }
-        }
-      }
-
-      int newArcIndex = addArc(currNodeIndex, nextNodeIndex);
-      initialPrimalArcIndices.insert(newArcIndex);
-      currState = newState;
-      currNodeIndex = nextNodeIndex;
-    }
-  }
-
-  // Order some transitions from locations by using distance and/or reduced cost given a dual
-  std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
-  for (int location1=0; location1<vrptw.numLocations; ++location1)
-  {
-    std::vector<std::pair<int,double>> possibleElementReducedCost;
-    for (int location2 : destroyedElements)
-    {
-      if (location1 == location2)
-      {
-        continue;
-      }
-      double additionalCost = 0.0;
-      if (params.lnsNodeLimitMethod == LNSNodeLimitMethod::NUM_DESTROYED_REDUCED_COST)
-      {
-        additionalCost = vrptw.distances[location1][location2] - dual.lambda[location2];
-      }
-      else if (params.lnsNodeLimitMethod == LNSNodeLimitMethod::NUM_DESTROYED_DISTANCE)
-      {
-        additionalCost = vrptw.distances[location1][location2];
-      }
-      std::pair<int,double> possiblePair = std::make_pair(location2, additionalCost);
-      possibleElementReducedCost.push_back(possiblePair);
-    }
-    std::sort(possibleElementReducedCost.begin(), possibleElementReducedCost.end(), sort_by_second);
-    std::vector<int> orderedVector;
-    for (auto locationDistance : possibleElementReducedCost)
-    {
-      orderedVector.push_back(locationDistance.first);
-    }
-    locationNextLocationReducedCostOrdering.push_back(orderedVector);
-  }
-
-  // 3. Create a Restricted Dynamic Program defined by the Destroy-Repair-Neighborhood
-  while (!pq.empty())
-  {
-    keyType queueItemToCheck = pq.top();
-    int nodeIndex = queueItemToCheck.second;
-    pq.pop();
-    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
-
-    int numTransitionsAddedFromNode = 0;
-    for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
-    {
-      VRPTWNodeState newState(stateToCheck);
-      bool newNodeFeasible = generateNewStateFromExact(newState, location);
-      if (newNodeFeasible)
-      {
-        int numNodes = nodes.size();
-        int newNodeIndex = addNode(newState);
-        int newNumNodes = nodes.size();
-        if (newNumNodes > numNodes)
-        {
-          // allow up to depth of x, should make parameter
-          newNodeDepths[newNodeIndex] = newNodeDepths[nodeIndex] + 1;
-          if (newNodeDepths[newNodeIndex] < numElementsDestroy + params.lnsInsertionDepth)
-          {
-            if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-            {
-              const auto newElement = std::make_pair(newState.timeWithMultiplier, newNodeIndex);
-              pq.push(newElement);
-            }
-            else
-            {
-              const auto newElement = std::make_pair(newState.load, newNodeIndex);
-              pq.push(newElement);
-            }
-          }
-
-          ++numTransitionsAddedFromNode;
-        }
-
-        addArc(nodeIndex, newNodeIndex);
-      }
-
-      if ((params.lnsNodeLimitMethod == LNSNodeLimitMethod::NUM_DESTROYED_REDUCED_COST) || (params.lnsNodeLimitMethod == LNSNodeLimitMethod::NUM_DESTROYED_DISTANCE))
-      {
-        if (numTransitionsAddedFromNode > numElementsDestroy)
-        {
-          break;
-        }
-      }
-    }
-  }
-
-  int nodeIndex = 2;
-  while (nodeIndex < nodes.size())
-  {
-    for (int suffixIndex=0; suffixIndex<suffixes.size(); ++suffixIndex)
-    {
-      auto suffix = suffixes[suffixIndex];
- 
-      bool isSuffixFeasible = true;
-      VRPTWNodeState currState = nodes[nodeIndex].state;
-      for (int index=0; index<suffix.size(); ++index)
-      {
-        int nextLocation = suffix[index];
-        if (nextLocation == 0)
-        {
-          continue;
-        }
-
-        VRPTWNodeState newState(currState);
-        bool newNodeFeasible = generateNewStateFromExact(newState, nextLocation);
-        if (!newNodeFeasible)
-        {
-          isSuffixFeasible = false;
-          break;
-        }
-
-        currState = newState;
-      }
-
-      if (isSuffixFeasible)
-      {
-        addPrimalHeuristicSuffixArc(nodeIndex, suffix, suffixIndex);
-      }
-    }
-    nodeIndex = nodeIndex + 1;
-  }
-
-  // 4. Solve the Arc Flow Formulation as a MIP
-  setCoeffsAsPreciseDistances();
-  Dual duals;
-  setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false, timeoutSeconds);
-
-  // 5. Return the solution
-  std::vector<int> infeasibleRoute;
-  std::vector<std::vector<int>> decomposedArcs;
-  std::vector<double> routeFlows;
-  std::vector<std::vector<int>> decomposedRoutes;
-  decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-
-  newBestRoutes.clear();
-  for (auto route : decomposedRoutes)
-  {
-    std::vector<int> newRoute;
-    for (int loc : route)
-    {
-      if (loc >= 0)
-      {
-        newRoute.push_back(loc);
-      }
-      else
-      {
-        // suffix indicator, change index by 1 so 0 isn't like going to the depot
-        int suffixIndex = (-1 * loc) - 1;
-        auto suffix = suffixes[suffixIndex];
-        for (int suffixLoc : suffix)
-        {
-          newRoute.push_back(suffixLoc);
-        }
-      }
-    }
-
-    newBestRoutes.push_back(newRoute);
-  }
-
-  return true;
-}
-
-bool VRPTWDecisionDiagram::largeNeighborhoodSearch(int numElementsDestroy, const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
-{
-  // 1. Destroy
-  // Use a parameter numElementsDestroy to determine how much to destroy
-  // Allow some randomness in what gets destroyed (using an ordering of relevance)
-  // Allow some randomness to determine where to start destroying each sequence
-  std::vector<std::vector<int>> prefixes;
-  std::vector<std::vector<int>> suffixes;
-  std::vector<int> destroyedElements;
-  for (auto route : feasibleSolution)
-  {
-    // Find random part to destroy
-    // If destroying x locations, ensure early enough in sequence to get that many destroyed
-    int routeNumLocations = route.size() - 2;
-    int numLocationsToDestroy = std::min(routeNumLocations, numElementsDestroy);
-    int randomInteger1 = std::rand();
-    int randomValue = 0;
-    int latestDestroyStartingIndex = route.size() - numLocationsToDestroy - 1;
-    if (route.size() > 3)
-    {
-      randomValue = randomInteger1 % std::min((int)(route.size()-3), latestDestroyStartingIndex);
-    }
-    int randomStartingIndex = 1 + randomValue;
-
-    // Destroy part of each route, which creates prefixes, destroyed parts, and suffixes
-    std::vector<int> prefix;
-    std::vector<int> suffix;
-    for (int index=0; index<route.size(); ++index)
-    {
-      if (index < randomStartingIndex)
-      {
-        prefix.push_back(route[index]);
-      }
-      else if ((index >= randomStartingIndex) && (index < std::min((int)route.size()-1,randomStartingIndex+numLocationsToDestroy)))
-      {
-        destroyedElements.push_back(route[index]);
-      }
-      else
-      {
-        suffix.push_back(route[index]);
-      }
-    }
- 
-    prefixes.push_back(prefix);
-    suffixes.push_back(suffix);
-  }
-
-/*
-    std::cout << "prefix: ";
-    for (int p : prefix)
-    {
-      std::cout << p << " ";
-    }
-    std::cout << std::endl;
-    std::cout << "suffix: ";
-    for (int s : suffix)
-    {
-      std::cout << s << " ";
-    }
-    std::cout << std::endl;
-  for (int e : destroyedElements)
-  {
-    std::cout << e << " ";
-  }
-  std::cout << std::endl;
-*/
-
-  // 2. Create DP up to forward frontier
-  std::priority_queue<keyType, std::vector<keyType>, std::greater<keyType>> pq;
-  std::map<int,int> newNodeDepths;
-  nodes.reserve(std::pow(vrptw.numLocations,2));
-  arcs.reserve(std::pow(vrptw.numLocations,2)/100);
-
-  std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
-  addNode(rootNodeState);
-  rootNodeIndex = 0;
-  newNodeDepths[rootNodeIndex] = 0;
-
-  int terminalNodeLoc = 0;
-  if (vrptw.circuitOrPath == CircuitOrPath::PATH)
-  {
-    terminalNodeLoc = vrptw.numLocations-1;
-  }
-  double terminalEndTime = 0;
-  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-  {
-    terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
-  }
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
-  addNode(terminalNodeState);
-  terminalNodeIndex = 1;
- 
-  // extra step: resort/reoroder prefixes and suffixes, because of the disconnection
-  /*
-  std::cout << "reordering prefixes" << std::endl;
-  std::vector<std::vector<int>> reorderedPrefixes;
-  for (auto prefix : prefixes)
-  {
-    std::vector<int> newPrefix = prefix;
-    double prefixCost = vrptw.evaluateRouteDistance(newPrefix);
-    prefixIntraRouteSwaps(newPrefix, prefixCost);
-    reorderedPrefixes.push_back(newPrefix);
-  }
-  prefixes = reorderedPrefixes;
- 
-  std::cout << "reordering suffixes" << std::endl;
-  std::vector<std::vector<int>> reorderedSuffixes;
-  for (auto suffix : suffixes)
-  {
-    std::vector<int> newSuffix = suffix;
-    std::reverse(newSuffix.begin(), newSuffix.end());
-    double suffixCost = vrptw.evaluateRouteDistance(newSuffix);
-    prefixIntraRouteSwaps(newSuffix, suffixCost);
-    std::reverse(newSuffix.begin(), newSuffix.end());
-    reorderedSuffixes.push_back(newSuffix);
-  }
-  suffixes = reorderedSuffixes;
-  */
- 
-  std::set<int> initialPrimalArcFinalNodes;
-  std::set<int> initialPrimalArcIndices;
-  for (int routeIndex=0; routeIndex<(int)feasibleSolution.size(); ++routeIndex)
-  {
-    std::vector<int> route = feasibleSolution[routeIndex];
-
-    VRPTWNodeState currState = nodes[rootNodeIndex].state;
-    int currNodeIndex = rootNodeIndex;
-    // Start at index 1 because first location is the depot
-    for (int index=1; index<route.size()-1; ++index)
-    {
-      VRPTWNodeState newState(currState);
-      int nextLocation = route[index];
-      generateNewStateFromExact(newState, nextLocation);
-      int numNodes = nodes.size();
-
-      // add nodes for all routes
-      int nextNodeIndex = addNode(newState);
-      int newNumNodes = nodes.size();
-      if (newNumNodes > numNodes)
-      {
-        // only put the "frontier" between the prefix and suffix in the queue
-        int numPrefixLocations = prefixes[routeIndex].size() - 1;
-        int numSuffixLocations = suffixes[routeIndex].size() - 1;
-        int numRemovedElements = route.size() - numPrefixLocations - numSuffixLocations - 2;
-        if ((index >= numPrefixLocations) && (index <= numPrefixLocations + numRemovedElements))
-        {
-          // keep track of depth into destroyed layer
-          if (newNodeDepths.find(currNodeIndex) == newNodeDepths.end())
-          {
-            newNodeDepths[nextNodeIndex] = 0;
-          }
-          else
-          {
-            newNodeDepths[nextNodeIndex] = newNodeDepths[currNodeIndex] + 1;
-          }
-
-          // push to queue
-          if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-          {
-            const auto newElement = std::make_pair(newState.timeWithMultiplier, nextNodeIndex);
-            pq.push(newElement);
-          }
-          else
-          {
-            const auto newElement = std::make_pair(newState.load, nextNodeIndex);
-            pq.push(newElement);
-          }
-        }
-      }
-
-      int newArcIndex = addArc(currNodeIndex, nextNodeIndex);
-      currState = newState;
-      currNodeIndex = nextNodeIndex;
- 
-      initialPrimalArcIndices.insert(newArcIndex);
-      if (index == (int)(route.size() - 2))
-      {
-        initialPrimalArcFinalNodes.insert(nextNodeIndex);
-      }
-    }
-  }
-
-  // orderings for elements can be pre-cached
-  std::vector<std::vector<int>> locationNextLocationReducedCostOrdering;
-  for (int location1=0; location1<vrptw.numLocations; ++location1)
-  {
-    std::vector<std::pair<int,double>> possibleElementReducedCost;
-    for (int location2 : destroyedElements)
-    {
-      if (location1 == location2)
-      {
-        continue;
-      }
-      double additionalReducedCost = vrptw.distances[location1][location2] - dual.lambda[location2];
-      std::pair<int,double> possiblePair = std::make_pair(location2, additionalReducedCost);
-      possibleElementReducedCost.push_back(possiblePair);
-    }
-    std::sort(possibleElementReducedCost.begin(), possibleElementReducedCost.end(), sort_by_second);
-    std::vector<int> orderedVector;
-    for (auto locationDistance : possibleElementReducedCost)
-    {
-      orderedVector.push_back(locationDistance.first);
-    }
-    locationNextLocationReducedCostOrdering.push_back(orderedVector);
-  }
-
-  // 3. Create a restricted DD using the frontier states
-  // Allow up to t feasible transitions... some may be infeasible if we select, so check these!
-  // Allow some randomness in which transition(s) are chosen
-  // Use an ordering to determine which transition(s) to try
-  // Limit number of insertions/deletions with counter on states
-  while (!pq.empty())
-  {
-    keyType queueItemToCheck = pq.top();
-    int nodeIndex = queueItemToCheck.second;
-    pq.pop();
-    const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
-
-    int numTransitionsAddedFromNode = 0;
-    for (int location : locationNextLocationReducedCostOrdering[stateToCheck.lastVisited])
-    {
-      VRPTWNodeState newState(stateToCheck);
-      bool newNodeFeasible = generateNewStateFromExact(newState, location);
-      if (newNodeFeasible)
-      {
-        int numNodes = nodes.size();
-        int newNodeIndex = addNode(newState);
-        int newNumNodes = nodes.size();
-        if (newNumNodes > numNodes)
-        {
-          // allow up to depth of x, should make parameter
-          newNodeDepths[newNodeIndex] = newNodeDepths[nodeIndex] + 1;
-          if (newNodeDepths[newNodeIndex] < numElementsDestroy + params.lnsInsertionDepth)
-          {
-            if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-            {
-              const auto newElement = std::make_pair(newState.timeWithMultiplier, newNodeIndex);
-              pq.push(newElement);
-            }
-            else
-            {
-              const auto newElement = std::make_pair(newState.load, newNodeIndex);
-              pq.push(newElement);
-            }
-          }
-
-          ++numTransitionsAddedFromNode;
-        }
-
-        addArc(nodeIndex, newNodeIndex);
-      }
-
-      if (numTransitionsAddedFromNode > numElementsDestroy)
-      {
-        break;
-      }
-    }
-  }
-
-  int nodeIndex = 2;
-  while (nodeIndex < nodes.size())
-  {
-    for (int suffixIndex=0; suffixIndex<suffixes.size(); ++suffixIndex)
-    {
-      auto suffix = suffixes[suffixIndex];
- 
-      bool isSuffixFeasible = true;
-      VRPTWNodeState currState = nodes[nodeIndex].state;
-      for (int index=0; index<suffix.size(); ++index)
-      {
-        int nextLocation = suffix[index];
-        if (nextLocation == 0)
-        {
-          continue;
-        }
-
-        VRPTWNodeState newState(currState);
-        bool newNodeFeasible = generateNewStateFromExact(newState, nextLocation);
-        if (!newNodeFeasible)
-        {
-          isSuffixFeasible = false;
-          break;
-        }
-
-        currState = newState;
-      }
-
-      if (isSuffixFeasible)
-      {
-        addPrimalHeuristicSuffixArc(nodeIndex, suffix, suffixIndex);
-      }
-    }
-    nodeIndex = nodeIndex + 1;
-  }
-
-  // 4. Solve the Arc Flow Formulation as a MIP
-  setCoeffsAsPreciseDistances();
-  Dual duals;
-  setupAndSolveFlowModel(FlowType::IP, IncludeCoverConstraints::Y, UseColumnGeneration::NO_CG, initialPrimalArcIndices, duals, false, timeoutSeconds);
-
-  // 5. Return the solution
-  std::vector<int> infeasibleRoute;
-  std::vector<std::vector<int>> decomposedArcs;
-  std::vector<double> routeFlows;
-  std::vector<std::vector<int>> decomposedRoutes;
-  decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-
-  newBestRoutes.clear();
-  for (auto route : decomposedRoutes)
-  {
-    std::vector<int> newRoute;
-    for (int loc : route)
-    {
-      if (loc >= 0)
-      {
-        newRoute.push_back(loc);
-      }
-      else
-      {
-        // suffix indicator, change index by 1 so 0 isn't like going to the depot
-        int suffixIndex = (-1 * loc) - 1;
-        auto suffix = suffixes[suffixIndex];
-        for (int suffixLoc : suffix)
-        {
-          newRoute.push_back(suffixLoc);
-        }
-      }
-    }
-
-    newBestRoutes.push_back(newRoute);
-  }
-
-  return true;
+  return mipObjective;
 }
 
 bool VRPTWDecisionDiagram::doesRouteExistByArcs(const std::vector<int>& routeArcs, std::vector<int>& routeLocations) const

@@ -176,12 +176,7 @@ struct VRPTWDDParameters
 
   PrimalHeuristic primalHeuristic;
   int lnsTimeoutSeconds;
-  int lnsDestroyElementsLimit;
-  int lnsDestroyRoutesLimit;
-  int lnsIterationsToUpdateParams;
-  bool lnsUseCrossovers;
-  int lnsInsertionDepth;
-  LNSNodeLimitMethod lnsNodeLimitMethod;
+  int lnsNumElementsDestroy;
 };
 
 struct VRPTWSolution
@@ -199,6 +194,7 @@ struct VRPTW
 
     double evaluateRouteDistance(const std::vector<int>& routeByLocation);
     double evaluateSolutionCost(const std::vector<std::vector<int>>& routesByLocation);
+    double calculateLocationPickupTime(const std::vector<int>& route, int routeIndex);
 
     int getLongestPossibleRoute();
     void recomputeDistancesPDPTW();

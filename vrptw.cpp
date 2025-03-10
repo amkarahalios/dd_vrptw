@@ -752,7 +752,7 @@ VRPTW::VRPTW(std::string _fileName)
   std::cout << "route length upper bound: " << routeLengthUpperBound << std::endl;
 
   fixedRouteCost = 0;
-  if (problemType = ProblemType::PDP)
+  if (problemType == ProblemType::PDP)
   {
     fixedRouteCost = 10000;
   }
@@ -789,6 +789,24 @@ double VRPTW::evaluateSolutionCost(const std::vector<std::vector<int>>& routesBy
   }
 
   return cost;
+};
+ 
+double VRPTW::calculateLocationPickupTime(const std::vector<int>& route, int routeIndex)
+{
+  int currLocation = 0;
+  double time = 0;
+  for (int index=0; index<route.size(); ++index)
+  {
+    int location = route[index];
+    time = time + distances[currLocation][location];
+    if (index == routeIndex)
+    {
+      break;
+    }
+    currLocation = location;
+  }
+
+  return time;
 };
 
 int VRPTW::getLongestPossibleRoute()

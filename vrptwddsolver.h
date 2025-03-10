@@ -115,10 +115,11 @@ class VRPTWDDSolver
     void addRouteToPrimalRoutes(std::vector<int> route);
     bool intraRouteSwaps(std::vector<int>& route, double& routeCost);
     bool primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& routesByLocationPrimalHeuristic, std::set<int>& returnRouteIndices);
-    double computeShawRelatedness(int location1, int location2);
+    double computeShawRelatedness(const std::vector<int>& route1, int location1, const std::vector<int>& route2, int location2);
     void destroyBySingleRoute(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
     void destroyByMultiRoute(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
     void destroyByShaw(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    void destroyRoundRobin(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
     void destroyByWorst(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
     void destroyRandomly(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
     void chooseRandomLocationsFromRoutes(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& randomElementsChosen);

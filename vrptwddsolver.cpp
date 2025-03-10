@@ -89,7 +89,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     Dual dual;
     dual.lambda.resize(vrptw.numLocations);
     bool isImproved = largeNeighborhoodSearch(heuristicRoutes, dual, params.lnsTimeoutSeconds);
-    if (isImproved)
+    if (isImproved && (params.primalHeuristic == PrimalHeuristic::STANDALONE))
     {
       heuristicStartTime = std::chrono::high_resolution_clock::now();
     }
@@ -157,12 +157,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   // primal heuristic params
   std::cout << "primal heuristic: " << params.primalHeuristic << std::endl;
   std::cout << "lns timeout: " << params.lnsTimeoutSeconds << std::endl;
-  std::cout << "lns destroy elements limit: " << params.lnsDestroyElementsLimit << std::endl;
-  std::cout << "lns destroy routes limit: " << params.lnsDestroyRoutesLimit << std::endl;
-  std::cout << "lns iterations to update params: " << params.lnsIterationsToUpdateParams << std::endl;
-  std::cout << "lns use crossovers: " << params.lnsUseCrossovers << std::endl;
-  std::cout << "lns insertion depth: " << params.lnsInsertionDepth << std::endl;
-  std::cout << "lns node limit method: " << params.lnsNodeLimitMethod << std::endl;
+  std::cout << "lns num elements destroy: " << params.lnsNumElementsDestroy << std::endl;
 
   /*
   if (params.switchSepToCuts)
@@ -512,7 +507,6 @@ void VRPTWDDSolver::initializeDual(Dual& dual)
   dual.lambda.resize(vrptw.numLocations);
 
   dual.lambda[0] = 0;
-  /*
   for (int location=1; location<vrptw.numLocations; ++location)
   {
     if ((vrptw.fixedNumPaths == FixedNumPaths::FIXED_NUM_PATHS) && (vrptw.numVehicles == 1))
@@ -534,10 +528,16 @@ void VRPTWDDSolver::initializeDual(Dual& dual)
     }
     else
     {
-      dual.lambda[location] = 2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
+      if (vrptw.problemType != ProblemType::PDP)
+      {
+        dual.lambda[location] = 2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
+      }
+      else
+      {
+        dual.lambda[location] = 0;
+      }
     }
   }
-  */
 }
 
 bool VRPTWDDSolver::solve(bool shouldSolveIP)
@@ -1295,6 +1295,24 @@ void VRPTWDDSolver::destroyBySingleRoute(const std::vector<std::vector<int>>& fe
   }
 }
 
+void VRPTWDDSolver::destroyRoundRobin(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsDestroy)
+{
+  int routeIndex = 0;
+  while (destroyedElements.size() <= numElementsDestroy)
+  {
+    auto route = feasibleSolution[routeIndex];
+    for (int location : route)
+    {
+      if (location != 0)
+      {
+        destroyedElements.insert(location);
+      }
+    }
+    ++routeIndex;
+    routeIndex = routeIndex % static_cast<int>(feasibleSolution.size());
+  }
+}
+
 void VRPTWDDSolver::destroyByMultiRoute(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsDestroy)
 {
   std::set<int> destroyedRouteIndices;
@@ -1370,8 +1388,12 @@ void VRPTWDDSolver::destroyRandomly(const std::vector<std::vector<int>>& feasibl
   }
 }
 
-double VRPTWDDSolver::computeShawRelatedness(int location1, int location2)
+double VRPTWDDSolver::computeShawRelatedness(const std::vector<int>& route1, int index1, const std::vector<int>& route2, int index2)
 {
+  int location1 = route1[index1];
+  int location2 = route2[index2];
+
+  // Get pickup/delivery for PDPTW
   int pickup1 = -1;
   int pickup2 = -1;
   int delivery1 = -1;
@@ -1400,18 +1422,37 @@ double VRPTWDDSolver::computeShawRelatedness(int location1, int location2)
       pickup2 = *vrptw.precedences[location2].begin();
     }
   }
+  else
+  {
+    pickup1 = location1;
+    pickup2 = location2;
+  }
 
-  double distancePickups = vrptw.distances[pickup1][pickup2];
-  double distanceDeliveries = vrptw.distances[delivery1][delivery2];
-  double timeBetweenPickups = std::abs(vrptw.startTimes[pickup1] - vrptw.startTimes[pickup2]);
-  double timeBetweenDeliveries = std::abs(vrptw.startTimes[delivery2] - vrptw.startTimes[delivery2]);
+  // Calculate metrics
+  double distance = vrptw.distances[pickup1][pickup2];
   double loadDifference = std::abs(vrptw.demands[pickup1]  - vrptw.demands[pickup2]);
 
-  double normalizedDistanceValue = (distancePickups + distanceDeliveries) / (2*vrptw.maxDistance);
-  double normalizedTimeValue = (timeBetweenPickups + timeBetweenDeliveries) / vrptw.maxStartTime;
+  double startTime1 = vrptw.calculateLocationPickupTime(route1, index1);
+  double startTime2 = vrptw.calculateLocationPickupTime(route2, index2);
+  double timeDifference = std::abs(startTime2 - startTime1);
+
+  if (!vrptw.reliances.empty() and !vrptw.precedences.empty())
+  {
+    distance += vrptw.distances[delivery1][delivery2];
+
+    // Get indices of deliveries
+    int deliveryIndex1 = std::distance(route1.begin(), std::find(route1.begin(), route1.end(), delivery1));
+    int deliveryIndex2 = std::distance(route2.begin(), std::find(route2.begin(), route2.end(), delivery2));
+    double deliveryStartTime1 = vrptw.calculateLocationPickupTime(route1, deliveryIndex1);
+    double deliveryStartTime2 = vrptw.calculateLocationPickupTime(route2, deliveryIndex2);
+    timeDifference += std::abs(deliveryStartTime2 - deliveryStartTime1);
+  }
+
+  double normalizedDistanceValue = distance / (2*vrptw.maxDistance);
+  double normalizedTimeValue = timeDifference / vrptw.maxStartTime;
   double normalizedLoadValue = loadDifference / (2*vrptw.maxDemand);
 
-  double shawValue = normalizedDistanceValue + 0 + normalizedLoadValue;
+  double shawValue = normalizedDistanceValue + normalizedTimeValue + normalizedLoadValue;
   return shawValue;
 }
 
@@ -1426,17 +1467,36 @@ void VRPTWDDSolver::destroyByShaw(const std::vector<std::vector<int>>& feasibleS
   {
     int randomDestroyedLocationIndex = std::rand() % static_cast<int>(destroyedElements.size());
     int randomDestroyedLocation = *std::next(destroyedElements.begin(), randomDestroyedLocationIndex);
+    int randomDestroyedLocationRouteIndex = -1;
+    int randomDestroyedLocationRouteIndexIndex = -1;
+    for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
+    {
+      auto route = feasibleSolution[routeIndex];
+      auto it = std::find(route.begin(), route.end(), randomDestroyedLocation);
+      if (it != route.end())
+      {
+        randomDestroyedLocationRouteIndex = routeIndex;
+        randomDestroyedLocationRouteIndexIndex = std::distance(route.begin(), it);
+        break;
+      }
+    }
     int mostRelatedLocation = -1;
     double mostRelatedScore = INF;
     for (int candidateLocation=1; candidateLocation<vrptw.numLocations; ++candidateLocation)
+    for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
     {
-      if (destroyedElements.find(candidateLocation) == destroyedElements.end())
+      auto candidateLocationRoute = feasibleSolution[routeIndex];
+      for (int candidateLocationIndex=1; candidateLocationIndex<candidateLocationRoute.size()-1; ++candidateLocationIndex)
       {
-        double shawValue = computeShawRelatedness(candidateLocation, randomDestroyedLocation);
-        if (shawValue < mostRelatedScore)
+        int candidateLocation = candidateLocationRoute[candidateLocationIndex];
+        if (destroyedElements.find(candidateLocation) == destroyedElements.end())
         {
-          mostRelatedScore = shawValue;
-          mostRelatedLocation = candidateLocation;
+          double shawValue = computeShawRelatedness(candidateLocationRoute, candidateLocationIndex, feasibleSolution[randomDestroyedLocationRouteIndex], randomDestroyedLocationRouteIndexIndex);
+          if (shawValue < mostRelatedScore)
+          {
+            mostRelatedScore = shawValue;
+            mostRelatedLocation = candidateLocation;
+          }
         }
       }
     }
@@ -1500,6 +1560,7 @@ void VRPTWDDSolver::destroyByWorst(const std::vector<std::vector<int>>& feasible
   }
 }
 
+// PDPTW needs to store second obj that isn't the real obj but the MIP with fake weights.
 bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, int timeoutSeconds)
 {
   ++stats.numHeuristicLNSs;
@@ -1508,49 +1569,34 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   bool isImproved = false;
   std::vector<std::vector<int>> currSolution = feasibleSolution;
   double currUpperBound = vrptw.evaluateSolutionCost(feasibleSolution);
-  
+
   // Parameter setup
+  int startingNumRandomElements = params.lnsNumElementsDestroy;
   int iterationsWithoutImprovement = 0;
   int numElementsDestroy = 4;
-  int randomElementsToDestroy = 3;
+  double randomElementsToDestroy = startingNumRandomElements;
 
   // Run LNS in loop for timeout
+  bool shouldContinue = true;
   auto startTime = std::chrono::high_resolution_clock::now();
-  int secondsElapsed = 0;
   std::set<std::set<int>> destroyedSetsTried;
-  while (true)
+  while (shouldContinue)
   {
-    int remainingSeconds = timeoutSeconds - secondsElapsed;
-
-    // Removal Heurisitic
-    /*
-    if (iterationsWithoutImprovement == 10)
-    {
-      std::cout << "destroy randomly" << std::endl;
-      destroyRandomly(currSolution, destroyedElements, numElementsDestroy);
-    }
-    else if (iterationsWithoutImprovement == 11)
-    {
-      std::cout << "destroy by Shaw" << std::endl;
-      destroyByShaw(currSolution, destroyedElements, numElementsDestroy);
-    }
-    else if (iterationsWithoutImprovement == 12)
-    {
-      std::cout << "destroy by worst" << std::endl;
-      destroyByWorst(currSolution, destroyedElements, numElementsDestroy);
-    }
-    else
-    {
-      std::cout << "destroy by single route" << std::endl;
-      insertionLimit = 10;
-      destroyBySingleRoute(currSolution, destroyedElements, numElementsDestroy);
-    }
-    */
- 
     double lnsHeuristicUpperBound = INF; 
+    double mipObjective = INF; 
     std::vector<std::vector<int>> newBestRoutes;
     for (int routeIndex=0; routeIndex<currSolution.size(); ++routeIndex)
     {
+      // Setup timeout
+      auto currTime = std::chrono::high_resolution_clock::now();
+      auto numSeconds = std::chrono::duration_cast<std::chrono::seconds>(currTime - startTime).count();
+      int remainingSeconds = timeoutSeconds - numSeconds;
+      if (remainingSeconds < 0)
+      {
+        shouldContinue = false;
+        break;
+      }
+
       std::set<int> destroyedElements;
       auto route = currSolution[routeIndex];
       if (static_cast<int>(route.size()) == numElementsDestroy)
@@ -1564,15 +1610,10 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
           }
         }
 
-        std::set<int> additionalDestroyElements;
-        destroyRandomly(currSolution, additionalDestroyElements, randomElementsToDestroy);
-        destroyByWorst(currSolution, additionalDestroyElements, 2 * randomElementsToDestroy/3);
-        destroyByShaw(currSolution, additionalDestroyElements, randomElementsToDestroy);
-        for (int element : additionalDestroyElements)
-        {
-          destroyedElements.insert(element);
-        }
- 
+        //destroyRoundRobin(currSolution, destroyedElements, numElementsDestroy + randomElementsToDestroy);
+        //destroyByShaw(currSolution, destroyedElements, numElementsDestroy + randomElementsToDestroy/3);
+        //destroyByWorst(currSolution, destroyedElements, numElementsDestroy + 2*randomElementsToDestroy/3);
+        destroyRandomly(currSolution, destroyedElements, numElementsDestroy + randomElementsToDestroy);
         for (int e : destroyedElements)
         {
           std::cout << e << " ";
@@ -1581,16 +1622,15 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
  
         int insertionLimit = 2;
         VRPTWDecisionDiagram heuristicDD(vrptw, params);
-        bool isOk = heuristicDD.repairSolution(currSolution, destroyedElements, dual, newBestRoutes, insertionLimit, remainingSeconds);
-        if (isOk)
+        mipObjective = heuristicDD.repairSolution(currSolution, destroyedElements, dual, newBestRoutes, insertionLimit, remainingSeconds);
+        ++stats.numPrimalLNSRepairs;
+        if (mipObjective > 0)
         {
           lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(newBestRoutes);
-          ++stats.numPrimalLNSRepairs;
-        }
-
-        if (lnsHeuristicUpperBound < currUpperBound)
-        {
-          break;
+          if (lnsHeuristicUpperBound < currUpperBound)
+          {
+            break;
+          }
         }
       }
     }
@@ -1642,7 +1682,6 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
           {
             std::cout << "improved ub from MIP pool: " << mipPoolUpperBound << std::endl;
             currSolution = mipPoolSolution;
-            currUpperBound = mipPoolUpperBound;
             stats.upperBound = mipPoolUpperBound;
             stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
             startTime = std::chrono::high_resolution_clock::now();
@@ -1655,27 +1694,11 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
       iterationsWithoutImprovement = 0;
       destroyedSetsTried.clear();
       numElementsDestroy = 4;
-      randomElementsToDestroy = 3;
+      randomElementsToDestroy = startingNumRandomElements;
     }
     else
     {
       numElementsDestroy = numElementsDestroy + 2;
-      /*
-      iterationsWithoutImprovement += 1;
-      if (iterationsWithoutImprovement >= params.lnsIterationsToUpdateParams)
-      {
-        std::cout << "updated increasing num elements destroy: " << numElementsDestroy << std::endl;
-        iterationsWithoutImprovement = 0;
-      }
-      */
-
-/*
-      if (numElementsDestroy >= params.lnsDestroyElementsLimit)
-      {
-        std::cout << "terminate lns - num elements destroy hit limit: " << numElementsDestroy << std::endl;
-        break;
-      }
-*/
     }
 
     // Check route sizes
@@ -1693,21 +1716,12 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
     {
       std::cout << "primal heuristic checked all single route removals" << std::endl;
       numElementsDestroy = 4;
-      randomElementsToDestroy = std::min(randomElementsToDestroy + 2, vrptw.numLocations-1);
+      randomElementsToDestroy += 5;
       std::cout << "random elements to destroy: " << randomElementsToDestroy << std::endl;
     }
-
-    // Check time
-    /*
-    auto endTime = std::chrono::high_resolution_clock::now();
-    secondsElapsed = std::chrono::duration_cast<std::chrono::seconds>(endTime - startTime).count();
-    if (secondsElapsed > timeoutSeconds)
-    {
-      std::cout << "primal heuristic timeout" << std::endl;
-      return isImproved;
-    }
-    */
   }
+
+  return isImproved;
 }
 
 bool VRPTWDDSolver::localSearch(int locationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)

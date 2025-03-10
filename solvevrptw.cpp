@@ -249,39 +249,7 @@ int main(int argc, char** argv)
           }
           else if (lineIndex == 22)
           {
-            params.lnsDestroyElementsLimit = std::stoi(paramValueString);
-          }
-          else if (lineIndex == 23)
-          {
-            params.lnsDestroyRoutesLimit = std::stoi(paramValueString);
-          }
-          else if (lineIndex == 24)
-          {
-            params.lnsIterationsToUpdateParams = std::stoi(paramValueString);
-          }
-          else if (lineIndex == 25)
-          {
-            params.lnsInsertionDepth = std::stoi(paramValueString);
-          }
-          else if (lineIndex == 26)
-          {
-            params.lnsUseCrossovers = false;
-            if (paramValueString == "Y")
-            {
-              params.lnsUseCrossovers = true;
-            }
-          }
-          else if (lineIndex == 27)
-          {
-            params.lnsNodeLimitMethod = LNSNodeLimitMethod::ALL;
-            if (paramValueString == "NUM_DESTROYED_REDUCED_COST")
-            {
-              params.lnsNodeLimitMethod = LNSNodeLimitMethod::NUM_DESTROYED_REDUCED_COST;
-            }
-            else if (paramValueString == "NUM_DESTROYED_DISTANCE")
-            {
-              params.lnsNodeLimitMethod = LNSNodeLimitMethod::NUM_DESTROYED_DISTANCE;
-            }
+            params.lnsNumElementsDestroy = std::stoi(paramValueString);
           }
         }
         wordIndex = wordIndex + 1;
