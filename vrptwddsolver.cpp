@@ -88,10 +88,13 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     // LNS
     Dual dual;
     dual.lambda.resize(vrptw.numLocations);
-    bool isImproved = largeNeighborhoodSearch(heuristicRoutes, dual, params.lnsTimeoutSeconds);
-    if (isImproved && (params.primalHeuristic == PrimalHeuristic::STANDALONE))
+    if (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS)
     {
-      heuristicStartTime = std::chrono::high_resolution_clock::now();
+      bool isImproved = largeNeighborhoodSearch(heuristicRoutes, dual, params.lnsTimeoutSeconds);
+      if (isImproved && (params.primalHeuristic == PrimalHeuristic::STANDALONE))
+      {
+        heuristicStartTime = std::chrono::high_resolution_clock::now();
+      }
     }
  
     auto heuristicCurrTime = std::chrono::high_resolution_clock::now();
@@ -641,7 +644,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
     bool primalHeuristicFeasible = false;
     if (params.primalHeuristic == PrimalHeuristic::CE_GREEDY)
     {
-      primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
+      //primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
     }
     else if ((params.primalHeuristic == PrimalHeuristic::CE_MIP) || (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS))
     {
@@ -2487,7 +2490,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       bool primalHeuristicFeasible = false;
       if (params.primalHeuristic == PrimalHeuristic::CE_GREEDY)
       {
-        primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
+        //primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
       }
       else if ((params.primalHeuristic == PrimalHeuristic::CE_MIP) || (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS))
       {

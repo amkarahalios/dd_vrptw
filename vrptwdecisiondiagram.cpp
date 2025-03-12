@@ -4255,7 +4255,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
     {
       auto currTime = std::chrono::high_resolution_clock::now();
       auto numSeconds = std::chrono::duration_cast<std::chrono::seconds>(currTime - startTime).count();
-      if (numSeconds > 30)
+      if (numSeconds > timeoutSeconds)
       {
         break;
       }
@@ -4362,11 +4362,13 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
               else
               {
                 // Limit with cost analysis during route creation (check UB vs. # routes)
+                /*
                 if (newStateCost > routeCostUpperBound)
                 {
                   ++numSkipped;
                   continue;
                 }
+                */
 
                 // Limit options with randomness
                 // Use idea from Pisiginer, and check for how much the insertion changes obj?
@@ -4440,12 +4442,25 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
   }
 
   // Add some short routes with only destroyed elements
+  std::map<std::set<int>, int> visitedSetBestCosts;
+  std::map<std::set<int>, int> visitedSetBestState;
+  std::map<int, int> nodeIndexCosts;
+  std::set<int> dominatedNodeIndices;
+
   std::map<int,std::vector<int>> priorityQueue2;
   priorityQueue2.insert(std::make_pair(0,std::vector<int>(1,0)));
-  std::set<std::set<int>> stateSets;
+  nodeIndexCosts[rootNodeIndex] = 0;
   int priorityIteratorValue = -1;
+  auto startTime = std::chrono::high_resolution_clock::now();
   while (priorityIteratorValue <= maxPriorityValue)
   {
+    auto currTime = std::chrono::high_resolution_clock::now();
+    auto numSeconds = std::chrono::duration_cast<std::chrono::seconds>(currTime - startTime).count();
+    if (numSeconds > timeoutSeconds)
+    {
+      break;
+    }
+
     ++priorityIteratorValue;
     if (priorityQueue2.find(priorityIteratorValue) == priorityQueue2.end())
     {
@@ -4455,7 +4470,12 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
     std::vector<int> priorityItems = priorityQueue2.find(priorityIteratorValue)->second;
     for (int nodeIndex : priorityItems)
     {
+      if (dominatedNodeIndices.find(nodeIndex) != dominatedNodeIndices.end())
+      {
+        continue;
+      }
       const VRPTWNodeState stateToCheck = nodes[nodeIndex].state;
+      int stateToCheckCost = nodeIndexCosts[nodeIndex];
 
       // Transition with destroyed elements
       for (int location : destroyedElements)
@@ -4468,32 +4488,47 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
           int nextNodeIndex = addNode(newState);
           int newNumNodes = nodes.size();
 
-          bool inserted = stateSets.insert(newState.visited).second;
-          if (inserted)
+          // Check cost and dominance
+          int newCost = stateToCheckCost + vrptw.distances[stateToCheck.lastVisited][location];
+          nodeIndexCosts[nextNodeIndex] = newCost;
+          auto visitedSetBestCostIter = visitedSetBestCosts.find(newState.visited);
+          if (visitedSetBestCostIter != visitedSetBestCosts.end())
           {
-            int priorityQueueKeyValue = -1;
-            if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
+            int currBest = visitedSetBestCostIter->second;
+            if (newCost < currBest)
             {
-              priorityQueueKeyValue = newState.counter;
-            }
-            else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
-            {
-              priorityQueueKeyValue = newState.timeWithMultiplier;
+              visitedSetBestCosts[newState.visited] = newCost;
+              dominatedNodeIndices.insert(visitedSetBestState[newState.visited]);
+              visitedSetBestState[newState.visited] = nextNodeIndex;
             }
             else
             {
-              priorityQueueKeyValue = newState.load;
+              continue;
             }
+          }
 
-            if (priorityQueue2.find(priorityQueueKeyValue) != priorityQueue2.end())
-            {
-              priorityQueue2[priorityQueueKeyValue].push_back(nextNodeIndex);
-            }
-            else
-            {
-              const auto newElement = std::make_pair(priorityQueueKeyValue, std::vector<int>(1,nextNodeIndex));
-              priorityQueue2.insert(newElement);
-            }
+          int priorityQueueKeyValue = -1;
+          if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
+          {
+            priorityQueueKeyValue = newState.counter;
+          }
+          else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+          {
+            priorityQueueKeyValue = newState.timeWithMultiplier;
+          }
+          else
+          {
+            priorityQueueKeyValue = newState.load;
+          }
+
+          if (priorityQueue2.find(priorityQueueKeyValue) != priorityQueue2.end())
+          {
+            priorityQueue2[priorityQueueKeyValue].push_back(nextNodeIndex);
+          }
+          else
+          {
+            const auto newElement = std::make_pair(priorityQueueKeyValue, std::vector<int>(1,nextNodeIndex));
+            priorityQueue2.insert(newElement);
           }
 
           // Create arc from state to state
