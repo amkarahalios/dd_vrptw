@@ -1576,7 +1576,7 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   // Parameter setup
   int startingNumRandomElements = params.lnsNumElementsDestroy;
   int iterationsWithoutImprovement = 0;
-  int numElementsDestroy = 4;
+  int numElementsDestroy = 2;
   double randomElementsToDestroy = startingNumRandomElements;
 
   // Run LNS in loop for timeout
@@ -1696,12 +1696,12 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
       startTime = std::chrono::high_resolution_clock::now();
       iterationsWithoutImprovement = 0;
       destroyedSetsTried.clear();
-      numElementsDestroy = 4;
+      numElementsDestroy = 2;
       randomElementsToDestroy = startingNumRandomElements;
     }
     else
     {
-      numElementsDestroy = numElementsDestroy + 2;
+      numElementsDestroy = numElementsDestroy + 1;
     }
 
     // Check route sizes
@@ -1718,8 +1718,8 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
     if (!routeSizeExists)
     {
       std::cout << "primal heuristic checked all single route removals" << std::endl;
-      numElementsDestroy = 4;
-      randomElementsToDestroy += 5;
+      numElementsDestroy = 2;
+      randomElementsToDestroy += 1;
       std::cout << "random elements to destroy: " << randomElementsToDestroy << std::endl;
     }
   }
@@ -2506,12 +2506,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           stats.upperBound = heuristicUpperBound;
           std::cout << "improved ub from MIP primal heuristic: " << heuristicUpperBound << std::endl;
           stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-        }
 
-        // Run LNS
-        if (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS)
-        {
-          largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeoutSeconds);
+          // Run LNS
+          if (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS)
+          {
+            largeNeighborhoodSearch(routesByLocationPrimalHeuristic, dual, params.lnsTimeoutSeconds);
+          }
         }
       }
 

@@ -18,8 +18,8 @@ CLIQUERDIR    = $(HOME)/dd_vrptw/Cliquer/src
 # Compiler selection
 # ---------------------------------------------------------------------
 
-#CCC = g++ -O3
-CCC = g++ -pg -g
+CCC = g++ -O3
+#CCC = g++ -pg -g
 
 # ---------------------------------------------------------------------
 # Compiler options
