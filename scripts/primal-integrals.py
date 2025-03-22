@@ -5,6 +5,7 @@ import calculate_metrics
 # Input Information
 root_directory = "/Users/akarahal/Desktop/dd_vrptw/"
 
+'''
 parameter_set_names_strings = {
 "Vrp-Set-HG-C12-124_primal_param_files/CE_5_1_0" : 'CE_5',
 "Vrp-Set-HG-C12-124_primal_param_files/CE_30_1_0": 'CE_30',
@@ -12,12 +13,21 @@ parameter_set_names_strings = {
 "Vrp-Set-HG-C12-124_primal_param_files/CE_MIP_30_1_0" : "CE_MIP_30",
 "Vrp-Set-HG-C12-124_primal_param_files/CE_MIP_LNS_5_1_0" : "CE_MIP_LNS_5",
 "Vrp-Set-HG-C12-124_primal_param_files/CE_MIP_LNS_30_1_0" : "CE_MIP_LNS_30"
+#"PyVRP" : "PyVRP"
 }
+'''
 
 parameter_set_names_strings = {
 "X_primal_param_files/CE_MIP_LNS_5_1_0" : "CE_MIP_LNS_5",
 "PyVRP" : "PyVRP"
 }
+
+'''
+parameter_set_names_strings = {
+"Vrp-Set-HG_primal_param_files/CE_MIP_LNS_5_1_0" : "CE_MIP_LNS_5",
+"PyVRP" : "PyVRP"
+}
+'''
 
 parameter_set_names = [x[0] for x in parameter_set_names_strings.items()]
 
@@ -40,6 +50,8 @@ gap_results_df = calculate_metrics.calculate_gaps(ce_results_df, vrpsolver_resul
 average_gap_results_df = calculate_metrics.calculate_average_gaps(gap_results_df, times_for_metrics)
 
 calculate_metrics.plot_average_gaps(instance_set_name, parameter_set_names_strings, average_gap_results_df)
+
+calculate_metrics.plot_gaps_by_instance(parameter_set_names_strings, gap_results_df)
 
 calculate_metrics.print_instance_table(parameter_set_names_strings, gap_results_df)
 

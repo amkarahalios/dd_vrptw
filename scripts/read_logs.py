@@ -15,7 +15,7 @@ def get_instances(instance_set_name, root_directory):
   if instance_set_name == "Solomon":
     instance_dir = instance_dir + "/Vrp-Set-Solomon/"
   elif instance_set_name == "HG":
-    instance_dir = instance_dir + "/Vrp-Set-HG-C12-124/"
+    instance_dir = instance_dir + "/Vrp-Set-HG/"
   elif instance_set_name == "CVRP":
     instance_dir = instance_dir + "/CVRP/"
   elif instance_set_name == "X":

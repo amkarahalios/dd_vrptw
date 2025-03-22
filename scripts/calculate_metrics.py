@@ -80,6 +80,8 @@ def plot_average_gaps(instance_set_name, parameter_set_names_strings, average_ga
     plt.title("Average p(t) for VRPTW HG")
   elif instance_set_name == "CVRP":
     plt.title("Average p(t) for CVRP")
+  elif instance_set_name == "X":
+    plt.title("Average p(t) for X")
   elif instance_set_name == "PDPTW":
     plt.title("Average p(t) for PDPTW")
 
@@ -88,18 +90,40 @@ def plot_average_gaps(instance_set_name, parameter_set_names_strings, average_ga
   plt.legend()
   plt.show()
 
+def plot_gaps_by_instance(parameter_set_names_strings, gap_results):
+  parameter_set = set(gap_results['parameter'])
+  instances = list(set(gap_results['instance']))
+  instances.sort()
+
+  for instance in instances:
+    instance_df = gap_results[gap_results['instance'] == instance]
+    for parameter in parameter_set:
+      parameter_df = instance_df[instance_df['parameter'] == parameter]
+      plt.plot(list(parameter_df['time']), list(parameter_df['rel_gap']), label=parameter_set_names_strings[parameter])
+
+    plt.title(f"UB and LB for {instance}")
+    plt.ylabel('objective value')
+    plt.xlabel('time (s)')
+    plt.legend()
+    plt.show()
+
 def print_instance_table(parameter_set_names_strings, gap_results_df):
   instances = list(set(gap_results_df['instance']))
   instances.sort()
-  parameters = set(gap_results_df['parameter'])
+  parameters = list(set(gap_results_df['parameter']))
+  parameters.sort()
   for instance in instances:
     best_known = static.instance_upper_bounds[instance]
     instance_results_df = gap_results_df[gap_results_df['instance'] == instance]
     result_string = f"{instance} & {best_known} & & "
     for parameter in parameters:
       instance_parameter_results_df = instance_results_df[instance_results_df['parameter'] == parameter]
-      primal_gap = round(min(instance_parameter_results_df['primal_gap']), 3)
-      rel_gap = round(min(instance_parameter_results_df['rel_gap']), 3)
+      if instance_parameter_results_df.empty:
+        primal_gap = 1
+        rel_gap = 1
+      else:
+        primal_gap = round(min(instance_parameter_results_df['primal_gap']), 3)
+        rel_gap = round(min(instance_parameter_results_df['rel_gap']), 3)
       result_string = result_string + f"{primal_gap} & {rel_gap} & & "
 
     print(result_string)
@@ -113,7 +137,8 @@ def print_instance_table(parameter_set_names_strings, gap_results_df):
 def print_aggregated_table(parameter_set_names_strings, gap_results_df):
   instances = list(set(gap_results_df['instance']))
   instances.sort()
-  parameters = set(gap_results_df['parameter'])
+  parameters = list(set(gap_results_df['parameter']))
+  parameters.sort()
   averages_string = "instance & & "
   for parameter in parameters:
     parameter_results_df = gap_results_df[gap_results_df['parameter'] == parameter]
@@ -121,8 +146,12 @@ def print_aggregated_table(parameter_set_names_strings, gap_results_df):
     parameter_rel_gaps = []
     for instance in instances:
       parameter_instance_results_df = parameter_results_df[parameter_results_df['instance'] == instance]
-      primal_gap = round(min(parameter_instance_results_df['primal_gap']), 3)
-      rel_gap = round(min(parameter_instance_results_df['rel_gap']), 3)
+      if parameter_instance_results_df.empty:
+        primal_gap = 1
+        rel_gap = 1
+      else:
+        primal_gap = round(min(parameter_instance_results_df['primal_gap']), 3)
+        rel_gap = round(min(parameter_instance_results_df['rel_gap']), 3)
       parameter_primal_gaps.append(primal_gap)
       parameter_rel_gaps.append(rel_gap)
     average_primal_gap = round(sum(parameter_primal_gaps) / len(parameter_primal_gaps), 3)
