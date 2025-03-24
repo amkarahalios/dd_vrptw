@@ -284,10 +284,6 @@ int main(int argc, char** argv)
             {
               params.insertionAblation = PrimalHeuristicInsertionAblation::INTRA_SWAP;
             }
-            else if (paramValueString == "MAXIMAL")
-            {
-              params.insertionAblation = PrimalHeuristicInsertionAblation::MAXIMAL;
-            }
             else if (paramValueString == "TRUNCATED")
             {
               params.insertionAblation = PrimalHeuristicInsertionAblation::TRUNCATED;

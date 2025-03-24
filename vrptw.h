@@ -153,8 +153,7 @@ enum PrimalHeuristicInsertionAblation
 {
   NO_ABLATION = 0,
   INTRA_SWAP = 1,
-  MAXIMAL = 2,
-  TRUNCATED = 3
+  TRUNCATED = 2
 };
 
 enum InsertionCriteria
