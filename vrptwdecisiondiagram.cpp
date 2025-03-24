@@ -3997,7 +3997,7 @@ bool sort_by_second2(const std::pair<std::pair<int,int>,double>& a, const std::p
   return (a.second < b.second);
 }
 
-double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int insertionLimit, int timeoutSeconds)
+double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds)
 {
   double feasibleSolutionValue = vrptw.evaluateSolutionCost(feasibleSolution);
   int feasibleSolutionNumVehicles = static_cast<int>(feasibleSolution.size());
@@ -4555,7 +4555,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
   }
 
   //print();
-  std::cout << "num skipped: " << numSkipped << std::endl;
+  //std::cout << "num skipped: " << numSkipped << std::endl;
 
   // 2. Solve the Arc Flow Formulation as a MIP
   if (vrptw.problemType == ProblemType::PDP)

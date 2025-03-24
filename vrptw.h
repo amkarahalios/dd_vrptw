@@ -139,6 +139,24 @@ enum PrimalHeuristic
   BEST_KNOWN = 4
 };
 
+enum PrimalHeuristicRemovalStrategy
+{
+  RANDOM = 0,
+  SHAW = 1,
+  WORST = 2,
+  SEQUENCE_RANDOM = 3,
+  SEQUENCE_SHAW = 4,
+  SEQUENCE_WORST = 5
+};
+
+enum PrimalHeuristicInsertionAblation
+{
+  NO_ABLATION = 0,
+  INTRA_SWAP = 1,
+  MAXIMAL = 2,
+  TRUNCATED = 3
+};
+
 enum InsertionCriteria
 {
   MCFIC = 0,
@@ -176,7 +194,8 @@ struct VRPTWDDParameters
 
   PrimalHeuristic primalHeuristic;
   int lnsTimeoutSeconds;
-  int lnsNumElementsDestroy;
+  PrimalHeuristicRemovalStrategy removalStrategy;
+  PrimalHeuristicInsertionAblation insertionAblation;
 };
 
 struct VRPTWSolution

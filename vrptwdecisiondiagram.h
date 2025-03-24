@@ -261,7 +261,7 @@ class VRPTWDecisionDiagram
     double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType, double upperBound);
 
     // primal heuristics
-    double repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int insertionLimit, int timeoutSeconds);
+    double repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
  
     int selectArcWithLargestFlowFromNode(int nodeIndex);
     bool addLocationToRoute(int location, std::vector<int>& route);

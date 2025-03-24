@@ -160,7 +160,8 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   // primal heuristic params
   std::cout << "primal heuristic: " << params.primalHeuristic << std::endl;
   std::cout << "lns timeout: " << params.lnsTimeoutSeconds << std::endl;
-  std::cout << "lns num elements destroy: " << params.lnsNumElementsDestroy << std::endl;
+  std::cout << "removal strategy: " << params.removalStrategy << std::endl;
+  std::cout << "insertion ablation: " << params.insertionAblation << std::endl;
 
   /*
   if (params.switchSepToCuts)
@@ -1563,21 +1564,70 @@ void VRPTWDDSolver::destroyByWorst(const std::vector<std::vector<int>>& feasible
   }
 }
 
+void VRPTWDDSolver::removeElements(std::set<int>& destroyedElements, const std::vector<std::vector<int>>& currSolution, int numElementsDestroy, int extraElementsDestroy, int sequenceIndex)
+{
+  // Use params PrimalHeuristicRemovalStrategy
+  if (params.removalStrategy == PrimalHeuristicRemovalStrategy::RANDOM)
+  {
+    destroyRandomly(currSolution, destroyedElements, numElementsDestroy);
+  }
+  else if (params.removalStrategy == PrimalHeuristicRemovalStrategy::SHAW)
+  {
+    destroyByShaw(currSolution, destroyedElements, numElementsDestroy);
+  }
+  else if (params.removalStrategy == PrimalHeuristicRemovalStrategy::WORST)
+  {
+    destroyByWorst(currSolution, destroyedElements, numElementsDestroy);
+  }
+  else
+  {
+    auto route = currSolution[sequenceIndex];
+    if ((static_cast<int>(route.size()) - 2) == numElementsDestroy)
+    {
+      //std::cout << "destroy by single route index: " << sequenceIndex << std::endl;
+      for (int loc : route)
+      {
+        if (loc != 0)
+        {
+          destroyedElements.insert(loc);
+        }
+      }
+
+      if (params.removalStrategy == PrimalHeuristicRemovalStrategy::SEQUENCE_RANDOM)
+      {
+        destroyRandomly(currSolution, destroyedElements, extraElementsDestroy);
+      }
+      else if (params.removalStrategy == PrimalHeuristicRemovalStrategy::SEQUENCE_SHAW)
+      {
+        destroyByShaw(currSolution, destroyedElements, extraElementsDestroy);
+      }
+      else if (params.removalStrategy == PrimalHeuristicRemovalStrategy::SEQUENCE_WORST)
+      {
+        destroyByWorst(currSolution, destroyedElements, extraElementsDestroy);
+      }
+    }
+  }
+}
+
 // PDPTW needs to store second obj that isn't the real obj but the MIP with fake weights.
 bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, int timeoutSeconds)
 {
-  ++stats.numHeuristicLNSs;
-
   // Stats setup
+  ++stats.numHeuristicLNSs;
   bool isImproved = false;
   std::vector<std::vector<int>> currSolution = feasibleSolution;
   double currUpperBound = vrptw.evaluateSolutionCost(feasibleSolution);
 
   // Parameter setup
-  int startingNumRandomElements = params.lnsNumElementsDestroy;
-  int iterationsWithoutImprovement = 0;
   int numElementsDestroy = 2;
-  double randomElementsToDestroy = startingNumRandomElements;
+  int extraElementsDestroy = 1;
+  int sequenceIndex = 0;
+
+  int maxSequenceSize = 0;
+  for (auto sequence : feasibleSolution)
+  {
+    maxSequenceSize = std::max(static_cast<int>(sequence.size()), maxSequenceSize);
+  }
 
   // Run LNS in loop for timeout
   bool shouldContinue = true;
@@ -1585,56 +1635,31 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   std::set<std::set<int>> destroyedSetsTried;
   while (shouldContinue)
   {
-    double lnsHeuristicUpperBound = INF; 
-    double mipObjective = INF; 
-    std::vector<std::vector<int>> newBestRoutes;
-    for (int routeIndex=0; routeIndex<currSolution.size(); ++routeIndex)
+    // Setup timeout
+    auto currTime = std::chrono::high_resolution_clock::now();
+    auto numSeconds = std::chrono::duration_cast<std::chrono::seconds>(currTime - startTime).count();
+    int remainingSeconds = timeoutSeconds - numSeconds;
+    if (remainingSeconds < 0)
     {
-      // Setup timeout
-      auto currTime = std::chrono::high_resolution_clock::now();
-      auto numSeconds = std::chrono::duration_cast<std::chrono::seconds>(currTime - startTime).count();
-      int remainingSeconds = timeoutSeconds - numSeconds;
-      if (remainingSeconds < 0)
-      {
-        shouldContinue = false;
-        break;
-      }
+      shouldContinue = false;
+      break;
+    }
 
-      std::set<int> destroyedElements;
-      auto route = currSolution[routeIndex];
-      if (static_cast<int>(route.size()) == numElementsDestroy)
-      {
-        std::cout << "destroy by single route index: " << routeIndex << std::endl;
-        for (int loc : route)
-        {
-          if (loc != 0)
-          {
-            destroyedElements.insert(loc);
-          }
-        }
+    // Removal
+    std::set<int> destroyedElements;
+    removeElements(destroyedElements, currSolution, numElementsDestroy, extraElementsDestroy, sequenceIndex);
 
-        //destroyRoundRobin(currSolution, destroyedElements, numElementsDestroy + randomElementsToDestroy);
-        //destroyByShaw(currSolution, destroyedElements, numElementsDestroy + randomElementsToDestroy/3);
-        //destroyByWorst(currSolution, destroyedElements, numElementsDestroy + 2*randomElementsToDestroy/3);
-        destroyRandomly(currSolution, destroyedElements, numElementsDestroy + randomElementsToDestroy);
-        for (int e : destroyedElements)
-        {
-          std::cout << e << " ";
-        }
-        std::cout << std::endl;
- 
-        int insertionLimit = 2;
-        VRPTWDecisionDiagram heuristicDD(vrptw, params);
-        mipObjective = heuristicDD.repairSolution(currSolution, destroyedElements, dual, newBestRoutes, insertionLimit, remainingSeconds);
-        ++stats.numPrimalLNSRepairs;
-        if (mipObjective > 0)
-        {
-          lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(newBestRoutes);
-          if (lnsHeuristicUpperBound < currUpperBound)
-          {
-            break;
-          }
-        }
+    // Repair with LNS
+    std::vector<std::vector<int>> newBestRoutes;
+    double lnsHeuristicUpperBound = INF; 
+    if (destroyedElements.size() > 0)
+    {
+      VRPTWDecisionDiagram heuristicDD(vrptw, params);
+      double mipObjective = heuristicDD.repairSolution(currSolution, destroyedElements, dual, newBestRoutes, remainingSeconds);
+      ++stats.numPrimalLNSRepairs;
+      if (mipObjective > 0)
+      {
+        lnsHeuristicUpperBound = vrptw.evaluateSolutionCost(newBestRoutes);
       }
     }
 
@@ -1694,33 +1719,32 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
 
       // Update parameters
       startTime = std::chrono::high_resolution_clock::now();
-      iterationsWithoutImprovement = 0;
       destroyedSetsTried.clear();
       numElementsDestroy = 2;
-      randomElementsToDestroy = startingNumRandomElements;
+      extraElementsDestroy = 1;
+      sequenceIndex = 0;
     }
     else
     {
-      numElementsDestroy = numElementsDestroy + 1;
-    }
-
-    // Check route sizes
-    bool routeSizeExists = false;
-    for (auto route : currSolution)
-    {
-      if (static_cast<int>(route.size()) >= numElementsDestroy)
+      // Not improved, make updates
+      if ((params.removalStrategy == PrimalHeuristicRemovalStrategy::SEQUENCE_RANDOM) || (params.removalStrategy == PrimalHeuristicRemovalStrategy::SEQUENCE_SHAW) || (params.removalStrategy == PrimalHeuristicRemovalStrategy::SEQUENCE_WORST))
       {
-        routeSizeExists = true;
-        break;
-      }
-    }
+        ++sequenceIndex;
+        if (sequenceIndex == currSolution.size())
+        {
+          sequenceIndex = 0;
+          ++numElementsDestroy;
+        }
 
-    if (!routeSizeExists)
-    {
-      std::cout << "primal heuristic checked all single route removals" << std::endl;
-      numElementsDestroy = 2;
-      randomElementsToDestroy += 1;
-      std::cout << "random elements to destroy: " << randomElementsToDestroy << std::endl;
+        if (numElementsDestroy > maxSequenceSize)
+        {
+          ++extraElementsDestroy;
+        }
+      }
+      else
+      {
+        numElementsDestroy = numElementsDestroy + 1;
+      }
     }
   }
 

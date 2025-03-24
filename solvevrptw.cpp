@@ -249,7 +249,49 @@ int main(int argc, char** argv)
           }
           else if (lineIndex == 22)
           {
-            params.lnsNumElementsDestroy = std::stoi(paramValueString);
+            if (paramValueString == "RANDOM")
+            {
+              params.removalStrategy = PrimalHeuristicRemovalStrategy::RANDOM;
+            }
+            else if (paramValueString == "SHAW")
+            {
+              params.removalStrategy = PrimalHeuristicRemovalStrategy::SHAW;
+            }
+            else if (paramValueString == "WORST")
+            {
+              params.removalStrategy = PrimalHeuristicRemovalStrategy::WORST;
+            }
+            else if (paramValueString == "SEQUENCE_RANDOM")
+            {
+              params.removalStrategy = PrimalHeuristicRemovalStrategy::SEQUENCE_RANDOM;
+            }
+            else if (paramValueString == "SEQUENCE_SHAW")
+            {
+              params.removalStrategy = PrimalHeuristicRemovalStrategy::SEQUENCE_SHAW;
+            }
+            else if (paramValueString == "SEQUENCE_WORST")
+            {
+              params.removalStrategy = PrimalHeuristicRemovalStrategy::SEQUENCE_WORST;
+            }
+          }
+          else if (lineIndex == 23)
+          {
+            if (paramValueString == "NONE")
+            {
+              params.insertionAblation = PrimalHeuristicInsertionAblation::NO_ABLATION;
+            }
+            else if (paramValueString == "INTRA_SWAP")
+            {
+              params.insertionAblation = PrimalHeuristicInsertionAblation::INTRA_SWAP;
+            }
+            else if (paramValueString == "MAXIMAL")
+            {
+              params.insertionAblation = PrimalHeuristicInsertionAblation::MAXIMAL;
+            }
+            else if (paramValueString == "TRUNCATED")
+            {
+              params.insertionAblation = PrimalHeuristicInsertionAblation::TRUNCATED;
+            }
           }
         }
         wordIndex = wordIndex + 1;

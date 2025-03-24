@@ -124,6 +124,7 @@ class VRPTWDDSolver
     void destroyRandomly(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
     void chooseRandomLocationsFromRoutes(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& randomElementsChosen);
     void localSearchAroundSequences(int locationLimit, const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences);
+    void removeElements(std::set<int>& removedElements, const std::vector<std::vector<int>>& feasibleSolution, int numElementsDestroy, int extraElementsDestroy, int sequenceIndex);
     bool largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, int timeoutSeconds);
     bool localSearch(int locationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
 
