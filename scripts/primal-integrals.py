@@ -72,7 +72,7 @@ instance_set_names = ["Solomon", "HG", "CVRP", "X", "PDPTW"]
 instance_set_name = instance_set_names[3]
 
 vrpsolver_file_names = ['cvrp-X-noub.log']
-pyvrp_file_names = ['cvrp_instances1.log']
+pyvrp_file_names = ['cvrp_instances1.log','cvrp_instances2.log','cvrp_instances3.log','cvrp_instances4.log']
 
 times_for_metrics = range(0,3600,300)
 
