@@ -754,9 +754,12 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
             }
             else
             {
-              std::vector<int> truncatedRoute;
-              routeDD.createTruncatedRoute(route, truncatedRoute);
-              addRouteToPrimalRoutes(truncatedRoute);
+              if (params.insertionAblation != PrimalHeuristicInsertionAblation::TRUNCATED)
+              {
+                std::vector<int> truncatedRoute;
+                routeDD.createTruncatedRoute(route, truncatedRoute);
+                addRouteToPrimalRoutes(truncatedRoute);
+              }
             }
           }
 
@@ -775,22 +778,6 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           }
         }
       }
-      /*
-      else
-      {
-        // adding cuts could separate graph / ruin flow structure
-        // in this case, check the decomposed paths directly
-        for (int index=0; index<decomposedRoutes.size(); ++index)
-        {
-          auto route = decomposedRoutes[index];
-          if (!routeDD.isRouteFeasible(route))
-          {
-            auto routeArcs = decomposedArcs[index];
-            //infeasibilities.push_back(routeArcs);
-          }
-        }
-      }
-      */
 
       if (infeasibilities.size() > 0)
       {
@@ -990,10 +977,13 @@ void VRPTWDDSolver::addRouteToPrimalRoutes(std::vector<int> route)
     // Try to improve with intra-route swaps
     double routeCost = vrptw.evaluateRouteDistance(route);
 
-    bool improved = true;
-    while (improved)
+    if (params.insertionAblation != PrimalHeuristicInsertionAblation::INTRA_SWAP)
     {
-      improved = routeDD.intraRouteSwaps(route, routeCost);
+      bool improved = true;
+      while (improved)
+      {
+        improved = routeDD.intraRouteSwaps(route, routeCost);
+      }
     }
 
     // Add route
@@ -1013,29 +1003,6 @@ void VRPTWDDSolver::addRouteToPrimalRoutes(std::vector<int> route)
         std::cout << loc << ",";
       }
       std::cout << std::endl;
-
-      // Add maximal route
-      /*
-      std::vector<int> maximalSequence;
-      routeDD.createMaximalSequence(route, maximalSequence);
-      if (std::find(primalRoutes.begin(), primalRoutes.end(), maximalSequence) == primalRoutes.end())
-      {
-        primalRoutes.push_back(maximalSequence);
-        primalRouteCosts.push_back(vrptw.evaluateRouteDistance(maximalSequence));
-        int primalRouteIndex = primalRoutes.size()-1;
-        for (int loc : maximalSequence)
-        {
-          primalRouteLocationIndices[loc].push_back(primalRouteIndex);
-        }
-
-        std::cout << "added maximal sequence to primal routes: ";
-        for (int loc : maximalSequence)
-        {
-          std::cout << loc << ",";
-        }
-        std::cout << std::endl;
-      }
-      */
     }
   }
 }
@@ -2503,9 +2470,12 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         }
         else
         {
-          std::vector<int> truncatedRoute;
-          routeDD.createTruncatedRoute(route, truncatedRoute);
-          addRouteToPrimalRoutes(truncatedRoute);
+          if (params.insertionAblation != PrimalHeuristicInsertionAblation::TRUNCATED)
+          {
+            std::vector<int> truncatedRoute;
+            routeDD.createTruncatedRoute(route, truncatedRoute);
+            addRouteToPrimalRoutes(truncatedRoute);
+          }
         }
       }
 

@@ -220,10 +220,14 @@ struct VRPTW
     void calculateRouteLengthUpperBound();
     void calculateMaxValues();
 
+    void writeVrpFormat();
+
     std::string fileName;
     bool isInstanceClosed;
 
     int capacity;
+    std::vector<int> xCoords;
+    std::vector<int> yCoords;
     std::vector<std::vector<double> > distances;
     std::vector<std::vector<double> > preciseDistances;
     std::vector<std::set<int> > precedences;

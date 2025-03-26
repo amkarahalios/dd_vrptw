@@ -28,6 +28,9 @@ int main(int argc, char** argv)
 
   std::string fileName = argv[1];
   VRPTW vrptw(fileName);
+
+  //vrptw.writeVrpFormat();
+
   auto start = std::chrono::high_resolution_clock::now();
   std::string solverName = argv[2];
   if (solverName == "COL_GEN")

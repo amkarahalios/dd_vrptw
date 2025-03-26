@@ -91,6 +91,8 @@ VRPTW::VRPTW(std::string _fileName)
           startTimes.push_back(startTime);
           endTimes.push_back(endTime);
           serviceTimes.push_back(serviceTime);
+          xCoords.push_back(x);
+          yCoords.push_back(y);
           coordinates.push_back(std::make_pair(x, y));
         }
       }
@@ -221,6 +223,8 @@ VRPTW::VRPTW(std::string _fileName)
         }
         else
         {
+          xCoords.push_back(b);
+          yCoords.push_back(c);
           coordinates.push_back(std::make_pair(b, c));
         }
       }
@@ -662,6 +666,8 @@ VRPTW::VRPTW(std::string _fileName)
         int location, x, y, demand, tw1, tw2, serviceTime, pickup, delivery;
         while (iss >> location >> x >> y >> demand >> tw1 >> tw2 >> serviceTime >> pickup >> delivery)
         {
+          xCoords.push_back(x);
+          yCoords.push_back(y);
           coordinates.push_back(std::make_pair(x, y));
           demands.push_back(demand);
           demandsForSeparation.push_back(demand);
@@ -867,6 +873,8 @@ void VRPTW::recomputeDistancesPDPTW()
       int location, x, y, demand, tw1, tw2, serviceTime, pickup, delivery;
       while (iss >> location >> x >> y >> demand >> tw1 >> tw2 >> serviceTime >> pickup >> delivery)
       {
+        xCoords.push_back(x);
+        yCoords.push_back(y);
         coordinates.push_back(std::make_pair(x, y));
       }
     }
@@ -968,4 +976,39 @@ void VRPTW::calculateMaxValues()
       maxDistance = std::max(distances[i][j], maxDistance);
     }
   }
+}
+ 
+void VRPTW::writeVrpFormat()
+{
+  std::cout << "NAME : " << fileName << std::endl;
+  std::cout << "TYPE : " << "VRPTW" << std::endl;
+  std::cout << "DIMENSION : " << numLocations << std::endl;
+  std::cout << "VEHICLES : " << numVehicles << std::endl;
+  std::cout << "CAPACITY: " << capacity << std::endl;
+  std::cout << "SERVICE_TIME: " << serviceTimes[1] << std::endl;
+  std::cout << "EDGE_WEIGHT_TYPE : " << "EUC_2D" << std::endl;
+
+  std::cout << "NODE_COORD_SECTION" << std::endl;
+  for (int i=0; i<numLocations; ++i)
+  {
+    std::cout << i+1 << " " << xCoords[i] << " " << yCoords[i] << std::endl;
+  }
+
+  std::cout << "DEMAND_SECTION" << std::endl;
+  for (int i=0; i<numLocations; ++i)
+  {
+    std::cout << i+1 << " " << demands[i] << std::endl;
+  }
+ 
+  std::cout << "TIME_WINDOW_SECTION" << std::endl;
+  for (int i=0; i<numLocations; ++i)
+  {
+    std::cout << i+1 << " " << startTimes[i] << " " << endTimes[i] << std::endl;
+  }
+
+  std::cout << "DEPOT_SECTION" << std::endl;
+  std::cout << "1" << std::endl;
+  std::cout << "-1" << std::endl;
+
+  std::cout << "EOF" << std::endl;
 }
