@@ -118,4 +118,8 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
   else:
     results_df.sort_values(by=['instance','lb','ub'],inplace=True)
     results_df.reset_index(drop=True,inplace=True)
+
+  # In case it went over time
+  results_df = results_df[results_df['time'] <= 3600]
+
   return results_df

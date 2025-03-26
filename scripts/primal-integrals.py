@@ -22,21 +22,53 @@ parameter_set_names_strings = {
 "PyVRP" : "PyVRP"
 }
 
-'''
 parameter_set_names_strings = {
 "Vrp-Set-HG_primal_param_files/CE_MIP_LNS_5_1_0" : "CE_MIP_LNS_5",
 "PyVRP" : "PyVRP"
 }
+
 '''
+parameter_set_names_strings = {
+"X_primal_param_files/CE_MIP_LNS_SRC_5_1_0" : "CE_MIP_LNS_SRC_5_1_0",
+"X_primal_param_files/CE_MIP_LNS_VA_5_1_0" : "CE_MIP_LNS_VA_5_1_0",
+"X_primal_param_files/CE_MIP_LNS_VA_SRC_5_1_0" : "CE_MIP_LNS_VA_SRC_5_1_0",
+"X_primal_param_files/CE_MIP_LNS_VA_SRC_All_5_1_0" : "CE_MIP_LNS_VA_SRC_All_5_1_0",
+"X_primal_param_files/CE_MIP_LNS_VA_SRC_Restarts_5_1_0" : "CE_MIP_LNS_VA_SRC_Restarts_5_1_0",
+"PyVRP" : "PyVRP"
+}
+'''
+
+'''
+parameter_set_names_strings = {
+"Vrp-Set-HG-C12-124_primal_param_files/removals/CE_Worst_0/" : "Worst",
+"Vrp-Set-HG-C12-124_primal_param_files/removals/CE_Random_0/" : "Random",
+"Vrp-Set-HG-C12-124_primal_param_files/removals/CE_Shaw_0/" : "Shaw",
+"Vrp-Set-HG-C12-124_primal_param_files/removals/CE_SequenceWorst_0/" : "Sequence+Worst",
+"Vrp-Set-HG-C12-124_primal_param_files/removals/CE_SequenceRandom_0/" : "Sequence+Random",
+"Vrp-Set-HG-C12-124_primal_param_files/removals/CE_SequenceShaw_0/" : "Sequence+Shaw",
+}
+
+parameter_set_names_strings = {
+"Vrp-Set-HG-C12-124_primal_param_files/ablations/CE_None_0/" : "None",
+"Vrp-Set-HG-C12-124_primal_param_files/ablations/CE_Intra_0/" : "IntraSequenceSwaps",
+"Vrp-Set-HG-C12-124_primal_param_files/ablations/CE_Truncated_0/" : "TruncatedSequences",
+}
+'''
+
+parameter_set_names_strings = {
+"Vrp-Set-HG-C12-124_primal_param_files/times/CE_5_0/" : "5s",
+"Vrp-Set-HG-C12-124_primal_param_files/times/CE_30_0/" : "30s",
+"Vrp-Set-HG-C12-124_primal_param_files/times/CE_60_0/" : "60s",
+}
 
 parameter_set_names = [x[0] for x in parameter_set_names_strings.items()]
 
 instance_set_names = ["Solomon", "HG", "CVRP", "X", "PDPTW"]
-instance_set_name = instance_set_names[3]
+instance_set_name = instance_set_names[1]
 
 vrpsolver_file_names = []
 
-times_for_metrics = range(0,3600,20)
+times_for_metrics = range(0,3600,300)
 
 # Run Evaluation for the given Experiments and Instance Set
 instances = read_logs.get_instances(instance_set_name, root_directory)
@@ -51,8 +83,10 @@ average_gap_results_df = calculate_metrics.calculate_average_gaps(gap_results_df
 
 calculate_metrics.plot_average_gaps(instance_set_name, parameter_set_names_strings, average_gap_results_df)
 
-calculate_metrics.plot_gaps_by_instance(parameter_set_names_strings, gap_results_df)
+#calculate_metrics.plot_gaps_by_instance(parameter_set_names_strings, gap_results_df)
 
 calculate_metrics.print_instance_table(parameter_set_names_strings, gap_results_df)
 
-calculate_metrics.print_aggregated_table(parameter_set_names_strings, gap_results_df)
+calculate_metrics.print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_results_df)
+
+calculate_metrics.print_times_table(parameter_set_names_strings, gap_results_df)
