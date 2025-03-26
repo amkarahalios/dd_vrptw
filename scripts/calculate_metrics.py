@@ -8,7 +8,7 @@ import re
 import collections
 import static
 
-def calculate_gaps(ce_results_df, vrpsolver_results_df, times_for_metrics):
+def calculate_gaps(ce_results_df, times_for_metrics):
   instances = set(ce_results_df['instance'])
   ce_parameter_set = set(ce_results_df['parameter'])
 
@@ -215,10 +215,9 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
 def print_times_table(parameter_set_names_strings, gap_results_df):
   instances = list(set(gap_results_df['instance']))
   instances.sort()
-  parameters = list(set(gap_results_df['parameter']))
-  parameters.sort()
+  parameters = [parameter[0] for parameter in parameter_set_names_strings.items()]
 
-  time_aggregations = [3600]
+  time_aggregations = [300, 3600]
   for time_aggregation in time_aggregations:
     aggregation_gap_results_df = gap_results_df[gap_results_df['time'] <= time_aggregation]
 

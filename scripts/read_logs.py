@@ -70,6 +70,9 @@ def get_column_elimination_results(instances, parameter_set_names, root_director
   if print_table:
     table_results_df = results_df[['instance','parameter','lb','ub','lpIt','lagIt','time']]
     print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
+ 
+  # In case it went over time
+  results_df = results_df[results_df['time'] <= 3600]
 
   return results_df
 
@@ -79,37 +82,38 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
 
   results = []
   for file_name in vrpsolver_file_names:
-    for log_name in log_names:
-      log_file_name = root_directory + "/new_logs/" + file_name
-      if not os.path.exists(log_file_name):
-        continue
+    log_file_name = root_directory + "/new_logs/VRPSolver/" + file_name
+    if not os.path.exists(log_file_name):
+      continue
 
-      log_file = open(log_file_name, "r")
-      for line in log_file:
-        stats_match = regex_stats.match(line)
-        if stats_match:
-          # update some names
-          instance = stats_match.group(1)
-          if instance_set_name == 'Solomon':
-            instance = instance + '.vrptw'
-          else:
-            instance = instance + '.vrp'
-          instance = instance.replace('210','2_10')
-          instance = instance.replace('410','4_10')
-          num_nodes = int(stats_match.group(2))
-          lb = float(stats_match.group(3))
-          ub = stats_match.group(4)
-          if ub != "--":
-            ub = float(stats_match.group(4))
-          time = float(stats_match.group(5))
-          result = {'test': 'VRPSolver', 'instance' : instance, 'lb' : lb, 'ub' : ub, 'time' : time} 
+    log_file = open(log_file_name, "r")
+    for line in log_file:
+      stats_match = regex_stats.match(line)
+      if stats_match:
+        # update some names
+        instance = stats_match.group(1)
+        if instance_set_name == 'Solomon':
+          instance = instance + '.vrptw'
+        else:
+          instance = instance + '.vrp'
+        instance = instance.replace('210','2_10')
+        instance = instance.replace('410','4_10')
+        num_nodes = int(stats_match.group(2))
+        lb = float(stats_match.group(3))
+        ub = stats_match.group(4)
+        if ub != "--":
+          ub = float(stats_match.group(4))
+        time = float(stats_match.group(5))
+        if instance in instances:
+          result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : lb, 'ub' : ub, 'time' : time} 
           results.append(result)
 
-        pb_match = regex_pb.match(line)
-        if pb_match:
-          time = float(pb_match.group(1))
-          pb = float(pb_match.group(2))
-          result = {'test': 'VRPSolver', 'instance' : instance, 'lb' : lb, 'ub' : pb, 'time' : time} 
+      pb_match = regex_pb.match(line)
+      if pb_match:
+        time = float(pb_match.group(1))
+        pb = float(pb_match.group(2))
+        if instance in instances:
+          result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : lb, 'ub' : pb, 'time' : time} 
           results.append(result)
 
   results_df = pandas.DataFrame(results)
@@ -121,5 +125,52 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
 
   # In case it went over time
   results_df = results_df[results_df['time'] <= 3600]
+ 
+  print_table = True
+  if print_table:
+    table_results_df = results_df[['instance','parameter','lb','ub','time']]
+    print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
+
+  return results_df
+
+def get_pyvrp_results(instances, pyvrp_file_names, instance_set_name, root_directory):
+  regex_file_name = re.compile("Solving the file: (.*)")
+  regex_stats = re.compile("[H \|]*[0-9]+[ \|]*([0-9].*)s[ \|]*[0-9]+[ \|]*[0-9]+[ \|]*([0-9]+)[ \|]*[0-9]+[ \|]*[0-9]+[ \|]*[0-9]+[ \|]")
+
+  results = []
+  for file_name in pyvrp_file_names:
+    log_file_name = root_directory + "/new_logs/PyVRP/" + file_name
+    if not os.path.exists(log_file_name):
+      continue
+
+    log_file = open(log_file_name, "r")
+    for line in log_file:
+      file_match = regex_file_name.match(line)
+      if file_match:
+        instance = file_match.group(1)
+
+      stats_match = regex_stats.match(line)
+      if stats_match:
+        lb = 1
+        time = float(stats_match.group(1))
+        ub = float(stats_match.group(2))
+        if instance in instances:
+          result = {'parameter': 'PyVRP', 'instance' : instance, 'lb' : lb, 'ub' : ub, 'time' : time} 
+          results.append(result)
+
+  results_df = pandas.DataFrame(results)
+  if results_df.empty:
+    return results_df
+  else:
+    results_df.sort_values(by=['instance','lb','ub'],inplace=True)
+    results_df.reset_index(drop=True,inplace=True)
+
+  # In case it went over time
+  results_df = results_df[results_df['time'] <= 3600]
+ 
+  print_table = True
+  if print_table:
+    table_results_df = results_df[['instance','parameter','lb','ub','time']]
+    print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
 
   return results_df

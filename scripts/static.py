@@ -784,6 +784,7 @@ instance_upper_bounds = {
 "X-n936-k151.vrp":132715,
 "X-n957-k87.vrp":85465,
 "X-n979-k58.vrp":118976,
+"X-n1001-k43.vrp":72355,
 "lc101.pdp":828,
 "lc102.pdp":828,
 "lc103.pdp":1082,
