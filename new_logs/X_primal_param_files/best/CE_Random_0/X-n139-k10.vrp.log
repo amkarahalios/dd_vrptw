@@ -1,0 +1,579 @@
+flexible number of vehicles
+num vehicles: 10
+capacity: 106
+num locations: 139
+instance upper bound: 13590
+route length upper bound: 23
+fixed route cost: 0
+Random seed:3826273426
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+num nodes: 25324
+num arcs: 3198769
+done compiling DD
+using sequential insertion strategy
+initial primalRoute: 0 45 106 133 31 131 94 62 29 53 15 59 81 83 63 0 
+initial primalRoute: 0 91 30 44 42 37 47 135 71 104 77 75 120 109 121 0 
+initial primalRoute: 0 7 116 40 17 66 6 129 137 9 70 50 78 132 130 0 
+initial primalRoute: 0 126 25 115 123 110 20 54 35 107 64 82 111 102 98 0 
+initial primalRoute: 0 103 101 89 84 8 72 49 125 24 69 27 41 73 79 0 
+initial primalRoute: 0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+initial primalRoute: 0 57 12 61 100 86 28 18 13 74 34 38 23 56 0 
+initial primalRoute: 0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+initial primalRoute: 0 4 16 95 52 36 2 99 117 48 11 119 46 92 0 
+initial primalRoute: 0 3 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+initial primalRoute: 0 97 51 0 
+improved with intra-route reinsertion
+improved with intra-route Or-opt2
+added route to primal routes: 0,45,106,133,31,131,94,62,29,15,53,59,83,63,81,0,
+added route to primal routes: 0,91,30,44,42,37,47,135,71,104,77,75,120,109,121,0,
+improved with intra-route reinsertion
+improved with intra-route Or-opt3
+added route to primal routes: 0,7,66,6,129,137,9,70,50,78,132,130,116,17,40,0,
+added route to primal routes: 0,126,25,115,123,110,20,54,35,107,64,82,111,102,98,0,
+improved with intra-route reinsertion
+added route to primal routes: 0,89,103,101,84,8,72,49,125,24,69,27,41,73,79,0,
+added route to primal routes: 0,32,22,108,26,80,93,127,105,55,1,138,122,67,0,
+improved with intra-route reinsertion
+added route to primal routes: 0,56,57,12,61,100,86,28,18,13,74,34,38,23,0,
+added route to primal routes: 0,76,21,43,58,124,112,114,118,87,90,96,60,14,0,
+improved with intra-route reinsertion
+improved with intra-route Or-opt2
+added route to primal routes: 0,95,52,99,36,2,117,48,11,119,46,92,4,16,0,
+added route to primal routes: 0,3,33,136,68,128,134,39,65,19,5,113,85,10,88,0,
+added route to primal routes: 0,97,51,0,
+primal heuristic num vars: 11
+primal heuristic MIP obj: 34572
+feasible primal routes: 
+route: 
+0 45 106 133 31 131 94 62 29 15 53 59 83 63 81 0 
+route: 
+0 91 30 44 42 37 47 135 71 104 77 75 120 109 121 0 
+route: 
+0 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 126 25 115 123 110 20 54 35 107 64 82 111 102 98 0 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 3 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 97 51 0 
+improved ub from MIP pool: 34572
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[34572] numArcs: [3198769] numFixed: [0] numHeuristicIPs: [1] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [2]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[34572] numArcs: [3198769] numFixed: [0] time: [2]
+num vars: 293
+num vars: 368
+num vars: 478
+num vars: 560
+num vars: 624
+num vars: 858
+improved iteration ub from lns primal heuristic: 34234
+improved primal routes: 
+route: 
+0 29 126 25 115 123 110 20 54 35 107 64 82 111 102 98 0 
+route: 
+0 91 51 0 
+route: 
+0 30 44 42 37 47 135 71 104 77 75 120 109 121 0 
+route: 
+0 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 3 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 97 45 106 133 31 131 94 62 15 53 59 83 63 81 0 
+added route to primal routes: 0,29,126,25,115,123,110,20,54,35,107,64,82,111,102,98,0,
+added route to primal routes: 0,91,51,0,
+added route to primal routes: 0,30,44,42,37,47,135,71,104,77,75,120,109,121,0,
+improved with intra-route reinsertion
+improved with intra-route reinsertion
+improved with intra-route reinsertion
+improved with intra-route reinsertion
+improved with intra-route reinsertion
+added route to primal routes: 0,45,106,133,31,97,62,131,94,53,15,59,83,63,81,0,
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[34234] numArcs: [3198769] numFixed: [0] numHeuristicIPs: [1] numHeuristicLNS: [1] numPrimalLNSRepairs: [6] time: [2]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[34234] numArcs: [3198769] numFixed: [0] time: [2]
+routes added, try running MIP Pool
+primal heuristic num vars: 15
+add MIP warm start
+primal heuristic MIP obj: 33576
+feasible primal routes: 
+route: 
+0 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 3 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 29 126 25 115 123 110 20 54 35 107 64 82 111 102 98 0 
+route: 
+0 91 51 0 
+route: 
+0 30 44 42 37 47 135 71 104 77 75 120 109 121 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+improved ub from MIP pool: 33576
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[33576] numArcs: [3198769] numFixed: [0] numHeuristicIPs: [2] numHeuristicLNS: [1] numPrimalLNSRepairs: [6] time: [3]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[33576] numArcs: [3198769] numFixed: [0] time: [3]
+num vars: 241
+improved iteration ub from lns primal heuristic: 33576
+improved primal routes: 
+route: 
+0 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 3 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 29 126 25 115 123 110 20 54 35 107 64 82 111 102 98 0 
+route: 
+0 91 51 0 
+route: 
+0 30 44 42 37 47 135 71 104 77 75 120 109 121 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+num vars: 366
+improved iteration ub from lns primal heuristic: 33575
+improved primal routes: 
+route: 
+0 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 3 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 29 126 25 115 123 110 20 54 35 107 64 82 111 102 0 
+route: 
+0 98 91 51 0 
+route: 
+0 30 44 42 37 47 135 71 104 77 75 120 109 121 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+added route to primal routes: 0,29,126,25,115,123,110,20,54,35,107,64,82,111,102,0,
+added route to primal routes: 0,98,91,51,0,
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[33575] numArcs: [3198769] numFixed: [0] numHeuristicIPs: [2] numHeuristicLNS: [1] numPrimalLNSRepairs: [8] time: [3]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[33575] numArcs: [3198769] numFixed: [0] time: [3]
+routes added, try running MIP Pool
+primal heuristic num vars: 17
+add MIP warm start
+primal heuristic MIP obj: 33575
+feasible primal routes: 
+route: 
+0 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 3 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 30 44 42 37 47 135 71 104 77 75 120 109 121 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+route: 
+0 29 126 25 115 123 110 20 54 35 107 64 82 111 102 0 
+route: 
+0 98 91 51 0 
+num vars: 321
+num vars: 521
+num vars: 664
+num vars: 630
+num vars: 747
+num vars: 971
+num vars: 943
+num vars: 1203
+improved iteration ub from lns primal heuristic: 33285
+improved primal routes: 
+route: 
+0 3 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 51 29 126 25 115 123 110 20 54 35 107 64 82 111 102 0 
+route: 
+0 71 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 98 91 0 
+route: 
+0 30 44 42 37 47 135 104 77 75 120 109 121 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+added route to primal routes: 0,3,7,66,6,129,137,9,70,50,78,132,130,116,17,40,0,
+improved with intra-route reinsertion
+improved with intra-route Or-opt2
+improved with intra-route reinsertion
+added route to primal routes: 0,102,51,29,126,25,115,123,35,107,64,82,111,110,20,54,0,
+added route to primal routes: 0,71,33,136,68,128,134,39,65,19,5,113,85,10,88,0,
+added route to primal routes: 0,98,91,0,
+added route to primal routes: 0,30,44,42,37,47,135,104,77,75,120,109,121,0,
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[33285] numArcs: [3198769] numFixed: [0] numHeuristicIPs: [3] numHeuristicLNS: [1] numPrimalLNSRepairs: [16] time: [3]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[33285] numArcs: [3198769] numFixed: [0] time: [3]
+routes added, try running MIP Pool
+primal heuristic num vars: 22
+add MIP warm start
+primal heuristic MIP obj: 33052
+feasible primal routes: 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+route: 
+0 3 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 102 51 29 126 25 115 123 35 107 64 82 111 110 20 54 0 
+route: 
+0 71 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 98 91 0 
+route: 
+0 30 44 42 37 47 135 104 77 75 120 109 121 0 
+improved ub from MIP pool: 33052
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[33052] numArcs: [3198769] numFixed: [0] numHeuristicIPs: [4] numHeuristicLNS: [1] numPrimalLNSRepairs: [16] time: [3]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[33052] numArcs: [3198769] numFixed: [0] time: [3]
+num vars: 274
+improved iteration ub from lns primal heuristic: 33052
+improved primal routes: 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+route: 
+0 3 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 102 51 29 126 25 115 123 35 107 64 82 111 110 20 54 0 
+route: 
+0 71 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 98 91 0 
+route: 
+0 30 44 42 37 47 135 104 77 75 120 109 121 0 
+num vars: 279
+improved iteration ub from lns primal heuristic: 32965
+improved primal routes: 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 91 30 44 42 37 47 135 104 77 75 120 109 121 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+route: 
+0 3 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 102 51 29 126 25 115 123 35 107 64 82 111 110 20 54 0 
+route: 
+0 71 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 98 0 
+added route to primal routes: 0,91,30,44,42,37,47,135,104,77,75,120,109,121,0,
+added route to primal routes: 0,98,0,
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[32965] numArcs: [3198769] numFixed: [0] numHeuristicIPs: [4] numHeuristicLNS: [1] numPrimalLNSRepairs: [18] time: [3]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[32965] numArcs: [3198769] numFixed: [0] time: [3]
+routes added, try running MIP Pool
+primal heuristic num vars: 24
+add MIP warm start
+primal heuristic MIP obj: 32965
+feasible primal routes: 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+route: 
+0 3 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 102 51 29 126 25 115 123 35 107 64 82 111 110 20 54 0 
+route: 
+0 71 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 91 30 44 42 37 47 135 104 77 75 120 109 121 0 
+route: 
+0 98 0 
+num vars: 317
+num vars: 422
+num vars: 388
+num vars: 577
+num vars: 739
+num vars: 673
+num vars: 868
+num vars: 1058
+num vars: 877
+num vars: 1272
+num vars: 1642
+num vars: 1184
+num vars: 1735
+num vars: 1845
+improved iteration ub from lns primal heuristic: 32955
+improved primal routes: 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 98 91 30 44 42 37 47 135 104 77 75 120 109 121 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+route: 
+0 3 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 102 51 29 126 25 115 123 35 107 64 82 111 110 20 54 0 
+route: 
+0 71 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+added route to primal routes: 0,98,91,30,44,42,37,47,135,104,77,75,120,109,121,0,
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] lb[0] ub[32955] numArcs: [3198769] numFixed: [0] numHeuristicIPs: [5] numHeuristicLNS: [1] numPrimalLNSRepairs: [32] time: [3]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[2] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[32955] numArcs: [3198769] numFixed: [0] time: [3]
+routes added, try running MIP Pool
+primal heuristic num vars: 25
+add MIP warm start
+primal heuristic MIP obj: 32955
+feasible primal routes: 
+route: 
+0 89 103 101 84 8 72 49 125 24 69 27 41 73 79 0 
+route: 
+0 32 22 108 26 80 93 127 105 55 1 138 122 67 0 
+route: 
+0 56 57 12 61 100 86 28 18 13 74 34 38 23 0 
+route: 
+0 76 21 43 58 124 112 114 118 87 90 96 60 14 0 
+route: 
+0 95 52 99 36 2 117 48 11 119 46 92 4 16 0 
+route: 
+0 45 106 133 31 97 62 131 94 53 15 59 83 63 81 0 
+route: 
+0 3 7 66 6 129 137 9 70 50 78 132 130 116 17 40 0 
+route: 
+0 102 51 29 126 25 115 123 35 107 64 82 111 110 20 54 0 
+route: 
+0 71 33 136 68 128 134 39 65 19 5 113 85 10 88 0 
+route: 
+0 98 91 30 44 42 37 47 135 104 77 75 120 109 121 0 
+num vars: 267
+num vars: 323
+num vars: 466
+num vars: 412
+num vars: 647
+num vars: 922
+num vars: 947
+num vars: 1076
+num vars: 1143
+num vars: 1278
+num vars: 1600
+num vars: 1446
+num vars: 1508
+num vars: 1680
+num vars: 2004
+num vars: 2291
+num vars: 2423
+num vars: 2406
+num vars: 2834
+num vars: 2956
+num vars: 3117
+num vars: 2881
+num vars: 3085
+num vars: 3418
+num vars: 3544
+num vars: 3615
+num vars: 3327
+num vars: 3816
+num vars: 3875
+num vars: 3687
+num vars: 3753
+num vars: 3641
+num vars: 3881
+num vars: 4330
+num vars: 4377
+num vars: 4478
+num vars: 3900
+num vars: 4617
+num vars: 4334
+num vars: 4558
+num vars: 4822
+num vars: 4807
+num vars: 4935
+num vars: 5001
+num vars: 4528
+num vars: 5116
+num vars: 5167
+num vars: 5212
+num vars: 5263
+num vars: 5305
+num vars: 5352
+num vars: 4579
+num vars: 5440
+num vars: 5478
+num vars: 5524
+num vars: 5560
+num vars: 5581
+num vars: 5615
+num vars: 5644
+num vars: 5663
+num vars: 5696
+num vars: 5715
+num vars: 5727
+num vars: 5746
+num vars: 5778
+num vars: 5784
+num vars: 5796
+num vars: 5813
+num vars: 5823
+num vars: 5824
+num vars: 5835
+num vars: 5828
+num vars: 5831
+num vars: 5826
+num vars: 5834
+num vars: 5824
+num vars: 5813
+num vars: 5810
+num vars: 5792
+num vars: 5778
+num vars: 5760
+num vars: 5742
+num vars: 5726
+num vars: 5704
+num vars: 5682
+num vars: 5655
+num vars: 5619
+num vars: 5595
+num vars: 5567
+num vars: 5523
+num vars: 5498
+num vars: 5459
+num vars: 5418
+num vars: 5282
+num vars: 5327
+num vars: 5287
+num vars: 5242
+num vars: 5191
+num vars: 5139
+num vars: 5086
+num vars: 5027
+num vars: 4863
+num vars: 4910
+num vars: 4853
+num vars: 4785
+num vars: 4714
+num vars: 4651
+num vars: 4359
+num vars: 4394
+num vars: 4433
+num vars: 4361
+num vars: 4282
+num vars: 3971
+num vars: 4004
+num vars: 4038
+num vars: 3832
+num vars: 3741
+num vars: 3527
+num vars: 3560
+num vars: 3340
+num vars: 3240
+num vars: 3144
+num vars: 3040
+num vars: 2809
+num vars: 2832
+num vars: 2723
+num vars: 2353
+num vars: 1979
+num vars: 1991
+num vars: 1874
+num vars: 1751
+num vars: 1493
+num vars: 1233
+num vars: 963
+num vars: 696
+num vars: 414
