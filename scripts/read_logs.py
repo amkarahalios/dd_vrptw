@@ -77,6 +77,7 @@ def get_column_elimination_results(instances, parameter_set_names, root_director
   return results_df
 
 def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, root_directory):
+  regex_instance = re.compile('  instance  =>  "/CVRP/data/X/(.*)"')
   regex_stats = re.compile('statistics: ([A-Z]+.*[0-9]) & [0-9] & [0-9]+.* & [0-9]+.* & [0-9]+.* & ([0-9]+) & ([0-9]+.*) & ([0-9\--]+.*) & ([0-9]+.*) \\.*')
   regex_pb = re.compile('<DWph.*et=([0-9]+).*PB=([0-9]+).*')
 
@@ -88,6 +89,10 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
 
     log_file = open(log_file_name, "r")
     for line in log_file:
+      file_name_match = regex_instance.match(line)
+      if file_name_match:
+        instance = file_name_match.group(1)
+
       stats_match = regex_stats.match(line)
       if stats_match:
         # update some names
@@ -113,7 +118,7 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
         time = float(pb_match.group(1))
         pb = float(pb_match.group(2))
         if instance in instances:
-          result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : lb, 'ub' : pb, 'time' : time} 
+          result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : 0, 'ub' : pb, 'time' : time} 
           results.append(result)
 
   results_df = pandas.DataFrame(results)
@@ -130,6 +135,13 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
   if print_table:
     table_results_df = results_df[['instance','parameter','lb','ub','time']]
     print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
+ 
+  vrpsolver_instances = set(results_df['instance'])
+  for instance in instances:
+    if not instance in vrpsolver_instances:
+      result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : 0, 'ub' : 1e9, 'time' : time} 
+      results.append(result)
+      print(f"PyVRP missing instance {instance}")
 
   return results_df
 
@@ -172,5 +184,12 @@ def get_pyvrp_results(instances, pyvrp_file_names, instance_set_name, root_direc
   if print_table:
     table_results_df = results_df[['instance','parameter','lb','ub','time']]
     print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
+
+  pyvrp_instances = set(results_df['instance'])
+  for instance in instances:
+    if not instance in pyvrp_instances:
+      result = {'parameter': 'PyVRP', 'instance' : instance, 'lb' : 0, 'ub' : 1e9, 'time' : time} 
+      results.append(result)
+      print(f"PyVRP missing instance {instance}")
 
   return results_df

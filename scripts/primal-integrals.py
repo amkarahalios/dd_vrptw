@@ -60,12 +60,18 @@ parameter_set_names_strings = {
 }
 '''
 
+parameter_set_names_strings = {
+  "X_primal_param_files/best/CE_Random_0/" : "CE",
+  "PyVRP" : "PyVRP",
+  "VRPSolver" : "VRPSolver"
+}
+
 parameter_set_names = [x[0] for x in parameter_set_names_strings.items()]
 
 instance_set_names = ["Solomon", "HG", "CVRP", "X", "PDPTW"]
 instance_set_name = instance_set_names[3]
 
-vrpsolver_file_names = ['cvrp-X-noub']
+vrpsolver_file_names = ['cvrp-X-noub.log']
 pyvrp_file_names = ['cvrp_instances1.log']
 
 times_for_metrics = range(0,3600,300)

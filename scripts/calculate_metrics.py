@@ -43,14 +43,6 @@ def calculate_gaps(ce_results_df, times_for_metrics):
             gap_info = {'instance': instance, 'parameter' : parameter, 'rel_gap' : 1, 'primal_gap' : 1, 'time' : end_time} 
           gap_results.append(gap_info)
 
-    if instance in static.pyvrp_solutions:
-      ub = static.pyvrp_solutions[instance]
-      primal_gap = abs(ub - best_known) / max(abs(best_known), abs(ub))
-      rel_gap = 1
-      for end_time in times_for_metrics:
-        gap_info = {'instance': instance, 'parameter' : "PyVRP", 'rel_gap' : rel_gap, 'primal_gap' : primal_gap, 'time' : end_time} 
-        gap_results.append(gap_info)
-
   gap_results_df = pandas.DataFrame(gap_results)
   return gap_results_df
 
@@ -123,7 +115,7 @@ def print_instance_table(parameter_set_names_strings, gap_results_df):
   for instance in instances:
     best_known = static.instance_upper_bounds[instance]
     instance_results_df = gap_results_df[gap_results_df['instance'] == instance]
-    result_string = f"{instance} & {best_known} & & "
+    result_string = f"{instance} & & "
     for parameter in parameters:
       instance_parameter_results_df = instance_results_df[instance_results_df['parameter'] == parameter]
       if instance_parameter_results_df.empty:
