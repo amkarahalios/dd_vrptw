@@ -13,19 +13,22 @@ def get_instances(instance_set_name, root_directory):
 
   instances = []
   if instance_set_name == "Solomon":
-    instance_dir = instance_dir + "/Vrp-Set-Solomon/"
+    instance_dirs = [instance_dir + "/Vrp-Set-Solomon/"]
   elif instance_set_name == "HG":
-    instance_dir = instance_dir + "/Vrp-Set-HG/"
+    instance_dirs = [instance_dir + "/Vrp-Set-HG/"]
   elif instance_set_name == "CVRP":
-    instance_dir = instance_dir + "/CVRP/"
+    instance_dirs = [instance_dir + "/CVRP/"]
   elif instance_set_name == "X":
-    instance_dir = instance_dir + "/X/"
+    instance_dirs = [instance_dir + "/X/"]
   elif instance_set_name == "PDPTW":
-    instance_dir = instance_dir + "/pdp_200/"
+    instance_dirs = [instance_dir + "/pdp_200/"]
+    instance_dirs.append(instance_dir + "/pdp_400/")
+    instance_dirs.append(instance_dir + "/pdp_600/")
 
-  for instance in os.listdir(instance_dir):
-    if instance in static.instance_upper_bounds:
-      instances.append(instance)
+  for instance_dir in instance_dirs:
+    for instance in os.listdir(instance_dir):
+      if instance in static.instance_upper_bounds:
+        instances.append(instance)
 
   instances.sort()
   return instances
@@ -59,6 +62,7 @@ def get_column_elimination_results(instances, parameter_set_names, root_director
           numLNS = int(match.group(13))
           numRepairs = int(match.group(14))
           time = float(match.group(15))
+
           time_result = {'instance': instance, 'parameter': parameter_name, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
           results.append(time_result)
 

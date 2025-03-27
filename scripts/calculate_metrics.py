@@ -115,7 +115,7 @@ def print_instance_table(parameter_set_names_strings, gap_results_df):
   for instance in instances:
     best_known = static.instance_upper_bounds[instance]
     instance_results_df = gap_results_df[gap_results_df['instance'] == instance]
-    result_string = f"{instance} & & "
+    result_string = f"{instance} & "
     for parameter in parameters:
       instance_parameter_results_df = instance_results_df[instance_results_df['parameter'] == parameter]
       if instance_parameter_results_df.empty:
@@ -142,8 +142,8 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
   vrptw_aggregations = {
     "C1" : "^C1_",
     "C2" : "^C2_",
-    "R" : "^R_",
-    "RC" : "^RC_",
+    "R" : "^R[12]_",
+    "RC" : "^RC[12]_"
   }
   x_aggregations = {
     "X100" : "X-n1..-",
@@ -174,7 +174,7 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
     aggregation_gap_results_df = gap_results_df[gap_results_df['instance'].str.contains(aggregation_regex, regex=True)]
     aggregation_instances = set(aggregation_gap_results_df['instance'])
 
-    averages_string = f"{aggregation_name} & & "
+    averages_string = f"{aggregation_name} & "
     for parameter in parameters:
       parameter_results_df = aggregation_gap_results_df[aggregation_gap_results_df['parameter'] == parameter]
       if parameter_results_df.empty:
@@ -195,7 +195,7 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
       average_rel_gap = round(sum(parameter_rel_gaps) / len(parameter_rel_gaps), 3)
       averages_string = averages_string + f"{average_primal_gap} & {average_rel_gap} & & "
 
-    header_string = "instance_class & & "
+    header_string = "instance_class & "
     for parameter in parameters:
       header_string = header_string + f"{parameter_set_names_strings[parameter]} & & "
     print(averages_string)

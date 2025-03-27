@@ -80,6 +80,15 @@ parameter_set_names_strings = {
   "VRPSolver" : "VRPSolver"
 }
 
+'''
+parameter_set_names_strings = {
+  "pdp_600_primal_param_files/best/CE_Random_0/" : "CE_Random",
+  "pdp_600_primal_param_files/best/CE_SequenceRandom_0/" : "CE_Sequence",
+  "PyVRP" : "PyVRP",
+  "VRPSolver" : "VRPSolver"
+}
+'''
+
 parameter_set_names = [x[0] for x in parameter_set_names_strings.items()]
 
 instance_set_names = ["Solomon", "HG", "CVRP", "X", "PDPTW"]
@@ -108,7 +117,7 @@ gap_results_df = calculate_metrics.calculate_gaps(ce_results_df, times_for_metri
 
 average_gap_results_df = calculate_metrics.calculate_average_gaps(gap_results_df, times_for_metrics)
 
-calculate_metrics.plot_average_gaps(instance_set_name, parameter_set_names_strings, average_gap_results_df)
+#calculate_metrics.plot_average_gaps(instance_set_name, parameter_set_names_strings, average_gap_results_df)
 
 #calculate_metrics.plot_gaps_by_instance(parameter_set_names_strings, gap_results_df)
 
