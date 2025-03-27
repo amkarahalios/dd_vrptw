@@ -108,6 +108,8 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
         ub = stats_match.group(4)
         if ub != "--":
           ub = float(stats_match.group(4))
+        else:
+          ub = 1e9
         time = float(stats_match.group(5))
         if instance in instances:
           result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : lb, 'ub' : ub, 'time' : time} 
@@ -141,7 +143,7 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
     if not instance in vrpsolver_instances:
       result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : 0, 'ub' : 1e9, 'time' : time} 
       results.append(result)
-      print(f"PyVRP missing instance {instance}")
+      print(f"VRPSolver missing instance {instance}")
 
   return results_df
 
@@ -160,6 +162,7 @@ def get_pyvrp_results(instances, pyvrp_file_names, instance_set_name, root_direc
       file_match = regex_file_name.match(line)
       if file_match:
         instance = file_match.group(1)
+        instance = instance.replace('.log.tmp','')
 
       stats_match = regex_stats.match(line)
       if stats_match:

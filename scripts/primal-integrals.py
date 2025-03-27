@@ -60,8 +60,22 @@ parameter_set_names_strings = {
 }
 '''
 
+'''
+parameter_set_names_strings = {
+"Vrp-Set-HG-C12-124_primal_param_files/CE_5_1_0" : 'CE',
+"Vrp-Set-HG-C12-124_primal_param_files/CE_MIP_5_1_0" : "CE+MIP",
+"Vrp-Set-HG-C12-124_primal_param_files/CE_MIP_LNS_5_1_0" : "CE+MIP+LNS",
+}
+
+'''
 parameter_set_names_strings = {
   "X_primal_param_files/best/CE_Random_0/" : "CE",
+  "PyVRP" : "PyVRP",
+  "VRPSolver" : "VRPSolver"
+}
+
+parameter_set_names_strings = {
+  "Vrp-Set-HG_primal_param_files/best/CE_Random_0/" : "CE",
   "PyVRP" : "PyVRP",
   "VRPSolver" : "VRPSolver"
 }
@@ -69,12 +83,12 @@ parameter_set_names_strings = {
 parameter_set_names = [x[0] for x in parameter_set_names_strings.items()]
 
 instance_set_names = ["Solomon", "HG", "CVRP", "X", "PDPTW"]
-instance_set_name = instance_set_names[3]
+instance_set_name = instance_set_names[1]
 
-vrpsolver_file_names = ['cvrp-X-noub.log']
-pyvrp_file_names = ['cvrp_instances1.log','cvrp_instances2.log','cvrp_instances3.log','cvrp_instances4.log']
+vrpsolver_file_names = ['cvrp-X-noub1.log','cvrp-X-noub2.log','cvrp-X-noub3.log','cvrp-X-noub4.log','cvrp-X-noub5.log']
+pyvrp_file_names = ['cvrp_instances1.log','cvrp_instances2.log','cvrp_instances3.log','cvrp_instances4.log','vrptw_instances1.log','vrptw_instances2.log','vrptw_instances3.log','vrptw_instances4.log','vrptw_instances5.log','vrptw_instances6.log']
 
-times_for_metrics = range(0,3600,300)
+times_for_metrics = range(0,3600,100)
 
 # Run Evaluation for the given Experiments and Instance Set
 instances = read_logs.get_instances(instance_set_name, root_directory)

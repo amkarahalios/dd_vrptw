@@ -142,17 +142,14 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
   vrptw_aggregations = {
     "C1" : "^C1_",
     "C2" : "^C2_",
-    "R1" : "^R1_",
-    "R2" : "^R2_",
-    "RC1" : "^RC1_",
-    "RC2" : "^RC2_"
+    "R" : "^R_",
+    "RC" : "^RC_",
   }
   x_aggregations = {
-    "X100-200" : "X-n[12]..-",
-    "X300-400" : "X-n[34]",
-    "X500-600" : "X-n[56]",
-    "X700-800" : "x-n[78]",
-    "X900" : "x-n[9]"
+    "X100" : "X-n1..-",
+    "X200" : "X-n2..-",
+    "X300-500" : "X-n[345]",
+    "X600-1000" : "X-n[6789]"
   }
   pdp_aggregations = {
     "200" : "L[CR]1_2",
