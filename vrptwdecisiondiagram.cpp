@@ -129,6 +129,25 @@ VRPTWDecisionDiagram::VRPTWDecisionDiagram(const VRPTW& _vrptw, const VRPTWDDPar
 
   setTimeStepSize();
   separatedFeasibleRouteCounter = 0;
+ 
+  // create some binary values for initial relaxation to use different state information
+  timeWindowBinary = 1;
+  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::NO_TIME_WINDOWS)
+  {
+    timeWindowBinary = 0;
+  }
+
+  capacityBinary = 1;
+  if (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY)
+  {
+    capacityBinary = 0;
+  }
+
+  counterBinary = 1;
+  if (vrptw.counterType == VRPTWCounterType::NO_USE_COUNTER)
+  {
+    counterBinary = 0;
+  }
 };
 
 void VRPTWDecisionDiagram::setTimeStepSize()
@@ -216,7 +235,6 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
   VRPTWArc newArc(fromNodeIndex, toNodeIndex, toLocation, distance);
   int newArcIndex = arcs.size();
   arcs.push_back(newArc);
-  arcsUsed.push_back(false);
 
   nodes[fromNodeIndex].outArcs.push_back(newArcIndex);
   nodes[toNodeIndex].inArcs.push_back(newArcIndex);
@@ -723,9 +741,6 @@ bool VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::ve
     int randomInteger1 = std::rand();
     bool insertionStrategyBoolean = ((randomInteger1 % 2) == 0);
 
-    //int randomInteger2 = std::rand();
-    //int randomBoolean2 = randomInteger2 % 2;
-    //InsertionCriteria insertionCriteria = (randomBoolean2 == 0) ? InsertionCriteria::MCFIC : InsertionCriteria::NFIC;
     InsertionCriteria insertionCriteria = InsertionCriteria::MCFIC; 
 
     // run insertion heuristic
@@ -747,12 +762,9 @@ bool VRPTWDecisionDiagram::generateHeuristicRoutesLiterature(std::vector<std::ve
     {
       std::cout << "using sequential insertion strategy" << std::endl;
       sequentialInsertion(routes, candidateList, insertionCriteria);
-      //sequentialInsertionSimple(routes, candidateList);
     }
     else
     {
-      //std::cout << "using parallel insertion strategy" << std::endl;
-      //parallelInsertion(routes, candidateList, insertionCriteria);
       std::cout << "using sequential insertion strategy" << std::endl;
       sequentialInsertion(routes, candidateList, insertionCriteria);
     }
@@ -891,7 +903,6 @@ int VRPTWDecisionDiagram::addReverseArc(int forwardArcIndex)
   VRPTWArc reverseArc(forwardArc.toNodeIndex, forwardArc.fromNodeIndex, nodes[forwardArc.fromNodeIndex].state.lastVisited, -forwardArc.distance, -forwardArc.coeff, -forwardArc.cijPi);
   int reverseArcIndex = arcs.size();
   arcs.push_back(reverseArc);
-  arcsUsed.push_back(false);
 
   nodes[forwardArc.toNodeIndex].outArcs.push_back(reverseArcIndex);
   nodes[forwardArc.fromNodeIndex].inArcs.push_back(reverseArcIndex);
@@ -906,25 +917,6 @@ int VRPTWDecisionDiagram::addReverseArc(int forwardArcIndex)
 // create next relaxed state from current one
 bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, int location, int nodeIndex)
 {
-  // create some binary values for initial relaxation to use different state information
-  int timeWindowBinary = 1;
-  if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::NO_TIME_WINDOWS)
-  {
-    timeWindowBinary = 0;
-  }
-
-  int capacityBinary = 1;
-  if (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY)
-  {
-    capacityBinary = 0;
-  }
-
-  int counterBinary = 1;
-  if (vrptw.counterType == VRPTWCounterType::NO_USE_COUNTER)
-  {
-    counterBinary = 0;
-  }
-
   newState.counter = newState.counter + counterBinary;
   if (newState.counter > vrptw.routeLengthUpperBound)
   {
@@ -1013,7 +1005,7 @@ bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, 
 }
 
 // state should be exact for true/false return to be true
-bool VRPTWDecisionDiagram::generateNewStateFromExact(VRPTWNodeState& newState, int location)
+bool VRPTWDecisionDiagram::generateNewStateExact(VRPTWNodeState& newState, int location)
 {
   if (location == 0)
   {
@@ -1174,126 +1166,6 @@ void VRPTWDecisionDiagram::removeArc(int arcIndex)
   removedArcs.insert(arcIndex);
 }
 
-// only allow up to s = 2
-void VRPTWDecisionDiagram::compileExactFukasawa(int s)
-{
-  // reserve but do not resize
-  nodes.reserve(vrptw.capacity * (std::pow(vrptw.numLocations,s)));
-  arcs.reserve(std::pow(vrptw.numLocations,2));
-  arcsUsed.reserve(std::pow(vrptw.numLocations,2));
-
-  // root node r and terminal node t
-  std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(0,0,0,0,initialDeque);
-  addNode(rootNodeState);
-  rootNodeIndex = 0;
-  VRPTWNodeState terminalNodeState(vrptw.numLocations*1000,vrptw.capacity,vrptw.endTimes[0],0,initialDeque);
-  addNode(terminalNodeState);
-  terminalNodeIndex = 1;
-
-  // create nodes except r/t
-  int nodeIndex = 0;
-  while (nodeIndex < nodes.size())
-  {
-    for (int location=1; location<vrptw.numLocations; ++location)
-    {
-      // check capacity
-      int newCapacity = nodes[nodeIndex].state.load + vrptw.demands[location];
-      if (newCapacity > vrptw.capacity)
-      {
-        continue;
-      }
-
-      // check visited set
-      if (std::find(nodes[nodeIndex].state.visited.begin(), nodes[nodeIndex].state.visited.end(), location) != nodes[nodeIndex].state.visited.end())
-      {
-        continue;
-      }
-
-      // check time to begin isnt past endTime
-      int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
-      double earliestStartTime = (nodes[nodeIndex].state.timeWithMultiplier / (vrptw.timeStateMultiplier * 1.0)) + vrptw.distances[lastVisitedLocation][location] + vrptw.serviceTimes[lastVisitedLocation];
-      if (earliestStartTime > vrptw.endTimes[location])
-      {
-        continue;
-      }
-
-      std::set<int> newVisited = nodes[nodeIndex].state.visited;
-      newVisited.insert(location);
-      if (s == 1)
-      {
-        newVisited.erase(nodes[nodeIndex].state.lastVisited);
-      }
-      else if (s == 2)
-      {
-        for (int loc : nodes[nodeIndex].state.visited)
-        {
-          if (loc != nodes[nodeIndex].state.lastVisited)
-          {
-            newVisited.erase(loc);
-          }
-        }
-      }
-      else
-      {
-        std::cout << "ERROR - dont use s > 2" << std::endl;
-        return;
-      }
-
-      int newTimeWithMultiplier = (int)(earliestStartTime * vrptw.timeStateMultiplier);
-      newTimeWithMultiplier = std::max(newTimeWithMultiplier, vrptw.startTimes[location] * vrptw.timeStateMultiplier);
-
-      // bucketing
-      // use more dynamic bucketing if otherwise it'll make a bad loop
-      int timeQuotient = newTimeWithMultiplier / timeStepSize;
-      int newTimeWithMultiplierDiscretized = timeStepSize * timeQuotient;
-      if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::NO_TIME_WINDOWS)
-      {
-        newTimeWithMultiplierDiscretized = 0;
-      }
-      else if (newTimeWithMultiplierDiscretized <= newTimeWithMultiplier)
-      {
-        newTimeWithMultiplierDiscretized = newTimeWithMultiplier;
-      }
- 
-      int loadQuotient = newCapacity / loadStepSize;
-      int newCapacityDiscretized = loadStepSize * loadQuotient;
-      if (vrptw.vrptwCapacityType == VRPTWCapacityType::RELAX_CAPACITY)
-      {
-        newCapacityDiscretized = 0;
-      }
-
-      int newCounter = nodes[nodeIndex].state.counter + 1;
-      if (vrptw.counterType == VRPTWCounterType::NO_USE_COUNTER)
-      {
-        newCounter = nodes[nodeIndex].state.counter;
-      }
-      VRPTWNodeState newState(newCounter, newCapacityDiscretized, newTimeWithMultiplierDiscretized, location, newVisited);
-      int newNodeIndex = addNode(newState);
-      addArc(nodeIndex, newNodeIndex);
-    }
-
-    nodeIndex = nodeIndex + 1;
-  }
-
-  // add arcs to terminal node
-  nodeIndex = 2;
-  while (nodeIndex < nodes.size())
-  {
-    // need to be able to make it back in time
-    int lastVisitedLocation = nodes[nodeIndex].state.lastVisited;
-    double earliestStartTime = (nodes[nodeIndex].state.timeWithMultiplier / (vrptw.timeStateMultiplier * 1.0)) + vrptw.distances[lastVisitedLocation][0] + vrptw.serviceTimes[lastVisitedLocation];
-    if (earliestStartTime > vrptw.endTimes[0])
-    {
-      continue;
-    }
-    addArc(nodeIndex, terminalNodeIndex);
-    nodeIndex = nodeIndex + 1;
-  }
-
-  DBG(print();)
-};
-
 bool sort_by_second(const std::pair<int,int>& a, const std::pair<int,int>& b)
 {
   return (a.second < b.second);
@@ -1407,6 +1279,8 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
+
+  // Use layers for reasoning about compilationAllVisitedDown
   int maxPriorityValue = 0;
   if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
   {
@@ -2580,7 +2454,6 @@ void VRPTWDecisionDiagram::addColumnForLPCG(const std::vector<int>& route)
       if (arcs[arcIndex].location == route[routeIndex])
       {
         currentNodeIndex = arcs[arcIndex].toNodeIndex;
-        arcsUsed[arcIndex] = true;
         break;
       }
     }
@@ -2633,7 +2506,6 @@ double VRPTWDecisionDiagram::computeShortestPathBFS(ShortestPathMode mode, std::
   if (mode == ShortestPathMode::SHORTEST_PATH)
   {
     routeByLocation.push_back(priorLocationForShortestPath[terminalNodeIndex]);
-    arcsUsed[priorArcIndexShortestPath[terminalNodeIndex]] = true;
     int currentNodeIndex = priorNodeForShortestPath[terminalNodeIndex];
     int currentArcIndex = priorArcIndexShortestPath[terminalNodeIndex];
     while (true)
@@ -2717,7 +2589,6 @@ double VRPTWDecisionDiagram::computeShortestPathBFSWang(std::vector<int>& treeBy
 
   // construct route
   routeByArc.push_back(treeByParentArcs[terminalNodeIndex]);
-  arcsUsed[treeByParentArcs[terminalNodeIndex]] = true;
   int currentNodeIndex = priorNodeForShortestPath[terminalNodeIndex];
   int currentArcIndex = treeByParentArcs[terminalNodeIndex];
   while (true)
@@ -2734,17 +2605,6 @@ double VRPTWDecisionDiagram::computeShortestPathBFSWang(std::vector<int>& treeBy
 
   return nodes[terminalNodeIndex].shortestPathDistance;
 };
-
-void VRPTWDecisionDiagram::initializeColumnsByLPDecomp()
-{
-  for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
-  {
-    if (arcs[arcIndex].decompositionFlow > 0.0000001)
-    {
-      arcsUsed[arcIndex] = true;
-    }
-  }
-}
 
 double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, const std::set<int>& initialPrimalArcIndices, Dual& duals, bool removeForTesting, int timeoutSeconds)
 {
@@ -2808,7 +2668,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
       }
       else
       {
-        if ((useCg == UseColumnGeneration::USE_CG) && !arcsUsed[arcIndex])
+        if (useCg == UseColumnGeneration::USE_CG)
         {
           x[arcIndex] = IloNumVar(env, 0, 0);
         }
@@ -3694,7 +3554,7 @@ void VRPTWDecisionDiagram::createTruncatedRoute(const std::vector<int>& route, s
     }
 
     VRPTWNodeState newState(currState);
-    bool newNodeFeasible = generateNewStateFromExact(newState, nextLocation);
+    bool newNodeFeasible = generateNewStateExact(newState, nextLocation);
     if (!newNodeFeasible)
     {
       truncatedRoute.push_back(0);
@@ -4084,7 +3944,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
 
       // Create next state/node
       VRPTWNodeState newState(currState);
-      bool newNodeFeasible = generateNewStateFromExact(newState, location);
+      bool newNodeFeasible = generateNewStateExact(newState, location);
       if (newNodeFeasible)
       {
         int numNodes = nodes.size();
@@ -4145,7 +4005,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
             }
 
             VRPTWNodeState newState(stateToCheck);
-            bool newNodeFeasible = generateNewStateFromExact(newState, location);
+            bool newNodeFeasible = generateNewStateExact(newState, location);
             if (newNodeFeasible)
             {
               int numNodes = nodes.size();
@@ -4215,7 +4075,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
 
       // Create next state/node
       VRPTWNodeState newState(currState);
-      bool newNodeFeasible = generateNewStateFromExact(newState, location);
+      bool newNodeFeasible = generateNewStateExact(newState, location);
       if (newNodeFeasible)
       {
         currCost += vrptw.distances[currState.lastVisited][location];
@@ -4289,7 +4149,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
         for (int location : destroyedElements)
         {
           VRPTWNodeState newState(stateToCheck);
-          bool newNodeFeasible = generateNewStateFromExact(newState, location);
+          bool newNodeFeasible = generateNewStateExact(newState, location);
           if (newNodeFeasible)
           {
             // Need to check that the rest of the route works
@@ -4331,7 +4191,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
                 {
                   if (insertDeliveryIndex == suffixIndex)
                   {
-                    bool newNodeFeasible1 = generateNewStateFromExact(suffixState, delivery);
+                    bool newNodeFeasible1 = generateNewStateExact(suffixState, delivery);
                     if (newNodeFeasible1)
                     {
                       newStates.push_back(suffixState);
@@ -4350,7 +4210,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
                 // Insert suffix location
                 if (suffixLocation != 0)
                 {
-                  bool newNodeFeasible2 = generateNewStateFromExact(suffixState, suffixLocation);
+                  bool newNodeFeasible2 = generateNewStateExact(suffixState, suffixLocation);
                   if (newNodeFeasible2)
                   {
                     newStates.push_back(suffixState);
@@ -4494,7 +4354,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
       for (int location : destroyedElements)
       {
         VRPTWNodeState newState(stateToCheck);
-        bool newNodeFeasible = generateNewStateFromExact(newState, location);
+        bool newNodeFeasible = generateNewStateExact(newState, location);
         if (newNodeFeasible)
         {
           int numNodes = nodes.size();
@@ -4783,7 +4643,7 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
             int lastLocation = routeByLoc[routeByLoc.size()-2];
 
             VRPTWNodeState nextState(currState);
-            bool nextNodeFeasible = generateNewStateFromExact(nextState, currLocation);
+            bool nextNodeFeasible = generateNewStateExact(nextState, currLocation);
             currState = nextState;
             if (decompositionReason == DecompositionReason::SEPARATE)
             {
@@ -4884,7 +4744,7 @@ void VRPTWDecisionDiagram::separateRoute(const std::vector<int>& routeArcs)
     bool newNodeCreated = false;
     int prevNumNodes = nodes.size();
     VRPTWNodeState newState(nodes[currNodeIndex].state);
-    bool newNodeFeasible = generateNewStateFromExact(newState, nextLocation);
+    bool newNodeFeasible = generateNewStateExact(newState, nextLocation);
 
     // if feasible, create new state if necessary, etc.
     if (newNodeFeasible)
@@ -4904,12 +4764,11 @@ void VRPTWDecisionDiagram::separateRoute(const std::vector<int>& routeArcs)
           int oldArcLocation = arcs[oldArcIndex].location;
           int oldArcToNodeIndex = arcs[oldArcIndex].toNodeIndex;
           VRPTWNodeState copyArcState(newState);
-          bool copyArcFeasible = generateNewStateFromExact(copyArcState, oldArcLocation);
+          bool copyArcFeasible = generateNewStateExact(copyArcState, oldArcLocation);
           if (copyArcFeasible)
           {
             int newArcIndex = addArc(nextNodeIndex, oldArcToNodeIndex);
             DBG(std::cout << "copy arc by adding arc index: " << newArcIndex << std::endl;)
-            arcsUsed[newArcIndex] = true;
           }
         }
       }
@@ -4920,7 +4779,7 @@ void VRPTWDecisionDiagram::separateRoute(const std::vector<int>& routeArcs)
         {
           int existingNodeArcLocation = arcs[existingNodeArcIndex].location;
           VRPTWNodeState copyArcState(newState);
-          bool existingArcFeasible = generateNewStateFromExact(copyArcState, existingNodeArcLocation);
+          bool existingArcFeasible = generateNewStateExact(copyArcState, existingNodeArcLocation);
           if (!existingArcFeasible)
           {
             DBG(std::cout << "remove arc " << existingNodeArcIndex << std::endl;)
@@ -4974,7 +4833,7 @@ bool VRPTWDecisionDiagram::isRouteFeasible(const std::vector<int>& route)
   {
     int nextLocation = route[index];
     VRPTWNodeState newState(currState);
-    bool newNodeFeasible = generateNewStateFromExact(newState, nextLocation);
+    bool newNodeFeasible = generateNewStateExact(newState, nextLocation);
     if (!newNodeFeasible)
     {
       return false;
@@ -4995,7 +4854,7 @@ void VRPTWDecisionDiagram::repairRoute(const std::vector<int>& route, std::vecto
     int nextLocation = route[index];
 
     VRPTWNodeState newState(currState);
-    bool newNodeFeasible = generateNewStateFromExact(newState, nextLocation);
+    bool newNodeFeasible = generateNewStateExact(newState, nextLocation);
     if (newNodeFeasible)
     {
       feasibleRoute.push_back(nextLocation);

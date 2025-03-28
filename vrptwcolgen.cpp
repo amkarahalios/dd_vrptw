@@ -8,11 +8,7 @@ VRPTWColGen::VRPTWColGen(VRPTW _vrptw, VRPTWDDParameters _params, PricingProblem
   if (pricingProblemType == PricingProblemType::DD)
   {
     auto startCompileTime = std::chrono::high_resolution_clock::now();
-    if (stateSpace == StateSpace::Q)
-    {
-      routeDD.compileExactFukasawa(_s);
-    }
-    else if (stateSpace == StateSpace::NG)
+    if (stateSpace == StateSpace::NG)
     {
       std::cout << "begin compiling" << std::endl;
       routeDD.compileNgRoute(_s);

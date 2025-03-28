@@ -212,7 +212,6 @@ class VRPTWDecisionDiagram
    std::pair<int,int> getFromAndToLocations(int arcIndex) { return std::make_pair(nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited,arcs[arcIndex].location); }
 
     // compilation
-    void compileExactFukasawa(int s);
     void compileNgRoute(int s);
     void compileEmpty();
 
@@ -361,7 +360,7 @@ class VRPTWDecisionDiagram
     int addNode(const VRPTWNodeState& state);
     int addArc(int fromNodeIndex, int toNodeIndex);
     int addReverseArc(int forwardArcIndex);
-    bool generateNewStateFromExact(VRPTWNodeState& state, int action);
+    bool generateNewStateExact(VRPTWNodeState& state, int action);
     bool generateNewStateRelaxation(VRPTWNodeState& state, int action, int nodeIndex);
     bool moveArc(int arcIndex, int newToNodeIndex);
     void removeArc(int arcIndex);
@@ -397,11 +396,12 @@ class VRPTWDecisionDiagram
     std::unordered_map<int,int> arcReverseArc;
     std::map<VRPTWNodeState,std::vector<int>> nodeOrdering;
 
-    std::vector<bool> arcsUsed;
-
     // bucket parameters
     int timeStepSize;
     int loadStepSize;
+    int timeWindowBinary;
+    int capacityBinary;
+    int counterBinary;
 
     // data structures for cuts
     // Rounded Capacity Cuts

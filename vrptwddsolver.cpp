@@ -26,11 +26,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   if (params.primalHeuristic != PrimalHeuristic::STANDALONE)
   {
     auto startCompileTime = std::chrono::high_resolution_clock::now();
-    if (params.stateSpace == StateSpace::Q)
-    {
-      routeDD.compileExactFukasawa(params.ngSetSize);
-    } 
-    else if (params.stateSpace == StateSpace::NG)
+    if (params.stateSpace == StateSpace::NG)
     {
       routeDD.compileNgRoute(params.ngSetSize);
     }
@@ -138,9 +134,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "step size iteration cutoff: " << stepSizeMultiplierIterationCutoff << std::endl;
   std::cout << "target bound increase: " << targetBoundIncrease << std::endl;
   std::cout << "min step size multiplier: " << minStepSizeMultiplier << std::endl;
-  //std::cout << "num cap cut update groups: " << numCapCutUpdateGroups << std::endl;
-  //std::cout << "num iterations restart: " << numIterationsRestart << std::endl;
-  //std::cout << "num iterations deactivation: " << numIterationsDeactivations << std::endl;
 
   // dynamic parameters
   std::cout << "ngSetSize: " << params.ngSetSize << std::endl;
@@ -162,15 +155,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "lns timeout: " << params.lnsTimeoutSeconds << std::endl;
   std::cout << "removal strategy: " << params.removalStrategy << std::endl;
   std::cout << "insertion ablation: " << params.insertionAblation << std::endl;
-
-  /*
-  if (params.switchSepToCuts)
-  {
-    params.useRobustCuts = false;
-    params.useNonRobustCuts = false;
-    params.useSeparations = true;
-  }
-  */
 
   CMGR_CreateCMgr(&MyCutsCMP,Dim);
   CMGR_CreateCMgr(&MyOldCutsCMP,Dim);
@@ -294,13 +278,6 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
             alreadyExists = true;
             break;
           }
-/*
-          if (std::includes(cutSetAsSet.begin(), cutSetAsSet.end(), existingCutSetAsSet.begin(), existingCutSetAsSet.end()))
-          {
-            tooSimilarToExisting = true;
-            break;
-          }
-*/
         }
       }
 
@@ -628,8 +605,6 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       if (params.lpSolveType == LPSolveType::LPSolver)
       {
         changedLagToLP = true;
-        //params.useRobustCuts = true;
-        //params.useNonRobustCuts = true;
         continue;
       }
     }
