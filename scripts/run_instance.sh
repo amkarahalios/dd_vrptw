@@ -21,10 +21,14 @@ do
   echo "Processing $f file..."
 
   OUTPUT_FILE=$OUTPUT_DIR/$(basename $f).log
+  ZIPPED_FILE=$OUTPUT_FILE.gz
   if [ -f "$OUTPUT_FILE" ]; then
     echo "$OUTPUT_FILE does exist."
+  elif [ -f "$ZIPPED_FILE" ]; then
+    echo "$ZIPPED_FILE does exist."
   else
     echo "Running for $OUTPUT_FILE"
     timeout 3600 .././solver $f $2 $PARAM_FILE > $OUTPUT_FILE
+    gzip $OUTPUT_FILE
   fi
 done

@@ -13,8 +13,6 @@
 void usage()
 {
   std::cout << std::endl;
-  std::cout << "USAGE: dd_vrp -fileName <fileName> -solver <solver> [options]" << std::endl;
-  std::cout << "USAGE: dd_vrp -fileName <fileName> -solver COL_GEN DD/DP Q/NG s/k maxS cuts timeout" << std::endl;
   std::cout << "USAGE: ./solver filePath COL_ELIM paramFilePath" << std::endl;
 }
 

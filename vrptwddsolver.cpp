@@ -1330,30 +1330,35 @@ void VRPTWDDSolver::destroyByMultiRoute(const std::vector<std::vector<int>>& fea
 
 void VRPTWDDSolver::chooseRandomLocationsFromRoutes(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& randomElementsChosen)
 {
-  int randomRouteIndex = std::rand() % static_cast<int>(feasibleSolution.size());
-  auto route = feasibleSolution[randomRouteIndex];
-  int randomRouteIndexIndex = std::rand() % static_cast<int>(route.size());
-  int locationToDestroy = route[randomRouteIndexIndex];
-  if (locationToDestroy != 0)
+  std::vector<int> locationsRemaining;
+  for (int location=1; location<vrptw.numLocations; ++location)
   {
-    randomElementsChosen.insert(locationToDestroy);
-    if (!vrptw.reliances.empty() && !vrptw.precedences.empty())
+    if (randomElementsChosen.find(location) == randomElementsChosen.end())
     {
-      for (int relianceLocation : vrptw.reliances[locationToDestroy])
-      {
-        randomElementsChosen.insert(relianceLocation);
-      }
-      for (int precedenceLocation : vrptw.precedences[locationToDestroy])
-      {
-        randomElementsChosen.insert(precedenceLocation);
-      }
+      locationsRemaining.push_back(location);
+    }
+  }
+
+  int randomIndex = std::rand() % static_cast<int>(locationsRemaining.size());
+  int locationToDestroy = locationsRemaining[randomIndex];
+  randomElementsChosen.insert(locationToDestroy);
+  if (!vrptw.reliances.empty() && !vrptw.precedences.empty())
+  {
+    for (int relianceLocation : vrptw.reliances[locationToDestroy])
+    {
+      randomElementsChosen.insert(relianceLocation);
+    }
+    for (int precedenceLocation : vrptw.precedences[locationToDestroy])
+    {
+      randomElementsChosen.insert(precedenceLocation);
     }
   }
 }
 
 void VRPTWDDSolver::destroyRandomly(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsDestroy)
 {
-  while (destroyedElements.size() <= numElementsDestroy)
+  int limit = std::min(numElementsDestroy,vrptw.numLocations-2);
+  while (static_cast<int>(destroyedElements.size()) <= limit)
   {
     chooseRandomLocationsFromRoutes(feasibleSolution, destroyedElements);
   }
@@ -1711,6 +1716,12 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
       else
       {
         numElementsDestroy = numElementsDestroy + 1;
+      }
+ 
+      if (numElementsDestroy == vrptw.numLocations - 2)
+      {
+        shouldContinue = false;
+        break;
       }
     }
   }

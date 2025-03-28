@@ -4027,7 +4027,19 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
   VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
-  int maxPriorityValue = terminalEndTime + 1;
+  int maxPriorityValue = 1;
+  if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
+  {
+    maxPriorityValue = vrptw.numLocations + 2;
+  }
+  else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
+  {
+    maxPriorityValue = terminalEndTime + 2;
+  }
+  else
+  {
+    maxPriorityValue = vrptw.capacity + 2;
+  }
 
   // Keep the initial solution to warm start the MIP
   std::set<int> initialPrimalArcIndices;
@@ -4441,9 +4453,10 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
     }
   }
 
+/*
   // Add some short routes with only destroyed elements
-  std::map<std::set<int>, int> visitedSetBestCosts;
-  std::map<std::set<int>, int> visitedSetBestState;
+  std::map<std::pair<int,std::set<int>>, int> visitedSetBestCosts;
+  std::map<std::pair<int,std::set<int>>, int> visitedSetBestState;
   std::map<int, int> nodeIndexCosts;
   std::set<int> dominatedNodeIndices;
 
@@ -4491,15 +4504,16 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
           // Check cost and dominance
           int newCost = stateToCheckCost + vrptw.distances[stateToCheck.lastVisited][location];
           nodeIndexCosts[nextNodeIndex] = newCost;
-          auto visitedSetBestCostIter = visitedSetBestCosts.find(newState.visited);
+          auto visitedLastVisited = std::make_pair(newState.lastVisited, newState.visited);
+          auto visitedSetBestCostIter = visitedSetBestCosts.find(visitedLastVisited);
           if (visitedSetBestCostIter != visitedSetBestCosts.end())
           {
             int currBest = visitedSetBestCostIter->second;
             if (newCost < currBest)
             {
-              visitedSetBestCosts[newState.visited] = newCost;
-              dominatedNodeIndices.insert(visitedSetBestState[newState.visited]);
-              visitedSetBestState[newState.visited] = nextNodeIndex;
+              visitedSetBestCosts[visitedLastVisited] = newCost;
+              dominatedNodeIndices.insert(visitedSetBestState[visitedLastVisited]);
+              visitedSetBestState[visitedLastVisited] = nextNodeIndex;
             }
             else
             {
@@ -4553,7 +4567,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
       }
     }
   }
-
+*/
   //print();
   //std::cout << "num skipped: " << numSkipped << std::endl;
 
