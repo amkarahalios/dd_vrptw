@@ -2625,7 +2625,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   //solver.setParam(IloCplex::Param::RootAlgorithm, IloCplex::Barrier);
   //solver.setParam(IloCplex::Param::RootAlgorithm, IloCplex::Primal);
   solver.setParam(IloCplex::Param::Threads, 1);
-  solver.exportModel("LPflowmodel.lp");
+  //solver.exportModel("LPflowmodel.lp");
 
   // Warm starts
   if (flowType == FlowType::LP)

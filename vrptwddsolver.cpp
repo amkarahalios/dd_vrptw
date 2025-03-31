@@ -744,7 +744,7 @@ bool VRPTWDDSolver::primalHeuristicMIP(FlowType flowType, std::vector<std::vecto
   solver.setError(env.getNullStream());
   solver.setParam(IloCplex::Param::Threads, 1);
   solver.setParam(IloCplex::Param::TimeLimit, 5);
-  solver.exportModel("MIPHeuristicModel.lp");
+  //solver.exportModel("MIPHeuristicModel.lp");
 
   // Warm start
   if (!returnRouteIndices.empty())
