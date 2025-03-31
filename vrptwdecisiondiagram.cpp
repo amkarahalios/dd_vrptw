@@ -4,68 +4,8 @@
 #include <algorithm>
 #include <chrono>
 
-extern "C" {
-#include "graph.h"
-#include "cliquer.h"
-}
-#include "vrptwdecisiondiagram.h"
 #include <ilcplex/ilocplex.h>
-
-boolean record_clique_func(set_t s,graph_t *g,clique_options *opts);
-boolean record_clique_func(set_t s,graph_t *g,clique_options *opts) {
-/*
-        if (clique_count>=clique_list_size) {
-                clique_list=(setelement**)realloc(clique_list,(clique_list_size+512) *
-                                    sizeof(set_t));
-                clique_list_size+=512;
-        }
-        clique_list[clique_count]=set_duplicate(s);
-        clique_count++;
-*/
-        return TRUE;
-}
-
-boolean clique_print_time(int level, int i, int n, int max,
-                          double cputime, double realtime,
-                          clique_options *opts) {
-        static float prev_time=100;
-        static int prev_i=100;
-        static int prev_max=100;
-        static int prev_level=0;
-        static double total_time=-100;
-        FILE *fp=opts->output;
-        int j;
-        double clique_time = ABS(prev_time-realtime);
-        total_time = total_time + clique_time;
-        if (total_time > 1)
-        {
-          total_time=0;
-          return FALSE;
-        }
-
-        if (fp==NULL)
-                fp=stdout;
-
-        if (ABS(prev_time-realtime)>0.1 || i==n || i<prev_i || max!=prev_max ||
-            level!=prev_level) {
-                for (j=1; j<level; j++)
-                        fprintf(fp,"  ");
-                if (realtime-prev_time < 0.01 || i<=prev_i)
-                        fprintf(fp,"%3d/%d (max %2d)  %2.2f s  "
-                                "(0.00 s/round)\n",i,n,max,
-                                realtime);
-                else
-                        fprintf(fp,"%3d/%d (max %2d)  %2.2f s  "
-                                "(%2.2f s/round)\n",
-                                i,n,max,realtime,
-                                (realtime-prev_time)/(i-prev_i));
-                prev_time=realtime;
-                prev_i=i;
-                prev_max=max;
-                prev_level=level;
-        }
-        return TRUE;
-}
+#include "vrptwdecisiondiagram.h"
 
 void VRPTWNode::printForDD(int nodeIndex) const
 {

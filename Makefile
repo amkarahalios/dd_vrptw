@@ -12,7 +12,6 @@ LIBFORMAT  = static_pic
 CPLEXDIR      = /opt/ibm/ILOG/CPLEX_Studio221/cplex
 CONCERTDIR    = /opt/ibm/ILOG/CPLEX_Studio221/concert
 VRPTWSEPDIR    = $(HOME)/dd_vrptw/cvrpsep
-CLIQUERDIR    = $(HOME)/dd_vrptw/Cliquer/src
 
 # ---------------------------------------------------------------------
 # Compiler selection
@@ -34,22 +33,21 @@ CCOPT = -m64 -fPIC -fno-strict-aliasing -fexceptions -DNDEBUG -DIL_STD
 CPLEXBINDIR   = $(CPLEXDIR)/bin/$(BINDIST)
 CPLEXLIBDIR   = $(CPLEXDIR)/lib/$(SYSTEM)/$(LIBFORMAT)
 CPLEXVRPTWSEPDIR = $(VRPTWSEPDIR)/obj/
-CLIQUERLIBDIR = $(CLIQUERDIR)/lib/
 CONCERTLIBDIR = $(CONCERTDIR)/lib/$(SYSTEM)/$(LIBFORMAT)
 
 # For dynamic linking
 CPLEXBINDIR   = $(CPLEXDIR)/bin/$(SYSTEM)
 CPLEXLIB      = cplex$(dynamic:yes=1290)
 
-CCLNDIRS  = -L$(CPLEXLIBDIR) -L$(CONCERTLIBDIR) $(dynamic:yes=-L$(CPLEXBINDIR)) -L$(CPLEXVRPTWSEPDIR) -L$(CLIQUERLIBDIR)
+CCLNDIRS  = -L$(CPLEXLIBDIR) -L$(CONCERTLIBDIR) $(dynamic:yes=-L$(CPLEXBINDIR)) -L$(CPLEXVRPTWSEPDIR)
 CLNDIRS   = -L$(CPLEXLIBDIR) $(dynamic:yes=-L$(CPLEXBINDIR))
-CCLNFLAGS = -lconcert -lilocplex -l$(CPLEXLIB) -lm -lpthread -ldl -lcvrpsep -lcliquer
+CCLNFLAGS = -lconcert -lilocplex -l$(CPLEXLIB) -lm -lpthread -ldl -lcvrpsep
 CLNFLAGS  = -l$(CPLEXLIB) -lm -lpthread -ldl
 
 CONCERTINCDIR = $(CONCERTDIR)/include
 CPLEXINCDIR   = $(CPLEXDIR)/include
 
-CCFLAGS = $(CCOPT) -I$(CPLEXINCDIR) -I$(CONCERTINCDIR) -I$(VRPTWSEPDIR) -I$(CLIQUERDIR)
+CCFLAGS = $(CCOPT) -I$(CPLEXINCDIR) -I$(CONCERTINCDIR) -I$(VRPTWSEPDIR)
 
 all: solver
 

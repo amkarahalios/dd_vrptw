@@ -5,6 +5,47 @@
 #include <math.h>
 #include <ilcplex/ilocplex.h>
 
+void DDStats::print(int ddNumArcs, int ddNumFixedArcs) const
+{
+  std::cout << "STATS - lpIterations[" << lpIterations << "] lagIterations[";
+  std::cout << numLagIterations << "] sspIterations[" << numSSPIterations;
+  std::cout << "] numSeparations[" << numSeparations << "] numCuts[" << numCuts;
+  std::cout << "] compileTime[" << int(millisecondsCompiling / 1000);
+  std::cout << "] sspSolveTime[" << int(millisecondsSolvingSSP / 1000);
+  std::cout << "] lpSolveTime[" << int(millisecondsSolvingLP / 1000);
+  std::cout << "] lb[" << lowerBound << "] ub[" << upperBound << "]";
+  std::cout << " numArcs: [" << ddNumArcs << "]";
+  std::cout << " numFixed: [" << ddNumFixedArcs << "]";
+  std::cout << " numHeuristicIPs: [" << numHeuristicIPs << "]";
+  std::cout << " numHeuristicLNS: [" << numHeuristicLNSs << "]";
+  std::cout << " numPrimalLNSRepairs: [" << numPrimalLNSRepairs << "]";
+  std::cout << " time: [" << getNumSeconds() << "]" << std::endl;
+
+  std::cout << "STATS1 - lpIterations[" << lpIterations << "] lagIterations[";
+  std::cout << numLagIterations << "] sspIterations[" << numSSPIterations;
+  std::cout << "] numSeparations[" << numSeparations << "] numCuts[" << numCuts;
+  std::cout << "] compileTime[" << int(millisecondsCompiling / 1000);
+  std::cout << "] sspSolveTime[" << int(millisecondsSolvingSSP / 1000);
+  std::cout << "] lpSolveTime[" << int(millisecondsSolvingLP / 1000);
+  std::cout << "] repairTime[" << int(millisecondsRepairingLAG / 1000);
+  std::cout << "] cutsTime[" << int(millisecondsFindingCuts / 1000);
+  std::cout << "] alphaTime[" << int(millisecondsTryingAlpha / 1000);
+  std::cout << "] decompTime[" << int(millisecondsDecompose / 1000);
+  std::cout << "] yellowTime[" << int(millisecondsYellow / 1000);
+  std::cout << "] updateTime[" << int(millisecondsUpdateDual / 1000);
+  std::cout << "] fixTime[" << int(millisecondsFix/ 1000);
+  std::cout << "] lb[" << lowerBound << "] ub[" << upperBound << "]";
+  std::cout << " numArcs: [" << ddNumArcs << "]";
+  std::cout << " numFixed: [" << ddNumFixedArcs << "]";
+  std::cout << " time: [" << getNumSeconds() << "]" << std::endl;
+}
+ 
+int DDStats::getNumSeconds() const
+{
+  auto currTime = std::chrono::high_resolution_clock::now();
+  return int(std::chrono::duration_cast<std::chrono::milliseconds>(currTime - startTime).count() / 1000);
+}
+
 VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_vrptw), routeDD(_vrptw, _params), params(_params)
 {
   if (params.primalHeuristic == PrimalHeuristic::BEST_KNOWN)
