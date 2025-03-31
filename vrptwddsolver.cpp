@@ -99,8 +99,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
 
   // Set and Log Parameters
   infeasibleRoutesBatchSize = 1;
-  deactivateCutValueThreshold = 0.01;
-  deactivateCutIterThreshold = 1000000000;
   percentFixedToChangeToCPLEX = 97.5;
   numArcsToChangeToCPLEX = 100000;
   numLagCuts = 2;
@@ -109,8 +107,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   percentGapToStartCuts = 0.95;
 
   std::cout << "batch size for lag: " << infeasibleRoutesBatchSize << std::endl;
-  std::cout << "deactivate cut value threshold: " << deactivateCutValueThreshold << std::endl;
-  std::cout << "deactivate cut iter threshold: " << deactivateCutIterThreshold << std::endl;
   std::cout << "percent arcs fixed to change to CPLEX: " << percentFixedToChangeToCPLEX << std::endl;
   std::cout << "number arcs fixed to change to CPLEX: " << numArcsToChangeToCPLEX << std::endl;
   std::cout << "kappa iterations: " << kappaIterations << std::endl;
@@ -118,9 +114,12 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "mu percent improved: " << muPercentImproved << std::endl;
   std::cout << "percent to start cuts: " << percentGapToStartCuts << std::endl;
 
+  // best duals for fixing
   bestDualsArcFixingLagPercent = 0.0;
   bestDualArcFixingLPPercent = -1;
   bestDualValue = 0.0;
+
+  // va
   stepSizeMultiplier = 1.0;
   stepSizeMultiplierIteration = 0;
   stepSizeMultiplierIterationCutoff = 5;
@@ -753,98 +752,6 @@ bool VRPTWDDSolver::primalHeuristicMIP(FlowType flowType, std::vector<std::vecto
   return false;
 }
 
-void VRPTWDDSolver::localSearchAroundSequences(int locationLimit, const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences)
-{
-  for (auto route : sequences)
-  {
-    newSequences.push_back(route);
-  }
-
-  // Shuffle locations
-  std::vector<int> locationsToTry;
-  for (int location=1; location<vrptw.numLocations; ++location)
-  {
-    locationsToTry.push_back(location);
-  }
-  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-  //std::random_shuffle(locationsToTry.begin(), locationsToTry.end(), std::default_random_engine(seed));
-  std::random_shuffle(locationsToTry.begin(), locationsToTry.end());
-  int maxLocationsToTry = std::min((int)locationsToTry.size(), locationLimit);
-
-  // Shuffle sequences
-  std::vector<std::vector<int>> sequencesCopy(sequences);
-  std::shuffle(sequencesCopy.begin(), sequencesCopy.end(), std::default_random_engine(seed));
-
-  // Use local search to include more primal routes
-  for (auto route : sequencesCopy)
-  {
-    for (int locationsToTryIndex=0; locationsToTryIndex<maxLocationsToTry; ++locationsToTryIndex)
-    {
-      int loc = locationsToTry[locationsToTryIndex];
-
-      // Shuffle indices
-      std::vector<int> indicesToTry;
-      for (int index=1; index<route.size()-1; ++index)
-      {
-        indicesToTry.push_back(index);
-      }
-      unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-      std::random_shuffle(indicesToTry.begin(), indicesToTry.end());
-      //std::shuffle(indicesToTry.begin(), indicesToTry.end(), std::default_random_engine(seed));
-
-      // 1. Insert locations
-      for (int index : indicesToTry)
-      {
-        std::vector<int> newRouteInsertion;
-        for (int routeIndex=0; routeIndex<route.size(); ++routeIndex)
-        {
-          if (index == routeIndex)
-          {
-            newRouteInsertion.push_back(route[routeIndex]);
-            newRouteInsertion.push_back(loc);
-          }
-          else
-          {
-            newRouteInsertion.push_back(route[routeIndex]);
-          }
-        }
-
-        if (routeDD.isRouteFeasible(newRouteInsertion))
-        {
-          if (std::find(newSequences.begin(), newSequences.end(), newRouteInsertion) == newSequences.end())
-          {
-            newSequences.push_back(newRouteInsertion);
-          }
-        }
-      }
-
-      // 2. Remove locations
-      for (int index : indicesToTry)
-      {
-        std::vector<int> newRouteDeletion;
-        for (int routeIndex=0; routeIndex<route.size(); ++routeIndex)
-        {
-          if (index != routeIndex)
-          {
-            newRouteDeletion.push_back(route[routeIndex]);
-          }
-        }
-
-        if (newRouteDeletion.size() > 2)
-        {
-          if (routeDD.isRouteFeasible(newRouteDeletion))
-          {
-            if (std::find(newSequences.begin(), newSequences.end(), newRouteDeletion) == newSequences.end())
-            {
-              newSequences.push_back(newRouteDeletion);
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
 void VRPTWDDSolver::destroyBySingleRoute(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsDestroy)
 {
   bool routeSizeExists = false;
@@ -879,68 +786,6 @@ void VRPTWDDSolver::destroyBySingleRoute(const std::vector<std::vector<int>>& fe
         }
       }
       break;
-    }
-  }
-}
-
-void VRPTWDDSolver::destroyRoundRobin(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsDestroy)
-{
-  int routeIndex = 0;
-  while (destroyedElements.size() <= numElementsDestroy)
-  {
-    auto route = feasibleSolution[routeIndex];
-    for (int location : route)
-    {
-      if (location != 0)
-      {
-        destroyedElements.insert(location);
-      }
-    }
-    ++routeIndex;
-    routeIndex = routeIndex % static_cast<int>(feasibleSolution.size());
-  }
-}
-
-void VRPTWDDSolver::destroyByMultiRoute(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsDestroy)
-{
-  std::set<int> destroyedRouteIndices;
-  while (destroyedElements.size() <= numElementsDestroy)
-  {
-    int amountToAdd = numElementsDestroy - destroyedElements.size();
-    bool routeSizeExists = false;
-    while (!routeSizeExists)
-    {
-      for (int routeIndex=0; routeIndex<feasibleSolution.size(); ++routeIndex)
-      {
-        if (destroyedRouteIndices.find(routeIndex) == destroyedRouteIndices.end())
-        {
-          auto route = feasibleSolution[routeIndex];
-          if (route.size() <= amountToAdd)
-          {
-            routeSizeExists = true;
-          }
-        }
-      }
-      if (!routeSizeExists)
-      {
-        ++amountToAdd;
-      }
-    }
-
-    int currNumDestroyed = destroyedElements.size();
-    int randomIntegerDestroy = std::rand();
-    int randomIndexDestroy = randomIntegerDestroy % feasibleSolution.size();
-    auto route = feasibleSolution[randomIndexDestroy];
-    if (route.size() <= amountToAdd)
-    {
-      for (int location : route)
-      {
-        if (location != 0)
-        {
-          destroyedElements.insert(location);
-        }
-        destroyedRouteIndices.insert(randomIndexDestroy);
-      }
     }
   }
 }
@@ -1346,204 +1191,6 @@ bool VRPTWDDSolver::largeNeighborhoodSearch(const std::vector<std::vector<int>>&
   return isImproved;
 }
 
-bool VRPTWDDSolver::localSearch(int locationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes)
-{
-  std::vector<std::vector<int>> routesToUse;
-  localSearchAroundSequences(locationLimit, feasibleSolution, routesToUse);
-
-  // run mip again with the new set of routes
-  std::cout << "running lns heuristic MIP" << std::endl;
-
-  std::map<int,std::vector<int>> routesToUseLocationIndices;
-  for (int routeIndex=0; routeIndex<routesToUse.size(); ++routeIndex)
-  {
-    for (int loc : routesToUse[routeIndex])
-    {
-      routesToUseLocationIndices[loc].push_back(routeIndex);
-    }
-  }
-
-  // setup model
-  IloEnv env;
-  IloModel columnModel(env);
-  IloRangeArray coverConstraints(env);
-  IloNumVarArray x(env, routesToUse.size());
-  IloExpr objective(env);
-
-  // setup variables and objective
-  int routeIndex = 0;
-  for (auto route : routesToUse)
-  {
-    x[routeIndex] = IloNumVar(env, 0, 1, ILOINT);
-    objective += x[routeIndex] * vrptw.evaluateRouteDistance(route);
-    ++routeIndex;
-  }
-
-  // setup cover constraints
-  for (int location=1; location<vrptw.numLocations; ++location)
-  {
-    IloExpr sumLocationRoutes(env);
-
-    for (int routeIndex : routesToUseLocationIndices[location])
-    {
-      sumLocationRoutes += x[routeIndex];
-    }
-
-    coverConstraints.add(sumLocationRoutes >= 1);
-  }
-  columnModel.add(coverConstraints);
-
-  std::cout << "lns primal heuristic num vars: " << routeIndex << std::endl;
-  columnModel.add(IloMinimize(env, objective));
-  objective.end();
-
-  // setup solver
-  IloCplex solver(columnModel);
-  solver.setOut(env.getNullStream());
-  solver.setWarning(env.getNullStream());
-  solver.setError(env.getNullStream());
-  solver.setParam(IloCplex::Param::Threads, 1);
-  solver.exportModel("MIPHeuristicModelLNS.lp");
-
-  // solve model
-  solver.solve();
-
-  // get results
-  IloAlgorithm::Status solverStatus = solver.getStatus();
-  if (solverStatus == IloAlgorithm::Optimal)
-  {
-    // store results
-    newBestRoutes.clear();
-    for (int routeIndex=0; routeIndex<routesToUse.size(); ++routeIndex)
-    {
-      double value = solver.getValue(x[routeIndex]);
-      if (value >= 0.999)
-      {
-        newBestRoutes.push_back(routesToUse[routeIndex]);
-      }
-    }
-
-    double objectiveValue = solver.getObjValue();
-    std::cout << "lns primal heuristic MIP obj: " << objectiveValue << std::endl;
-    std::cout << "lns feasible primal routes: " << std::endl;
-    for (auto primalRoute : newBestRoutes)
-    {
-      std::cout << "route: " << std::endl;
-      for (int loc : primalRoute)
-      {
-        std::cout << loc << " ";
-      }
-      std::cout << std::endl;
-    }
-
-    return true;
-  }
-  else
-  {
-    std::cout << "ERROR lns infeasible" << std::endl;
-  }
-
-  return false;
-}
-
-bool VRPTWDDSolver::solvePricingProblem(std::vector<double>& lambda)
-{
-  routeDD.setCoeffsAsDistancesMinusLagrangean(lambda);
-
-  std::vector<int> newRoute;
-  double shortestPathLength = routeDD.computeShortestPathBFS(ShortestPathMode::SHORTEST_PATH, newRoute);
-  shortestPathLength = shortestPathLength;
-  //std::cout << "spl: " << shortestPathLength << std::endl;
-  if (shortestPathLength < -0.00000001)
-  {
-    std::cout << "adding route: ";
-    for (int loc : newRoute)
-    {
-      std::cout << loc << ",";
-    }
-    std::cout << std::endl;
-    routeDD.addColumnForLPCG(newRoute);
-    return true;
-  }
-
-  return false;
-}
-
-void VRPTWDDSolver::initializeColumns()
-{
-  // all single stop routes
-  for (int location=1; location<vrptw.numLocations; ++location)
-  {
-    std::vector<int> route;
-    route.push_back(vrptw.depot);
-    route.push_back(location);
-    route.push_back(vrptw.depot);
-    routeDD.addColumnForLPCG(route);
-  }
-
-  // some full routes
-  std::set<int> locationsAdded;
-  while (locationsAdded.size() < (vrptw.numLocations-1))
-  {
-    std::vector<int> route;
-    route.push_back(0);
-    int currentDemand = 0;
-    for (int location=1; location<vrptw.numLocations; ++location)
-    {
-      if (locationsAdded.find(location) != locationsAdded.end())
-      {
-        continue;
-      }
-
-      if (currentDemand + vrptw.demands[location] <= vrptw.capacity)
-      {
-        route.push_back(location);
-        locationsAdded.insert(location);
-        currentDemand = currentDemand + vrptw.demands[location];
-      }
-    }
-    route.push_back(0);
-    DBG(std::cout << "adding initial route: ";)
-    for (int loc : route)
-    {
-      std::cout << loc << ",";
-    }
-    std::cout << std::endl;
-    routeDD.addColumnForLPCG(route);
-  }
-};
-
-bool VRPTWDDSolver::solveLPCG(Dual& duals)
-{
-  // column generation - RMP <-> pricing problem
-  //initializeColumns();
-
-  auto startLPTime = std::chrono::high_resolution_clock::now();
-  bool solved = false;
-  double flowObj = stats.lowerBound;
-  while (!solved)
-  {
-    routeDD.setCoeffsAsDistances();
-    const std::set<int> initialPrimalArcIndices;
-    flowObj = routeDD.setupAndSolveFlowModel(FlowType::LP, IncludeCoverConstraints::Y, UseColumnGeneration::USE_CG, initialPrimalArcIndices, duals, false, params.timeoutSeconds);
-    std::cout << "flowobj: " << flowObj << std::endl;
-
-    bool addedColumn = solvePricingProblem(duals.lambda);
-    if (!addedColumn)
-    {
-      solved = true;
-    }
-  }
-
-  auto endLPTime = std::chrono::high_resolution_clock::now();
-  auto lpSolveTime = std::chrono::duration_cast<std::chrono::milliseconds>(endLPTime - startLPTime).count();
-  stats.millisecondsSolvingLP = stats.millisecondsSolvingLP + lpSolveTime;
-  stats.lowerBound = flowObj;
-  stats.lpIterations = stats.lpIterations + 1;
-  stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-  return true;
-};
-
 void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
 {
   auto startTimeRepair = std::chrono::high_resolution_clock::now();
@@ -1623,26 +1270,6 @@ void VRPTWDDSolver::resizeMultipliers(const Dual& dual1, Dual& dual2)
   dual2.lambda.resize(dual1.lambda.size());
   dual2.capDuals.resize(dual1.capDuals.size());
   dual2.capCutUsage.resize(dual1.capCutUsage.size());
-  dual2.combDuals.resize(dual1.combDuals.size());
-  dual2.srcDuals.resize(dual1.srcDuals.size());
-}
-
-void VRPTWDDSolver::resizeMultipliersAndCopy(const Dual& dual1, Dual& dual2)
-{
-  dual2.lambda.resize(dual1.lambda.size());
-
-  if (dual1.capDuals.size() > dual2.capDuals.size())
-  {
-    int startIndex = dual2.capDuals.size();
-    dual2.capDuals.resize(dual1.capDuals.size());
-    dual2.capCutUsage.resize(dual1.capCutUsage.size());
- 
-    for (int index = startIndex; index<dual1.capDuals.size(); ++index)
-    {
-      dual2.capDuals[index] = dual1.capDuals[index];
-    }
-  }
-
   dual2.combDuals.resize(dual1.combDuals.size());
   dual2.srcDuals.resize(dual1.srcDuals.size());
 }
@@ -1763,7 +1390,6 @@ void VRPTWDDSolver::updateMultipliers(Dual& dual, double lagrangeanLowerBound, i
   {
     int gammaIndex = i + vrptw.numLocations;
     gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
-    //if ((i % numCapCutUpdateGroups != stats.numLagIterations % numCapCutUpdateGroups) || ((dual.capDuals[i] <= 0.001) && (gamma[gammaIndex] <= 0.001)))
     if ((dual.capDuals[i] <= 0.001) && (gamma[gammaIndex] <= 0.001))
     {
       gamma[gammaIndex] = 0;
@@ -2469,7 +2095,7 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
 
     //if (i != keepIndex)
     gamma[gammaIndex] = (-1 * routeDD.getCapCutSetRHS(i)) + cutValues[i];
-    if ((i % numCapCutUpdateGroups != stats.numLagIterations % numCapCutUpdateGroups) || ((dual.capDuals[i] <= 0.001) && (gamma[gammaIndex] <= 0.001)))
+    if ((dual.capDuals[i] <= 0.001) && (gamma[gammaIndex] <= 0.001))
     {
       gamma[gammaIndex] = 0;
     }

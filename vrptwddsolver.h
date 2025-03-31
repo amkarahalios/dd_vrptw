@@ -101,43 +101,35 @@ class VRPTWDDSolver
     void initializeDual(Dual& dual);
     bool solveLagrangeanRelaxation(Dual& duals, SGDAlgorithm& sgdAlgo);
  
-    void updateMultipliers(Dual& duals, double lagrangeanLowerBound, int iteration);
-    void updateMultipliersVolumeAlgorithm(Dual& duals, Primal& primal, int iteration);
-    void printMultipliers(Dual& duals);
-    void repairMultipliers(Dual& repairedDual, LPSolveType lpSolveType);
-    void resizeMultipliers(const Dual& dual1, Dual& dual2);
-    void resizeMultipliersAndCopy(const Dual& dual1, Dual& dual2);
-    void resizeMultipliers(const Dual& dual1, std::vector<Dual>& dual2);
-
-    void addRouteToPrimalRoutes(std::vector<int> route);
-    bool intraRouteSwaps(std::vector<int>& route, double& routeCost);
-    bool primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& routesByLocationPrimalHeuristic, std::set<int>& returnRouteIndices);
-    double computeShawRelatedness(const std::vector<int>& route1, int location1, const std::vector<int>& route2, int location2);
-    void destroyBySingleRoute(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
-    void destroyByMultiRoute(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
-    void destroyByShaw(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
-    void destroyRoundRobin(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
-    void destroyByWorst(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
-    void destroyRandomly(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
-    void chooseRandomLocationsFromRoutes(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& randomElementsChosen);
-    void localSearchAroundSequences(int locationLimit, const std::vector<std::vector<int>>& sequences, std::vector<std::vector<int>>& newSequences);
-    void removeElements(std::set<int>& removedElements, const std::vector<std::vector<int>>& feasibleSolution, int numElementsDestroy, int extraElementsDestroy, int sequenceIndex);
-    bool largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, int timeoutSeconds);
-    bool localSearch(int locationLimit, const std::vector<std::vector<int>>& feasibleSolution, std::vector<std::vector<int>>& newBestRoutes);
-
-    void addColumn();
-    void initializeColumns();
-    bool solvePricingProblem(std::vector<double>& lambda);
-    bool solveLPCG(Dual& duals);
-
     void constructNextPrimal(double alpha, const std::vector<std::vector<int>>& decomposedRoutes, const std::vector<std::vector<int>>& decomposedRouteArcs, Primal& primal);
     void getGradient(const Primal& primal, const Dual& dual, std::vector<double>& gradient);
     double calculateTwoNorm(const std::vector<double>& gradient);
     double calculateDotProduct(const std::vector<double>& vector1, const std::vector<double>& vector2);
  
-    void addSRCCuts(std::vector<double>& srcDuals, const std::vector<double>& violations);
+    void updateMultipliers(Dual& duals, double lagrangeanLowerBound, int iteration);
+    void updateMultipliersVolumeAlgorithm(Dual& duals, Primal& primal, int iteration);
+    void printMultipliers(Dual& duals);
+    void repairMultipliers(Dual& repairedDual, LPSolveType lpSolveType);
+    void resizeMultipliers(const Dual& dual1, Dual& dual2);
+    void resizeMultipliers(const Dual& dual1, std::vector<Dual>& dual2);
+
+    bool largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, int timeoutSeconds);
+    bool primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& routesByLocationPrimalHeuristic, std::set<int>& returnRouteIndices);
+    void addRouteToPrimalRoutes(std::vector<int> route);
+    bool intraRouteSwaps(std::vector<int>& route, double& routeCost);
+
+    void destroyBySingleRoute(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    void destroyByShaw(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    double computeShawRelatedness(const std::vector<int>& route1, int location1, const std::vector<int>& route2, int location2);
+    void destroyByWorst(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    void destroyRandomly(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& destroyedElements, int numElementsToDestroy);
+    void chooseRandomLocationsFromRoutes(const std::vector<std::vector<int>>& feasibleSolution, std::set<int>& randomElementsChosen);
+    void removeElements(std::set<int>& removedElements, const std::vector<std::vector<int>>& feasibleSolution, int numElementsDestroy, int extraElementsDestroy, int sequenceIndex);
+
     bool addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std::vector<int>>& decomposedRoutes);
     void separateSequencesAndTruncate(const std::vector<std::vector<int>>& inputSequences, std::vector<std::vector<int>>& outputSequences, std::vector<std::vector<int>>& outputSequencesArcs);
+
+    void addSRCCuts(std::vector<double>& srcDuals, const std::vector<double>& violations);
     void addRCCs(const std::vector<int>& edgeTail, const std::vector<int>& edgeHead, const std::vector<double>& edgeFlow, std::vector<int>& rccArcs, int maxNumCuts, bool& cutAdded, Dual& dual);
     void addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeHead, std::vector<double>& edgeFlow, bool& cutAdded);
     void convertArcIndicesForVRPTWSep(const Primal& primal,
@@ -151,7 +143,6 @@ class VRPTWDDSolver
     VRPTWDecisionDiagram routeDD;
     VRPTWDDParameters params;
     std::vector<std::vector<int>> bestSolution;
-    double muPercentImproved;
 
     // for arc fixing
     std::vector<Dual> currDualsArcFixing;
@@ -173,23 +164,16 @@ class VRPTWDDSolver
     double alphaLowerBound;
     int alphaLowerBoundIteration;
     double targetLowerBound;
-    double percentGapToStartCuts;
-    int numCapCutUpdateGroups;
     double targetBoundIncrease;
-    int numIterationsRestart;
-    int numIterationsDeactivations;
 
     // static params
     int infeasibleRoutesBatchSize;
-    double deactivateCutValueThreshold;
-    int deactivateCutIterThreshold;
-    double lagOptimalityGapToStartRepairing;
     double percentFixedToChangeToCPLEX;
     int numArcsToChangeToCPLEX;
     int numLagCuts;
     int kappaIterations;
-    bool shouldRestart;
-    bool useScaling;
+    double muPercentImproved;
+    double percentGapToStartCuts;
 
     // for primal
     Primal primal;
