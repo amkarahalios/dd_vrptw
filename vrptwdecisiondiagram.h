@@ -241,9 +241,7 @@ class VRPTWDecisionDiagram
     int findSRC5V2s(const Primal& primal, int limit, std::vector<double>& violations);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
-                                   std::vector<double>& edgeFlow,
-                                   std::vector<int>& rccArcs,
-                                   std::vector<double>& rccArcFlows);
+                                   std::vector<double>& edgeFlow);
     void strengthenSRCs(int layer);
     void getFeasiblePrimalIndices(const Primal& primal, std::vector<int>& feasibleIndices);
 
@@ -331,7 +329,7 @@ class VRPTWDecisionDiagram
     void printFixedArcs() const;
 
     // for cuts
-    void addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& rccArcs, double rhs, RCCType rccType, bool useScaling);
+    bool addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& sequenceArcs, double rhs, RCCType rccType, bool useScaling);
     std::vector<int> getCapCutSet(int index) const { return capCutSets[index]; }
     double getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
     double getCapCutSetScaling(int index) const { return capCutSetsScaling[index]; }
@@ -340,21 +338,15 @@ class VRPTWDecisionDiagram
     double getRCCCoeff(std::vector<int> route, int rccIndex);
     bool calculateRCCCoeff(int arcIndex, int rccIndex, double& coeff);
 
-    int getNumSrcCuts() const { return srcCuts.size(); }
-    bool isCapCutActive(int index);
-    void deactivateCapCut(int index) { capCutActive[index] = false; }
-    bool isSrcCutActive(int index);
-    void deactivateSrcCut(int index) { srcCutActive[index] = false; }
-
     void addCombCutTeeth(const std::vector<std::set<int>>& teeth);
     void addCombCutRHS(const double& rhs) { combRHS.push_back(rhs); }
     int getCombCutRHS(int index) const { return combRHS[index]; }
     int getNumCombCuts() const { return combRHS.size(); }
 
+    int getNumSrcCuts() const { return srcCuts.size(); }
     int getSRCCoeff(int numTimesVisited, SRCType srcType);
     SRCType getSRCType(int index) { return srcCutTypes[index]; }
     int getSRCRHS(SRCType srcType);
-    void clearRelaxedSrcs();
 
   private:
     int addNode(const VRPTWNodeState& state);
@@ -366,7 +358,7 @@ class VRPTWDecisionDiagram
     void removeArc(int arcIndex);
     void setupNgSets(int s);
  
-    double getSRCFlowViolation(const Primal& primal, const std::vector<int>& primalFeasibleIndices, const std::set<int>& cutSet, SRCType srcType);
+    double getSRCFlowViolation(const Primal& primal, const std::set<int>& cutSet, SRCType srcType);
     void getSRCArcsAndCoeffs(const Primal& primal, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& srcArcs, std::vector<int>& srcCoeffs);
     bool checkExistingSrcCuts(const std::set<int>& testSet, std::vector<int>& bestArcSet, std::vector<int>& bestCoeffs, SRCType srcType);
     int getNumTimesSetVisited(std::vector<int> route, const std::set<int>& cutSet);
@@ -408,20 +400,15 @@ class VRPTWDecisionDiagram
     std::vector<std::vector<int>> capCutSets;
     std::vector<double> capCutSetsRHS;
     std::vector<double> capCutSetsScaling;
-    std::vector<std::vector<std::vector<int>>> capCutSetRoutes;
     std::vector<std::vector<int>> capCutSetArcs;
     std::vector<std::vector<double>> capCutSetCoeffs;
     std::vector<RCCType> rccTypes;
-    std::vector<bool> capCutActive;
 
     // SRC Cuts (SRC)
     std::vector<std::set<int>> srcCuts;
     std::vector<std::vector<int>> srcCutSeparatedArcs;
     std::vector<std::vector<int>> srcCutSeparatedCoeffs;
-    std::vector<std::vector<int>> srcCutRelaxedArcs;
-    std::vector<std::vector<int>> srcCutRelaxedCoeffs;
     std::vector<SRCType> srcCutTypes;
-    std::vector<bool> srcCutActive;
     int separatedFeasibleRouteCounter;
 
     // Strengthened Comb Cuts
