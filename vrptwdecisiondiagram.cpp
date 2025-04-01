@@ -181,6 +181,7 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
 
   locationToArcs[toLocation].push_back(newArcIndex);
 
+  // Assumes the toNode is exact
   if (!arcs[newArcIndex].isReverseArc)
   {
     // add to appropriate cut sets
@@ -223,20 +224,23 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
     {
       auto cutSet = srcCuts[srcIndex];
       auto srcType = srcCutTypes[srcIndex];
-      std::set<int> locationsOverlap;
-      for (int location : cutSet)
+      if (cutSet.find(toLocation) != cutSet.end())
       {
-        if (visitedLocationsWithArc.find(location) != visitedLocationsWithArc.end())
+        std::set<int> locationsOverlap;
+        for (int location : cutSet)
         {
-          locationsOverlap.insert(location);
+          if (visitedLocationsWithArc.find(location) != visitedLocationsWithArc.end())
+          {
+            locationsOverlap.insert(location);
+          }
         }
-      }
 
-      bool isIncrementalArc = isArcIncrementalSRC(locationsOverlap.size(), srcType);
-      if (isIncrementalArc)
-      {
-        srcCutSeparatedArcs[srcIndex].push_back(newArcIndex);
-        srcCutSeparatedCoeffs[srcIndex].push_back(1);
+        bool isIncrementalArc = isArcIncrementalSRC(static_cast<int>(locationsOverlap.size()), srcType);
+        if (isIncrementalArc)
+        {
+          srcCutSeparatedArcs[srcIndex].push_back(newArcIndex);
+          srcCutSeparatedCoeffs[srcIndex].push_back(1);
+        }
       }
     }
   }
@@ -1109,6 +1113,39 @@ bool VRPTWDecisionDiagram::moveArc(int arcIndex, int newToNodeIndex)
       arcReverseArc.erase(reverseArcIndex);
     }
   }
+ 
+  // Assumes the toNode is exact
+  if (!arcs[arcIndex].isReverseArc)
+  {
+    // src cuts
+    auto visitedLocationsWithArc = nodes[arc.toNodeIndex].state.visited;
+    for (int srcIndex=0; srcIndex<srcCuts.size(); ++srcIndex)
+    {
+      auto cutSet = srcCuts[srcIndex];
+      auto srcType = srcCutTypes[srcIndex];
+      if (cutSet.find(arc.location) != cutSet.end())
+      {
+        std::set<int> locationsOverlap;
+        for (int location : cutSet)
+        {
+          if (visitedLocationsWithArc.find(location) != visitedLocationsWithArc.end())
+          {
+            locationsOverlap.insert(location);
+          }
+        }
+
+        bool isIncrementalArc = isArcIncrementalSRC(static_cast<int>(locationsOverlap.size()), srcType);
+        if (isIncrementalArc)
+        {
+          if (std::find(srcCutSeparatedArcs[srcIndex].begin(), srcCutSeparatedArcs[srcIndex].end(), arcIndex) == srcCutSeparatedArcs[srcIndex].end())
+          {
+            srcCutSeparatedArcs[srcIndex].push_back(arcIndex);
+            srcCutSeparatedCoeffs[srcIndex].push_back(1);
+          }
+        }
+      }
+    }
+  }
 
   return true;
 }
@@ -1373,7 +1410,6 @@ void VRPTWDecisionDiagram::setCoeffsAsPreciseDistances()
   for (VRPTWArc& arc : arcs)
   {
     double preciseDistance = vrptw.preciseDistances[arc.location][nodes[arc.fromNodeIndex].state.lastVisited];
-    //preciseDistance = preciseDistance - 10 * nodes[arc.fromNodeIndex].state.counter;
     arc.coeff = preciseDistance;
     arc.cijPi = preciseDistance;
   }
@@ -1618,128 +1654,6 @@ void VRPTWDecisionDiagram::getSrcCutValuesRoutes(const Primal& primal, std::vect
   }
 }
 
-void VRPTWDecisionDiagram::addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed)
-{
-  int load = nodes[nodeIndex].state.load;
-  std::vector<bool> seenNode(nodes.size(), false);
-  for (auto capNodeIndices : nodeOrdering)
-  {
-    // mark seen nodes and try to find nodeIndex2
-    for (int nodeIndex : capNodeIndices.second)
-    {
-      // skip to load range
-      if (nodes[nodeIndex].state.load < load)
-      {
-        break;
-      }
-      else if (nodes[nodeIndex].state.load > demandLimit)
-      {
-        return;
-      }
-
-      if (!seenNode[nodeIndex])
-      {
-        continue;
-      }
-
-      for (int arcIndex : nodes[nodeIndex].outArcs)
-      {
-        int toNodeIndex = arcs[arcIndex].toNodeIndex;
-        seenNode[toNodeIndex] = true;
-        if (nodesUsed.find(toNodeIndex) != nodesUsed.end())
-        {
-          blacklist.insert(toNodeIndex);
-        }
-      }
-    }
-  }
-}
-
-bool VRPTWDecisionDiagram::areNodesConnected(int nodeIndex1, int nodeIndex2)
-{
-  int load1 = nodes[nodeIndex1].state.load;
-  int load2 = nodes[nodeIndex2].state.load;
-  std::vector<bool> seenNode(nodes.size(), false);
-  if (load1 < load2)
-  {
-    seenNode[nodeIndex1] = true;
-    for (auto capNodeIndices : nodeOrdering)
-    {
-      // mark seen nodes and try to find nodeIndex2
-      for (int nodeIndex : capNodeIndices.second)
-      {
-        // skip to load range
-        if (nodes[nodeIndex].state.load < load1)
-        {
-          break;
-        }
-        else if (nodes[nodeIndex].state.load > load2)
-        {
-          return false;
-        }
-
-        if (!seenNode[nodeIndex])
-        {
-          continue;
-        }
-        else if (nodeIndex == nodeIndex2)
-        {
-          return true;
-        }
-
-        for (int arcIndex : nodes[nodeIndex].outArcs)
-        {
-          int toNodeIndex = arcs[arcIndex].toNodeIndex;
-          seenNode[toNodeIndex] = true;
-        }
-      }
-    }
-
-    return false;
-  }
-  else if (load1 > load2)
-  {
-    seenNode[nodeIndex2] = true;
-    for (auto capNodeIndices : nodeOrdering)
-    {
-      // mark seen nodes and try to find nodeIndex2
-      for (int nodeIndex : capNodeIndices.second)
-      {
-        // skip to load range
-        if (nodes[nodeIndex].state.load < load2)
-        {
-          break;
-        }
-        else if (nodes[nodeIndex].state.load > load1)
-        {
-          return false;
-        }
-
-        if (!seenNode[nodeIndex])
-        {
-          continue;
-        }
-        else if (nodeIndex == nodeIndex1)
-        {
-          return true;
-        }
-
-        for (int arcIndex : nodes[nodeIndex].outArcs)
-        {
-          int toNodeIndex = arcs[arcIndex].toNodeIndex;
-          seenNode[toNodeIndex] = true;
-        }
-      }
-    }
-
-    return false;
-  }
-  else
-  {
-    return false;
-  }
-}
-
 int VRPTWDecisionDiagram::getSRCRHS(SRCType srcType)
 {
   if ((srcType == SRCType::SRC3) || (srcType == SRCType::SRC5V1))
@@ -1846,7 +1760,6 @@ void VRPTWDecisionDiagram::getSRCArcsAndCoeffs(const Primal& primal, const std::
   }
 };
 
-// TODO(akarahal) deactivate elsewhere, but remember to zero-out related duals
 // add to src cuts, might already have one with same test set
 bool VRPTWDecisionDiagram::checkExistingSrcCuts(const std::set<int>& testSet, std::vector<int>& srcArcs, std::vector<int>& srcCoeffs, SRCType srcType)
 {
@@ -1928,7 +1841,7 @@ int VRPTWDecisionDiagram::findSRCs(const Primal& primal, int limit, std::vector<
  
   // order distances
   std::sort(testSetViolations.begin(), testSetViolations.end(), sort_by_second3);
-  testSetViolations.resize(limit);
+  testSetViolations.resize(std::min(limit,static_cast<int>(testSetViolations.size())));
   for (auto typeTestSetViolation : testSetViolations)
   {
     auto srcType = typeTestSetViolation.first.first;
@@ -1946,6 +1859,36 @@ int VRPTWDecisionDiagram::findSRCs(const Primal& primal, int limit, std::vector<
       std::cout << "add src cut type: " << srcType << " with arcs: ";
       srcCuts.push_back(testSet);
       srcCutTypes.push_back(srcType);
+
+      // add for all arcs instead of just the ones in the violation
+      // would need to ensure that they are exact
+      /*
+      srcArcs.clear();
+      srcCoeffs.clear();
+      for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
+      {
+        if (testSet.find(arcs[arcIndex].location) != testSet.end())
+        {
+          auto visitedLocationsWithArc = nodes[arcs[arcIndex].toNodeIndex].state.visited;
+          std::set<int> locationsOverlap;
+          for (int location : testSet)
+          {
+            if (visitedLocationsWithArc.find(location) != visitedLocationsWithArc.end())
+            {
+              locationsOverlap.insert(location);
+            }
+          }
+
+          bool isIncrementalArc = isArcIncrementalSRC(locationsOverlap.size(), srcType);
+          if (isIncrementalArc)
+          {
+            srcArcs.push_back(arcIndex);
+            srcCoeffs.push_back(1);
+          }
+        }
+      }
+      */
+
       srcCutSeparatedArcs.push_back(srcArcs);
       srcCutSeparatedCoeffs.push_back(srcCoeffs);
       for (int a : srcArcs)
@@ -1970,7 +1913,12 @@ int VRPTWDecisionDiagram::findSRCs(const Primal& primal, int limit, std::vector<
     }
     else
     {
-      std::cout << "cut existed" << std::endl;
+      std::cout << "cut existed for test set: " << std::endl;
+      for (int loc : testSet)
+      {
+        std::cout << loc << " ";
+      }
+      std::cout << std::endl;
     }
   }
 
@@ -2225,8 +2173,8 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
         coverConstraints.add(sumLocationArcs >= 1);
       }
     }
+    flowModel.add(coverConstraints);
   }
-  flowModel.add(coverConstraints);
 
   // Flow Conservation Constraints
   for (int nodeIndex=2; nodeIndex<nodes.size(); ++nodeIndex)
@@ -2272,7 +2220,6 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
         {
           int arcIndex = capCutSetArcs[capCutIndex][index];
           double coeff = capCutSetCoeffs[capCutIndex][index];
-          //std::cout << "arc index: " << arcIndex << " coeff: " << coeff << std::endl;
           cutSetSum += x[arcIndex] * coeff;
         }
 
@@ -2330,7 +2277,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   //solver.exportModel("LPflowmodel.lp");
 
   // Warm starts
-  if (flowType == FlowType::LP)
+  if ((flowType == FlowType::LP) && (includeCoverConstraints == IncludeCoverConstraints::Y))
   {
     IloNumArray startDuals(env);
     for (auto dual : duals.lambda)
@@ -4585,7 +4532,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModel(const std::vector<double>& du
       DBG(print();)
 
       // shortest path tells us dual feasibility
-      if (minReducedCost < 0)
+      if (minReducedCost < 0.00001)
       {
         isDualFeasible = false;
         DBG(std::cout << "dual not feasible: " << shortestPathLength << std::endl;)
@@ -4944,6 +4891,10 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::ve
   else
   {
     isDualFeasible = true;
+    if (vrptw.fixedNumPaths != FixedNumPaths::FIXED_NUM_PATHS)
+    {
+      return 0.0;
+    }
   }
 
   std::vector<std::vector<int>> treeByChildArcs;
@@ -4971,7 +4922,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::ve
       DBG(std::cout << "find multi path" << std::endl;)
       findMultiPath(newPathArcIndex, treeByParentArcs, shortestPathByArc);
       double currRouteCost = evaluateRouteCost(shortestPathByArc);
-      //std::cout << "r: " << currRouteCost << std::endl;
+      DBG(std::cout << "r: " << currRouteCost << std::endl;)
       if ((currRouteCost >= -0.000000001) && (vrptw.fixedNumPaths == FixedNumPaths::FLEXIBLE_NUM_PATHS))
       {
         break;
@@ -5054,7 +5005,7 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::ve
       DBG(std::cout << "finish shortest path update" << std::endl;)
 
       double currRouteCost = evaluateRouteCost(shortestPathByArc);
-      //std::cout << "r: " << currRouteCost << std::endl;
+      DBG(std::cout << "r: " << currRouteCost << std::endl;)
       if ((currRouteCost >= -0.000000001) && (vrptw.fixedNumPaths == FixedNumPaths::FLEXIBLE_NUM_PATHS))
       {
         break;
@@ -5350,6 +5301,46 @@ bool VRPTWDecisionDiagram::checkAn48k7SolutionPossible() const
     if (!doesRouteExistByLocations(routesByLocation[routeIndex], updatedRouteArcs))
     {
       std::cout << "ERROR An48k7: failed at index: " << routeIndex << std::endl;
+      return false;
+    }
+  }
+
+  std::cout << "clear" << std::endl;
+  return true;
+}
+
+bool VRPTWDecisionDiagram::checkXn181k23SolutionPossible() const
+{
+  std::vector<std::vector<int>> routesByLocation;
+  routesByLocation.push_back({114,67,130,73,124,144,165,104,0});
+  routesByLocation.push_back({8,76,18,159,171,96,80,58,0});
+  routesByLocation.push_back({88,78,93,3,102,21,98,176,0});
+  routesByLocation.push_back({49,137,107,20,161,109,68,19,0});
+  routesByLocation.push_back({14,36,158,79,30,9,128,60,0});
+  routesByLocation.push_back({52,51,29,27,122,157,47,143,0});
+  routesByLocation.push_back({142,11,42,84,26,90,163,95,0});
+  routesByLocation.push_back({132,140,63,85,89,2,149,152,0});
+  routesByLocation.push_back({116,92,131,169,61,65,32,44,0});
+  routesByLocation.push_back({45,148,180,145,0});
+  routesByLocation.push_back({59,106,154,38,129,136,77,13,0});
+  routesByLocation.push_back({133,173,119,28,69,100,56,99,0});
+  routesByLocation.push_back({139,160,172,141,81,66,25,72,0});
+  routesByLocation.push_back({1,16,50,94,146,166,74,46,0});
+  routesByLocation.push_back({123,174,48,6,126,120,101,112,0});
+  routesByLocation.push_back({153,82,103,125,83,134,7,91,0});
+  routesByLocation.push_back({31,57,110,175,162,168,41,22,0});
+  routesByLocation.push_back({75,113,4,53,33,151,35,117,0});
+  routesByLocation.push_back({39,167,87,147,37,164,15,127,0});
+  routesByLocation.push_back({178,156,177,40,150,97,34,118,0});
+  routesByLocation.push_back({17,71,24,179,115,138,155,170,0});
+  routesByLocation.push_back({55,135,5,105,64,86,62,23,0});
+  routesByLocation.push_back({10,43,111,54,70,121,12,108,0});
+  for (int routeIndex=0; routeIndex<routesByLocation.size(); ++routeIndex)
+  {
+    std::vector<int> updatedRouteArcs;
+    if (!doesRouteExistByLocations(routesByLocation[routeIndex], updatedRouteArcs))
+    {
+      std::cout << "ERROR Xn181k23: failed at index: " << routeIndex << std::endl;
       return false;
     }
   }

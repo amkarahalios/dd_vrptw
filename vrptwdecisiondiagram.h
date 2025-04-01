@@ -230,9 +230,6 @@ class VRPTWDecisionDiagram
     void getCombValuesRoutes(const Primal& primal, std::vector<double>& combValues);
     void getSrcCutValuesRoutes(const Primal& primal, std::vector<double>& srcCutValues);
 
-    void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
-    bool areNodesConnected(int nodeIndex1, int nodeIndex2);
-
     int findSRCs(const Primal& primal, int limit, std::vector<double>& violations);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
@@ -244,7 +241,6 @@ class VRPTWDecisionDiagram
     double computeShortestPathBFSWang(std::vector<int>& treeByParentArcs, std::vector<int>& routeByArcs, double& longestShortestPathLength);
 
     // network flow for lp/ip
-    void initializeColumnsByLPDecomp();
     double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, const std::set<int>& initialPrimalArcIndices, Dual& dual, bool removeConstraintsForTesting, int timeoutSeconds);
     double getDualObjectiveValue(const Dual& dual, LPSolveType lpSolveType);
     double fixArcs(const Dual& dual, LPSolveType lpSolveType, double upperBound);
@@ -313,6 +309,7 @@ class VRPTWDecisionDiagram
     bool checkAn33k6SolutionPossible() const;
     bool checkAn36k5SolutionPossible() const;
     bool checkAn48k7SolutionPossible() const;
+    bool checkXn181k23SolutionPossible() const;
     bool checkC141SolutionPossible() const;
     bool checkLC121SolutionPossible() const;
     bool checkLRC121SolutionPossible() const;
@@ -345,8 +342,10 @@ class VRPTWDecisionDiagram
     int addNode(const VRPTWNodeState& state);
     int addArc(int fromNodeIndex, int toNodeIndex);
     int addReverseArc(int forwardArcIndex);
+
     bool generateNewStateExact(VRPTWNodeState& state, int action);
     bool generateNewStateRelaxation(VRPTWNodeState& state, int action, int nodeIndex);
+
     bool moveArc(int arcIndex, int newToNodeIndex);
     void removeArc(int arcIndex);
     void setupNgSets(int s);
