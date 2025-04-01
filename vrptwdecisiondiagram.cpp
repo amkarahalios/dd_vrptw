@@ -1867,6 +1867,7 @@ bool VRPTWDecisionDiagram::checkExistingSrcCuts(const std::set<int>& testSet, st
           srcCutSeparatedArcs[index].push_back(newArc);
           srcCutSeparatedCoeffs[index].push_back(newArcCoeff);
         }
+        std::cout << "added arc " << newArc << " to existing src cut" << std::endl;
       }
       return false;
     }
@@ -1875,405 +1876,106 @@ bool VRPTWDecisionDiagram::checkExistingSrcCuts(const std::set<int>& testSet, st
   return true;
 };
 
-int VRPTWDecisionDiagram::findSRC3s(const Primal& primal, int limit, std::vector<double>& violations)
+bool sort_by_second3(const std::pair<std::pair<SRCType,std::set<int>>,double>& a, const std::pair<std::pair<SRCType,std::set<int>>,double>& b)
 {
-  int numAdded = 0;
+  return (a.second > b.second);
+}
+
+int VRPTWDecisionDiagram::findSRCs(const Primal& primal, int limit, std::vector<double>& violations)
+{
+  std::vector<std::pair<std::pair<SRCType,std::set<int>>,double>> testSetViolations;
   for (int i=1; i<vrptw.numLocations-2; ++i)
   {
     for (int j=i+1; j<vrptw.numLocations-1; ++j)
     {
       for (int k=j+1; k<vrptw.numLocations; ++k)
       {
-        if (numAdded == limit)
-        {
-          return limit;
-        }
-        std::set<int> testSet = {i,j,k};
-
-        double violation = getSRCFlowViolation(primal, testSet, SRCType::SRC3);
+        // SRC3
+        std::set<int> testSetSRC3 = {i,j,k};
+        double violation = getSRCFlowViolation(primal, testSetSRC3, SRCType::SRC3);
         if (violation > 0.1)
         {
-          std::vector<int> srcArcs;
-          std::vector<int> srcCoeffs;
-          getSRCArcsAndCoeffs(primal, testSet, SRCType::SRC3, srcArcs, srcCoeffs);
-          bool shouldAddNewCut = checkExistingSrcCuts(testSet, srcArcs, srcCoeffs, SRCType::SRC3);
-          if (shouldAddNewCut)
-          {
-            violations.push_back(violation);
-            ++numAdded;
-            std::vector<int> emptyVector;
-            std::cout << "added new src3 cut with arcs: ";
-            srcCuts.push_back(testSet);
-            srcCutTypes.push_back(SRCType::SRC3);
-            srcCutSeparatedArcs.push_back(srcArcs);
-            srcCutSeparatedCoeffs.push_back(srcCoeffs);
-            for (int a : srcArcs)
-            {
-              std::cout << a << " ";
-            }
-
-            std::cout << " for test set: ";
-            for (int loc : testSet)
-            {
-              std::cout << loc << " ";
-            }
-            std::cout << std::endl;
-
-            std::cout << "index: " << srcCuts.size() << " violation: " << violation << std::endl;
-            std::cout << "arcs: ";
-            for (int arcIndex : srcArcs)
-            {
-              std::cout << arcIndex << ",";
-            }
-            std::cout << std::endl;
-          }
-          else
-          {
-            std::cout << "src cut existed, added arcs" << std::endl;
-          }
+          testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC3,testSetSRC3),violation));
+          continue;
         }
-      }
-    }
-  }
 
-  std::cout << "num src3 cuts added: " << numAdded << std::endl;
-  return numAdded;
-}
-
-int VRPTWDecisionDiagram::findSRC4s(const Primal& primal, int limit, std::vector<double>& violations)
-{
-  int numAdded = 0;
-  // grow off sets found for SRC3s
-  for (int srcIndex=0; srcIndex<srcCuts.size(); ++srcIndex)
-  {
-    SRCType srcType = srcCutTypes[srcIndex];
-    if (srcType == SRCType::SRC3)
-    {
-      // check violations for adding 4th location to SRC3
-      for (int location=1; location<vrptw.numLocations-2; ++location)
-      {
-        std::set<int> cutSet = srcCuts[srcIndex];
-        if (cutSet.find(location) == cutSet.end())
+        // SRC4
+        for (int l=k+1; l<vrptw.numLocations; ++l)
         {
-          if (numAdded == limit)
-          {
-            return limit;
-          }
-          cutSet.insert(location);
-          double violation = getSRCFlowViolation(primal, cutSet, SRCType::SRC4);
+          std::set<int> testSetSRC4 = {i,j,k,l};
+          violation = getSRCFlowViolation(primal, testSetSRC4, SRCType::SRC4);
           if (violation > 0.1)
           {
-            std::vector<int> srcArcs;
-            std::vector<int> srcCoeffs;
-            getSRCArcsAndCoeffs(primal, cutSet, SRCType::SRC4, srcArcs, srcCoeffs);
-            bool shouldAddNewCut = checkExistingSrcCuts(cutSet, srcArcs, srcCoeffs, SRCType::SRC4);
-            if (shouldAddNewCut)
-            {
-              violations.push_back(violation);
-              ++numAdded;
-              std::vector<int> emptyVector;
-              std::cout << "added new src4 cut with arcs: ";
-              srcCuts.push_back(cutSet);
-              srcCutTypes.push_back(SRCType::SRC4);
-              srcCutSeparatedArcs.push_back(srcArcs);
-              srcCutSeparatedCoeffs.push_back(srcCoeffs);
-              for (int a : srcArcs)
-              {
-                std::cout << a << " ";
-              }
+            testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC4,testSetSRC4),violation));
+            continue;
+          }
 
-              std::cout << " for cut set: ";
-              for (int loc : cutSet)
-              {
-                std::cout << loc << " ";
-              }
-              std::cout << std::endl;
-
-              std::cout << "index: " << srcCuts.size() << " violation: " << violation << std::endl;
-            }
-            else
+          // SRC5V1
+          for (int m=l+1; m<vrptw.numLocations; ++m)
+          {
+            std::set<int> testSetSRC5V1 = {i,j,k,l,m};
+            violation = getSRCFlowViolation(primal, testSetSRC5V1, SRCType::SRC5V1);
+            if (violation > 0.1)
             {
-              std::cout << "src cut existed, added arcs" << std::endl;
+              testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC5V1,testSetSRC5V1),violation));
+              continue;
             }
           }
         }
       }
     }
   }
-
-  std::cout << "num src4 cuts added: " << numAdded << std::endl;
-  return numAdded;
-};
-
-int VRPTWDecisionDiagram::findSRC5V1s(const Primal& primal, int limit, std::vector<double>& violations)
-{
-  int numAdded = 0;
-  // grow off sets found for SRC4s
-  for (int srcIndex=0; srcIndex<srcCuts.size(); ++srcIndex)
+ 
+  // order distances
+  std::sort(testSetViolations.begin(), testSetViolations.end(), sort_by_second3);
+  testSetViolations.resize(limit);
+  for (auto typeTestSetViolation : testSetViolations)
   {
-    auto srcType = srcCutTypes[srcIndex];
-    if (srcType == SRCType::SRC4)
-    {
-      // check violations for adding 5th location to SRC4
-      for (int location=1; location<vrptw.numLocations-2; ++location)
-      {
-        std::set<int> cutSet = srcCuts[srcIndex];
-        if (cutSet.find(location) == cutSet.end())
-        {
-          if (numAdded == limit)
-          {
-            return limit;
-          }
-          cutSet.insert(location);
-          double violation = getSRCFlowViolation(primal, cutSet, SRCType::SRC5V1);
-          if (violation > 0.1)
-          {
-            std::vector<int> srcArcs;
-            std::vector<int> srcCoeffs;
-            getSRCArcsAndCoeffs(primal, cutSet, SRCType::SRC5V1, srcArcs, srcCoeffs);
-            bool shouldAddNewCut = checkExistingSrcCuts(cutSet, srcArcs, srcCoeffs, SRCType::SRC5V1);
-            if (shouldAddNewCut)
-            {
-              violations.push_back(violation);
-              ++numAdded;
-              std::vector<int> emptyVector;
-              std::cout << "added new src5v1 cut with arcs: ";
-              srcCuts.push_back(cutSet);
-              srcCutTypes.push_back(SRCType::SRC5V1);
-              srcCutSeparatedArcs.push_back(srcArcs);
-              srcCutSeparatedCoeffs.push_back(srcCoeffs);
-              for (int a : srcArcs)
-              {
-                std::cout << a << " ";
-              }
-
-              std::cout << " for cut set: ";
-              for (int loc : cutSet)
-              {
-                std::cout << loc << " ";
-              }
-              std::cout << std::endl;
-
-              std::cout << "index: " << srcCuts.size() << " violation: " << violation << std::endl;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  std::cout << "num src5V1 cuts added: " << numAdded << std::endl;
-  return numAdded;
-};
-
-int VRPTWDecisionDiagram::findSRC5V2s(const Primal& primal, int limit, std::vector<double>& violations)
-{
-  int numAdded = 0;
-  // grow off sets found for SRC4s
-  for (int srcIndex=0; srcIndex<srcCuts.size(); ++srcIndex)
-  {
-    auto srcType = srcCutTypes[srcIndex];
-    if (srcType == SRCType::SRC4)
-    {
-      // check violations for adding 5th location to SRC4
-      for (int location=1; location<vrptw.numLocations-2; ++location)
-      {
-        std::set<int> cutSet = srcCuts[srcIndex];
-        if (cutSet.find(location) == cutSet.end())
-        {
-          if (numAdded == limit)
-          {
-            return limit;
-          }
-          cutSet.insert(location);
-          double violation = getSRCFlowViolation(primal, cutSet, SRCType::SRC5V2);
-          if (violation > 0.1)
-          {
-            std::vector<int> srcArcs;
-            std::vector<int> srcCoeffs;
-            getSRCArcsAndCoeffs(primal, cutSet, SRCType::SRC5V2, srcArcs, srcCoeffs);
-            bool shouldAddNewCut = checkExistingSrcCuts(cutSet, srcArcs, srcCoeffs, SRCType::SRC5V2);
-            if (shouldAddNewCut)
-            {
-              violations.push_back(violation);
-              ++numAdded;
-              std::vector<int> emptyVector;
-              std::cout << "added new src5v2 cut with arcs: ";
-              srcCuts.push_back(cutSet);
-              srcCutTypes.push_back(SRCType::SRC5V2);
-              srcCutSeparatedArcs.push_back(srcArcs);
-              srcCutSeparatedCoeffs.push_back(srcCoeffs);
-              for (int a : srcArcs)
-              {
-                std::cout << a << " ";
-              }
-
-              std::cout << " for cut set: ";
-              for (int loc : cutSet)
-              {
-                std::cout << loc << " ";
-              }
-              std::cout << std::endl;
-
-              std::cout << "index: " << srcCuts.size() << " violation: " << violation << std::endl;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  std::cout << "num src5V2 cuts added: " << numAdded << std::endl;
-  return numAdded;
-};
-
-void VRPTWDecisionDiagram::strengthenSRCs(int averageRouteLength)
-{
-  std::vector<int> longestPathDown(nodes.size(), 0);
-  if (srcCuts.size() > 0)
-  {
-    // when counter not used, need to calculate longest path down
-    if (vrptw.counterType == VRPTWCounterType::NO_USE_COUNTER)
-    {
-      for (auto capNodeIndices : nodeOrdering)
-      {
-        for (int nodeIndex : capNodeIndices.second)
-        {
-          for (int arcIndex : nodes[nodeIndex].outArcs)
-          {
-            // NOTE(TODO) Ensure no conflict with separated out ones
-            int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
-            int toNodeIndex = arcs[arcIndex].toNodeIndex;
-            if ((fromNodeIndex == 0) && (toNodeIndex == 0))
-            {
-              longestPathDown[toNodeIndex] = INF;
-            }
-
-            int possibleNewLongest = longestPathDown[fromNodeIndex] + 1;
-            if (possibleNewLongest > longestPathDown[toNodeIndex])
-            {
-              longestPathDown[toNodeIndex] = possibleNewLongest;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  int layer = averageRouteLength;
-  for (int index=0; index<srcCuts.size(); ++index)
-  {
-    std::map<int,std::set<int>> counterArcIndices;
-    auto largestSet = srcCuts[index];
-
-    // calculate min times visiting C for each node, Down and Up
-    std::vector<int> shortestPathDown(nodes.size(), INF);
-    shortestPathDown[rootNodeIndex] = 0;
-    std::vector<int> shortestPathUp(nodes.size(), INF);
-    shortestPathUp[terminalNodeIndex] = 0;
-
-    for (auto capNodeIndices : nodeOrdering)
-    {
-      for (int nodeIndex : capNodeIndices.second)
-      {
-        for (int arcIndex : nodes[nodeIndex].outArcs)
-        {
-          int toNodeIndex = arcs[arcIndex].toNodeIndex;
-
-          int numTimesInSet = shortestPathDown[nodeIndex];
-          bool countLocation = largestSet.find(arcs[arcIndex].location) != largestSet.end();
-          if (countLocation)
-          {
-            ++numTimesInSet;
-          }
-          if (numTimesInSet < shortestPathDown[toNodeIndex])
-          {
-            shortestPathDown[toNodeIndex] = numTimesInSet;
-          }
-
-          if (vrptw.counterType == VRPTWCounterType::USE_COUNTER)
-          {
-            counterArcIndices[nodes[nodeIndex].state.counter].insert(arcIndex);
-          }
-          else
-          {
-            counterArcIndices[longestPathDown[nodeIndex]].insert(arcIndex);
-          }
-        }
-      }
-    }
-
-    for (auto it=nodeOrdering.rbegin(); it!=nodeOrdering.rend(); ++it)
-    {
-      for (int nodeIndex : it->second)
-      {
-        for (int arcIndex : nodes[nodeIndex].inArcs)
-        {
-          int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
-
-          int numTimesInSet = shortestPathUp[nodeIndex];
-          bool countLocation = largestSet.find(arcs[arcIndex].location) != largestSet.end();
-          if (countLocation)
-          {
-            ++numTimesInSet;
-          }
-          if (numTimesInSet < shortestPathUp[fromNodeIndex])
-          {
-            shortestPathUp[fromNodeIndex] = numTimesInSet;
-          }
-        }
-      }
-    }
+    auto srcType = typeTestSetViolation.first.first;
+    auto testSet = typeTestSetViolation.first.second;
+    auto violation = typeTestSetViolation.second;
 
     std::vector<int> srcArcs;
     std::vector<int> srcCoeffs;
-    auto arcSet = counterArcIndices[layer];
-    auto srcType = srcCutTypes[index];
-    for (int arcIndex : arcSet)
+    getSRCArcsAndCoeffs(primal, testSet, srcType, srcArcs, srcCoeffs);
+    bool shouldAddNewCut = checkExistingSrcCuts(testSet, srcArcs, srcCoeffs, srcType);
+    if (shouldAddNewCut)
     {
-      int fromNodeIndex = arcs[arcIndex].fromNodeIndex;
-      int toNodeIndex = arcs[arcIndex].toNodeIndex;
-      int minNumVisited = shortestPathDown[fromNodeIndex] + shortestPathUp[toNodeIndex];
-
-      int arcLocation = arcs[arcIndex].location;
-      if (largestSet.find(arcLocation) != largestSet.end())
+      violations.push_back(violation);
+      std::vector<int> emptyVector;
+      std::cout << "add src cut type: " << srcType << " with arcs: ";
+      srcCuts.push_back(testSet);
+      srcCutTypes.push_back(srcType);
+      srcCutSeparatedArcs.push_back(srcArcs);
+      srcCutSeparatedCoeffs.push_back(srcCoeffs);
+      for (int a : srcArcs)
       {
-        minNumVisited = minNumVisited + 1;
+        std::cout << a << " ";
       }
 
-      int coeff = getSRCCoeff(minNumVisited, srcType);
-      if (coeff > 0)
+      std::cout << "for test set: ";
+      for (int loc : testSet)
       {
-        srcCoeffs.push_back(coeff);
-        srcArcs.push_back(arcIndex);
+        std::cout << loc << " ";
       }
-      //std::cout << "strengthen src " << index << " by adding arc: " << arcIndex << std::endl;
+      std::cout << std::endl;
+
+      std::cout << "index: " << srcCuts.size() << " violation: " << violation << std::endl;
+      std::cout << "arcs: ";
+      for (int arcIndex : srcArcs)
+      {
+        std::cout << arcIndex << ",";
+      }
+      std::cout << std::endl;
     }
-
-    std::cout << "strengthened cut " << index << " with " << srcArcs.size() << " arcs" << std::endl;
-  }
-};
-
-void VRPTWDecisionDiagram::addColumnForLPCG(const std::vector<int>& route)
-{
-  int currentNodeIndex = rootNodeIndex;
-  for (int routeIndex=0; routeIndex<route.size(); ++routeIndex)
-  {
-    for (int arcIndex : nodes[currentNodeIndex].outArcs)
+    else
     {
-      if (arcs[arcIndex].location == route[routeIndex])
-      {
-        currentNodeIndex = arcs[arcIndex].toNodeIndex;
-        break;
-      }
-    }
-
-    if (currentNodeIndex == terminalNodeIndex)
-    {
-      return;
+      std::cout << "cut existed" << std::endl;
     }
   }
-};
+
+  return static_cast<int>(testSetViolations.size());
+}
 
 double VRPTWDecisionDiagram::computeShortestPathBFS(ShortestPathMode mode, std::vector<int>& routeByLocation)
 {

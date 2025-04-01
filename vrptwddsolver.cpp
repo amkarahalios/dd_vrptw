@@ -344,7 +344,6 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           std::vector<double> edgeFlow;
           routeDD.convertSolutionForVRPTWSep(edgeTail, edgeHead, edgeFlow);
 
-          // Consider adding more specific rccs?
           std::vector<int> sequenceArcs;
           addRCCs(edgeTail, edgeHead, edgeFlow, sequenceArcs, 100, cutAdded, dual);
 
@@ -477,10 +476,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
         auto startTimeCut = std::chrono::high_resolution_clock::now();
         std::vector<double> violations;
         int numSrcAdded = 0;
-        numSrcAdded = routeDD.findSRC3s(cutPrimal, 100, violations);
-        numSrcAdded += routeDD.findSRC4s(cutPrimal, 100, violations);
-        numSrcAdded += routeDD.findSRC5V1s(cutPrimal, 100, violations);
-        numSrcAdded += routeDD.findSRC5V2s(cutPrimal, 100, violations);
+        numSrcAdded = routeDD.findSRCs(cutPrimal, 100, violations);
         if (numSrcAdded > 0)
         {
           cutAdded = true;
@@ -749,7 +745,6 @@ bool VRPTWDDSolver::primalHeuristicMIP(FlowType flowType, std::vector<std::vecto
   // Warm start
   if (!returnRouteIndices.empty())
   {
-    std::cout << "add MIP warm start" << std::endl;
     solver.addMIPStart(x, initialPrimal);
   }
 
@@ -776,6 +771,7 @@ bool VRPTWDDSolver::primalHeuristicMIP(FlowType flowType, std::vector<std::vecto
     double objectiveValue = solver.getObjValue();
     std::cout << "primal heuristic MIP obj: " << objectiveValue << std::endl;
 
+/*
     std::cout << "feasible primal routes: " << std::endl;
     for (auto primalRoute : returnRoutes)
     {
@@ -786,6 +782,7 @@ bool VRPTWDDSolver::primalHeuristicMIP(FlowType flowType, std::vector<std::vecto
       }
       std::cout << std::endl;
     }
+*/
 
     return true;
   }
@@ -1300,7 +1297,6 @@ void VRPTWDDSolver::resizeMultipliers(const Dual& dual1, std::vector<Dual>& dual
     Dual& dual2 = duals2[index];
     dual2.lambda.resize(dual1.lambda.size());
     dual2.capDuals.resize(dual1.capDuals.size());
-    dual2.capCutUsage.resize(dual1.capCutUsage.size());
     dual2.combDuals.resize(dual1.combDuals.size());
     dual2.srcDuals.resize(dual1.srcDuals.size());
   }
@@ -1310,7 +1306,6 @@ void VRPTWDDSolver::resizeMultipliers(const Dual& dual1, Dual& dual2)
 {
   dual2.lambda.resize(dual1.lambda.size());
   dual2.capDuals.resize(dual1.capDuals.size());
-  dual2.capCutUsage.resize(dual1.capCutUsage.size());
   dual2.combDuals.resize(dual1.combDuals.size());
   dual2.srcDuals.resize(dual1.srcDuals.size());
 }
@@ -1625,7 +1620,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       {
         dual.fixedPathDual = (lagrangeanLowerBound - dualBoundWithoutFixedPathDual) / vrptw.numVehicles;
         repairedDual.fixedPathDual = dual.fixedPathDual;
-        std::cout << "fixed path dual: " << dual.fixedPathDual << std::endl;
 
         minReducedCost = minReducedCost - dual.fixedPathDual;
         if (minReducedCost >= 0)
@@ -1668,13 +1662,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         bestDual = dual;
         bestDualValue = lagrangeanLowerBound;
         std::cout << "new best dual, value: " << bestDualValue << std::endl;
-        for (int index=0; index<bestDual.capCutUsage.size(); ++index)
-        {
-          if (bestDual.capDuals[index] > 0.000001)
-          {
-            bestDual.capCutUsage[index] = true;
-          }
-        }
         /*
         double percentGap = (stats.upperBound - bestDualValue) * 100.0 / stats.upperBound;
         if (percentGap < 10)
@@ -1907,13 +1894,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
               //bestDual = repairedDual;
               //bestDualValue = repairedBound;
               //std::cout << "new best dual from repair, value: " << repairedBound << std::endl;
-              for (int index=0; index<bestDual.capCutUsage.size(); ++index)
-              {
-                if (bestDual.capDuals[index] > 0.0001)
-                {
-                  bestDual.capCutUsage[index] = true;
-                }
-              }
               /*
               double percentGap = (stats.upperBound - bestDualValue) * 100.0 / stats.upperBound;
               if (percentGap < 10)
@@ -2356,10 +2336,10 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std:
 
     std::vector<double> violations;
     int numSrcAdded = 0;
-    numSrcAdded += routeDD.findSRC3s(cutPrimal, numLagCuts, violations);
-    numSrcAdded += routeDD.findSRC4s(cutPrimal, numLagCuts, violations);
-    numSrcAdded += routeDD.findSRC5V1s(cutPrimal, numLagCuts, violations);
-    numSrcAdded += routeDD.findSRC5V2s(cutPrimal, numLagCuts, violations);
+    if (stats.lpIterations > 10)
+    {
+      numSrcAdded += routeDD.findSRCs(cutPrimal, numLagCuts, violations);
+    }
     if (numSrcAdded > 0)
     {
       cutAdded = true;
@@ -2367,7 +2347,7 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std:
       std::cout << "adding src cuts" << std::endl;
       std::vector<double> zeroViolations;
       zeroViolations.resize(violations.size());
-      addSRCCuts(dual.srcDuals, violations);
+      addSRCCuts(dual.srcDuals, zeroViolations);
     }
   }
 
@@ -2458,9 +2438,6 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
   if (integerAndFeas)
   {
     std::cout << "integral solution - no cut added" << std::endl;
-
-    // may still need to add cut if we relaxed capacity constraint
-    // want to check each route that it's under capacity
     return;
   }
 
@@ -2468,8 +2445,6 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
   if (numCuts > 0)
   {
     std::cout << "checking cuts, max violation: " << maxViolation << ", num cuts: " << numCuts << std::endl;
-    cutAdded = true;
-    std::vector<std::set<int>> cutSets;
     for (int cutIndex=0; cutIndex<std::min(numCuts,maxNumCuts); ++cutIndex)
     {
       std::vector<int> cutSet;
@@ -2481,43 +2456,27 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
       }
       double RHS = MyCutsCMP->CPL[cutIndex]->RHS;
 
-      auto cutSetAsSet = std::set<int>(cutSet.begin(), cutSet.end());
-
-      std::cout << "add capacity cutset: ";
-      for (int location : cutSet)
+      bool newCut = false;
+      if (cutSet.size() <= 20)
       {
-        std::cout << location << " ";
-      }
-      std::cout << "<= " << RHS << std::endl;
-
-      cutSets.push_back(cutSetAsSet);
-      stats.numCuts = stats.numCuts + 1;
-
-      bool cutExisted = false;
-      if ((cutSet.size() <= vrptw.numLocations / 2) || !params.useSparseRCCs)
-      {
-        cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type1, params.useScaling);
-        std::cout << "adding RCC type 1 with rhs: " << RHS << std::endl;
-      }
-      else
-      {
-        double newRHS = RHS - cutSet.size() + ((vrptw.numLocations - 1) - cutSet.size());
-        cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, newRHS, RCCType::Type3, params.useScaling);
-        std::cout << "adding RCC type 3 with rhs: " << newRHS << std::endl;
-      }
-
-      if (!cutExisted)
-      {
-        if (params.lpSolveType == LPSolveType::LPSolver)
+        bool cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type1, params.useScaling);
+        if (!cutExisted)
         {
-          dual.capDuals.push_back(0);
-          dual.capCutUsage.push_back(false);
+          newCut = true;
         }
-        else
+      }
+
+      if (newCut)
+      {
+        stats.numCuts = stats.numCuts + 1;
+        cutAdded = true;
+        dual.capDuals.push_back(0);
+        std::cout << "add capacity cutset: ";
+        for (int location : cutSet)
         {
-          dual.capDuals.push_back(0);
-          dual.capCutUsage.push_back(false);
+          std::cout << location << " ";
         }
+        std::cout << "<= " << RHS << std::endl;
       }
     }
 

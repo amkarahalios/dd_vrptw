@@ -27,8 +27,6 @@ struct Dual
     std::vector<double> combDuals;
     std::vector<double> srcDuals;
     double fixedPathDual;
-
-    std::vector<bool> capCutUsage;
 };
 
 struct Primal
@@ -235,20 +233,15 @@ class VRPTWDecisionDiagram
     void addConnectedNodesToBlacklist(int nodeIndex, int demandLimit, std::set<int>& blacklist, const std::set<int>& nodesUsed);
     bool areNodesConnected(int nodeIndex1, int nodeIndex2);
 
-    int findSRC3s(const Primal& primal, int limit, std::vector<double>& violations);
-    int findSRC4s(const Primal& primal, int limit, std::vector<double>& violations);
-    int findSRC5V1s(const Primal& primal, int limit, std::vector<double>& violations);
-    int findSRC5V2s(const Primal& primal, int limit, std::vector<double>& violations);
+    int findSRCs(const Primal& primal, int limit, std::vector<double>& violations);
     void convertSolutionForVRPTWSep(std::vector<int>& edgeTail,
                                    std::vector<int>& edgeHead,
                                    std::vector<double>& edgeFlow);
-    void strengthenSRCs(int layer);
     void getFeasiblePrimalIndices(const Primal& primal, std::vector<int>& feasibleIndices);
 
     // can be used for col gen or ssp, allows negative weights unlike dijkstra
     double computeShortestPathBFS(ShortestPathMode mode, std::vector<int>& routeByLocation);
     double computeShortestPathBFSWang(std::vector<int>& treeByParentArcs, std::vector<int>& routeByArcs, double& longestShortestPathLength);
-    void addColumnForLPCG(const std::vector<int>& route);
 
     // network flow for lp/ip
     void initializeColumnsByLPDecomp();
