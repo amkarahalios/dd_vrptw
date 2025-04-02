@@ -1796,6 +1796,7 @@ bool sort_by_second3(const std::pair<std::pair<SRCType,std::set<int>>,double>& a
 
 int VRPTWDecisionDiagram::findSRCs(const Primal& primal, int limit, std::vector<double>& violations)
 {
+  double violation = -1;
   std::vector<std::pair<std::pair<SRCType,std::set<int>>,double>> testSetViolations;
   for (int i=1; i<vrptw.numLocations-2; ++i)
   {
@@ -1804,34 +1805,43 @@ int VRPTWDecisionDiagram::findSRCs(const Primal& primal, int limit, std::vector<
       for (int k=j+1; k<vrptw.numLocations; ++k)
       {
         // SRC3
-        std::set<int> testSetSRC3 = {i,j,k};
-        double violation = getSRCFlowViolation(primal, testSetSRC3, SRCType::SRC3);
-        if (violation > 0.1)
+        if (params.useSRC3s)
         {
-          testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC3,testSetSRC3),violation));
-          continue;
+          std::set<int> testSetSRC3 = {i,j,k};
+          violation = getSRCFlowViolation(primal, testSetSRC3, SRCType::SRC3);
+          if (violation > 0.1)
+          {
+            testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC3,testSetSRC3),violation));
+            continue;
+          }
         }
 
         // SRC4
         for (int l=k+1; l<vrptw.numLocations; ++l)
         {
-          std::set<int> testSetSRC4 = {i,j,k,l};
-          violation = getSRCFlowViolation(primal, testSetSRC4, SRCType::SRC4);
-          if (violation > 0.1)
+          if (params.useSRC4s)
           {
-            testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC4,testSetSRC4),violation));
-            continue;
+            std::set<int> testSetSRC4 = {i,j,k,l};
+            violation = getSRCFlowViolation(primal, testSetSRC4, SRCType::SRC4);
+            if (violation > 0.1)
+            {
+              testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC4,testSetSRC4),violation));
+              continue;
+            }
           }
 
           // SRC5V1
-          for (int m=l+1; m<vrptw.numLocations; ++m)
+          if (params.useSRC5V1s)
           {
-            std::set<int> testSetSRC5V1 = {i,j,k,l,m};
-            violation = getSRCFlowViolation(primal, testSetSRC5V1, SRCType::SRC5V1);
-            if (violation > 0.1)
+            for (int m=l+1; m<vrptw.numLocations; ++m)
             {
-              testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC5V1,testSetSRC5V1),violation));
-              continue;
+              std::set<int> testSetSRC5V1 = {i,j,k,l,m};
+              violation = getSRCFlowViolation(primal, testSetSRC5V1, SRCType::SRC5V1);
+              if (violation > 0.1)
+              {
+                testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC5V1,testSetSRC5V1),violation));
+                continue;
+              }
             }
           }
         }

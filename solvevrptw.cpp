@@ -170,21 +170,49 @@ int main(int argc, char** argv)
           }
           else if (lineIndex == 12)
           {
-            params.useRobustCuts = false;
-            if (paramValueString == "Y")
-            {
-              params.useRobustCuts = true;
-            }
+            params.numLagCuts = std::stoi(paramValueString);
           }
           else if (lineIndex == 13)
           {
-            params.useNonRobustCuts = false;
+            params.useRCCs = false;
             if (paramValueString == "Y")
             {
-              params.useNonRobustCuts = true;
+              params.useRCCs = true;
             }
           }
           else if (lineIndex == 14)
+          {
+            params.useSRC3s = false;
+            if (paramValueString == "Y")
+            {
+              params.useSRC3s = true;
+            }
+          }
+          else if (lineIndex == 15)
+          {
+            params.useSRC4s = false;
+            if (paramValueString == "Y")
+            {
+              params.useSRC4s = true;
+            }
+          }
+          else if (lineIndex == 16)
+          {
+            params.useSRC5V1s = false;
+            if (paramValueString == "Y")
+            {
+              params.useSRC5V1s = true;
+            }
+          }
+          else if (lineIndex == 17)
+          {
+            params.useSRC5V2s = false;
+            if (paramValueString == "Y")
+            {
+              params.useSRC5V2s = true;
+            }
+          }
+          else if (lineIndex == 18)
           {
             params.useVolumeAlgorithm = false;
             if (paramValueString == "Y")
@@ -192,7 +220,15 @@ int main(int argc, char** argv)
               params.useVolumeAlgorithm = true;
             }
           }
-          else if (lineIndex == 15)
+          else if (lineIndex == 19)
+          {
+            params.limitRCCs = false;
+            if (paramValueString == "Y")
+            {
+              params.limitRCCs = true;
+            }
+          }
+          else if (lineIndex == 20)
           {
             params.useScaling = false;
             if (paramValueString == "Y")
@@ -200,31 +236,7 @@ int main(int argc, char** argv)
               params.useScaling = true;
             }
           }
-          else if (lineIndex == 16)
-          {
-            params.useSparseRCCs = false;
-            if (paramValueString == "Y")
-            {
-              params.useSparseRCCs = true;
-            }
-          }
-          else if (lineIndex == 17)
-          {
-            params.useRestarts = false;
-            if (paramValueString == "Y")
-            {
-              params.useRestarts = true;
-            }
-          }
-          else if (lineIndex == 18)
-          {
-            params.switchSepToCuts = false;
-            if (paramValueString == "Y")
-            {
-              params.switchSepToCuts = true;
-            }
-          }
-          else if (lineIndex == 20)
+          else if (lineIndex == 22)
           {
             params.primalHeuristic = PrimalHeuristic::STANDALONE;
             if (paramValueString == "CE_MIP")
@@ -244,11 +256,11 @@ int main(int argc, char** argv)
               params.primalHeuristic = PrimalHeuristic::BEST_KNOWN;
             }
           }
-          else if (lineIndex == 21)
+          else if (lineIndex == 23)
           {
             params.lnsTimeoutSeconds = std::stoi(paramValueString);
           }
-          else if (lineIndex == 22)
+          else if (lineIndex == 24)
           {
             if (paramValueString == "RANDOM")
             {
@@ -275,7 +287,7 @@ int main(int argc, char** argv)
               params.removalStrategy = PrimalHeuristicRemovalStrategy::SEQUENCE_WORST;
             }
           }
-          else if (lineIndex == 23)
+          else if (lineIndex == 25)
           {
             if (paramValueString == "NONE")
             {

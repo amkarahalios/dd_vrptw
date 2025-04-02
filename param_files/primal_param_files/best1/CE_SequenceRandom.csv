@@ -10,13 +10,15 @@ VariableFixing:Y
 MuSSP:Y
 RepairDuals:Y
 
-RobustCuts:Y
-NonRobustCuts:N
+NumLagCuts:5
+RCCs:Y
+SRC3s:N
+SRC4s:N
+SRC5V1s:N
+SRC5V2s:N
 VolumeAlgorithm:N
+LimitRCCs:N
 UseScaling:N
-UseSparseRCCs:N
-UseRestarts:N
-SwitchSepToCuts:N
 
 PrimalHeuristic:CE_MIP_LNS
 PrimalHeuristicLNSTimeout:5

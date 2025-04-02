@@ -183,13 +183,15 @@ struct VRPTWDDParameters
   bool useMuSSP;
   bool repairDuals;
 
-  bool useRobustCuts;
-  bool useNonRobustCuts;
+  int numLagCuts;
+  bool useRCCs;
+  bool useSRC3s;
+  bool useSRC4s;
+  bool useSRC5V1s;
+  bool useSRC5V2s;
   bool useVolumeAlgorithm;
+  bool limitRCCs;
   bool useScaling;
-  bool useSparseRCCs;
-  bool useRestarts;
-  bool switchSepToCuts;
 
   PrimalHeuristic primalHeuristic;
   int lnsTimeoutSeconds;

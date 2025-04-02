@@ -142,7 +142,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   infeasibleRoutesBatchSize = 1;
   percentFixedToChangeToCPLEX = 97.5;
   numArcsToChangeToCPLEX = 100000;
-  numLagCuts = 2;
   kappaIterations = 20;
   muPercentImproved = 0.001;
   percentGapToStartCuts = 0.95;
@@ -151,7 +150,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "percent arcs fixed to change to CPLEX: " << percentFixedToChangeToCPLEX << std::endl;
   std::cout << "number arcs fixed to change to CPLEX: " << numArcsToChangeToCPLEX << std::endl;
   std::cout << "kappa iterations: " << kappaIterations << std::endl;
-  std::cout << "num lag cuts: " << numLagCuts << std::endl;
   std::cout << "mu percent improved: " << muPercentImproved << std::endl;
   std::cout << "percent to start cuts: " << percentGapToStartCuts << std::endl;
 
@@ -182,13 +180,17 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "useSeparations: " << params.useSeparations << std::endl;
   std::cout << "muSSP: " << params.useMuSSP << std::endl;
   std::cout << "repairDuals: " << params.repairDuals << std::endl;
-  std::cout << "robustCuts: " << params.useRobustCuts << std::endl;
-  std::cout << "nonRobustCuts: " << params.useNonRobustCuts << std::endl;
-  std::cout << "volume algo: " << params.useVolumeAlgorithm << std::endl;
-  std::cout << "use scaling: " << params.useScaling << std::endl;
-  std::cout << "use sparse RCCs: " << params.useSparseRCCs << std::endl;
-  std::cout << "use restarts: " << params.useRestarts << std::endl;
-  std::cout << "switch separations to cuts: " << params.switchSepToCuts << std::endl;
+
+  // cuts parameters
+  std::cout << "numLagCuts: " << params.numLagCuts << std::endl;
+  std::cout << "RCCs: " << params.useRCCs << std::endl;
+  std::cout << "SRC3s: " << params.useSRC3s << std::endl;
+  std::cout << "SRC4s: " << params.useSRC4s << std::endl;
+  std::cout << "SRC5V1s: " << params.useSRC5V1s << std::endl;
+  std::cout << "SRC5V2s: " << params.useSRC5V2s << std::endl;
+  std::cout << "useVolumeAlgorithm: " << params.useVolumeAlgorithm << std::endl;
+  std::cout << "limit rccs: " << params.limitRCCs << std::endl;
+  std::cout << "useScaling: " << params.useScaling << std::endl;
 
   // primal heuristic params
   std::cout << "primal heuristic: " << params.primalHeuristic << std::endl;
@@ -334,7 +336,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
 
       if (lpFlowType == FlowType::LP)
       {
-        if (params.useRobustCuts)
+        if (params.useRCCs)
         {
           auto startTimeCut = std::chrono::high_resolution_clock::now();
           // RCC - Rounded Capacity Cuts
@@ -360,7 +362,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
 
         // SRC - Subset Row Cuts
         // Part 1 - calculate primals, don't separate until after decomposition separations happen
-        if (params.useNonRobustCuts)
+        if (params.useSRC3s || params.useSRC4s || params.useSRC5V1s || params.useSRC5V2s)
         {
           auto startTimeCut = std::chrono::high_resolution_clock::now();
           std::vector<int> infeasibleRoute;
@@ -459,7 +461,7 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
  
       // SRC - Subset Row Cuts
       // Part 2 - these may require separations, which may alter the structure
-      if (params.useNonRobustCuts)
+      if (params.useSRC3s || params.useSRC4s || params.useSRC5V1s || params.useSRC5V2s)
       {
         // Should check decomposition first for violated cuts... if exist, then separate!
 
@@ -1970,7 +1972,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
 
     // Consider restarting
     bool shouldCut = true;
-    if ((shouldTerminate && (params.useRobustCuts || params.useNonRobustCuts)) && shouldCut)
+    if ((shouldTerminate && (params.useRCCs || params.useSRC3s || params.useSRC4s || params.useSRC5V1s || params.useSRC5V2s)) && shouldCut)
     {
       addCutsUsingCurrentPrimal(dual, routesForCuts);
     }
@@ -2298,7 +2300,7 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std:
   std::vector<double> edgeFlow;
   std::vector<int> rccArcs;
   std::vector<double> rccArcFlows;
-  if (params.useRobustCuts)
+  if (params.useRCCs)
   {
     // Convert to Sep format
     convertArcIndicesForVRPTWSep(cutPrimal, edgeTail, edgeHead, edgeFlow, rccArcs, rccArcFlows);
@@ -2314,7 +2316,7 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std:
         allCutArcs.push_back(arcIndex);
       }
     }
-    addRCCs(edgeTail, edgeHead, edgeFlow, allCutArcs, numLagCuts, cutAdded, dual);
+    addRCCs(edgeTail, edgeHead, edgeFlow, allCutArcs, params.numLagCuts, cutAdded, dual);
 
     // Strengthened Combs
     //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
@@ -2322,7 +2324,7 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std:
   }
 
   // Non-Robust Cuts
-  if (params.useNonRobustCuts)
+  if (params.useSRC3s || params.useSRC4s || params.useSRC5V1s || params.useSRC5V2s)
   {
     double totalFlow = 0;
     std::vector<double> flowByVertex(vrptw.numLocations, 0);
@@ -2346,7 +2348,7 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std:
     int numSrcAdded = 0;
     if (stats.lpIterations > 10)
     {
-      numSrcAdded += routeDD.findSRCs(cutPrimal, numLagCuts, violations);
+      numSrcAdded += routeDD.findSRCs(cutPrimal, params.numLagCuts, violations);
     }
     if (numSrcAdded > 0)
     {
@@ -2510,7 +2512,7 @@ void VRPTWDDSolver::addCombs(std::vector<int>& edgeTail, std::vector<int>& edgeH
                          &(edgeTail[0]), // tails of edges
                          &(edgeHead[0]), // heads of edges
                          &(edgeFlow[0]), // flow value of edges
-                         numLagCuts, // max cuts to be returned
+                         params.numLagCuts, // max cuts to be returned
                          &maxViolation, // violation of the cut with largest violation
                          MyCutsCMP); // contains cut
 
