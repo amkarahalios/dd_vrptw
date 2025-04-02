@@ -65,7 +65,7 @@ def plot_average_gaps(instance_set_name, parameter_set_names_strings, average_ga
   #parameter_set = set(average_gap_results_df['parameter'])
   parameter_set = [x[0] for x in parameter_set_names_strings.items()]
 
-  markers = ['.','1','x','s','v','p']
+  markers = ['.','1','x','s','v','p','d']
   i = 0
   for parameter in parameter_set:
     parameter_df = average_gap_results_df[average_gap_results_df['parameter'] == parameter]
@@ -93,13 +93,13 @@ def plot_gaps_by_instance(parameter_set_names_strings, gap_results):
   instances = list(set(gap_results['instance']))
   instances.sort()
 
-  markers = ['.','1','x','s','v','p']
+  markers = ['.','1','x','s','v','p','d']
   for instance in instances:
     i = 0
     instance_df = gap_results[gap_results['instance'] == instance]
     for parameter in parameter_set:
       parameter_df = instance_df[instance_df['parameter'] == parameter]
-      plt.plot(list(parameter_df['time']), list(parameter_df['rel_gap']), label=parameter_set_names_strings[parameter], markers=markers[i])
+      plt.plot(list(parameter_df['time']), list(parameter_df['rel_gap']), label=parameter_set_names_strings[parameter], marker=markers[i])
       i = i + 1
 
     plt.title(f"UB and LB for {instance}")

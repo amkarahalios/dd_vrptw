@@ -1,4 +1,5 @@
 import os
+import gzip
 import math
 import tabulate
 import pandas
@@ -65,6 +66,34 @@ def get_column_elimination_results(instances, parameter_set_names, root_director
 
           time_result = {'instance': instance, 'parameter': parameter_name, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
           results.append(time_result)
+ 
+    for instance in instances:
+      zip_log_file_name = root_directory + "/new_logs/" + parameter_name + '/' + instance + '.log.gz'
+      if not os.path.exists(zip_log_file_name):
+        continue
+
+      with gzip.open(zip_log_file_name,'rt') as log_file:
+        for line in log_file:
+          match = regex_pattern.match(line)
+          if match:
+            lpIterations = match.group(1)
+            lagIterations = match.group(2)
+            sspIterations = match.group(3)
+            numSeparations = match.group(4)
+            compileTime = match.group(5)
+            sspSolveTime = match.group(6)
+            lpSolveTime = match.group(7)
+            lb = float(match.group(8))
+            ub = float(match.group(9))
+            numArcs = int(match.group(10))
+            numFixed = int(match.group(11))
+            numIPs = int(match.group(12))
+            numLNS = int(match.group(13))
+            numRepairs = int(match.group(14))
+            time = float(match.group(15))
+
+            time_result = {'instance': instance, 'parameter': parameter_name, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+            results.append(time_result)
 
   results_df = pandas.DataFrame(results)
   results_df.sort_values(by=['instance','lb','ub'],inplace=True)
@@ -84,6 +113,7 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
   regex_instance = re.compile('  instance  =>  "/CVRP/data/X/(.*)"')
   regex_stats = re.compile('statistics: ([A-Z]+.*[0-9]) & [0-9] & [0-9]+.* & [0-9]+.* & [0-9]+.* & ([0-9]+) & ([0-9]+.*) & ([0-9\--]+.*) & ([0-9]+.*) \\.*')
   regex_pb = re.compile('<DWph.*et=([0-9]+).*PB=([0-9]+).*')
+  regex_db = re.compile('ColGenEvalAlg final dual bound: ([0-9]+)')
 
   results = []
   for file_name in vrpsolver_file_names:
@@ -125,6 +155,13 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
         pb = float(pb_match.group(2))
         if instance in instances:
           result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : 0, 'ub' : pb, 'time' : time} 
+          results.append(result)
+ 
+      db_match = regex_db.match(line)
+      if db_match:
+        db = float(db_match.group(1))
+        if instance in instances:
+          result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : db, 'ub' : 1e9, 'time' : time} 
           results.append(result)
 
   results_df = pandas.DataFrame(results)

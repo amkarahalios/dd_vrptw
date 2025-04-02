@@ -89,10 +89,20 @@ parameter_set_names_strings = {
 }
 '''
 
+parameter_set_names_strings = {
+  "CVRP_cut_param_files/num_cuts/CE_100_0" : "CE_100",
+  "CVRP_cut_param_files/num_cuts/CE_25_0" : "CE_25",
+  "CVRP_cut_param_files/num_cuts/CE_5_0" : "CE_5",
+  "CVRP_cut_param_files/which_cuts/CE_RCC_0" : "CE_RCC",
+  "CVRP_cut_param_files/which_cuts/CE_RCCSRC3_0" : "CE_RCCSRC3",
+  "CVRP_cut_param_files/which_cuts/CE_RCCSRC3SRC4_0" : "CE_RCCSRC3SRC4",
+  "CVRP_cut_param_files/which_cuts/CE_RCCSRC3SRC4SRC5_0" : "CE_RCCSRC3SRC4SRC5"
+}
+
 parameter_set_names = [x[0] for x in parameter_set_names_strings.items()]
 
 instance_set_names = ["Solomon", "HG", "CVRP", "X", "PDPTW"]
-instance_set_name = instance_set_names[1]
+instance_set_name = instance_set_names[2]
 
 vrpsolver_file_names = ['cvrp-X-noub1.log','cvrp-X-noub2.log','cvrp-X-noub3.log','cvrp-X-noub4.log','cvrp-X-noub5.log']
 pyvrp_file_names = ['cvrp_instances1.log','cvrp_instances2.log','cvrp_instances3.log','cvrp_instances4.log','vrptw_instances1.log','vrptw_instances2.log','vrptw_instances3.log','vrptw_instances4.log','vrptw_instances5.log','vrptw_instances6.log']
@@ -117,9 +127,9 @@ gap_results_df = calculate_metrics.calculate_gaps(ce_results_df, times_for_metri
 
 average_gap_results_df = calculate_metrics.calculate_average_gaps(gap_results_df, times_for_metrics)
 
-#calculate_metrics.plot_average_gaps(instance_set_name, parameter_set_names_strings, average_gap_results_df)
+calculate_metrics.plot_average_gaps(instance_set_name, parameter_set_names_strings, average_gap_results_df)
 
-#calculate_metrics.plot_gaps_by_instance(parameter_set_names_strings, gap_results_df)
+calculate_metrics.plot_gaps_by_instance(parameter_set_names_strings, gap_results_df)
 
 calculate_metrics.print_instance_table(parameter_set_names_strings, gap_results_df)
 
