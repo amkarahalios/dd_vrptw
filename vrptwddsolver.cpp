@@ -80,62 +80,66 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
     routeDD.compileEmpty();
   }
   std::cout << "done compiling DD" << std::endl;
- 
-  // Standalone solver runs Heuristic + MIP Pool + LNS in a loop
-  int timeToRunHeuristics = params.lnsTimeoutSeconds;
-  if (params.primalHeuristic == PrimalHeuristic::STANDALONE)
-  {
-    timeToRunHeuristics = params.timeoutSeconds;
-  }
 
-  // Enter LNS process
-  int heuristicTimeSeconds = 0;
-  auto heuristicStartTime = std::chrono::high_resolution_clock::now();
-  while (heuristicTimeSeconds < timeToRunHeuristics)
+  // Primal heuristic
+  if (params.primalHeuristic != PrimalHeuristic::BEST_KNOWN)
   {
-    // Heuristic for Initial Routes
-    std::vector<std::vector<int>> heuristicRoutes;
-    bool isHeuristicFeasible = routeDD.generateHeuristicRoutesLiterature(heuristicRoutes);
-    if (!isHeuristicFeasible)
+    // Standalone solver runs Heuristic + MIP Pool + LNS in a loop
+    int timeToRunHeuristics = params.lnsTimeoutSeconds;
+    if (params.primalHeuristic == PrimalHeuristic::STANDALONE)
     {
-      continue;
+      timeToRunHeuristics = params.timeoutSeconds;
     }
-    for (auto route : heuristicRoutes)
-    {
-      addRouteToPrimalRoutes(route);
-    }
-    double heuristicRoutesUpperBound = vrptw.evaluateSolutionCost(heuristicRoutes);
 
-    // MIP Pool
-    std::vector<std::vector<int>> mipPoolSolution;
-    bool primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, mipPoolSolution, mipPoolSolutionIndices);
-    if (primalHeuristicFeasible)
+    // Enter LNS process
+    int heuristicTimeSeconds = 0;
+    auto heuristicStartTime = std::chrono::high_resolution_clock::now();
+    while (heuristicTimeSeconds < timeToRunHeuristics)
     {
-      double mipPoolUpperBound = vrptw.evaluateSolutionCost(mipPoolSolution);
-      if (mipPoolUpperBound < stats.upperBound)
+      // Heuristic for Initial Routes
+      std::vector<std::vector<int>> heuristicRoutes;
+      bool isHeuristicFeasible = routeDD.generateHeuristicRoutesLiterature(heuristicRoutes);
+      if (!isHeuristicFeasible)
       {
-        std::cout << "improved ub from MIP pool: " << mipPoolUpperBound << std::endl;
-        stats.upperBound = mipPoolUpperBound;
-        stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-        heuristicRoutes = mipPoolSolution;
-        heuristicStartTime = std::chrono::high_resolution_clock::now();
+        continue;
       }
-    }
- 
-    // LNS
-    Dual dual;
-    dual.lambda.resize(vrptw.numLocations);
-    if (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS)
-    {
-      bool isImproved = largeNeighborhoodSearch(heuristicRoutes, dual, params.lnsTimeoutSeconds);
-      if (isImproved && (params.primalHeuristic == PrimalHeuristic::STANDALONE))
+      for (auto route : heuristicRoutes)
       {
-        heuristicStartTime = std::chrono::high_resolution_clock::now();
+        addRouteToPrimalRoutes(route);
       }
+      double heuristicRoutesUpperBound = vrptw.evaluateSolutionCost(heuristicRoutes);
+
+      // MIP Pool
+      std::vector<std::vector<int>> mipPoolSolution;
+      bool primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, mipPoolSolution, mipPoolSolutionIndices);
+      if (primalHeuristicFeasible)
+      {
+        double mipPoolUpperBound = vrptw.evaluateSolutionCost(mipPoolSolution);
+        if (mipPoolUpperBound < stats.upperBound)
+        {
+          std::cout << "improved ub from MIP pool: " << mipPoolUpperBound << std::endl;
+          stats.upperBound = mipPoolUpperBound;
+          stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
+          heuristicRoutes = mipPoolSolution;
+          heuristicStartTime = std::chrono::high_resolution_clock::now();
+        }
+      }
+   
+      // LNS
+      Dual dual;
+      dual.lambda.resize(vrptw.numLocations);
+      if (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS)
+      {
+        bool isImproved = largeNeighborhoodSearch(heuristicRoutes, dual, params.lnsTimeoutSeconds);
+        if (isImproved && (params.primalHeuristic == PrimalHeuristic::STANDALONE))
+        {
+          heuristicStartTime = std::chrono::high_resolution_clock::now();
+        }
+      }
+   
+      auto heuristicCurrTime = std::chrono::high_resolution_clock::now();
+      heuristicTimeSeconds = std::chrono::duration_cast<std::chrono::seconds>(heuristicCurrTime- heuristicStartTime).count();
     }
- 
-    auto heuristicCurrTime = std::chrono::high_resolution_clock::now();
-    heuristicTimeSeconds = std::chrono::duration_cast<std::chrono::seconds>(heuristicCurrTime- heuristicStartTime).count();
   }
 
   // Set and Log Parameters

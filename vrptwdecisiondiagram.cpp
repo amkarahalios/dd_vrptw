@@ -181,7 +181,6 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
 
   locationToArcs[toLocation].push_back(newArcIndex);
 
-  // Assumes the toNode is exact
   if (!arcs[newArcIndex].isReverseArc)
   {
     // add to appropriate cut sets
@@ -219,27 +218,30 @@ int VRPTWDecisionDiagram::addArc(int fromNodeIndex, int toNodeIndex)
     }
 
     // src cuts
-    auto visitedLocationsWithArc = nodes[toNodeIndex].state.visited;
-    for (int srcIndex=0; srcIndex<srcCuts.size(); ++srcIndex)
+    if (nodes[toNodeIndex].state.isExact)
     {
-      auto cutSet = srcCuts[srcIndex];
-      auto srcType = srcCutTypes[srcIndex];
-      if (cutSet.find(toLocation) != cutSet.end())
+      auto visitedLocationsWithArc = nodes[toNodeIndex].state.visited;
+      for (int srcIndex=0; srcIndex<srcCuts.size(); ++srcIndex)
       {
-        std::set<int> locationsOverlap;
-        for (int location : cutSet)
+        auto cutSet = srcCuts[srcIndex];
+        auto srcType = srcCutTypes[srcIndex];
+        if (cutSet.find(toLocation) != cutSet.end())
         {
-          if (visitedLocationsWithArc.find(location) != visitedLocationsWithArc.end())
+          std::set<int> locationsOverlap;
+          for (int location : cutSet)
           {
-            locationsOverlap.insert(location);
+            if (visitedLocationsWithArc.find(location) != visitedLocationsWithArc.end())
+            {
+              locationsOverlap.insert(location);
+            }
           }
-        }
 
-        bool isIncrementalArc = isArcIncrementalSRC(static_cast<int>(locationsOverlap.size()), srcType);
-        if (isIncrementalArc)
-        {
-          srcCutSeparatedArcs[srcIndex].push_back(newArcIndex);
-          srcCutSeparatedCoeffs[srcIndex].push_back(1);
+          bool isIncrementalArc = isArcIncrementalSRC(static_cast<int>(locationsOverlap.size()), srcType);
+          if (isIncrementalArc)
+          {
+            srcCutSeparatedArcs[srcIndex].push_back(newArcIndex);
+            srcCutSeparatedCoeffs[srcIndex].push_back(1);
+          }
         }
       }
     }
@@ -885,6 +887,8 @@ int VRPTWDecisionDiagram::addReverseArc(int forwardArcIndex)
 // create next relaxed state from current one
 bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, int location, int nodeIndex)
 {
+  newState.isExact = false;
+
   newState.counter = newState.counter + counterBinary;
   if (newState.counter > vrptw.routeLengthUpperBound)
   {
@@ -975,10 +979,12 @@ bool VRPTWDecisionDiagram::generateNewStateRelaxation(VRPTWNodeState& newState, 
 // state should be exact for true/false return to be true
 bool VRPTWDecisionDiagram::generateNewStateExact(VRPTWNodeState& newState, int location)
 {
+  newState.isExact = true;
+
   if (location == 0)
   {
     std::set<int> initialDeque = {};
-    VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
+    VRPTWNodeState rootNodeState(1,0,0,0,true,initialDeque);
     if (newState == rootNodeState)
     {
       return true;
@@ -1114,33 +1120,35 @@ bool VRPTWDecisionDiagram::moveArc(int arcIndex, int newToNodeIndex)
     }
   }
  
-  // Assumes the toNode is exact
+  // src cuts
   if (!arcs[arcIndex].isReverseArc)
   {
-    // src cuts
-    auto visitedLocationsWithArc = nodes[arc.toNodeIndex].state.visited;
-    for (int srcIndex=0; srcIndex<srcCuts.size(); ++srcIndex)
+    if (nodes[arc.toNodeIndex].state.isExact)
     {
-      auto cutSet = srcCuts[srcIndex];
-      auto srcType = srcCutTypes[srcIndex];
-      if (cutSet.find(arc.location) != cutSet.end())
+      auto visitedLocationsWithArc = nodes[arc.toNodeIndex].state.visited;
+      for (int srcIndex=0; srcIndex<srcCuts.size(); ++srcIndex)
       {
-        std::set<int> locationsOverlap;
-        for (int location : cutSet)
+        auto cutSet = srcCuts[srcIndex];
+        auto srcType = srcCutTypes[srcIndex];
+        if (cutSet.find(arc.location) != cutSet.end())
         {
-          if (visitedLocationsWithArc.find(location) != visitedLocationsWithArc.end())
+          std::set<int> locationsOverlap;
+          for (int location : cutSet)
           {
-            locationsOverlap.insert(location);
+            if (visitedLocationsWithArc.find(location) != visitedLocationsWithArc.end())
+            {
+              locationsOverlap.insert(location);
+            }
           }
-        }
 
-        bool isIncrementalArc = isArcIncrementalSRC(static_cast<int>(locationsOverlap.size()), srcType);
-        if (isIncrementalArc)
-        {
-          if (std::find(srcCutSeparatedArcs[srcIndex].begin(), srcCutSeparatedArcs[srcIndex].end(), arcIndex) == srcCutSeparatedArcs[srcIndex].end())
+          bool isIncrementalArc = isArcIncrementalSRC(static_cast<int>(locationsOverlap.size()), srcType);
+          if (isIncrementalArc)
           {
-            srcCutSeparatedArcs[srcIndex].push_back(arcIndex);
-            srcCutSeparatedCoeffs[srcIndex].push_back(1);
+            if (std::find(srcCutSeparatedArcs[srcIndex].begin(), srcCutSeparatedArcs[srcIndex].end(), arcIndex) == srcCutSeparatedArcs[srcIndex].end())
+            {
+              srcCutSeparatedArcs[srcIndex].push_back(arcIndex);
+              srcCutSeparatedCoeffs[srcIndex].push_back(1);
+            }
           }
         }
       }
@@ -1211,7 +1219,7 @@ void VRPTWDecisionDiagram::compileEmpty()
 
   // root node r
   std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
+  VRPTWNodeState rootNodeState(1,0,0,0,true,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
 
@@ -1228,7 +1236,7 @@ void VRPTWDecisionDiagram::compileEmpty()
   {
     terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
   }
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
+  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,false,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
 }
@@ -1258,7 +1266,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
 
   // root node r
   std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
+  VRPTWNodeState rootNodeState(1,0,0,0,true,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
   priorityQueue.insert(std::make_pair(0,std::vector<int>(1,0)));
@@ -1277,7 +1285,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   {
     terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
   }
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
+  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,false,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
 
@@ -1728,15 +1736,6 @@ void VRPTWDecisionDiagram::getRouteSRCArcs(const std::vector<int>& routeArcs, co
 
 void VRPTWDecisionDiagram::getSRCArcsAndCoeffs(const Primal& primal, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& srcArcs, std::vector<int>& srcCoeffs)
 {
-  // clear fixed arcs when dd changes
-  for (int arcIndex : fixedArcs)
-  {
-    const VRPTWArc& arc = arcs[arcIndex];
-    nodes[arc.fromNodeIndex].outArcs.push_back(arcIndex);
-    nodes[arc.toNodeIndex].inArcs.push_back(arcIndex);
-  }
-  fixedArcs.clear();
-
   for (int index=0; index<primal.xDecompositionArcs.size(); ++index)
   {
     auto routeArcs = primal.xDecompositionArcs[index];
@@ -3276,7 +3275,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
   arcs.reserve(std::pow(vrptw.numLocations,2)/100);
 
   std::set<int> initialDeque = {};
-  VRPTWNodeState rootNodeState(1,0,0,0,initialDeque);
+  VRPTWNodeState rootNodeState(1,0,0,0,true,initialDeque);
   addNode(rootNodeState);
   rootNodeIndex = 0;
 
@@ -3290,7 +3289,7 @@ double VRPTWDecisionDiagram::repairSolution(const std::vector<std::vector<int>>&
   {
     terminalEndTime = vrptw.endTimes[0]*(vrptw.timeStateMultiplier);
   }
-  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,initialDeque);
+  VRPTWNodeState terminalNodeState(vrptw.numLocations+2,vrptw.capacity+1,terminalEndTime+1,terminalNodeLoc,false,initialDeque);
   addNode(terminalNodeState);
   terminalNodeIndex = 1;
   int maxPriorityValue = 1;
@@ -5619,17 +5618,14 @@ bool VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet, const st
   {
     for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
     {
-      if (!arcs[arcIndex].isReverseArc)
+      double coeff = 0;
+      bool nonZeroCoeff = calculateRCCCoeff(arcIndex, currCutSetIndex, coeff);
+      if (nonZeroCoeff)
       {
-        double coeff = 0;
-        bool nonZeroCoeff = calculateRCCCoeff(arcIndex, currCutSetIndex, coeff);
-        if (nonZeroCoeff)
+        if (std::find(capCutSetArcs[currCutSetIndex].begin(), capCutSetArcs[currCutSetIndex].end(), arcIndex) == capCutSetArcs[currCutSetIndex].end())
         {
-          if (std::find(capCutSetArcs[currCutSetIndex].begin(), capCutSetArcs[currCutSetIndex].end(), arcIndex) == capCutSetArcs[currCutSetIndex].end())
-          {
-            capCutSetArcs[currCutSetIndex].push_back(arcIndex);
-            capCutSetCoeffs[currCutSetIndex].push_back(coeff * scaling);
-          }
+          capCutSetArcs[currCutSetIndex].push_back(arcIndex);
+          capCutSetCoeffs[currCutSetIndex].push_back(coeff * scaling);
         }
       }
     }

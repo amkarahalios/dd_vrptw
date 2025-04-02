@@ -47,12 +47,12 @@ struct Primal
 
 struct VRPTWNodeState
 {
-  VRPTWNodeState(int _counter, int _load, int _timeWithMultiplier, int _lastVisited, std::set<int> _visited) : counter(_counter), load(_load), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), visited(_visited) {};
-  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), load(state.load), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), visited(state.visited) {};
+  VRPTWNodeState(int _counter, int _load, int _timeWithMultiplier, int _lastVisited, bool _isExact, std::set<int> _visited) : counter(_counter), load(_load), timeWithMultiplier(_timeWithMultiplier), lastVisited(_lastVisited), isExact(_isExact), visited(_visited) {};
+  VRPTWNodeState(const VRPTWNodeState& state) : counter(state.counter), load(state.load), timeWithMultiplier(state.timeWithMultiplier), lastVisited(state.lastVisited), isExact(state.isExact), visited(state.visited) {};
 
   bool operator==(const VRPTWNodeState & rhs) const
   {
-    if ((counter == rhs.counter) && (load == rhs.load) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited))
+    if ((counter == rhs.counter) && (load == rhs.load) && (timeWithMultiplier == rhs.timeWithMultiplier) && (lastVisited == rhs.lastVisited) && (visited == rhs.visited) && (isExact == rhs.isExact))
     {
       return true;
     }
@@ -101,6 +101,7 @@ struct VRPTWNodeState
   int load;
   int timeWithMultiplier;
   int lastVisited;
+  bool isExact;
   std::set<int> visited;
 };
 
@@ -209,17 +210,18 @@ class VRPTWDecisionDiagram
 
    std::pair<int,int> getFromAndToLocations(int arcIndex) { return std::make_pair(nodes[arcs[arcIndex].fromNodeIndex].state.lastVisited,arcs[arcIndex].location); }
 
-    // compilation
+    // Compilation
     void compileNgRoute(int s);
     void compileEmpty();
+    void setupNgSets(int s);
 
-    // set arc coeffs to different values
+    // Set arc coeffs to different values
     void setCoeffsAsDistances();
     void setCoeffsAsPreciseDistances();
     void setCoeffsAsDistancesMinusLagrangean(const std::vector<double>& lambda);
     void setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(const Dual& dual, LPSolveType lpSolveType);
 
-    // arc aggregation calculations
+    // Arc aggregation calculations
     void getNumberOfTimesLocationsCovered(std::unordered_map<int,double>& locationsCovered);
     void getCutSetValues(std::vector<double>& cutValues);
     void getCombValues(std::vector<double>& combValues);
@@ -236,17 +238,17 @@ class VRPTWDecisionDiagram
                                    std::vector<double>& edgeFlow);
     void getFeasiblePrimalIndices(const Primal& primal, std::vector<int>& feasibleIndices);
 
-    // can be used for col gen or ssp, allows negative weights unlike dijkstra
+    // SSP - allows negative weights unlike dijkstra
     double computeShortestPathBFS(ShortestPathMode mode, std::vector<int>& routeByLocation);
     double computeShortestPathBFSWang(std::vector<int>& treeByParentArcs, std::vector<int>& routeByArcs, double& longestShortestPathLength);
 
-    // network flow for lp/ip
+    // Network flow for lp/ip
     double setupAndSolveFlowModel(FlowType flowType, IncludeCoverConstraints includeCoverConstraints, UseColumnGeneration useCg, const std::set<int>& initialPrimalArcIndices, Dual& dual, bool removeConstraintsForTesting, int timeoutSeconds);
     double getDualObjectiveValue(const Dual& dual, LPSolveType lpSolveType);
     double fixArcs(const Dual& dual, LPSolveType lpSolveType, double upperBound);
     double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType, double upperBound);
 
-    // primal heuristics
+    // Primal heuristics
     double repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);
  
     int selectArcWithLargestFlowFromNode(int nodeIndex);
@@ -267,7 +269,7 @@ class VRPTWDecisionDiagram
     void parallelInsertion(std::vector<std::vector<int>>& routes, std::vector<int> candidateList, InsertionCriteria insertionCriteria);
     void createMaximalSequence(const std::vector<int>& sequence, std::vector<int>& maximalSequence);
 
-    // separation methods
+    // Separation methods
     bool doesRouteExistByArcs(const std::vector<int>& routeArcs, std::vector<int>& locationArcs) const;
     bool doesRouteExistByLocations(const std::vector<int>& routeByLocation, std::vector<int>& routeArcs) const;
     void decomposeRoutes(std::vector<int>& routeArcs, std::vector<double>& flows, std::vector<std::vector<int>>& routeDecomposition, std::vector<std::vector<int>>& decomposedArcs, DecompositionReason dr);
@@ -276,19 +278,19 @@ class VRPTWDecisionDiagram
     bool isRouteFeasible(const std::vector<int>& route);
     void repairRoute(const std::vector<int>& route, std::vector<int>& feasibleRoute, std::vector<int>& feasibleRouteArcs);
 
-    // merge methods
+    // Merge methods
     void findMergeNodesReducedCost(const Dual& dual, LPSolveType solveType, double limitToMerge);
     bool canMergeNodes(int nodeIndex1, int nodeIndex2);
     void mergeNodes(int nodeIndex1, int nodeIndex2);
 
-    // min cost flow for lagrangean
+    // Min cost flow for lagrangean
     void runDijkstra(ShortestPathMode mode, std::vector<int>& shortestPathByArc);
     int reverseArc(int arcIndex);
     void updateResidualGraph(const std::vector<int>& shortestPathByArc);
     double createSolutionFromReverseArcsAndReset();
     double solveMinCostFlowModel(const std::vector<double>& duals, std::vector<std::vector<int>>& shortestPathsByArc, bool& isDualFeasible, double& minReducedCost);
 
-    // min cost flow Wang for lagrangean
+    // Min cost flow Wang for lagrangean
     void getTreeByChildArcsFromTreeByParentArcs(const std::vector<int>& treeByParentArcs, std::vector<std::vector<int>>& treeByChildArcs);
     void identifyNodesForUpdate(int branchNodeIndex, const std::vector<std::vector<int>>& treeByChildArcs, std::set<int>& nodesToUpdate);
     int findMultiPathNode(const std::set<int>& nodesToUpdate, int currentNumPaths);
@@ -301,7 +303,7 @@ class VRPTWDecisionDiagram
     bool checkFeasibleDual(const Dual& dual, LPSolveType lpSolveType);
     void getLocationsOnArcPaths(const std::vector<std::vector<int>>& shortestPathsByArc, std::set<int>& locations);
 
-    // for testing
+    // Debugging / testing
     const std::vector<VRPTWNode>& getNodes() const { return nodes; }
     const std::vector<VRPTWArc>& getArcs() const { return arcs; }
     bool checkAn32k5SolutionPossible() const;
@@ -318,7 +320,7 @@ class VRPTWDecisionDiagram
     void printCuts() const;
     void printFixedArcs() const;
 
-    // for cuts
+    // Cuts
     bool addCapCutSet(const std::vector<int>& cutSet, const std::vector<int>& sequenceArcs, double rhs, RCCType rccType, bool useScaling);
     std::vector<int> getCapCutSet(int index) const { return capCutSets[index]; }
     double getCapCutSetRHS(int index) const { return capCutSetsRHS[index]; }
@@ -339,16 +341,14 @@ class VRPTWDecisionDiagram
     int getSRCRHS(SRCType srcType);
 
   private:
-    int addNode(const VRPTWNodeState& state);
-    int addArc(int fromNodeIndex, int toNodeIndex);
-    int addReverseArc(int forwardArcIndex);
-
     bool generateNewStateExact(VRPTWNodeState& state, int action);
     bool generateNewStateRelaxation(VRPTWNodeState& state, int action, int nodeIndex);
 
+    int addNode(const VRPTWNodeState& state);
+    int addArc(int fromNodeIndex, int toNodeIndex);
     bool moveArc(int arcIndex, int newToNodeIndex);
     void removeArc(int arcIndex);
-    void setupNgSets(int s);
+    int addReverseArc(int forwardArcIndex);
  
     double getSRCFlowViolation(const Primal& primal, const std::set<int>& cutSet, SRCType srcType);
     void getSRCArcsAndCoeffs(const Primal& primal, const std::set<int>& cutSet, SRCType srcType, std::vector<int>& srcArcs, std::vector<int>& srcCoeffs);
@@ -380,14 +380,13 @@ class VRPTWDecisionDiagram
     std::unordered_map<int,int> arcReverseArc;
     std::map<VRPTWNodeState,std::vector<int>> nodeOrdering;
 
-    // bucket parameters
+    // Discretization parameters
     int timeStepSize;
     int loadStepSize;
     int timeWindowBinary;
     int capacityBinary;
     int counterBinary;
 
-    // data structures for cuts
     // Rounded Capacity Cuts
     std::vector<std::vector<int>> capCutSets;
     std::vector<double> capCutSetsRHS;
