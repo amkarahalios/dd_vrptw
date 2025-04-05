@@ -236,7 +236,15 @@ int main(int argc, char** argv)
               params.useScaling = true;
             }
           }
+          else if (lineIndex == 21)
+          {
+            params.lowImprovementIterationsToNextRound = std::stoi(paramValueString);
+          }
           else if (lineIndex == 22)
+          {
+            params.percentImprovementThreshold = std::stod(paramValueString);
+          }
+          else if (lineIndex == 24)
           {
             params.primalHeuristic = PrimalHeuristic::STANDALONE;
             if (paramValueString == "CE_MIP")
@@ -256,11 +264,11 @@ int main(int argc, char** argv)
               params.primalHeuristic = PrimalHeuristic::BEST_KNOWN;
             }
           }
-          else if (lineIndex == 23)
+          else if (lineIndex == 25)
           {
             params.lnsTimeoutSeconds = std::stoi(paramValueString);
           }
-          else if (lineIndex == 24)
+          else if (lineIndex == 26)
           {
             if (paramValueString == "RANDOM")
             {
@@ -287,7 +295,7 @@ int main(int argc, char** argv)
               params.removalStrategy = PrimalHeuristicRemovalStrategy::SEQUENCE_WORST;
             }
           }
-          else if (lineIndex == 25)
+          else if (lineIndex == 27)
           {
             if (paramValueString == "NONE")
             {

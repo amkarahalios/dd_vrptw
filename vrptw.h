@@ -192,6 +192,8 @@ struct VRPTWDDParameters
   bool useVolumeAlgorithm;
   bool limitRCCs;
   bool useScaling;
+  int lowImprovementIterationsToNextRound;
+  double percentImprovementThreshold;
 
   PrimalHeuristic primalHeuristic;
   int lnsTimeoutSeconds;

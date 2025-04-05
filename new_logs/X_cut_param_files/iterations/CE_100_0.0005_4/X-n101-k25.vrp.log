@@ -1,0 +1,428 @@
+flexible number of vehicles
+num vehicles: 25
+capacity: 206
+num locations: 101
+instance upper bound: 27591
+route length upper bound: 21
+fixed route cost: 0
+Random seed:1269781825
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+num nodes: 25822
+num arcs: 1588121
+done compiling DD
+batch size for lag: 1
+percent arcs fixed to change to CPLEX: 95
+number arcs fixed to change to CPLEX: 100000
+step size iteration cutoff: 5
+target bound increase: 1.05
+min step size multiplier: 0.0001
+ngSetSize: 2
+change to LP: 1
+var fixing: 1
+useSeparations: 1
+muSSP: 1
+repairDuals: 1
+numLagCuts: 5
+RCCs: 1
+SRC3s: 0
+SRC4s: 0
+SRC5V1s: 0
+SRC5V2s: 0
+useVolumeAlgorithm: 0
+limit rccs: 1
+useScaling: 1
+lowImprovementIterationsToNextRound: 100
+percentImprovementThreshold: 0.0005
+primal heuristic: 4
+lns timeout: 5
+removal strategy: 0
+insertion ablation: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[27592] numArcs: [1588121] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [1]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[27592] numArcs: [1588121] numFixed: [0] time: [1]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[27592] numArcs: [1588121] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[27592] numArcs: [1588121] numFixed: [0] time: [1]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[0] ub[27592] numArcs: [1588121] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[27592] numArcs: [1588121] numFixed: [0] time: [1]
+Lagrangean bound solution value: 22168.1
+STATS - lpIterations[1] lagIterations[1] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[22168.1] ub[27592] numArcs: [1588121] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[22168.1] ub[27592] numArcs: [1588121] numFixed: [0] time: [1]
+lambda: 0,204.388,399.087,243.097,292.233,96.2913,336.583,6.40777,244.524,394.874,441.476,70.3883,187.029,279.573,113.505,45.3883,630.971,170.272,273.67,167.34,208.505,46.8932,208.874,138.408,57.0874,237.728,87.9029,357.291,145.087,29.2427,154.573,248.107,32.8252,49.5146,12.0388,137.903,708.194,441.068,150.99,114.029,138.641,238.728,388.117,116.359,123.058,118.796,83.9126,62.2621,493.893,377.689,65.3592,445.825,437.534,322.078,384.437,450.874,159.709,37.4369,127.825,223.738,291.417,250.583,232.058,270.728,8.97087,25.1942,234.466,428.155,285.243,179.417,629.126,105.903,75.0291,27.3204,460.68,199.223,34.6602,260.35,214.311,130.252,159.029,65.3786,391.631,521.942,235.456,35.4175,409.65,10.0971,83.5922,111.67,307.573,311.65,396.117,345.631,200.175,69.2039,147.961,167.301,320.854,487.689,87.3301,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 22168.1
+best alpha: 1
+alpha: 10.9743
+psiStar: 23265.5
+lagLB: 22168.1
+||gamma||^2: 100
+STATS - lpIterations[1] lagIterations[1] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[22168.1] ub[27592] numArcs: [1588121] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[0] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[22168.1] ub[27592] numArcs: [1588121] numFixed: [0] time: [1]
+Lagrangean bound solution value: 23138.9
+STATS - lpIterations[1] lagIterations[2] sspIterations[6] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[23138.9] ub[27592] numArcs: [1588084] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[2] sspIterations[6] numSeparations[0] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[23138.9] ub[27592] numArcs: [1588084] numFixed: [0] time: [1]
+lambda: 0,215.363,410.062,254.071,303.207,107.266,347.557,17.3821,255.499,405.848,452.45,81.3626,198.003,290.547,124.479,56.3626,641.945,181.246,284.644,178.314,219.479,57.8675,219.848,149.382,68.0617,248.702,98.8772,368.266,156.062,40.217,165.547,259.081,43.7995,60.4889,23.0131,148.877,719.168,452.042,161.965,125.003,149.615,249.702,399.091,127.334,134.033,129.77,94.8869,73.2364,504.867,388.664,76.3335,456.8,448.508,333.052,395.411,461.848,170.683,48.4112,138.8,234.712,302.392,261.557,243.033,281.702,19.9452,36.1685,245.44,439.13,296.217,190.392,640.101,116.877,86.0034,38.2947,471.654,210.198,45.6345,271.324,225.285,141.227,170.003,76.3529,402.605,532.916,246.431,46.3918,420.625,21.0714,94.5665,122.644,318.547,322.625,407.091,356.605,211.149,80.1782,158.935,178.275,331.829,498.664,98.3044,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 23138.9
+added route to primal routes: 0,88,57,82,0,
+added route to primal routes: 0,34,64,57,82,0,
+added route to primal routes: 0,39,10,25,0,
+added route to primal routes: 0,57,82,0,
+added route to primal routes: 0,57,72,82,0,
+added route to primal routes: 0,82,57,0,
+best alpha: 1
+alpha: 3.71888
+psiStar: 24273.1
+lagLB: 23138.9
+||gamma||^2: 305
+separating route arcs: 87 21189 45120 782450 
+separating route locations: 88 57 82 57 
+separating route arcs: 33 950 3600 12323 594302 
+separating route locations: 34 64 57 82 57 
+separating route arcs: 38 36765 365493 1482767 
+separating route locations: 39 25 10 39 
+separating route arcs: 56 3034 490292 
+separating route locations: 57 82 57 
+separating route arcs: 71 11610 29909 711163 
+separating route locations: 72 57 82 57 
+separating route arcs: 81 395633 500580 
+separating route locations: 82 57 82 
+STATS - lpIterations[1] lagIterations[2] sspIterations[6] numSeparations[6] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[23138.9] ub[27592] numArcs: [1589695] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[2] sspIterations[6] numSeparations[6] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[23138.9] ub[27592] numArcs: [1589695] numFixed: [0] time: [1]
+Lagrangean bound solution value: 23488.5
+STATS - lpIterations[1] lagIterations[3] sspIterations[9] numSeparations[6] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[23488.5] ub[27592] numArcs: [1589695] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[3] sspIterations[9] numSeparations[6] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[23488.5] ub[27592] numArcs: [1589695] numFixed: [0] time: [1]
+lambda: 0,219.082,413.781,257.79,306.926,110.984,351.276,21.1009,259.217,409.567,452.45,85.0815,201.722,294.266,128.198,60.0815,645.664,184.965,288.363,182.033,223.198,61.5864,223.567,153.101,71.7805,248.702,102.596,371.984,159.781,43.9359,169.266,262.8,47.5184,64.2077,19.2942,152.596,722.887,455.761,165.683,121.285,153.334,253.421,402.81,131.052,137.751,133.489,98.6058,76.9553,508.586,392.382,80.0524,460.518,452.227,336.771,399.13,465.567,174.402,7.50354,142.518,238.431,306.111,265.276,246.751,285.421,16.2263,39.8873,249.159,442.849,299.936,194.111,643.819,120.596,74.8468,42.0136,475.373,213.916,49.3534,275.043,229.004,144.946,173.722,80.0718,369.135,536.635,250.149,50.1106,424.344,24.7903,94.5665,126.363,322.266,326.344,410.81,360.324,214.868,83.8971,162.654,181.994,335.548,502.382,102.023,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 23488.5
+added route to primal routes: 0,74,69,16,76,0,
+added route to primal routes: 0,76,16,69,74,0,
+best alpha: 0.055
+alpha: 11.6349
+psiStar: 24628.7
+lagLB: 23488.5
+||gamma||^2: 98
+separating route arcs: 38 1588848 964280 1485353 
+separating route locations: 39 10 25 39 
+STATS - lpIterations[1] lagIterations[3] sspIterations[9] numSeparations[7] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] lb[23488.5] ub[27592] numArcs: [1589806] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [1]
+STATS1 - lpIterations[1] lagIterations[3] sspIterations[9] numSeparations[7] numCuts[0] compileTime[1] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[23488.5] ub[27592] numArcs: [1589806] numFixed: [0] time: [1]
+Lagrangean bound solution value: 24237.3
+STATS - lpIterations[1] lagIterations[4] sspIterations[19] numSeparations[7] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] lb[24237.3] ub[27592] numArcs: [1589741] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[4] sspIterations[19] numSeparations[7] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[24237.3] ub[27592] numArcs: [1589741] numFixed: [0] time: [2]
+lambda: 0,230.716,425.415,269.425,318.561,122.619,362.911,32.7358,270.852,421.202,452.45,96.7164,213.357,305.901,139.833,71.7164,634.029,196.6,299.998,193.668,234.833,73.2213,235.202,164.736,83.4154,248.702,114.231,383.619,171.415,55.5708,180.901,274.435,59.1533,75.8426,30.9291,164.231,734.522,467.396,177.318,109.65,164.969,265.056,414.445,142.687,149.386,145.124,110.241,88.5902,520.221,404.017,91.6873,472.153,463.862,348.406,410.765,477.202,186.037,19.1384,154.153,250.066,317.746,276.911,258.386,297.056,27.8612,51.5222,260.794,454.483,311.571,182.476,655.454,132.231,86.4817,53.6484,463.738,225.551,37.7185,286.678,240.639,156.58,185.357,91.7067,380.77,548.27,261.784,61.7455,435.979,36.4251,106.201,137.998,333.901,337.979,422.445,371.959,226.503,95.5319,174.289,193.629,347.182,514.017,113.658,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 24237.3
+added route to primal routes: 0,14,67,60,64,34,0,
+added route to primal routes: 0,34,64,60,67,88,0,
+added route to primal routes: 0,40,88,60,59,0,
+added route to primal routes: 0,44,67,60,0,
+added route to primal routes: 0,59,60,0,
+added route to primal routes: 0,60,67,44,0,
+added route to primal routes: 0,64,60,67,88,0,
+added route to primal routes: 0,88,67,60,64,34,0,
+added route to primal routes: 0,77,67,88,0,
+added route to primal routes: 0,88,67,0,
+best alpha: 0.055
+alpha: 3.20125
+psiStar: 25402.6
+lagLB: 24237.3
+||gamma||^2: 364
+separating route arcs: 33 1588544 1588629 43624 1019991 1551443 
+separating route locations: 34 64 88 67 60 64 
+separating route arcs: 39 90775 214355 1037893 1518467 
+separating route locations: 40 88 60 59 88 
+separating route arcs: 58 156074 925859 
+separating route locations: 59 60 59 
+separating route arcs: 63 384 28512 949919 1539996 
+separating route locations: 64 88 67 60 64 
+separating route arcs: 76 217146 426443 1516545 
+separating route locations: 77 88 67 88 
+separating route arcs: 87 1588224 908322 
+separating route locations: 88 67 88 
+STATS - lpIterations[1] lagIterations[4] sspIterations[19] numSeparations[13] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] lb[24237.3] ub[27592] numArcs: [1591018] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[4] sspIterations[19] numSeparations[13] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[24237.3] ub[27592] numArcs: [1591018] numFixed: [0] time: [2]
+Lagrangean bound solution value: 24679.5
+STATS - lpIterations[1] lagIterations[5] sspIterations[22] numSeparations[13] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] lb[24679.5] ub[27592] numArcs: [1591008] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[5] sspIterations[22] numSeparations[13] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[24679.5] ub[27592] numArcs: [1591008] numFixed: [0] time: [2]
+lambda: 0,233.918,428.617,272.626,321.762,125.821,366.112,35.9371,274.054,424.403,455.651,99.9177,216.558,309.102,139.833,74.9177,637.23,199.801,303.199,196.869,238.034,76.4225,238.403,167.937,86.6167,251.904,117.432,386.821,174.617,58.772,184.102,277.636,62.3545,79.0439,11.7216,167.432,737.723,470.597,180.52,112.851,164.969,268.257,417.646,145.889,146.185,148.325,113.442,91.7914,523.423,407.219,94.8885,475.355,467.063,351.607,413.966,480.403,189.238,22.3397,157.355,240.462,295.337,280.112,261.588,300.257,5.45239,54.7235,263.995,432.075,314.772,185.677,658.656,135.432,89.6829,56.8497,466.939,228.753,40.9197,286.678,243.84,159.782,188.558,94.9079,383.972,551.471,264.986,64.9468,439.18,39.6264,77.3901,141.199,337.102,341.18,425.646,375.16,229.704,98.7332,177.49,196.83,350.384,517.219,116.859,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 24679.5
+added route to primal routes: 0,81,51,83,0,
+added route to primal routes: 0,66,84,92,0,
+added route to primal routes: 0,84,92,68,0,
+best alpha: 0.055
+alpha: 11.7521
+psiStar: 25854.7
+lagLB: 24679.5
+||gamma||^2: 100
+separating route arcs: 80 8934 528114 1536113 
+separating route locations: 81 51 83 81 
+separating route arcs: 65 109054 471088 1342465 
+separating route locations: 66 84 92 66 
+separating route arcs: 83 95204 545003 1390484 
+separating route locations: 84 68 92 84 
+STATS - lpIterations[1] lagIterations[5] sspIterations[22] numSeparations[16] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] lb[24679.5] ub[27592] numArcs: [1591708] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [2]
+STATS1 - lpIterations[1] lagIterations[5] sspIterations[22] numSeparations[16] numCuts[0] compileTime[1] sspSolveTime[1] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[24679.5] ub[27592] numArcs: [1591708] numFixed: [0] time: [2]
+Lagrangean bound solution value: 24651.8
+added route to primal routes: 0,3,40,0,
+added route to primal routes: 0,87,37,6,78,65,28,0,
+added route to primal routes: 0,14,28,42,78,65,39,0,
+added route to primal routes: 0,15,22,41,20,0,
+added route to primal routes: 0,20,41,22,15,0,
+added route to primal routes: 0,25,65,78,42,28,0,
+added route to primal routes: 0,28,42,78,65,25,0,
+added route to primal routes: 0,32,95,53,33,0,
+added route to primal routes: 0,34,14,28,42,65,0,
+added route to primal routes: 0,35,41,22,15,0,
+added route to primal routes: 0,37,6,42,65,0,
+added route to primal routes: 0,39,65,78,42,28,14,0,
+added route to primal routes: 0,40,77,14,63,0,
+added route to primal routes: 0,65,78,42,0,
+added route to primal routes: 0,44,14,28,42,0,
+added route to primal routes: 0,51,71,62,0,
+added route to primal routes: 0,54,55,76,90,0,
+added route to primal routes: 0,74,55,76,90,0,
+added route to primal routes: 0,57,72,82,28,14,44,0,
+added route to primal routes: 0,59,88,77,14,44,0,
+added route to primal routes: 0,60,72,28,14,77,0,
+added route to primal routes: 0,62,71,0,
+added route to primal routes: 0,63,65,42,28,14,0,
+added route to primal routes: 0,64,14,28,42,65,0,
+added route to primal routes: 0,77,67,40,0,
+added route to primal routes: 0,69,16,55,76,0,
+added route to primal routes: 0,71,62,0,
+added route to primal routes: 0,57,72,82,28,63,0,
+added route to primal routes: 0,76,55,16,69,0,
+added route to primal routes: 0,77,14,0,
+added route to primal routes: 0,78,65,0,
+added route to primal routes: 0,81,71,62,0,
+added route to primal routes: 0,88,72,37,6,78,65,0,
+added route to primal routes: 0,90,76,55,74,0,
+added route to primal routes: 0,99,62,71,0,
+best alpha: 0.055
+alpha: 0.839582
+psiStar: 25814.6
+lagLB: 24651.8
+||gamma||^2: 1385
+separating route arcs: 2 291870 830411 
+separating route locations: 3 40 3 
+separating route arcs: 31 25873 115726 207535 1357054 
+separating route locations: 32 95 33 53 95 
+separating route arcs: 33 1588458 52971 220780 264712 1224158 
+separating route locations: 34 14 28 65 42 28 
+separating route arcs: 41 320435 383322 902385 
+separating route locations: 42 65 78 65 
+separating route arcs: 43 78058 236649 587682 1461499 
+separating route locations: 44 14 28 42 28 
+separating route arcs: 50 362085 873965 1125223 
+separating route locations: 51 62 71 62 
+separating route arcs: 53 240560 927444 1018952 1558139 
+separating route locations: 54 90 76 55 76 
+separating route arcs: 61 74260 165763 
+separating route locations: 62 71 62 
+separating route arcs: 63 1590613 46251 205671 247922 1201618 
+separating route locations: 64 14 28 65 42 28 
+separating route arcs: 70 14974 164189 
+separating route locations: 71 62 71 
+separating route arcs: 76 1590909 497520 
+separating route locations: 77 14 77 
+separating route arcs: 77 78208 103712 
+separating route locations: 78 65 78 
+separating route arcs: 80 1591280 53798 269388 
+separating route locations: 81 71 62 71 
+separating route arcs: 98 340964 845467 1099245 
+separating route locations: 99 62 71 62 
+STATS - lpIterations[1] lagIterations[6] sspIterations[59] numSeparations[30] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] lb[24679.5] ub[27592] numArcs: [1595036] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [3]
+STATS1 - lpIterations[1] lagIterations[6] sspIterations[59] numSeparations[30] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[24679.5] ub[27592] numArcs: [1595036] numFixed: [0] time: [3]
+Lagrangean bound solution value: 25313
+STATS - lpIterations[1] lagIterations[7] sspIterations[79] numSeparations[30] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] lb[25313] ub[27592] numArcs: [1595008] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [3]
+STATS1 - lpIterations[1] lagIterations[7] sspIterations[79] numSeparations[30] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[25313] ub[27592] numArcs: [1595008] numFixed: [0] time: [3]
+lambda: 0,246.509,441.208,283.539,334.354,138.412,376.185,48.5288,286.645,436.995,468.243,112.509,229.15,321.694,140.67,84.9906,647.303,212.393,315.791,209.461,248.947,89.0142,248.476,180.529,99.2084,261.977,130.024,399.412,173.775,71.3638,196.694,290.228,73.2671,90.796,21.7946,179.184,750.315,480.67,193.111,122.924,174.202,278.33,420.163,158.48,156.258,160.917,126.034,104.383,536.014,419.81,107.48,475.355,479.655,363.359,425.718,488.797,201.83,33.2522,169.946,252.214,307.089,292.704,262.425,309.491,16.365,54.7215,253.083,443.827,315.612,195.75,671.247,135.43,98.9163,69.4414,477.012,241.344,47.6344,294.232,248.036,172.373,201.15,80.6371,394.884,552.311,242.321,77.5385,451.772,51.3785,88.3027,153.791,347.175,353.772,414.733,387.752,242.296,109.646,190.082,209.422,362.975,528.971,129.451,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 25313
+added route to primal routes: 0,14,25,10,39,0,
+added route to primal routes: 0,34,64,3,40,0,
+added route to primal routes: 0,39,25,10,14,0,
+added route to primal routes: 0,63,14,77,40,34,0,
+added route to primal routes: 0,64,3,40,0,
+added route to primal routes: 0,88,60,59,0,
+best alpha: 0.055
+alpha: 5.94397
+psiStar: 26495.8
+lagLB: 25313
+||gamma||^2: 199
+separating route arcs: 31 1592409 1592460 1211249 1363584 
+separating route locations: 32 95 53 33 95 
+separating route arcs: 33 1588544 1588547 374007 943597 
+separating route locations: 34 64 3 40 3 
+separating route arcs: 63 1590602 320804 873129 
+separating route locations: 64 3 40 3 
+separating route arcs: 87 1588216 323293 1202871 
+separating route locations: 88 59 60 59 
+STATS - lpIterations[1] lagIterations[7] sspIterations[79] numSeparations[34] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] lb[25313] ub[27592] numArcs: [1595642] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [3]
+STATS1 - lpIterations[1] lagIterations[7] sspIterations[79] numSeparations[34] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[25313] ub[27592] numArcs: [1595642] numFixed: [0] time: [3]
+Lagrangean bound solution value: 25512.3
+STATS - lpIterations[1] lagIterations[8] sspIterations[100] numSeparations[34] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] lb[25512.3] ub[27592] numArcs: [1595553] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [4]
+STATS1 - lpIterations[1] lagIterations[8] sspIterations[100] numSeparations[34] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[25512.3] ub[27592] numArcs: [1595553] numFixed: [0] time: [4]
+lambda: 0,252.453,447.152,265.707,340.298,144.356,382.129,54.4728,292.589,442.939,462.299,118.453,235.094,327.638,122.839,73.1027,641.359,218.337,321.735,215.405,243.003,94.9582,236.588,186.473,105.152,244.145,135.968,405.356,167.831,77.3077,202.638,296.172,67.3231,90.796,0,179.184,756.259,486.614,199.055,116.98,150.426,266.443,414.219,164.424,150.314,166.861,131.978,110.327,541.958,425.754,113.424,481.299,485.599,363.359,431.662,470.965,207.774,39.1962,175.89,246.27,295.201,298.648,268.369,303.547,0,48.7775,259.027,431.939,321.556,189.806,677.191,141.374,104.86,75.3854,471.068,247.288,29.8025,282.344,242.092,178.317,207.094,86.581,400.828,558.255,248.265,83.4825,457.715,57.3225,88.3027,159.735,341.231,359.715,420.677,393.696,248.24,103.702,196.026,215.366,368.919,534.915,135.395,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 25512.3
+added route to primal routes: 0,82,72,0,
+added route to primal routes: 0,6,36,0,
+added route to primal routes: 0,80,17,58,0,
+added route to primal routes: 0,21,100,61,0,
+added route to primal routes: 0,21,61,23,0,
+added route to primal routes: 0,28,37,36,29,87,0,
+added route to primal routes: 0,56,94,96,0,
+added route to primal routes: 0,58,17,80,0,
+added route to primal routes: 0,65,78,6,37,72,88,0,
+added route to primal routes: 0,71,62,99,98,89,0,
+added route to primal routes: 0,72,37,36,29,43,87,0,
+added route to primal routes: 0,80,94,56,21,0,
+added route to primal routes: 0,81,51,71,62,0,
+added route to primal routes: 0,83,52,21,0,
+added route to primal routes: 0,87,43,29,36,37,72,0,
+added route to primal routes: 0,89,98,99,62,71,0,
+added route to primal routes: 0,100,61,23,0,
+best alpha: 0.055
+alpha: 3.85988
+psiStar: 26693.4
+lagLB: 25512.3
+||gamma||^2: 306
+Dual needs repair, spl: -23.1052
+Dual needs repair, spl: -22.959
+Dual needs repair, spl: -18.3661
+Dual needs repair, spl: -13.8134
+Dual needs repair, spl: -10.9373
+Dual needs repair, spl: -8.32121
+Dual needs repair, spl: -6.69385
+Dual needs repair, spl: -2.07203
+repaired lb: 25643.2
+STATS - lpIterations[1] lagIterations[8] sspIterations[100] numSeparations[34] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] lb[25643.2] ub[27592] numArcs: [1595553] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [4]
+STATS1 - lpIterations[1] lagIterations[8] sspIterations[100] numSeparations[34] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[25643.2] ub[27592] numArcs: [1595553] numFixed: [0] time: [4]
+lambda: 0,252.453,447.152,265.707,340.298,144.356,379.897,54.4728,292.589,442.939,462.299,118.453,235.094,327.638,122.839,73.1027,641.359,215.563,321.735,215.405,243.003,88.5278,236.588,186.473,105.152,244.145,135.968,405.356,167.831,75.4848,202.638,296.172,67.3231,90.796,0,179.184,752.205,484.791,199.055,116.98,150.426,266.443,414.219,162.601,150.314,166.861,131.978,110.327,541.958,425.754,113.424,478.237,484.908,363.359,431.662,470.965,204.32,35.3453,173.117,246.27,295.201,292.908,265.308,303.547,0,48.7775,259.027,431.939,321.556,189.806,677.191,138.313,99.1865,75.3854,471.068,247.288,29.8025,282.344,242.092,178.317,204.32,83.52,396.977,557.564,248.265,83.4825,457.715,55.4996,88.3027,159.735,341.231,359.715,420.677,393.696,244.786,103.702,192.573,215.366,368.919,534.915,129.655,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 25643.2
+percent fixed: 0.411331
+updating from repair - best lambda arc fixing
+separating route arcs: 81 1589630 603897 
+separating route locations: 82 72 82 
+separating route arcs: 5 150122 1284612 
+separating route locations: 6 36 6 
+separating route arcs: 20 25779 176832 1244585 
+separating route locations: 21 100 61 21 
+separating route arcs: 22 232491 473523 1483176 
+separating route locations: 23 21 61 21 
+separating route arcs: 50 1593675 589378 1123251 
+separating route locations: 51 71 62 71 
+separating route arcs: 55 128537 771469 1290512 
+separating route locations: 56 94 96 56 
+separating route arcs: 56 1589136 29020 711163 
+separating route locations: 57 72 82 57 
+separating route arcs: 61 1594230 839157 1099245 
+separating route locations: 62 99 71 62 
+separating route arcs: 80 1591260 1591379 791581 1280737 
+separating route locations: 81 51 71 62 71 
+STATS - lpIterations[1] lagIterations[8] sspIterations[100] numSeparations[43] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] lb[25643.2] ub[27592] numArcs: [1597044] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [4]
+STATS1 - lpIterations[1] lagIterations[8] sspIterations[100] numSeparations[43] numCuts[0] compileTime[1] sspSolveTime[2] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[25643.2] ub[27592] numArcs: [1597044] numFixed: [0] time: [4]
+fix with best duals from LAG. Using: 0 duals
+Lagrangean bound solution value: 25676.8
+STATS - lpIterations[1] lagIterations[9] sspIterations[109] numSeparations[43] numCuts[0] compileTime[1] sspSolveTime[3] lpSolveTime[0] lb[25676.8] ub[27592] numArcs: [1597017] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [4]
+STATS1 - lpIterations[1] lagIterations[9] sspIterations[109] numSeparations[43] numCuts[0] compileTime[1] sspSolveTime[3] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[25676.8] ub[27592] numArcs: [1597017] numFixed: [0] time: [4]
+lambda: 0,256.313,451.012,269.567,344.158,148.216,370.549,58.3326,296.449,446.799,466.159,122.313,238.954,331.498,126.698,76.9626,645.219,214.477,325.595,219.265,246.863,75.6588,240.448,182.613,109.012,248.005,139.828,409.216,167.831,69.588,206.498,300.032,71.183,94.6559,3.85988,183.044,744.68,471.175,202.915,120.84,154.286,270.302,418.078,160.564,154.174,170.721,135.838,114.187,545.818,429.614,117.284,477.439,485.599,367.219,435.522,474.825,200.054,31.4764,172.03,250.13,299.061,290.928,241.35,307.407,3.85988,44.9176,262.887,435.799,325.415,193.666,681.051,114.355,85.5609,79.2453,474.928,251.148,33.6624,286.204,238.232,182.177,199.374,78.8613,389.248,558.255,252.125,87.3424,461.575,49.6027,80.5829,155.875,345.091,363.575,424.537,397.556,244.38,107.562,196.026,219.226,365.059,527.195,131.535,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 25676.8
+added route to primal routes: 0,76,9,92,54,0,
+added route to primal routes: 0,1,86,68,84,0,
+added route to primal routes: 0,15,68,54,92,0,
+added route to primal routes: 0,54,9,0,
+added route to primal routes: 0,66,84,54,0,
+added route to primal routes: 0,84,54,68,0,
+added route to primal routes: 0,92,54,68,15,0,
+best alpha: 0.055
+alpha: 7.59893
+psiStar: 26854.6
+lagLB: 25676.8
+||gamma||^2: 155
+Dual needs repair, spl: -13.1872
+Dual needs repair, spl: -2.84374
+Dual needs repair, spl: -2.50632
+repaired lb: 25712.8
+STATS - lpIterations[1] lagIterations[9] sspIterations[109] numSeparations[43] numCuts[0] compileTime[1] sspSolveTime[3] lpSolveTime[0] lb[25712.8] ub[27592] numArcs: [1597017] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [4]
+STATS1 - lpIterations[1] lagIterations[9] sspIterations[109] numSeparations[43] numCuts[0] compileTime[1] sspSolveTime[3] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[25712.8] ub[27592] numArcs: [1597017] numFixed: [0] time: [4]
+lambda: 0,256.313,451.012,269.567,344.158,148.216,370.549,58.3326,296.449,446.799,466.159,122.313,238.954,331.498,126.698,76.2516,645.219,214.477,325.595,219.265,246.863,75.6588,240.448,182.613,109.012,248.005,139.828,409.216,167.831,69.588,206.498,300.032,71.183,94.6559,3.85988,183.044,744.68,471.175,202.915,120.84,154.286,270.302,418.078,160.564,154.174,170.721,135.838,114.187,545.818,429.614,117.284,477.439,485.599,367.219,431.514,474.198,200.054,31.4764,172.03,250.13,299.061,290.928,241.35,307.407,3.85988,44.9176,262.887,435.799,321.408,193.666,681.051,114.355,85.5609,79.2453,474.301,251.148,33.0358,286.204,238.232,182.177,199.374,78.8613,389.248,558.255,248.828,87.3424,461.575,49.6027,80.5829,155.875,344.464,363.575,423.826,397.556,244.38,107.562,196.026,219.226,365.059,527.195,131.535,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+fixing. lower bound used: 25712.8
+percent fixed: 0.577639
+updating from repair - best lambda arc fixing
+separating route arcs: 53 1593873 1024496 
+separating route locations: 54 9 54 
+separating route arcs: 65 1591524 1591578 1334191 
+separating route locations: 66 84 54 66 
+separating route arcs: 83 1591766 1591820 1382912 
+separating route locations: 84 68 54 84 
+STATS - lpIterations[1] lagIterations[9] sspIterations[109] numSeparations[46] numCuts[0] compileTime[1] sspSolveTime[3] lpSolveTime[0] lb[25712.8] ub[27592] numArcs: [1597187] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [5]
+STATS1 - lpIterations[1] lagIterations[9] sspIterations[109] numSeparations[46] numCuts[0] compileTime[1] sspSolveTime[3] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[25712.8] ub[27592] numArcs: [1597187] numFixed: [0] time: [5]
+fix with best duals from LAG. Using: 0 duals
+Lagrangean bound solution value: 25884.6
+STATS - lpIterations[1] lagIterations[10] sspIterations[136] numSeparations[46] numCuts[0] compileTime[1] sspSolveTime[3] lpSolveTime[0] lb[25884.6] ub[27592] numArcs: [1597119] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [5]
+STATS1 - lpIterations[1] lagIterations[10] sspIterations[136] numSeparations[46] numCuts[0] compileTime[1] sspSolveTime[3] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[25884.6] ub[27592] numArcs: [1597119] numFixed: [0] time: [5]
+lambda: 0,256.313,458.611,277.166,351.757,155.815,378.148,65.9316,304.048,439.2,473.758,129.912,246.553,339.097,134.297,69.3636,652.818,222.076,333.194,226.864,254.462,83.2577,248.047,190.212,116.611,255.604,147.427,416.815,175.43,77.1869,214.097,307.631,78.782,102.255,11.4588,190.643,752.278,478.774,210.514,128.439,161.885,277.901,425.677,168.163,161.773,178.32,143.436,121.786,553.417,437.213,124.883,485.038,493.198,374.818,389.929,467.226,207.653,39.0754,179.629,257.729,306.66,298.527,248.949,315.006,11.4588,52.5166,255.288,443.398,302.619,201.265,688.65,121.954,93.1598,86.8442,467.329,258.747,18.4645,293.803,245.831,189.776,206.973,86.4602,396.847,565.854,229.328,94.9413,461.575,57.2017,88.1818,163.474,337.492,371.174,409.339,405.155,251.979,115.161,203.625,226.825,372.658,534.794,139.134,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 25884.6
+added route to primal routes: 0,42,65,10,39,0,
+added route to primal routes: 0,21,27,100,0,
+added route to primal routes: 0,23,61,100,0,
+added route to primal routes: 0,24,31,0,
+added route to primal routes: 0,28,42,0,
+added route to primal routes: 0,30,85,11,0,
+added route to primal routes: 0,32,95,31,24,0,
+added route to primal routes: 0,34,96,94,56,0,
+added route to primal routes: 0,44,28,63,0,
+added route to primal routes: 0,30,85,11,50,0,
+added route to primal routes: 0,82,72,57,0,
+added route to primal routes: 0,63,28,0,
+added route to primal routes: 0,95,73,53,33,0,
+best alpha: 0.055
+alpha: 5.49801
+psiStar: 27061.2
+lagLB: 25884.6
+||gamma||^2: 214
+Dual needs repair, spl: -24.9663
+Dual needs repair, spl: -24.9097
+Dual needs repair, spl: -17.9297
+Dual needs repair, spl: -16.8727

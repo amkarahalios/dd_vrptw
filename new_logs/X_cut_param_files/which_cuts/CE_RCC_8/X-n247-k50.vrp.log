@@ -1,0 +1,782 @@
+flexible number of vehicles
+num vehicles: 50
+capacity: 134
+num locations: 247
+instance upper bound: 37274
+route length upper bound: 60
+fixed route cost: 0
+Random seed:2792726101
+compiling DD
+time step mult: 1
+time step: 10
+cap step: 1
+num nodes: 48820
+num arcs: 9294463
+done compiling DD
+batch size for lag: 1
+percent arcs fixed to change to CPLEX: 95
+number arcs fixed to change to CPLEX: 100000
+step size iteration cutoff: 5
+target bound increase: 1.05
+min step size multiplier: 0.0001
+ngSetSize: 2
+change to LP: 1
+var fixing: 1
+useSeparations: 1
+muSSP: 1
+numLagCuts: 25
+RCCs: 1
+SRC3s: 0
+SRC4s: 0
+SRC5V1s: 0
+SRC5V2s: 0
+useVolumeAlgorithm: 0
+limit rccs: 1
+useScaling: 1
+lowImprovementIterationsToNextRound: 20
+percentImprovementThreshold: 0.001
+primal heuristic: 4
+lns timeout: 5
+removal strategy: 0
+insertion ablation: 0
+STATS - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] lb[0] ub[37275] numArcs: [9294463] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [7]
+STATS1 - lpIterations[0] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[37275] numArcs: [9294463] numFixed: [0] time: [7]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] lb[0] ub[37275] numArcs: [9294463] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [7]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[37275] numArcs: [9294463] numFixed: [0] time: [7]
+STATS - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] lb[0] ub[37275] numArcs: [9294463] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [7]
+STATS1 - lpIterations[1] lagIterations[0] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[0] ub[37275] numArcs: [9294463] numFixed: [0] time: [7]
+Lagrangean bound solution value: 30355.2
+STATS - lpIterations[1] lagIterations[1] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] lb[30355.2] ub[37275] numArcs: [9294463] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [7]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[30355.2] ub[37275] numArcs: [9294463] numFixed: [0] time: [7]
+lambda: 0,474.313,457.791,346.701,274.672,619.343,533.134,397.612,421.433,598.687,252.179,344.776,285.134,343.881,378.269,336.627,471.94,169.075,316.657,414.896,288.731,369.433,479.343,145,393.881,379.328,211.104,393.045,752.448,390.418,204.836,397.91,441.94,466.388,280.537,581.343,235.045,298.896,541.343,527.358,323.328,294.179,423.836,365.104,388.657,187.254,278.328,559.701,527.284,145.91,596.955,602.612,205.522,325.448,384,202.388,544.03,249.015,218.284,375.179,342.851,243.224,549.373,713.746,167.642,186.179,373.134,230.194,229.701,22.0746,50.0299,5.23881,9.67164,11.6716,44.5373,40.8358,50.6418,64.2388,58.1493,33.6567,29.194,25.6119,39.1791,56.2836,5.59701,26.4328,4.53731,30.4478,45.4478,45.5821,48.5075,17.8209,12.1791,28.7313,2.83582,36.2687,15,2.59701,9.10448,19.3433,16,26.5672,18.1791,17.791,18.4925,8.71642,6.50746,39.4925,53.3284,61.3433,38.6866,23.4328,18.1791,22.209,46.0746,13.9701,34.5672,30.6269,9.49254,19.4627,56.7164,49.6716,14.1045,4.01493,14.9254,6.77612,28.9254,65.0896,20.7164,33.9552,20.8358,16.194,13.1642,16.8358,11.7761,11.8209,7.52239,34.5522,9.71642,67.7612,47.0448,19.7015,18.403,30.8955,54.3284,35.8209,20.194,21.4925,0.492537,24.1045,27.4925,3.92537,28,41.1045,16.4179,36.2985,20.791,53.5821,35.3433,8.89552,6.8209,7.98507,37.403,19.209,5.29851,51.3433,14.1045,41.6716,3.16418,12.3881,38.9254,42.9851,51.9851,36.4179,6.47761,54.6866,14.7164,11.4179,30.5075,61.1194,33.209,36.1791,28.9552,26.4179,7.40299,10.8358,35.3433,30.6119,63.9403,18.9254,39.806,33.0746,53.3881,26.5075,29.7015,63.1343,7.43284,42.5821,15,12.209,14.9104,49.1045,35.8209,48.791,28.1791,10.9254,22.4478,19.5373,14.6866,14.806,14.6567,36,26.6418,6.20896,6.55224,23.5075,22.8657,48.8358,19.0299,3.92537,7.46269,28.2836,40.4776,43.7015,24.6269,19.7761,51.791,72.5373,21.791,32.8955,69.7313,14.8358,3.92537,19.0299,40.3731,30.7463,9.71642,30.9254,21.6119,36.5373,26.1493,11.7761,29.5522,29.0149,24.9254,35.7313,34.1194,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 30355.2
+best alpha: 1
+alpha: 6.10868
+psiStar: 31858
+lagLB: 30355.2
+||gamma||^2: 246
+STATS - lpIterations[1] lagIterations[1] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] lb[30355.2] ub[37275] numArcs: [9294463] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [7]
+STATS1 - lpIterations[1] lagIterations[1] sspIterations[0] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[0] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[30355.2] ub[37275] numArcs: [9294463] numFixed: [0] time: [7]
+Lagrangean bound solution value: 31245.9
+STATS - lpIterations[1] lagIterations[2] sspIterations[61] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[14] lpSolveTime[0] lb[31245.9] ub[37275] numArcs: [9293699] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [22]
+STATS1 - lpIterations[1] lagIterations[2] sspIterations[61] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[14] lpSolveTime[0] repairTime[0] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[31245.9] ub[37275] numArcs: [9293699] numFixed: [0] time: [22]
+lambda: 0,480.422,463.9,352.81,280.78,625.452,539.243,403.721,427.542,604.795,258.288,350.885,291.243,349.989,384.377,342.736,478.049,175.183,322.765,421.004,294.84,375.542,485.452,151.109,399.989,385.437,217.213,399.153,758.556,396.527,210.944,404.019,448.049,472.497,286.646,587.452,241.153,305.004,547.452,533.467,329.437,300.288,429.944,371.213,394.765,193.362,284.437,565.81,533.392,152.019,603.064,608.721,211.631,331.556,390.109,208.497,550.139,255.124,224.392,381.288,348.959,249.333,555.482,719.855,173.75,192.288,379.243,236.303,235.81,28.1833,56.1385,11.3475,15.7803,17.7803,50.646,46.9445,56.7505,70.3475,64.2579,39.7654,35.3027,31.7206,45.2878,62.3923,11.7057,32.5415,10.646,36.5564,51.5564,51.6908,54.6161,23.9296,18.2878,34.84,8.9445,42.3773,21.1087,8.70569,15.2132,25.452,22.1087,32.6758,24.2878,23.8997,24.6012,14.8251,12.6161,45.6012,59.437,67.452,44.7952,29.5415,24.2878,28.3176,52.1833,20.0788,40.6758,36.7355,15.6012,25.5714,62.8251,55.7803,20.2132,10.1236,21.0341,12.8848,35.0341,71.1982,26.8251,40.0639,26.9445,22.3027,19.2729,22.9445,17.8848,17.9296,13.6311,40.6609,15.8251,73.8699,53.1535,25.8102,24.5117,37.0042,60.437,41.9296,26.3027,27.6012,6.60121,30.2132,33.6012,10.0341,34.1087,47.2132,22.5266,42.4072,26.8997,59.6908,41.452,15.0042,12.9296,14.0938,43.5117,25.3176,11.4072,57.452,20.2132,47.7803,9.27286,18.4967,45.0341,49.0938,58.0938,42.5266,12.5863,60.7952,20.8251,17.5266,36.6161,67.2281,39.3176,42.2878,35.0639,32.5266,13.5117,16.9445,41.452,36.7206,70.049,25.0341,45.9146,39.1833,59.4967,32.6161,35.8102,69.243,13.5415,48.6908,21.1087,18.3176,21.0191,55.2132,41.9296,54.8997,34.2878,17.0341,28.5564,25.646,20.7952,20.9146,20.7654,42.1087,32.7505,12.3176,12.6609,29.6161,28.9743,54.9445,25.1385,10.0341,13.5714,34.3923,46.5863,49.8102,30.7355,25.8848,57.8997,78.646,27.8997,39.0042,75.84,20.9445,10.0341,25.1385,46.4818,36.8549,15.8251,37.0341,27.7206,42.646,32.2579,17.8848,35.6609,35.1236,31.0341,41.84,40.2281,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 31245.9
+added route to primal routes: 0,15,162,0,
+added route to primal routes: 0,24,199,0,
+added route to primal routes: 0,219,150,130,228,47,157,243,0,
+added route to primal routes: 0,71,203,6,160,146,107,104,246,0,
+added route to primal routes: 0,73,203,6,160,146,107,104,0,
+added route to primal routes: 0,76,172,104,107,146,160,6,203,0,
+added route to primal routes: 0,85,246,73,39,71,167,126,86,0,
+added route to primal routes: 0,86,246,73,39,71,167,126,0,
+added route to primal routes: 0,91,102,9,110,199,217,0,
+added route to primal routes: 0,92,122,130,157,47,228,0,
+added route to primal routes: 0,94,47,157,130,219,0,
+added route to primal routes: 0,95,100,68,132,0,
+added route to primal routes: 0,97,122,228,47,157,130,219,0,
+added route to primal routes: 0,99,136,177,54,113,174,0,
+added route to primal routes: 0,100,47,157,130,0,
+added route to primal routes: 0,102,9,110,199,217,0,
+added route to primal routes: 0,103,217,199,9,110,102,91,143,0,
+added route to primal routes: 0,104,107,146,160,6,203,0,
+added route to primal routes: 0,113,54,177,136,0,
+added route to primal routes: 0,115,122,130,47,157,219,0,
+added route to primal routes: 0,116,202,50,228,157,130,122,0,
+added route to primal routes: 0,117,158,1,181,237,134,0,
+added route to primal routes: 0,118,126,167,71,39,73,246,86,0,
+added route to primal routes: 0,174,136,177,54,113,119,0,
+added route to primal routes: 0,122,130,47,157,0,
+added route to primal routes: 0,126,167,71,39,73,246,0,
+added route to primal routes: 0,130,47,157,0,
+added route to primal routes: 0,132,162,116,202,50,0,
+added route to primal routes: 0,134,237,181,1,158,117,0,
+added route to primal routes: 0,135,132,162,116,202,50,228,130,219,0,
+added route to primal routes: 0,140,142,163,9,110,199,217,102,91,143,0,
+added route to primal routes: 0,142,163,9,110,199,217,169,102,91,103,186,0,
+added route to primal routes: 0,143,91,102,217,199,110,9,163,142,140,0,
+added route to primal routes: 0,148,205,174,136,177,54,113,0,
+added route to primal routes: 0,150,157,47,228,0,
+added route to primal routes: 0,152,167,71,73,39,246,86,0,
+added route to primal routes: 0,153,228,47,157,130,122,0,
+added route to primal routes: 0,154,126,167,71,39,73,246,86,0,
+added route to primal routes: 0,157,47,228,0,
+added route to primal routes: 0,162,116,202,50,0,
+added route to primal routes: 0,167,71,39,73,246,0,
+added route to primal routes: 0,170,244,217,199,9,110,0,
+added route to primal routes: 0,172,104,107,146,160,6,203,0,
+added route to primal routes: 0,174,136,177,54,113,0,
+added route to primal routes: 0,183,246,73,39,71,167,126,86,0,
+added route to primal routes: 0,186,217,199,110,9,0,
+added route to primal routes: 0,187,217,199,9,110,244,103,0,
+added route to primal routes: 0,190,140,142,163,9,110,199,217,244,0,
+added route to primal routes: 0,217,199,9,110,0,
+added route to primal routes: 0,202,50,228,157,130,122,243,0,
+added route to primal routes: 0,205,174,136,177,54,113,0,
+added route to primal routes: 0,207,113,54,177,136,0,
+added route to primal routes: 0,215,135,26,68,100,0,
+added route to primal routes: 0,216,91,102,110,9,199,217,0,
+added route to primal routes: 0,217,199,110,9,0,
+added route to primal routes: 0,219,130,157,47,228,0,
+added route to primal routes: 0,226,172,104,107,146,160,6,203,0,
+added route to primal routes: 0,228,50,202,0,
+added route to primal routes: 0,243,122,130,157,47,228,0,
+added route to primal routes: 0,244,217,199,110,9,163,142,140,190,0,
+added route to primal routes: 0,246,104,107,146,160,6,203,73,0,
+best alpha: 1
+alpha: 0.233059
+psiStar: 32777.5
+lagLB: 31245.9
+||gamma||^2: 6572
+Dual needs repair, spl: -33.0485
+Dual needs repair, spl: -24.6731
+Dual needs repair, spl: -20.1656
+Dual needs repair, spl: -14.4002
+Dual needs repair, spl: -13.9272
+Dual needs repair, spl: -11.2444
+Dual needs repair, spl: -6.85168
+Dual needs repair, spl: -5.69507
+Dual needs repair, spl: -5.53266
+Dual needs repair, spl: -4.48976
+Dual needs repair, spl: -2.5891
+Dual needs repair, spl: -1.81624
+Dual needs repair, spl: -1.71254
+Dual needs repair, spl: -0.504868
+Dual needs repair, spl: -0.440295
+Dual needs repair, spl: -0.237273
+Dual needs repair, spl: -0.0168726
+Dual needs repair, spl: -0.000104535
+repaired lb: 31759
+STATS - lpIterations[1] lagIterations[2] sspIterations[61] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[14] lpSolveTime[0] lb[31759] ub[37275] numArcs: [9293699] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [25]
+STATS1 - lpIterations[1] lagIterations[2] sspIterations[61] numSeparations[0] numCuts[0] compileTime[7] sspSolveTime[14] lpSolveTime[0] repairTime[2] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[31759] ub[37275] numArcs: [9293699] numFixed: [0] time: [25]
+lambda: 0,480.119,463.9,352.81,280.78,625.452,538.44,403.721,427.542,602.572,258.288,350.436,291.243,349.989,383.455,339.144,478.049,175.183,322.765,421.004,294.84,375.542,485.452,151.109,399.989,385.437,217.211,399.153,758.556,396.527,210.944,404.019,448.049,472.497,286.646,587.452,241.153,305.004,547.452,531.224,329.437,300.288,429.944,371.213,394.765,193.362,284.437,560.7,533.392,152.019,603.064,608.721,211.631,331.556,388.23,208.497,550.139,255.124,224.392,381.288,348.959,249.333,555.482,719.855,173.75,192.288,379.243,236.303,235.55,28.1833,56.1385,8.53484,15.7803,15.5373,50.646,46.9445,55.9473,70.3475,64.2579,39.7654,35.3027,31.7206,45.2878,62.3923,11.7057,32.5415,7.59968,36.5564,51.5564,51.6908,54.6161,22.4658,18.2878,34.84,5.20209,41.4552,21.1087,7.78189,15.2132,23.6187,21.8481,32.6758,22.824,23.2605,23.798,14.8251,12.6161,44.798,59.437,67.452,42.5717,29.5415,24.2878,26.4385,52.1833,19.1567,40.6758,36.4328,15.6012,25.5255,62.8251,55.7803,19.2343,10.1236,21.0341,12.8848,32.7909,71.1982,26.8251,40.0639,21.8346,22.3027,19.0139,22.9445,17.5821,17.669,11.7519,40.6609,15.8251,73.8699,52.3698,25.8102,23.7281,36.9805,60.437,41.9296,25.4995,27.6012,6.60121,30.2132,33.6012,10.0341,34.1087,46.7642,22.0776,42.4072,26.8997,54.5809,41.1493,15.0042,12.1264,14.0938,39.9198,24.5341,11.4072,57.452,20.2132,45.5372,9.27286,18.4967,44.8438,49.0938,57.2906,42.5266,10.7072,60.7952,20.8251,15.6475,36.6161,67.2281,39.3176,41.9851,35.0639,32.5266,13.5117,16.9445,41.003,36.2716,70.049,25.0341,45.345,39.1833,59.4967,32.6161,35.8102,69.243,13.5415,48.6908,21.1087,16.6636,21.0191,55.2132,41.9296,54.0965,34.2878,15.1549,28.5564,25.646,20.7952,20.9146,20.7654,42.1087,32.7505,12.3176,12.6609,28.4334,28.9743,53.2905,25.1385,5.79291,13.5714,34.3923,46.5863,49.8102,30.7355,25.8848,57.8997,78.646,23.7687,39.0042,75.84,20.9445,10.0341,25.1385,46.4818,36.8549,15.8251,36.7313,27.7206,42.646,32.2579,17.8848,35.6609,35.1236,29.594,41.84,37.1819,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+separating route arcs: 14 4024095 4531798 
+separating route locations: 15 162 15 
+separating route arcs: 23 4160836 4360292 
+separating route locations: 24 199 24 
+separating route arcs: 70 490 110074 279951 656028 906741 999478 1478651 6993570 
+separating route locations: 71 246 104 107 146 160 203 6 160 
+separating route arcs: 72 4758 53021 319637 541071 628684 1099561 6580243 
+separating route locations: 73 104 107 146 160 203 6 160 
+separating route arcs: 75 186757 781216 1056609 1485146 1740739 1833281 7331607 7956108 
+separating route locations: 76 172 104 107 146 160 6 203 160 
+separating route arcs: 84 99765 181083 515399 1089597 1226243 1640630 1822548 8431755 
+separating route locations: 85 86 126 167 71 246 73 39 246 
+separating route arcs: 85 860 107686 569119 700153 1109904 1291822 7836237 
+separating route locations: 86 126 167 71 246 73 39 246 
+separating route arcs: 90 12596 83741 501487 693312 7409665 7965335 
+separating route locations: 91 102 217 199 9 110 199 
+separating route arcs: 91 68216 222458 464495 1153406 8681633 9052174 
+separating route locations: 92 122 130 157 47 228 130 
+separating route arcs: 93 1198 11155 80007 631220 8085510 
+separating route locations: 94 219 130 157 47 157 
+separating route arcs: 94 240531 530949 4372601 4629485 
+separating route locations: 95 100 68 132 68 
+separating route arcs: 96 5118 24132 84389 274617 925952 8425877 8830164 
+separating route locations: 97 219 122 130 157 47 228 157 
+separating route arcs: 98 68513 179116 514633 691275 910551 8003475 
+separating route locations: 99 174 113 136 177 54 177 
+separating route arcs: 99 25119 163985 776513 8255658 
+separating route locations: 100 130 157 47 157 
+separating route arcs: 101 12956 309168 481718 7155151 7710113 
+separating route locations: 102 217 199 9 110 199 
+separating route arcs: 102 25377 261829 470310 682264 1242831 1446713 1864345 8771668 
+separating route locations: 103 143 91 102 217 199 110 9 217 
+separating route arcs: 103 13091 202650 407247 489492 947925 6418957 
+separating route locations: 104 107 146 160 203 6 160 
+separating route arcs: 112 69455 177220 346951 7323237 
+separating route locations: 113 136 177 54 177 
+separating route arcs: 114 69783 136774 280464 532017 1229224 8766814 
+separating route locations: 115 219 122 130 157 47 157 
+separating route arcs: 117 13316 38587 261659 786569 922971 1337358 1519276 8091459 
+separating route locations: 118 86 126 167 71 246 73 39 246 
+separating route arcs: 118 140005 289011 656753 838275 1062187 8173623 
+separating route locations: 119 174 113 136 177 54 177 
+separating route arcs: 121 13604 117960 703623 8170584 
+separating route locations: 122 130 157 47 157 
+separating route arcs: 125 70221 499889 627751 1034086 1216004 7751163 
+separating route locations: 126 167 71 246 73 39 246 
+separating route arcs: 129 26126 492029 7915362 
+separating route locations: 130 157 47 157 
+separating route arcs: 131 13881 254753 657158 8001547 8560774 
+separating route locations: 132 162 116 50 202 116 
+separating route arcs: 147 15149 119203 230761 584839 764165 986369 8088549 
+separating route locations: 148 205 174 113 136 177 54 177 
+separating route arcs: 149 70946 631400 976824 8426162 
+separating route locations: 150 157 228 47 157 
+separating route arcs: 151 101236 181124 640300 773287 1185722 1367640 7921311 
+separating route locations: 152 86 167 71 246 73 39 246 
+separating route arcs: 152 187688 405992 675113 1380860 8931142 9189376 
+separating route locations: 153 122 130 157 47 228 130 
+separating route arcs: 153 44427 94664 383526 937961 1074607 1488994 1670912 8261607 
+separating route locations: 154 86 126 167 71 246 73 39 246 
+separating route arcs: 156 242129 535336 7915718 
+separating route locations: 157 228 47 157 
+separating route arcs: 161 101756 447760 7746325 8305196 
+separating route locations: 162 116 50 202 116 
+separating route arcs: 166 141618 238479 587962 763048 7241250 
+separating route locations: 167 71 246 73 39 246 
+separating route arcs: 169 142035 460158 1015377 1219158 8005006 8561209 
+separating route locations: 170 244 217 199 9 110 199 
+separating route arcs: 171 188160 405479 803028 1058377 1151114 1630287 7161813 
+separating route locations: 172 104 107 146 160 203 6 203 
+separating route arcs: 173 6483 151726 288339 476139 7493031 
+separating route locations: 174 113 136 177 54 177 
+separating route arcs: 182 71121 137757 448121 1013779 1150425 1564812 1746730 8346681 
+separating route locations: 183 86 126 167 71 246 73 39 246 
+separating route arcs: 185 142743 641898 840413 1257801 8090346 
+separating route locations: 186 217 199 110 9 199 
+separating route arcs: 186 102233 335635 669538 839785 1397941 8260228 8816965 
+separating route locations: 187 103 244 199 217 9 110 199 
+separating route arcs: 198 7321 251221 6903648 7454733 
+separating route locations: 199 217 9 110 217 
+separating route arcs: 204 27369 91961 382760 548179 760867 7833327 
+separating route locations: 205 174 113 136 177 54 177 
+separating route arcs: 206 103468 447355 618873 834977 7918401 
+separating route locations: 207 113 136 177 54 177 
+separating route arcs: 214 103735 281096 3959906 8105161 8486832 
+separating route locations: 215 135 26 68 100 135 
+separating route arcs: 215 28021 122311 279816 788167 991805 1409437 8260494 
+separating route locations: 216 91 102 217 199 110 9 199 
+separating route arcs: 216 143216 290477 656137 7409931 
+separating route locations: 217 199 110 9 199 
+separating route arcs: 218 4050 48907 560527 8000507 8403904 
+separating route locations: 219 130 157 47 228 157 
+separating route arcs: 225 242809 856304 1132427 1560964 1816557 1909099 7416504 8041182 
+separating route locations: 226 172 104 107 146 160 6 203 160 
+separating route arcs: 227 28377 262768 7491483 
+separating route locations: 228 202 50 228 
+separating route arcs: 242 143874 342374 602711 1305042 8852125 9153864 
+separating route locations: 243 122 130 157 47 228 130 
+separating route arcs: 245 72578 176167 341861 728918 982559 1075101 6499466 7106607 
+separating route locations: 246 73 104 107 146 160 6 203 160 
+STATS - lpIterations[1] lagIterations[2] sspIterations[61] numSeparations[50] numCuts[0] compileTime[7] sspSolveTime[14] lpSolveTime[0] lb[31759] ub[37275] numArcs: [9358107] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [25]
+STATS1 - lpIterations[1] lagIterations[2] sspIterations[61] numSeparations[50] numCuts[0] compileTime[7] sspSolveTime[14] lpSolveTime[0] repairTime[2] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[31759] ub[37275] numArcs: [9358107] numFixed: [0] time: [25]
+Lagrangean bound solution value: 31739.7
+STATS - lpIterations[1] lagIterations[3] sspIterations[73] numSeparations[50] numCuts[0] compileTime[7] sspSolveTime[15] lpSolveTime[0] lb[31759] ub[37275] numArcs: [9358030] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [26]
+STATS1 - lpIterations[1] lagIterations[3] sspIterations[73] numSeparations[50] numCuts[0] compileTime[7] sspSolveTime[15] lpSolveTime[0] repairTime[2] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[31759] ub[37275] numArcs: [9358030] numFixed: [0] time: [26]
+lambda: 0,480.189,464.133,353.043,281.013,625.685,537.845,403.954,427.775,601.765,258.521,351.118,291.476,350.222,384.61,342.502,478.282,175.416,322.998,421.237,295.073,375.775,485.685,151.342,399.756,385.67,217.213,399.387,758.789,396.76,211.178,404.252,448.282,472.73,286.879,587.685,241.387,305.237,547.685,531.835,329.67,300.521,430.178,371.446,394.998,193.595,284.67,563.013,533.625,152.252,601.899,608.954,211.864,331.789,388.71,208.73,550.372,255.357,224.625,381.521,349.192,249.566,555.715,720.088,173.984,192.521,379.476,236.536,235.344,28.4164,56.3716,6.91937,16.0134,15.4497,50.879,47.1776,56.2844,70.5805,64.491,39.9985,35.5358,31.9537,45.5208,62.6253,11.9388,32.5415,8.31541,36.7895,51.7895,51.9238,54.8492,22.2982,18.2878,35.0731,8.24532,42.3773,21.3417,8.23958,15.4462,24.9858,21.4095,32.9089,22.1903,22.7344,21.5715,15.0582,12.8492,42.5715,59.6701,67.685,41.7655,29.7746,24.5208,25.2879,52.4164,20.0788,39.5105,36.5025,15.1351,25.1052,63.0582,56.0134,17.8826,10.3567,21.2671,13.1179,32.7035,71.4313,27.0582,40.297,21.3511,22.5358,18.5737,23.1776,17.6517,17.2304,10.6013,40.894,16.0582,74.1029,52.4543,26.0432,23.5794,36.305,60.6701,42.1626,23.2729,27.8343,6.60121,30.4462,32.902,10.2671,33.8756,47.2132,22.5266,42.6402,27.1328,54.0974,41.2189,15.2373,9.89981,14.3268,42.3464,24.3854,11.6402,57.685,20.4462,43.5853,9.50591,18.4967,44.5679,49.3268,57.3946,42.7596,10.2557,61.0283,21.0582,14.4968,36.8492,67.4611,39.5507,42.0547,35.297,32.5266,13.7447,17.1776,41.2189,36.4876,70.282,25.2671,45.6816,39.4164,59.7298,32.8492,36.0432,69.4761,13.7746,48.9238,21.3417,12.7242,21.2522,55.4462,40.7643,53.2683,34.5208,15.8688,28.7895,25.4129,21.0283,21.1477,20.9985,42.3417,32.9835,12.5507,12.894,29.3831,28.9743,49.8172,25.3716,7.93652,13.8044,34.6253,46.8193,50.0432,30.9686,26.1179,57.8997,78.879,25.103,39.2373,76.0731,21.1776,10.2671,25.3716,46.7149,37.088,16.0582,36.801,27.9537,42.879,32.491,18.1179,35.894,34.6575,29.6357,42.0731,35.1008,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 31739.7
+added route to primal routes: 0,92,115,95,14,0,
+added route to primal routes: 0,94,215,14,95,0,
+added route to primal routes: 0,95,100,68,26,135,215,94,97,0,
+added route to primal routes: 0,97,94,215,14,95,0,
+added route to primal routes: 0,115,95,14,0,
+added route to primal routes: 0,157,47,228,122,0,
+added route to primal routes: 0,154,103,186,187,0,
+added route to primal routes: 0,187,103,186,0,
+added route to primal routes: 0,215,14,95,0,
+added route to primal routes: 0,219,15,162,0,
+best alpha: 0.055
+alpha: 3.29223
+psiStar: 33280.5
+lagLB: 31739.7
+||gamma||^2: 468
+Dual needs repair, spl: -11.5967
+Dual needs repair, spl: -5.06654
+Dual needs repair, spl: -2.88532
+Dual needs repair, spl: -2.17817
+Dual needs repair, spl: -1.22694
+Dual needs repair, spl: -0.417891
+Dual needs repair, spl: -0.255255
+repaired lb: 31764
+STATS - lpIterations[1] lagIterations[3] sspIterations[73] numSeparations[50] numCuts[0] compileTime[7] sspSolveTime[15] lpSolveTime[0] lb[31764] ub[37275] numArcs: [9358030] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [28]
+STATS1 - lpIterations[1] lagIterations[3] sspIterations[73] numSeparations[50] numCuts[0] compileTime[7] sspSolveTime[15] lpSolveTime[0] repairTime[3] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[31764] ub[37275] numArcs: [9358030] numFixed: [0] time: [28]
+lambda: 0,480.119,464.133,353.043,281.013,625.685,537.845,403.954,427.775,601.765,258.521,350.995,291.476,350.222,383.723,339.059,478.282,175.416,322.998,421.237,295.073,375.775,485.685,151.342,399.756,385.67,217.213,399.387,758.789,396.76,211.178,404.252,448.282,472.73,286.879,587.685,241.387,305.237,547.685,531.835,329.67,300.521,430.178,371.446,394.998,193.595,284.67,562.601,533.625,152.252,601.899,608.954,211.864,331.789,388.71,208.73,550.372,255.357,224.625,381.521,349.192,249.566,555.715,720.088,173.984,192.521,379.476,236.536,235.344,28.4164,56.3716,6.91937,16.0134,15.4497,50.879,47.1776,56.2844,70.5805,64.491,39.9985,35.5358,31.9537,45.5208,62.6253,11.9388,32.5415,8.31541,36.7895,51.7895,51.9238,54.8492,22.2982,18.2878,35.0731,5.30361,41.4904,21.3417,7.39515,15.4462,24.9858,21.4095,32.9089,22.1903,22.6117,21.5715,15.0582,12.8492,42.5715,59.6701,67.685,41.7655,29.7746,24.5208,25.2879,52.4164,19.2344,39.5105,36.4328,15.1351,25.1052,63.0582,56.0134,17.8826,10.3567,21.2671,13.1179,32.7035,71.4313,27.0582,40.297,21.3511,22.5358,18.5737,23.1776,17.5821,17.2304,10.6013,40.894,16.0582,74.1029,52.4543,26.0432,23.5794,36.305,60.6701,42.1626,23.2729,27.8343,6.60121,30.4462,32.4898,10.2671,33.8756,47.0905,22.4039,42.6402,27.1328,53.6852,41.1493,15.2373,9.89981,14.3268,38.9027,24.3854,11.6402,57.685,20.4462,43.5853,9.50591,18.4967,44.5679,49.3268,57.3946,42.7596,10.2557,61.0283,21.0582,14.4968,36.8492,67.4611,39.5507,41.9851,35.297,32.5266,13.7447,17.1776,41.0962,36.3649,70.282,25.2671,45.6816,39.4164,59.7298,32.8492,36.0432,69.4761,13.7746,48.9238,21.3417,12.7242,21.2522,55.4462,40.7643,53.2683,34.5208,15.8688,28.7895,25.4129,21.0283,21.1477,20.9985,42.3417,32.9835,12.5507,12.894,28.4961,28.9743,49.8172,25.3716,6.97979,13.8044,34.6253,46.8193,50.0432,30.9686,26.1179,57.8997,78.879,25.103,39.2373,76.0731,21.1776,10.2671,25.3716,46.7149,37.088,16.0582,36.7313,27.9537,42.879,32.491,18.1179,35.894,34.6575,29.6357,42.0731,35.1008,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+separating route arcs: 91 9306281 382965 1076085 8511884 
+separating route locations: 92 115 95 14 95 
+separating route arcs: 93 9307664 148257 775010 8171410 
+separating route locations: 94 215 95 14 95 
+separating route arcs: 96 9309726 21284 256692 924449 8341558 
+separating route locations: 97 94 215 95 14 95 
+separating route arcs: 114 9318712 629718 8001262 
+separating route locations: 115 95 14 95 
+separating route arcs: 121 9323433 426639 751322 8170940 
+separating route locations: 122 157 228 47 157 
+separating route arcs: 153 9332898 376854 674407 1245993 
+separating route locations: 154 187 103 186 187 
+separating route arcs: 186 9344638 9344823 866903 
+separating route locations: 187 103 186 187 
+separating route arcs: 214 9349445 702120 8086336 
+separating route locations: 215 95 14 95 
+separating route arcs: 218 9352955 4092348 4601165 
+separating route locations: 219 15 162 15 
+STATS - lpIterations[1] lagIterations[3] sspIterations[73] numSeparations[59] numCuts[0] compileTime[7] sspSolveTime[15] lpSolveTime[0] lb[31764] ub[37275] numArcs: [9363162] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [28]
+STATS1 - lpIterations[1] lagIterations[3] sspIterations[73] numSeparations[59] numCuts[0] compileTime[7] sspSolveTime[15] lpSolveTime[0] repairTime[3] cutsTime[0] alphaTime[0] decompTime[0] yellowTime[0] updateTime[0] fixTime[0] lb[31764] ub[37275] numArcs: [9363162] numFixed: [0] time: [28]
+Lagrangean bound solution value: 30844.5
+added route to primal routes: 0,140,110,9,163,142,190,71,167,126,0,
+added route to primal routes: 0,33,74,93,120,0,
+added route to primal routes: 0,140,35,190,71,167,126,86,152,0,
+added route to primal routes: 0,88,59,163,0,
+added route to primal routes: 0,71,48,184,78,201,163,0,
+added route to primal routes: 0,73,233,146,160,203,48,184,78,201,139,75,125,169,102,91,170,0,
+added route to primal routes: 0,74,93,194,120,0,
+added route to primal routes: 0,75,139,201,78,184,48,0,
+added route to primal routes: 0,78,184,48,0,
+added route to primal routes: 0,85,107,146,160,6,203,233,73,86,0,
+added route to primal routes: 0,86,71,48,184,78,201,163,142,0,
+added route to primal routes: 0,88,48,184,78,201,0,
+added route to primal routes: 0,91,102,169,125,75,201,78,184,48,0,
+added route to primal routes: 0,92,143,91,102,169,110,9,163,142,190,71,86,0,
+added route to primal routes: 0,94,132,162,116,202,50,216,228,130,0,
+added route to primal routes: 0,97,102,169,125,75,139,201,78,184,48,0,
+added route to primal routes: 0,99,136,177,191,54,113,174,0,
+added route to primal routes: 0,100,132,162,116,202,50,228,130,219,0,
+added route to primal routes: 0,102,169,75,201,78,184,48,0,
+added route to primal routes: 0,103,169,125,75,139,201,78,184,48,0,
+added route to primal routes: 0,107,146,160,203,48,184,78,201,139,75,125,169,102,91,143,0,
+added route to primal routes: 0,110,75,201,78,184,48,0,
+added route to primal routes: 0,112,165,128,164,33,74,93,120,238,123,0,
+added route to primal routes: 0,113,54,191,177,136,0,
+added route to primal routes: 0,116,202,50,216,228,130,122,243,0,
+added route to primal routes: 0,117,165,128,164,33,74,238,145,123,225,0,
+added route to primal routes: 0,118,71,233,203,6,160,146,107,73,86,0,
+added route to primal routes: 0,119,136,54,177,174,0,
+added route to primal routes: 0,120,93,0,
+added route to primal routes: 0,122,91,102,169,125,75,201,78,184,48,0,
+added route to primal routes: 0,123,238,120,93,0,
+added route to primal routes: 0,125,75,139,201,78,184,48,0,
+added route to primal routes: 0,126,167,71,233,203,6,160,146,107,73,0,
+added route to primal routes: 0,128,164,33,74,93,120,0,
+added route to primal routes: 0,129,125,75,139,201,78,184,48,0,
+added route to primal routes: 0,130,228,216,50,202,116,162,100,0,
+added route to primal routes: 0,134,165,128,194,93,74,164,0,
+added route to primal routes: 0,135,132,162,116,202,50,130,150,0,
+added route to primal routes: 0,136,54,191,177,0,
+added route to primal routes: 0,139,201,78,184,48,0,
+added route to primal routes: 0,140,201,78,184,48,163,142,0,
+added route to primal routes: 0,141,190,39,73,71,167,126,86,118,0,
+added route to primal routes: 0,142,163,48,184,78,201,0,
+added route to primal routes: 0,143,91,102,169,125,75,139,201,78,184,48,0,
+added route to primal routes: 0,145,238,120,93,74,33,0,
+added route to primal routes: 0,146,160,203,48,184,78,201,139,75,125,169,102,91,244,170,0,
+added route to primal routes: 0,148,205,99,177,54,136,113,0,
+added route to primal routes: 0,150,216,91,102,169,125,75,201,78,184,48,0,
+added route to primal routes: 0,152,73,233,203,6,160,146,107,246,86,0,
+added route to primal routes: 0,153,91,102,169,125,75,139,201,78,184,48,0,
+added route to primal routes: 0,154,48,184,78,201,139,75,125,169,102,91,0,
+added route to primal routes: 0,157,50,202,116,162,132,135,0,
+added route to primal routes: 0,158,165,128,164,33,74,238,0,
+added route to primal routes: 0,163,48,184,78,201,0,
+added route to primal routes: 0,164,33,74,93,120,0,
+added route to primal routes: 0,165,128,164,33,74,93,120,238,145,0,
+added route to primal routes: 0,167,71,233,203,6,160,146,107,73,0,
+added route to primal routes: 0,169,125,75,201,78,184,48,0,
+added route to primal routes: 0,170,244,91,102,169,125,75,201,78,184,48,0,
+added route to primal routes: 0,174,136,177,191,54,113,0,
+added route to primal routes: 0,113,232,191,54,177,136,0,
+added route to primal routes: 0,183,76,104,107,146,160,6,203,0,
+added route to primal routes: 0,190,48,184,78,201,163,142,0,
+added route to primal routes: 0,197,172,104,107,146,160,6,203,0,
+added route to primal routes: 0,199,139,201,48,184,78,75,125,169,0,
+added route to primal routes: 0,201,78,184,48,0,
+added route to primal routes: 0,205,99,177,54,136,174,0,
+added route to primal routes: 0,206,120,93,74,33,164,128,165,158,0,
+added route to primal routes: 0,207,113,54,191,177,136,0,
+added route to primal routes: 0,211,132,162,116,202,50,228,0,
+added route to primal routes: 0,216,91,102,169,125,75,139,201,78,184,48,0,
+added route to primal routes: 0,217,199,139,201,78,184,48,0,
+added route to primal routes: 0,219,91,102,169,125,75,139,201,78,184,48,0,
+added route to primal routes: 0,225,123,120,93,74,33,164,0,
+added route to primal routes: 0,228,216,91,102,169,125,75,139,201,78,184,48,203,160,146,233,73,0,
+added route to primal routes: 0,233,59,88,163,0,
+added route to primal routes: 0,236,207,113,54,177,136,0,
+added route to primal routes: 0,238,120,194,93,74,0,
+added route to primal routes: 0,243,143,91,102,169,110,9,163,142,140,0,
+added route to primal routes: 0,244,102,169,125,75,139,201,78,184,48,0,
+added route to primal routes: 0,246,104,107,146,160,6,203,0,
+best alpha: 0.055
+alpha: 0.0611029
+psiStar: 32327.4
+lagLB: 30844.5
+||gamma||^2: 24269
+Dual needs repair, spl: -46.6956
+Dual needs repair, spl: -31.7958
+Dual needs repair, spl: -31.6759
+Dual needs repair, spl: -29.5557
+Dual needs repair, spl: -26.223
+Dual needs repair, spl: -14.9196
+Dual needs repair, spl: -14.5747
+Dual needs repair, spl: -11.4472
+Dual needs repair, spl: -8.25732
+Dual needs repair, spl: -6.92589
+Dual needs repair, spl: -2.61445
+Dual needs repair, spl: -2.42128
+Dual needs repair, spl: -1.86731
+Dual needs repair, spl: -1.83086
+Dual needs repair, spl: -1.69979
+Dual needs repair, spl: -1.68957
+Dual needs repair, spl: -1.20155
+Dual needs repair, spl: -0.685926
+Dual needs repair, spl: -0.526327
+Dual needs repair, spl: -0.205387
+Dual needs repair, spl: -0.118101
+repaired lb: 32162.4
+STATS - lpIterations[1] lagIterations[4] sspIterations[160] numSeparations[59] numCuts[0] compileTime[7] sspSolveTime[39] lpSolveTime[0] lb[32162.4] ub[37275] numArcs: [9361960] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [54]
+STATS1 - lpIterations[1] lagIterations[4] sspIterations[160] numSeparations[59] numCuts[0] compileTime[7] sspSolveTime[39] lpSolveTime[0] repairTime[7] cutsTime[0] alphaTime[0] decompTime[1] yellowTime[0] updateTime[0] fixTime[0] lb[32162.4] ub[37275] numArcs: [9361960] numFixed: [0] time: [54]
+lambda: 0,476.897,467.425,356.335,284.306,628.977,539.449,407.246,430.933,602.392,261.813,347.826,294.768,353.515,371.441,339.21,481.574,178.709,326.291,424.529,298.365,379.067,488.977,154.634,402.626,388.962,217.213,402.679,762.082,400.052,214.47,407.544,451.574,473.277,290.171,588.662,244.679,308.529,550.977,534.498,332.962,303.813,433.47,374.738,398.291,196.888,287.962,563.013,533.805,155.544,603.275,612.246,215.156,335.082,388.885,212.022,553.664,258.649,227.918,382.905,351.288,252.575,559.007,723.38,177.276,195.813,382.768,239.828,235.344,31.7086,59.6638,6.90273,19.3056,16.4734,51.4259,47.3567,57.8886,73.8728,64.6702,43.2907,38.828,35.2459,48.8131,65.9175,15.231,35.8337,6.61083,40.0817,53.1739,55.2161,58.1414,24.1738,18.0045,35.6784,0,9.45505,24.634,0,18.7384,25.3984,21.4095,36.2011,22.1493,12.8577,23.1757,18.3504,16.1414,44.1757,62.9623,70.9772,42.3918,32.7835,27.6796,25.4628,55.7086,16.5033,40.8868,33.2103,14.7063,28.3975,63.605,59.3056,16.6861,10.962,24.5593,13.297,32.6868,74.7235,30.1584,43.5892,22.9856,25.828,19.95,26.4698,14.3595,17.0015,10.7762,44.1862,19.3504,74.2821,53.431,29.3355,22.518,37.9518,63.9623,45.3964,24.8772,31.1265,9.89344,33.7384,32.902,13.5593,37.1678,43.9209,19.2344,45.9325,30.425,50.8051,37.7932,18.5295,11.5041,17.619,40.4304,23.3239,12.1871,60.7853,23.7384,46.0145,12.7981,18.4558,45.7781,52.619,58.9989,46.0519,10.4306,64.3205,24.3504,14.6717,40.1414,70.7534,42.8429,38.7625,38.5892,35.8188,13.9239,20.4698,31.3422,20.0264,73.5743,28.5593,44.2125,42.4709,63.022,36.1414,39.3355,72.7683,17.0668,52.2161,24.634,15.3739,24.5444,55.6254,42.1406,54.8726,37.8131,16.0437,32.0817,28.7052,24.3205,24.4399,24.2907,45.634,36.2758,15.8429,16.1862,9.62971,29.1835,52.8893,28.6638,2.98656,17.0967,37.9175,50.1116,53.3355,34.2608,26.6647,61.192,82.1713,23.4284,42.5295,79.3653,24.4698,13.3217,27.0249,50.0071,40.3802,19.0671,33.5088,28.5005,46.1713,35.7832,21.4101,39.1862,37.9497,30.8458,45.3653,37.7144,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+separating route arcs: 32 5506153 6125030 6544126 7344628 
+separating route locations: 33 74 93 120 93 
+separating route arcs: 58 3613412 4114301 4353414 
+separating route locations: 59 88 163 88 
+separating route arcs: 70 9296182 32295 314922 860160 5805426 5943906 
+separating route locations: 71 163 201 78 48 184 78 
+separating route arcs: 73 139216 778028 1195866 1572653 
+separating route locations: 74 120 93 194 93 
+separating route arcs: 74 67253 631128 1175206 1770111 1908165 6830787 
+separating route locations: 75 139 201 78 184 48 78 
+separating route arcs: 75 9299773 9300018 9300262 9300505 9300747 9300943 2308160 7926594 
+separating route locations: 76 172 104 107 146 160 203 6 203 
+separating route arcs: 77 139635 5000548 5138775 
+separating route locations: 78 48 184 78 
+separating route arcs: 84 9301579 9301652 287415 474480 878602 1134195 1226932 1706105 7246490 
+separating route locations: 85 86 73 233 107 146 160 203 6 160 
+separating route arcs: 85 9303277 11901 54547 171619 577934 1163432 6109189 6250682 
+separating route locations: 86 71 142 163 201 78 48 184 78 
+separating route arcs: 87 100125 508215 1087614 6032096 6173057 
+separating route locations: 88 201 78 48 184 78 
+separating route arcs: 90 9305086 9305330 179616 235126 590529 1099388 1694293 1832347 6748192 
+separating route locations: 91 102 169 125 75 201 78 184 48 78 
+separating route arcs: 96 9309581 52838 132126 182013 519773 1232311 1781750 2369798 7419681 7570571 
+separating route locations: 97 102 169 125 75 139 201 78 48 184 78 
+separating route arcs: 98 9311294 9311539 9311783 9312026 9312211 1469895 8684779 
+separating route locations: 99 174 113 136 177 191 54 177 
+separating route arcs: 101 9313521 61316 318223 796360 1390886 6343130 6486576 
+separating route locations: 102 169 75 201 78 48 184 78 
+separating route arcs: 102 9314606 91728 137462 452251 1156493 1705932 2296733 2429364 7419753 
+separating route locations: 103 169 125 75 139 201 78 184 48 78 
+separating route arcs: 103 9316558 9316803 9317047 9317053 5877392 6447805 
+separating route locations: 104 107 146 160 6 203 160 
+separating route arcs: 109 68905 386255 871934 1466704 6422354 6566865 
+separating route locations: 110 75 201 78 48 184 78 
+separating route arcs: 112 9317952 9318197 9318384 863351 8003653 
+separating route locations: 113 136 177 191 54 177 
+separating route arcs: 117 9320257 9320328 62289 129294 283627 656028 906741 999478 1478651 6993570 
+separating route locations: 118 86 71 73 233 107 146 160 203 6 160 
+separating route arcs: 118 9322130 9322264 414111 615331 7663179 
+separating route locations: 119 174 136 177 54 177 
+separating route arcs: 119 241505 592646 
+separating route locations: 120 93 120 
+separating route arcs: 121 9323369 83381 221762 353621 419636 809687 1326842 1921612 6913664 7062074 
+separating route locations: 122 91 102 169 125 75 201 78 48 184 78 
+separating route arcs: 122 1707 51566 560083 963440 
+separating route locations: 123 238 120 93 120 
+separating route arcs: 124 1790 110596 705245 1251024 1845929 1983983 6913736 
+separating route locations: 125 75 139 201 78 184 48 78 
+separating route arcs: 125 9324435 9324680 9324752 763241 984466 1409328 1664921 1757463 7246710 7871034 
+separating route locations: 126 167 71 73 233 107 146 160 6 203 160 
+separating route arcs: 127 25888 64455 5874244 6522200 6955501 7769821 
+separating route locations: 128 164 33 74 93 120 93 
+separating route arcs: 128 43486 95594 387901 1081163 1630114 2222609 2356934 7334856 
+separating route locations: 129 125 75 139 201 78 184 48 78 
+separating route arcs: 131 9326497 9326742 9326940 1108656 8512438 
+separating route locations: 132 162 116 202 50 116 
+separating route arcs: 133 14129 426785 751682 844534 1390440 1802654 2177722 
+separating route locations: 134 165 128 164 74 93 194 93 
+separating route arcs: 135 5811 57514 434795 7493209 
+separating route locations: 136 177 191 54 177 
+separating route arcs: 138 241857 722250 1315068 6264617 6407352 
+separating route locations: 139 201 78 48 184 78 
+separating route arcs: 139 140463 343387 541602 1023570 1618340 6583640 6730455 
+separating route locations: 140 142 163 201 78 48 184 78 
+separating route arcs: 140 140685 342086 418706 804519 1392869 1529343 1670912 8261551 8891241 
+separating route locations: 141 118 86 126 167 71 73 39 190 71 
+separating route arcs: 141 14617 86175 441914 1011796 5955889 6095787 
+separating route locations: 142 163 201 78 48 184 78 
+separating route arcs: 142 70391 221450 405296 551307 624398 1037079 1763037 2307988 2867671 2994433 8100168 
+separating route locations: 143 91 102 169 125 75 139 201 78 184 48 78 
+separating route arcs: 144 141049 401985 6415675 7100740 7940145 8398041 
+separating route locations: 145 238 33 74 120 93 120 
+separating route arcs: 147 9327583 9327682 446352 879327 1065485 1289641 8428845 
+separating route locations: 148 205 99 113 136 177 54 177 
+separating route arcs: 149 9329184 276512 470310 682216 841403 919374 1340413 1857568 2442111 7504578 7655645 
+separating route locations: 150 216 91 102 169 125 75 201 78 48 184 78 
+separating route arcs: 151 9330128 9330370 517756 690351 908648 1333510 1589103 1681645 7161990 7785960 
+separating route locations: 152 86 246 73 233 107 146 160 6 203 160 
+separating route arcs: 152 9331607 404984 609814 767293 843800 1264289 1990491 2524946 3075635 8270244 8421311 
+separating route locations: 153 91 102 169 125 75 139 201 78 48 184 78 
+separating route arcs: 153 9332804 168825 341678 482809 553704 961261 1687219 2234008 2797529 2924815 8015094 
+separating route locations: 154 91 102 169 125 75 139 201 78 184 48 78 
+separating route arcs: 157 141466 776839 1128820 1223543 1506844 2072653 8349262 
+separating route locations: 158 165 128 164 238 74 33 164 
+separating route arcs: 161 9335501 9335700 881202 8257038 
+separating route locations: 162 116 202 50 116 
+separating route arcs: 162 15390 255940 784586 5731347 5868586 
+separating route locations: 163 201 78 48 184 78 
+separating route arcs: 163 2483 5578459 6206018 6625477 7429525 
+separating route locations: 164 33 74 93 120 93 
+separating route arcs: 164 242275 535696 625091 6659023 7354873 7802597 8226275 
+separating route locations: 165 128 164 33 74 93 194 93 
+separating route arcs: 166 9336345 9336417 349569 542978 954420 1210013 1302555 6744943 7360767 
+separating route locations: 167 71 73 233 107 146 160 6 203 160 
+separating route arcs: 168 6250 21880 209065 649848 1239385 1377439 6264689 
+separating route locations: 169 125 75 201 78 184 48 78 
+separating route arcs: 169 9337498 9337589 681904 904790 1068613 1146828 1567867 2084830 2656401 7759800 7910867 
+separating route locations: 170 244 91 102 169 125 75 201 78 48 184 78 
+separating route arcs: 171 9338825 9339070 9339314 9339557 9339563 6580463 7191150 
+separating route locations: 172 104 107 146 160 6 203 160 
+separating route arcs: 173 9340459 9340704 9340948 9341134 1014987 8173801 
+separating route locations: 174 113 136 177 191 54 177 
+separating route arcs: 176 15816 61842 326084 422447 939169 8088727 
+separating route locations: 177 136 113 232 191 54 177 
+separating route arcs: 182 9341442 563029 829399 1257692 1513285 1606022 2085003 7671329 
+separating route locations: 183 76 104 107 146 160 203 6 160 
+separating route arcs: 189 102517 281477 473104 947752 1542657 1680711 6583712 
+separating route locations: 190 142 163 201 78 184 48 78 
+separating route arcs: 196 188963 782686 1056609 1485146 1740739 1833281 7331607 7956108 
+separating route locations: 197 172 104 107 146 160 6 203 160 
+separating route arcs: 198 9346128 36138 63762 327211 1004857 1554296 2148341 2283572 7249959 
+separating route locations: 199 169 125 75 139 201 78 184 48 78 
+separating route arcs: 200 102943 567136 5511770 5647413 
+separating route locations: 201 78 48 184 78 
+separating route arcs: 204 9346902 259951 416762 548179 760867 7833327 
+separating route locations: 205 99 174 136 177 54 177 
+separating route arcs: 206 9348443 9348688 9348932 9349119 1394077 8599527 
+separating route locations: 207 113 136 177 191 54 177 
+separating route arcs: 215 9350641 9350886 9351053 417239 485206 885199 1611401 2159740 2727291 2855182 7930020 
+separating route locations: 216 91 102 169 125 75 139 201 78 184 48 78 
+separating route arcs: 216 9352275 9352413 925860 1478478 2073287 2209304 7165239 
+separating route locations: 217 199 139 201 78 184 48 78 
+separating route arcs: 218 9353031 29501 122623 232729 293864 662869 1383947 1933386 2513979 2643827 7674798 
+separating route locations: 219 91 102 169 125 75 139 201 78 184 48 78 
+separating route arcs: 224 46669 98866 135215 6025771 6685286 7514599 7972671 
+separating route locations: 225 123 164 33 74 120 93 120 
+separating route arcs: 225 9354272 9354517 9354761 9355004 9355246 9355443 2381210 8011625 
+separating route locations: 226 172 104 107 146 160 203 6 160 
+separating route arcs: 232 16719 3819740 4326228 4561231 
+separating route locations: 233 59 88 163 59 
+separating route arcs: 235 104297 508740 955145 1141303 1365459 8514097 
+separating route locations: 236 207 113 136 177 54 177 
+separating route arcs: 237 28739 367323 1080324 1499382 1875925 
+separating route locations: 238 74 120 93 194 93 
+separating route arcs: 243 47383 169137 291467 356018 735759 1459765 2009204 2585409 2714692 7759872 
+separating route locations: 244 102 169 125 75 139 201 78 184 48 78 
+separating route arcs: 245 9357831 221945 584114 831167 923660 1402833 6910267 
+separating route locations: 246 104 107 146 160 203 6 160 
+STATS - lpIterations[1] lagIterations[4] sspIterations[160] numSeparations[128] numCuts[0] compileTime[7] sspSolveTime[39] lpSolveTime[0] lb[32162.4] ub[37275] numArcs: [9452671] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [54]
+STATS1 - lpIterations[1] lagIterations[4] sspIterations[160] numSeparations[128] numCuts[0] compileTime[7] sspSolveTime[39] lpSolveTime[0] repairTime[7] cutsTime[0] alphaTime[0] decompTime[1] yellowTime[0] updateTime[0] fixTime[0] lb[32162.4] ub[37275] numArcs: [9452671] numFixed: [0] time: [54]
+Lagrangean bound solution value: 31692.8
+added route to primal routes: 0,71,190,140,142,163,9,110,169,102,91,143,0,
+added route to primal routes: 0,73,233,59,88,163,0,
+added route to primal routes: 0,76,104,107,146,160,6,203,0,
+added route to primal routes: 0,85,86,246,73,39,190,71,167,126,0,
+added route to primal routes: 0,86,71,190,35,140,0,
+added route to primal routes: 0,91,102,169,110,9,163,142,140,244,170,0,
+added route to primal routes: 0,97,207,113,54,177,136,0,
+added route to primal routes: 0,99,177,54,136,113,0,
+added route to primal routes: 0,100,132,116,202,50,0,
+added route to primal routes: 0,102,169,125,75,201,78,184,48,0,
+added route to primal routes: 0,140,110,9,163,142,190,71,126,86,152,0,
+added route to primal routes: 0,112,165,128,164,33,74,120,238,123,225,0,
+added route to primal routes: 0,118,86,71,190,140,142,163,9,110,199,217,0,
+added route to primal routes: 0,119,113,54,191,177,136,0,
+added route to primal routes: 0,122,143,91,102,169,110,9,163,142,140,244,0,
+added route to primal routes: 0,123,238,74,93,194,0,
+added route to primal routes: 0,126,71,190,35,140,0,
+added route to primal routes: 0,130,228,216,50,202,116,162,132,0,
+added route to primal routes: 0,132,116,202,50,0,
+added route to primal routes: 0,140,142,163,9,110,0,
+added route to primal routes: 0,142,163,9,110,0,
+added route to primal routes: 0,145,238,120,93,0,
+added route to primal routes: 0,150,130,50,202,116,162,132,135,0,
+added route to primal routes: 0,152,126,167,71,39,73,86,0,
+added route to primal routes: 0,244,35,140,154,0,
+added route to primal routes: 0,162,116,202,50,216,228,130,122,0,
+added route to primal routes: 0,163,59,88,0,
+added route to primal routes: 0,164,33,74,93,194,120,0,
+added route to primal routes: 0,165,128,164,33,74,120,238,145,225,0,
+added route to primal routes: 0,167,71,190,35,140,0,
+added route to primal routes: 0,170,244,35,140,0,
+added route to primal routes: 0,172,104,107,6,160,146,0,
+added route to primal routes: 0,183,86,71,190,35,140,0,
+added route to primal routes: 0,140,110,9,163,142,190,0,
+added route to primal routes: 0,217,199,110,9,142,140,190,167,0,
+added route to primal routes: 0,205,174,136,177,191,54,113,0,
+added route to primal routes: 0,216,60,91,0,
+added route to primal routes: 0,217,199,110,9,163,142,140,190,71,86,118,0,
+added route to primal routes: 0,219,130,228,216,60,91,0,
+added route to primal routes: 0,225,123,238,120,93,0,
+added route to primal routes: 0,228,216,50,202,116,162,132,100,0,
+added route to primal routes: 0,236,92,111,115,61,0,
+added route to primal routes: 0,238,74,93,194,33,0,
+added route to primal routes: 0,243,122,130,228,216,50,202,116,0,
+added route to primal routes: 0,244,110,9,163,142,140,0,
+added route to primal routes: 0,73,233,203,6,160,146,107,246,0,
+best alpha: 0.055
+alpha: 0.303842
+psiStar: 33202
+lagLB: 31692.8
+||gamma||^2: 4967
+Dual needs repair, spl: -23.9746
+Dual needs repair, spl: -23.4305
+Dual needs repair, spl: -21.0624
+Dual needs repair, spl: -15.471
+Dual needs repair, spl: -11.4367
+Dual needs repair, spl: -10.023
+Dual needs repair, spl: -9.66613
+Dual needs repair, spl: -8.33339
+Dual needs repair, spl: -6.31346
+Dual needs repair, spl: -5.19421
+Dual needs repair, spl: -5.04823
+Dual needs repair, spl: -2.63937
+Dual needs repair, spl: -1.99991
+Dual needs repair, spl: -1.8831
+Dual needs repair, spl: -1.31313
+Dual needs repair, spl: -0.492432
+Dual needs repair, spl: -0.311286
+repaired lb: 32172.7
+STATS - lpIterations[1] lagIterations[5] sspIterations[221] numSeparations[128] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] lb[32172.7] ub[37275] numArcs: [9452307] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [67]
+STATS1 - lpIterations[1] lagIterations[5] sspIterations[221] numSeparations[128] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] repairTime[9] cutsTime[0] alphaTime[0] decompTime[1] yellowTime[0] updateTime[0] fixTime[0] lb[32172.7] ub[37275] numArcs: [9452307] numFixed: [0] time: [67]
+lambda: 0,476.958,467.486,356.397,284.367,629.038,539.774,407.307,431.128,602.334,261.874,347.887,294.829,353.576,371.503,339.271,481.635,178.77,326.352,424.591,298.426,379.128,489.038,154.695,402.986,389.023,217.274,402.74,762.143,400.113,214.531,407.606,451.635,473.252,290.232,588.517,244.74,308.591,551.038,534.554,333.023,303.874,433.531,374.8,398.352,196.949,288.023,563.075,534.565,155.606,603.267,612.307,215.217,335.143,389.083,212.083,553.725,258.71,227.979,382.959,351.759,252.605,559.068,723.441,177.337,195.874,382.829,239.889,235.405,31.7697,59.7249,6.68801,19.3667,17.4348,51.1567,47.7502,58.5195,73.9339,63.5972,43.3518,38.8891,35.307,48.8742,65.9786,15.2921,35.8337,7.57692,40.1428,53.1668,55.2772,58.2025,22.702,17.9739,35.2285,0,9.51615,24.6951,0,18.7995,25.7814,21.3484,36.2622,22.5553,12.8577,23.3789,18.4115,16.2025,43.7068,63.0234,71.0384,42.2115,32.8141,27.8131,25.2936,55.7697,16.5339,40.7569,33.2103,16.0339,28.3364,63.3358,59.3667,16.9739,11.2453,24.6204,13.8127,33.0831,74.7846,29.8616,43.5892,23.1282,25.8891,20.0644,26.5309,14.3595,17.0052,10.3626,44.2473,19.4115,74.7367,53.042,29.3355,22.6237,37.6446,64.0234,45.3327,24.225,31.1876,9.89344,33.7995,32.8409,13.6204,37.0456,43.9209,19.2344,45.9936,30.4861,50.8051,37.8656,18.5906,10.8518,17.6801,40.3616,23.1242,12.2845,60.6106,23.7995,45.6869,12.8592,18.6784,45.4667,52.6801,59.6297,46.113,10.5669,64.3816,24.4115,14.2581,40.2025,70.8145,42.904,38.8236,38.6503,35.6966,14.684,20.5309,31.4033,20.0875,73.6354,28.6204,44.364,42.1631,63.0831,36.2025,39.1521,72.8294,17.1279,52.2161,24.6951,15.0136,24.6055,54.6135,42.1328,54.8925,37.8742,16.5466,32.0817,28.583,24.3816,24.501,24.3518,45.634,36.3369,15.904,16.2473,9.69081,29.6786,52.3519,28.7249,3.31244,17.1578,37.9786,50.1727,53.3966,34.3219,27.1898,61.192,82.2324,23.4823,42.5906,79.4264,24.5309,13.3194,27.8695,50.0682,40.4413,19.0365,33.5699,28.5368,46.2324,35.8443,21.4712,39.2473,37.8886,30.5345,45.4264,36.8842,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+separating route arcs: 72 9298124 56649 3957103 4464889 4700075 
+separating route locations: 73 233 59 88 163 59 
+separating route arcs: 75 9299630 405479 803028 1058377 1151114 1630287 7161813 
+separating route locations: 76 104 107 146 160 203 6 203 
+separating route arcs: 84 9301579 9301821 517756 690158 7156474 7787110 7909008 8548940 9040552 
+separating route locations: 85 86 246 73 39 190 71 167 126 86 
+separating route arcs: 85 9303277 9373530 200442 711686 7748748 
+separating route locations: 86 71 190 140 35 140 
+separating route arcs: 87 9374962 4094346 4353389 
+separating route locations: 88 59 163 59 
+separating route arcs: 96 9309686 199190 584839 764165 986369 8088549 
+separating route locations: 97 207 113 136 177 54 177 
+separating route arcs: 98 9311160 382760 548179 760867 7833327 
+separating route locations: 99 113 136 177 54 177 
+separating route arcs: 99 9312572 123551 447760 7746325 8305196 
+separating route locations: 100 132 116 50 202 116 
+separating route arcs: 101 9313521 9380290 95594 387963 871934 1466839 1604893 6502715 
+separating route locations: 102 169 125 75 201 78 184 48 78 
+separating route arcs: 112 9317952 9318197 9318441 9318561 8035196 
+separating route locations: 113 136 177 54 191 177 
+separating route arcs: 118 9321997 514633 691275 910551 8003489 8716500 
+separating route locations: 119 113 136 177 54 191 177 
+separating route arcs: 122 9390599 9390843 431158 817264 1193563 
+separating route locations: 123 238 74 93 194 93 
+separating route arcs: 125 9324260 133167 507787 1088336 8174118 
+separating route locations: 126 71 190 140 35 140 
+separating route arcs: 127 9394757 9395002 9395179 9395354 7344628 7802523 
+separating route locations: 128 164 33 74 120 93 120 
+separating route arcs: 131 9326367 203780 7406206 7964900 
+separating route locations: 132 116 50 202 116 
+separating route arcs: 135 9399924 9399978 6819359 7524576 
+separating route locations: 136 177 54 191 177 
+separating route arcs: 139 9401921 9402166 9402409 954529 7750014 
+separating route locations: 140 142 163 110 9 163 
+separating route arcs: 141 9405519 9405763 6573624 7115445 
+separating route locations: 142 163 9 110 163 
+separating route arcs: 144 9409382 9409501 1077144 1494166 
+separating route locations: 145 238 120 93 120 
+separating route arcs: 151 9330128 9330372 515399 1089597 1226071 1367640 7921137 
+separating route locations: 152 86 126 167 71 73 39 71 
+separating route arcs: 153 9332955 271178 785308 7833822 
+separating route locations: 154 244 140 35 140 
+separating route arcs: 157 9420295 9420540 9420784 9420817 7328105 8035609 8405324 
+separating route locations: 158 165 128 164 33 74 238 164 
+separating route arcs: 162 9422160 3819740 4326228 
+separating route locations: 163 59 88 163 
+separating route arcs: 163 9423433 9423611 9423661 7006633 7462301 7885979 
+separating route locations: 164 33 74 120 93 194 93 
+separating route arcs: 166 9336345 9336533 649420 1239972 8344266 
+separating route locations: 167 71 190 140 35 140 
+separating route arcs: 168 9427371 9427616 9427860 9428103 9428151 6186637 6328839 
+separating route locations: 169 125 75 201 78 48 184 78 
+separating route arcs: 169 9337498 9337638 1012518 8089044 
+separating route locations: 170 244 140 35 140 
+separating route arcs: 171 9338825 9339070 9339314 9339320 6499246 6647930 
+separating route locations: 172 104 107 146 6 160 146 
+separating route arcs: 173 9340459 9340704 9340948 9341191 9341310 8205344 
+separating route locations: 174 113 136 177 54 191 177 
+separating route arcs: 182 9341612 9341683 180657 577506 1164154 8259192 
+separating route locations: 183 86 71 190 140 35 140 
+separating route arcs: 189 9434794 567964 830925 1058818 1485255 8345532 
+separating route locations: 190 140 142 163 110 9 163 
+separating route arcs: 204 9347049 9347294 9347538 9347781 9347967 1318259 8514275 
+separating route locations: 205 174 113 136 177 191 54 177 
+separating route arcs: 206 9348443 9348688 9348932 9349175 9349295 8631248 
+separating route locations: 207 113 136 177 54 191 177 
+separating route arcs: 215 9350455 3888517 4143339 
+separating route locations: 216 60 91 60 
+separating route arcs: 218 9353186 9353411 219120 468559 4510929 4767643 
+separating route locations: 219 130 228 216 60 91 60 
+separating route arcs: 224 9447751 9447995 277276 925508 1342530 
+separating route locations: 225 123 238 120 93 120 
+separating route arcs: 232 9449426 252981 4302711 4561231 
+separating route locations: 233 88 59 163 59 
+separating route arcs: 235 9450273 446105 1152738 1641107 8932839 
+separating route locations: 236 92 111 115 61 236 
+separating route arcs: 237 9451608 5799101 6441911 6872626 7290815 
+separating route locations: 238 33 74 93 194 93 
+separating route arcs: 243 9452933 432432 683873 1106165 7920162 8239568 
+separating route locations: 244 140 142 110 9 163 142 
+separating route arcs: 245 9357974 9358205 345537 728918 982602 1478651 6993570 7145800 
+separating route locations: 246 73 233 107 146 203 6 160 146 
+STATS - lpIterations[1] lagIterations[5] sspIterations[221] numSeparations[169] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] lb[32172.7] ub[37275] numArcs: [9480776] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [68]
+STATS1 - lpIterations[1] lagIterations[5] sspIterations[221] numSeparations[169] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] repairTime[9] cutsTime[0] alphaTime[0] decompTime[1] yellowTime[0] updateTime[0] fixTime[0] lb[32172.7] ub[37275] numArcs: [9480776] numFixed: [0] time: [68]
+Lagrangean bound solution value: 32173.9
+STATS - lpIterations[1] lagIterations[6] sspIterations[227] numSeparations[169] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] lb[32173.9] ub[37275] numArcs: [9480765] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [68]
+STATS1 - lpIterations[1] lagIterations[6] sspIterations[227] numSeparations[169] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] repairTime[9] cutsTime[0] alphaTime[0] decompTime[1] yellowTime[0] updateTime[0] fixTime[0] lb[32173.9] ub[37275] numArcs: [9480765] numFixed: [0] time: [68]
+lambda: 0,477.262,467.79,356.7,284.671,629.342,539.857,407.611,431.432,601.593,262.178,348.191,295.133,353.88,371.806,339.575,481.939,179.074,326.656,424.894,298.73,379.432,489.342,154.999,403.413,389.327,217.578,403.044,762.447,400.417,214.835,407.909,451.939,472.736,290.536,589.154,245.044,308.894,551.342,534.824,333.327,304.178,433.835,375.103,398.656,197.253,288.327,563.378,534.597,155.909,601.664,612.611,215.521,335.447,389.326,212.387,554.029,259.014,228.282,382.503,351.634,252.919,559.372,723.745,177.641,196.178,383.133,240.193,235.709,32.0735,60.0288,4.49469,19.6706,16.7934,50.033,47.1752,58.2984,74.2377,63.0222,43.6556,39.1929,35.6108,49.178,66.2825,15.5959,35.8337,7.59324,40.4467,53.0143,55.581,58.5064,22.4231,18.2878,34.7125,0,9.81999,24.9989,0,19.1034,26.9999,20.7407,36.5661,21.8263,13.1616,22.854,18.7153,16.5064,42.878,63.3273,71.3422,41.471,33.1279,27.8131,24.0175,56.0735,16.8477,38.5456,33.5141,17.6363,28.0325,61.9083,59.6706,16.8488,11.337,24.9243,13.2378,33.9282,75.0885,28.3424,43.893,21.9682,26.1929,18.7647,26.8347,14.6634,16.8655,8.17495,44.5511,19.7153,74.7694,47.2984,29.6393,21.277,38.7452,64.3273,45.0288,23.3962,31.4914,10.1973,34.1034,32.5371,13.9243,36.438,44.2248,19.2344,46.2974,30.79,51.109,37.8656,18.8944,10.6307,17.984,39.3657,21.1697,12.0723,59.6991,24.1034,44.6878,13.1631,17.9495,46.7653,52.984,59.7125,46.4168,10.81,64.6855,24.7153,12.0705,40.5064,71.1183,43.2079,39.1274,38.9541,35.0889,14.7167,20.8347,31.7072,20.3914,73.9392,28.9243,43.503,40.8839,63.387,36.5064,38.5445,73.1332,17.4317,52.5199,24.9989,14.9827,24.9094,54.0385,40.5293,54.9752,38.178,18.005,32.3856,27.9753,24.6855,24.8049,24.6556,45.634,36.6407,16.2079,16.5511,9.99465,29.1654,52.1979,29.0288,4.27935,17.4616,38.2825,50.4765,53.7004,34.6258,27.8892,61.4958,82.5362,22.3668,42.8944,79.7303,24.8347,13.8632,26.958,50.372,40.7452,19.0465,33.8737,27.4132,46.5362,36.1482,21.775,39.5511,37.5848,30.9216,45.7303,37.8448,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+new best dual, value: 32173.9
+added route to primal routes: 0,108,29,31,208,159,0,
+added route to primal routes: 0,159,208,31,29,108,0,
+added route to primal routes: 0,174,232,159,208,31,29,0,
+added route to primal routes: 0,199,24,0,
+added route to primal routes: 0,232,159,208,31,29,0,
+best alpha: 0.055
+alpha: 4.83323
+psiStar: 33691.5
+lagLB: 32173.9
+||gamma||^2: 314
+Dual needs repair, spl: -2.62808
+Dual needs repair, spl: -1.27541
+Dual needs repair, spl: -0.79223
+repaired lb: 32177.4
+STATS - lpIterations[1] lagIterations[6] sspIterations[227] numSeparations[169] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] lb[32177.4] ub[37275] numArcs: [9480765] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [69]
+STATS1 - lpIterations[1] lagIterations[6] sspIterations[227] numSeparations[169] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] repairTime[10] cutsTime[0] alphaTime[0] decompTime[1] yellowTime[0] updateTime[0] fixTime[0] lb[32177.4] ub[37275] numArcs: [9480765] numFixed: [0] time: [69]
+lambda: 0,477.262,467.79,356.7,284.671,629.342,539.857,407.611,431.432,601.593,262.178,348.191,295.133,353.88,371.806,339.575,481.939,179.074,326.656,424.894,298.73,379.432,489.342,154.999,403.215,389.327,217.578,403.044,762.447,400.154,214.835,407.647,451.939,472.736,290.536,589.154,245.044,308.894,551.342,534.824,333.327,304.178,433.835,375.103,398.656,197.253,288.327,563.378,534.597,155.909,601.664,612.611,215.521,335.447,389.326,212.387,554.029,259.014,228.282,382.503,351.634,252.706,559.372,723.745,177.641,196.178,383.133,240.193,235.709,32.0735,60.0288,4.49469,19.6706,16.7934,50.033,47.1752,58.2984,74.2377,63.0222,43.6556,39.1929,35.6108,49.178,66.2825,15.5959,35.8337,7.59324,40.4467,53.0143,55.581,58.5064,22.4231,18.0752,34.7125,0,9.81999,24.9989,0,19.1034,26.9999,20.7407,36.5661,21.8263,13.1616,22.854,18.7153,16.5064,42.878,63.3273,71.3422,41.471,32.9153,27.8131,24.0175,56.0735,16.6351,38.5456,33.5141,17.6363,28.0325,61.9083,59.6706,16.8488,11.337,24.9243,13.2378,33.9282,75.0885,28.3424,43.893,21.9682,26.1929,18.7647,26.8347,14.6634,16.8655,8.17495,44.5511,19.7153,74.7694,47.2984,29.6393,21.277,38.7452,64.3273,45.0288,23.3962,31.4914,10.1973,34.1034,32.5371,13.9243,36.438,44.2248,19.2344,46.2974,30.79,51.109,37.8656,18.6316,10.6307,17.984,39.3657,21.1697,12.0723,59.6991,24.1034,44.6878,13.1631,17.9495,46.7653,52.984,59.7125,46.4168,10.81,64.6855,24.7153,12.0705,40.5064,71.1183,43.2079,39.1274,38.9541,35.0889,14.7167,20.8347,31.7072,20.3914,73.9392,28.9243,43.503,40.8839,63.387,36.5064,38.5445,73.1332,17.4317,52.5199,24.9989,14.7847,24.9094,54.0385,40.5293,54.9752,38.178,18.005,32.3856,27.9753,24.4227,24.8049,24.6556,45.634,36.6407,15.9451,16.5511,9.99465,29.1654,52.1979,29.0288,4.27935,17.4616,38.2825,50.4765,53.7004,34.6258,27.8892,61.4958,82.5362,22.3668,42.8944,79.7303,24.8347,13.6004,26.958,50.372,40.7452,18.834,33.8737,27.4132,46.5362,36.1482,21.775,39.5511,37.5848,30.9216,45.7303,37.8448,
+mu: 
+combDuals: 
+srcDuals: 
+fixed dual: 0
+separating route arcs: 173 9340443 24659 59733 172673 4232525 9079384 
+separating route locations: 174 232 159 208 29 31 208 
+separating route arcs: 198 9345983 4299979 
+separating route locations: 199 24 199 
+separating route arcs: 235 9450242 7068126 7622298 8451823 8975444 
+separating route locations: 236 61 115 111 92 236 
+separating route arcs: 231 4569 18827 87229 4093638 8946020 
+separating route locations: 232 159 208 29 31 208 
+STATS - lpIterations[1] lagIterations[6] sspIterations[227] numSeparations[173] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] lb[32177.4] ub[37275] numArcs: [9483770] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [69]
+STATS1 - lpIterations[1] lagIterations[6] sspIterations[227] numSeparations[173] numCuts[0] compileTime[7] sspSolveTime[49] lpSolveTime[0] repairTime[10] cutsTime[0] alphaTime[0] decompTime[1] yellowTime[0] updateTime[0] fixTime[0] lb[32177.4] ub[37275] numArcs: [9483770] numFixed: [0] time: [69]

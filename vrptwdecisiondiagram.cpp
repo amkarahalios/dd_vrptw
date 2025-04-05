@@ -1816,9 +1816,9 @@ int VRPTWDecisionDiagram::findSRCs(const Primal& primal, int limit, std::vector<
         }
 
         // SRC4
-        for (int l=k+1; l<vrptw.numLocations; ++l)
+        if (params.useSRC4s)
         {
-          if (params.useSRC4s)
+          for (int l=k+1; l<vrptw.numLocations; ++l)
           {
             std::set<int> testSetSRC4 = {i,j,k,l};
             violation = getSRCFlowViolation(primal, testSetSRC4, SRCType::SRC4);
@@ -1827,19 +1827,19 @@ int VRPTWDecisionDiagram::findSRCs(const Primal& primal, int limit, std::vector<
               testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC4,testSetSRC4),violation));
               continue;
             }
-          }
 
-          // SRC5V1
-          if (params.useSRC5V1s)
-          {
-            for (int m=l+1; m<vrptw.numLocations; ++m)
+            // SRC5V1
+            if (params.useSRC5V1s)
             {
-              std::set<int> testSetSRC5V1 = {i,j,k,l,m};
-              violation = getSRCFlowViolation(primal, testSetSRC5V1, SRCType::SRC5V1);
-              if (violation > 0.1)
+              for (int m=l+1; m<vrptw.numLocations; ++m)
               {
-                testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC5V1,testSetSRC5V1),violation));
-                continue;
+                std::set<int> testSetSRC5V1 = {i,j,k,l,m};
+                violation = getSRCFlowViolation(primal, testSetSRC5V1, SRCType::SRC5V1);
+                if (violation > 0.1)
+                {
+                  testSetViolations.push_back(std::make_pair(std::make_pair(SRCType::SRC5V1,testSetSRC5V1),violation));
+                  continue;
+                }
               }
             }
           }
@@ -2631,6 +2631,16 @@ void VRPTWDecisionDiagram::mergeNodes(int nodeIndex1, int nodeIndex2)
 }
 
 double VRPTWDecisionDiagram::fixArcs(const std::vector<Dual>& duals, LPSolveType solveType, double upperBound)
+{
+  for (const Dual& dual : duals)
+  {
+    fixArcs(dual, solveType, upperBound);
+  }
+
+  return getPercentFixedArcs();
+};
+
+double VRPTWDecisionDiagram::fixArcs(const std::deque<Dual>& duals, LPSolveType solveType, double upperBound)
 {
   for (const Dual& dual : duals)
   {
@@ -5592,14 +5602,6 @@ bool VRPTWDecisionDiagram::addCapCutSet(const std::vector<int>& cutSet, const st
       if ((rhs > 0.0001) || (rhs < -0.0001))
       {
         scaling = 1.0 / std::abs(rhs);
-        if (rccType == RCCType::Type1)
-        {
-          scaling = 1.0 / std::abs(rhs);
-        }
-        else
-        {
-          scaling = 1.0 / ((vrptw.numLocations - 1 - cutSet.size()) * std::abs(rhs));
-        }
       }
     }
     capCutSetsRHS.push_back(rhs * scaling);

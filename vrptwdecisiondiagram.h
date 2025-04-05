@@ -189,7 +189,7 @@ class VRPTWDecisionDiagram
     double evaluateRouteCost(const std::vector<int>& routeByArc);
     double getPercentFixedArcs() const
     {
-      return fixedArcs.size() * 100.0 / arcs.size();
+      return fixedArcs.size() * 100.0 / (arcs.size() - arcReverseArc.size());
     }
     int getNumArcsNotRemovedOrReverse() const
     {
@@ -247,6 +247,7 @@ class VRPTWDecisionDiagram
     double getDualObjectiveValue(const Dual& dual, LPSolveType lpSolveType);
     double fixArcs(const Dual& dual, LPSolveType lpSolveType, double upperBound);
     double fixArcs(const std::vector<Dual>& dual, LPSolveType lpSolveType, double upperBound);
+    double fixArcs(const std::deque<Dual>& dual, LPSolveType lpSolveType, double upperBound);
 
     // Primal heuristics
     double repairSolution(const std::vector<std::vector<int>>& feasibleSolution, const std::set<int>& destroyedElements, const Dual& dual, std::vector<std::vector<int>>& newBestRoutes, int timeoutSeconds);

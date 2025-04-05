@@ -84,6 +84,8 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   // Primal heuristic
   if (params.primalHeuristic != PrimalHeuristic::BEST_KNOWN)
   {
+    std::cout << "running primal heuristic" << std::endl;
+
     // Standalone solver runs Heuristic + MIP Pool + LNS in a loop
     int timeToRunHeuristics = params.lnsTimeoutSeconds;
     if (params.primalHeuristic == PrimalHeuristic::STANDALONE)
@@ -144,18 +146,12 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
 
   // Set and Log Parameters
   infeasibleRoutesBatchSize = 1;
-  percentFixedToChangeToCPLEX = 97.5;
+  percentFixedToChangeToCPLEX = 95;
   numArcsToChangeToCPLEX = 100000;
-  kappaIterations = 20;
-  muPercentImproved = 0.001;
-  percentGapToStartCuts = 0.95;
 
   std::cout << "batch size for lag: " << infeasibleRoutesBatchSize << std::endl;
   std::cout << "percent arcs fixed to change to CPLEX: " << percentFixedToChangeToCPLEX << std::endl;
   std::cout << "number arcs fixed to change to CPLEX: " << numArcsToChangeToCPLEX << std::endl;
-  std::cout << "kappa iterations: " << kappaIterations << std::endl;
-  std::cout << "mu percent improved: " << muPercentImproved << std::endl;
-  std::cout << "percent to start cuts: " << percentGapToStartCuts << std::endl;
 
   // best duals for fixing
   bestDualsArcFixingLagPercent = 0.0;
@@ -183,7 +179,6 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "var fixing: " << params.useVariableFixing << std::endl;
   std::cout << "useSeparations: " << params.useSeparations << std::endl;
   std::cout << "muSSP: " << params.useMuSSP << std::endl;
-  std::cout << "repairDuals: " << params.repairDuals << std::endl;
 
   // cuts parameters
   std::cout << "numLagCuts: " << params.numLagCuts << std::endl;
@@ -195,6 +190,8 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "useVolumeAlgorithm: " << params.useVolumeAlgorithm << std::endl;
   std::cout << "limit rccs: " << params.limitRCCs << std::endl;
   std::cout << "useScaling: " << params.useScaling << std::endl;
+  std::cout << "lowImprovementIterationsToNextRound: " << params.lowImprovementIterationsToNextRound << std::endl;
+  std::cout << "percentImprovementThreshold: " << params.percentImprovementThreshold << std::endl;
 
   // primal heuristic params
   std::cout << "primal heuristic: " << params.primalHeuristic << std::endl;
@@ -264,14 +261,13 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
       if (params.useVariableFixing)
       {
         std::cout << "fix with best duals from LAG. Using: " << bestDualsArcFixingLag.size() << " dual(s)" << std::endl;
-        std::vector<Dual> dualsToUseForFixing;
         for (int dualMultiplierIndex=0; dualMultiplierIndex<bestDualsArcFixingLag.size(); ++dualMultiplierIndex)
         {
           Dual dualToRepair = bestDualsArcFixingLag[dualMultiplierIndex];
           repairMultipliers(dualToRepair, LPSolveType::LAGSolver);
-          dualsToUseForFixing.push_back(dualToRepair);
+          bestDualsArcFixingLag[dualMultiplierIndex] = dualToRepair;
         }
-        routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver, stats.upperBound);
+        routeDD.fixArcs(bestDualsArcFixingLag, LPSolveType::LAGSolver, stats.upperBound);
       }
 
       if (lpFlowType == FlowType::LP)
@@ -1308,6 +1304,18 @@ void VRPTWDDSolver::resizeMultipliers(const Dual& dual1, std::vector<Dual>& dual
   }
 }
 
+void VRPTWDDSolver::resizeMultipliers(const Dual& dual1, std::deque<Dual>& duals2)
+{
+  for (int index=0; index<duals2.size(); ++index)
+  {
+    Dual& dual2 = duals2[index];
+    dual2.lambda.resize(dual1.lambda.size());
+    dual2.capDuals.resize(dual1.capDuals.size());
+    dual2.combDuals.resize(dual1.combDuals.size());
+    dual2.srcDuals.resize(dual1.srcDuals.size());
+  }
+}
+
 void VRPTWDDSolver::resizeMultipliers(const Dual& dual1, Dual& dual2)
 {
   dual2.lambda.resize(dual1.lambda.size());
@@ -1573,7 +1581,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         {
           Dual dualToRepair = bestDualsArcFixingLag[dualMultiplierIndex];
           repairMultipliers(dualToRepair, LPSolveType::LAGSolver);
-          dualsToUseForFixing.push_back(dualToRepair);
+          bestDualsArcFixingLag[dualMultiplierIndex] = dualToRepair;
         }
         routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver, stats.upperBound);
         auto endTimeFix = std::chrono::high_resolution_clock::now();
@@ -1661,7 +1669,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       // Keep track of best-known solution
       if (currIterLowerBound < lagrangeanLowerBound)
       {
-        if (((1 + muPercentImproved) * muLowerBound) < lagrangeanLowerBound)
+        if (((1 + params.percentImprovementThreshold) * muLowerBound) < lagrangeanLowerBound)
         {
           lastMuImprovedIteration = numLagIterations;
           muLowerBound = lagrangeanLowerBound;
@@ -1861,7 +1869,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       }
 
       // Check termination criteria
-      if ((numLagIterations - lastMuImprovedIteration) > kappaIterations)
+      if ((numLagIterations - lastMuImprovedIteration) > params.lowImprovementIterationsToNextRound)
       {
         shouldTerminate = true;
       }
@@ -1871,79 +1879,38 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         shouldTerminate = true;
       }
 
-      // Repair Dual
-      if (isDualFeasible)
+      // Repair Dual - separations can change the paths available
+      repairMultipliers(repairedDual, LPSolveType::LAGSolver);
+      double repairedBound = routeDD.getDualObjectiveValue(repairedDual, LPSolveType::LAGSolver);
+      if (bestDualValue < repairedBound)
       {
-        if (params.useVariableFixing && tryArcFixingOrRepair)
-        {
-          double previousPercentFixed = percentFixed;
-          repairMultipliers(repairedDual, LPSolveType::LAGSolver);
-          percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver, stats.upperBound);
-          std::cout << "percent fixed: " << percentFixed << std::endl;
-          if (((percentFixed - previousPercentFixed) > 1) && (currDualsArcFixing.size() < 5))
-          {
-            currDualsArcFixing.push_back(repairedDual);
-          }
-        }
+        std::cout << "repaired lb: " << repairedBound << std::endl;
+        stats.lowerBound = std::max(stats.lowerBound, repairedBound);
+        stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
+        printMultipliers(repairedDual);
 
-        if (percentFixed > bestDualsArcFixingLagPercent)
+        if (repairedBound > 0.95 * targetLowerBound)
         {
-          std::cout << "updating best lambda arc fixing" << std::endl;
-          bestDualsArcFixingLag = currDualsArcFixing;
-          bestDualsArcFixingLagPercent = percentFixed;
+          targetLowerBound = std::min(repairedBound * targetBoundIncrease, stats.upperBound);
         }
       }
-      else
+
+      // Arc Fixing
+      if (params.useVariableFixing && tryArcFixingOrRepair)
       {
-        if (params.repairDuals)
+        percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver, stats.upperBound);
+        std::cout << "percent fixed: " << percentFixed << std::endl;
+      }
+
+      if (percentFixed > bestDualsArcFixingLagPercent)
+      {
+        std::cout << "updating best lambda arc fixing" << std::endl;
+        bestDualsArcFixingLag.push_back(repairedDual);
+        if (bestDualsArcFixingLag.size() > 5)
         {
-          if (params.useVariableFixing && tryArcFixingOrRepair)
-          {
-            repairMultipliers(repairedDual, LPSolveType::LAGSolver);
-            double repairedBound = routeDD.getDualObjectiveValue(repairedDual, LPSolveType::LAGSolver);
-
-            std::cout << "repaired lb: " << repairedBound << std::endl;
-            if (bestDualValue < repairedBound)
-            {
-              stats.lowerBound = std::max(stats.lowerBound, repairedBound);
-              stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-              printMultipliers(repairedDual);
-
-              // NOTE(akarahal) don't allow best dual from repair, because might not have same with wang calculation
-              //bestDual = repairedDual;
-              //bestDualValue = repairedBound;
-              //std::cout << "new best dual from repair, value: " << repairedBound << std::endl;
-              /*
-              double percentGap = (stats.upperBound - bestDualValue) * 100.0 / stats.upperBound;
-              if (percentGap < 10)
-              {
-                double limitToMerge = (stats.upperBound - bestDualValue) / 2.0;
-                routeDD.findMergeNodesReducedCost(bestDual, LPSolveType::LAGSolver, limitToMerge);
-                stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-              }
-              */
-
-              if (repairedBound > 0.95 * targetLowerBound)
-              {
-                targetLowerBound = std::min(repairedBound * targetBoundIncrease, stats.upperBound);
-              }
-            }
-
-            double previousPercentFixed = percentFixed;
-            percentFixed = routeDD.fixArcs(repairedDual, LPSolveType::LAGSolver, stats.upperBound);
-            if (((percentFixed - previousPercentFixed) > 1) && (currDualsArcFixing.size() < 5))
-            {
-              currDualsArcFixing.push_back(repairedDual);
-            }
-            std::cout << "percent fixed: " << percentFixed << std::endl;
-            if (percentFixed > bestDualsArcFixingLagPercent)
-            {
-              std::cout << "updating from repair - best lambda arc fixing" << std::endl;
-              bestDualsArcFixingLagPercent = percentFixed;
-              bestDualsArcFixingLag = currDualsArcFixing;
-            }
-          }
+          bestDualsArcFixingLag.pop_front();
         }
+        bestDualsArcFixingLagPercent = percentFixed;
       }
 
       if (params.changeToLP)
@@ -1969,7 +1936,6 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         {
           stats.numSeparations = stats.numSeparations + 1;
           routeDD.separateRoute(infeasibleRouteToSeparateByArc);
-          currDualsArcFixing.clear();
         }
       }
     }
@@ -2367,7 +2333,6 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std:
 
   resizeMultipliers(dual, bestDual);
   resizeMultipliers(dual, bestDualsArcFixingLag);
-  resizeMultipliers(dual, currDualsArcFixing);
   resizeMultipliers(dual, bestDualArcFixingLP);
 
   auto endTimeCut = std::chrono::high_resolution_clock::now();
@@ -2471,7 +2436,15 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
       double RHS = MyCutsCMP->CPL[cutIndex]->RHS;
 
       bool newCut = false;
-      bool cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type1, params.useScaling);
+      bool cutExisted = false;
+      if (static_cast<int>(cutSet.size()) <= vrptw.numLocations / 2)
+      {
+        cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type1, params.useScaling);
+      }
+      else
+      {
+        cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type3, params.useScaling);
+      }
       if (!cutExisted)
       {
         newCut = true;
@@ -2482,7 +2455,7 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
         stats.numCuts = stats.numCuts + 1;
         cutAdded = true;
         dual.capDuals.push_back(0);
-        std::cout << "add capacity cutset: ";
+        std::cout << "add capacity cutset type: ";
         for (int location : cutSet)
         {
           std::cout << location << " ";

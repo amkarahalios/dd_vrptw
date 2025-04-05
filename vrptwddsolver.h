@@ -2,6 +2,7 @@
 #define VRPTWDDSOLVER
 
 #include <vector>
+#include <deque>
 #include <chrono>
 
 #include "vrptwdecisiondiagram.h"
@@ -74,6 +75,7 @@ class VRPTWDDSolver
     void repairMultipliers(Dual& repairedDual, LPSolveType lpSolveType);
     void resizeMultipliers(const Dual& dual1, Dual& dual2);
     void resizeMultipliers(const Dual& dual1, std::vector<Dual>& dual2);
+    void resizeMultipliers(const Dual& dual1, std::deque<Dual>& dual2);
 
     bool largeNeighborhoodSearch(const std::vector<std::vector<int>>& feasibleSolution, const Dual& dual, int timeoutSeconds);
     bool primalHeuristicMIP(FlowType flowType, std::vector<std::vector<int>>& routesByLocationPrimalHeuristic, std::set<int>& returnRouteIndices);
@@ -107,8 +109,7 @@ class VRPTWDDSolver
     std::vector<std::vector<int>> bestSolution;
 
     // for arc fixing
-    std::vector<Dual> currDualsArcFixing;
-    std::vector<Dual> bestDualsArcFixingLag;
+    std::deque<Dual> bestDualsArcFixingLag;
     double bestDualsArcFixingLagPercent;
     Dual bestDualArcFixingLP;
     double bestDualArcFixingLPPercent;
