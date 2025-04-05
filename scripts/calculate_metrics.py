@@ -65,7 +65,7 @@ def plot_average_gaps(instance_set_name, parameter_set_names_strings, average_ga
   #parameter_set = set(average_gap_results_df['parameter'])
   parameter_set = [x[0] for x in parameter_set_names_strings.items()]
 
-  markers = ['.','1','x','s','v','p','d']
+  markers = ['.','1','x','s','v','p','d','_']
   i = 0
   for parameter in parameter_set:
     parameter_df = average_gap_results_df[average_gap_results_df['parameter'] == parameter]
@@ -89,11 +89,12 @@ def plot_average_gaps(instance_set_name, parameter_set_names_strings, average_ga
   plt.show()
 
 def plot_gaps_by_instance(parameter_set_names_strings, gap_results):
-  parameter_set = set(gap_results['parameter'])
+  #parameter_set = set(gap_results['parameter'])
+  parameter_set = [x[0] for x in parameter_set_names_strings.items()]
   instances = list(set(gap_results['instance']))
   instances.sort()
 
-  markers = ['.','1','x','s','v','p','d']
+  markers = ['.','1','x','s','v','p','d','_']
   for instance in instances:
     i = 0
     instance_df = gap_results[gap_results['instance'] == instance]
@@ -101,6 +102,8 @@ def plot_gaps_by_instance(parameter_set_names_strings, gap_results):
       parameter_df = instance_df[instance_df['parameter'] == parameter]
       plt.plot(list(parameter_df['time']), list(parameter_df['rel_gap']), label=parameter_set_names_strings[parameter], marker=markers[i])
       i = i + 1
+
+    plt.ylim(0,0.1)
 
     plt.title(f"UB and LB for {instance}")
     plt.ylabel('objective value')
@@ -210,7 +213,7 @@ def print_times_table(parameter_set_names_strings, gap_results_df):
   for time_aggregation in time_aggregations:
     aggregation_gap_results_df = gap_results_df[gap_results_df['time'] <= time_aggregation]
 
-    averages_string = f"{time_aggregation}s & & "
+    averages_string = f"{time_aggregation}s & "
     for parameter in parameters:
       parameter_results_df = aggregation_gap_results_df[aggregation_gap_results_df['parameter'] == parameter]
       parameter_primal_gaps = []
@@ -229,8 +232,8 @@ def print_times_table(parameter_set_names_strings, gap_results_df):
       average_rel_gap = round(sum(parameter_rel_gaps) / len(parameter_rel_gaps), 3)
       averages_string = averages_string + f"{average_primal_gap} & {average_rel_gap} & & "
 
-    header_string = "instance & & "
+    header_string = "instance & "
     for parameter in parameters:
-      header_string = header_string + f"{parameter_set_names_strings[parameter]} & &"
+      header_string = header_string + f"{parameter_set_names_strings[parameter]} & & "
     print(averages_string)
   print(header_string)

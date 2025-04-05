@@ -34,8 +34,10 @@ def get_instances(instance_set_name, root_directory):
   instances.sort()
   return instances
 
-def get_column_elimination_results(instances, parameter_set_names, root_directory):
+def get_column_elimination_results(instances, parameter_set_names_strings, root_directory):
   regex_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] numHeuristicIPs: \[([0-9]+)\] numHeuristicLNS: \[([0-9]+)\] numPrimalLNSRepairs: \[([0-9]+)\] time: \[([0-9]+)\]")
+
+  parameter_set_names = [x[0] for x in parameter_set_names_strings.items()]
 
   results = []
   for parameter_name in parameter_set_names:
