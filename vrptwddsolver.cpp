@@ -2438,12 +2438,12 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
       // try to get type 3 rccs working
       bool newCut = false;
       bool cutExisted = false;
+      cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type1, params.useScaling);
+      newCut = true;
+      /*
       if (static_cast<int>(cutSet.size()) <= vrptw.numLocations / 2)
       {
-        cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type1, params.useScaling);
-        newCut = true;
       }
-      /*
       else
       {
         cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type3, params.useScaling);
