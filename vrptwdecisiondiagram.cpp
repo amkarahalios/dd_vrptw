@@ -2219,59 +2219,62 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   // Cuts for LP only
   if (flowType == FlowType::LP)
   {
-    // RCC - rounded capacity cuts, might even need to use for IPs
-    for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
+    if (includeCoverConstraints == IncludeCoverConstraints::Y)
     {
-      if (!removeForTesting)
+      // RCC - rounded capacity cuts, might even need to use for IPs
+      for (int capCutIndex=0; capCutIndex<capCutSets.size(); ++capCutIndex)
       {
-        IloExpr cutSetSum(env);
-        for (int index=0; index<capCutSetArcs[capCutIndex].size(); ++index)
+        if (!removeForTesting)
         {
-          int arcIndex = capCutSetArcs[capCutIndex][index];
-          double coeff = capCutSetCoeffs[capCutIndex][index];
-          cutSetSum += x[arcIndex] * coeff;
+          IloExpr cutSetSum(env);
+          for (int index=0; index<capCutSetArcs[capCutIndex].size(); ++index)
+          {
+            int arcIndex = capCutSetArcs[capCutIndex][index];
+            double coeff = capCutSetCoeffs[capCutIndex][index];
+            cutSetSum += x[arcIndex] * coeff;
+          }
+
+          capConstraints.add(cutSetSum <= capCutSetsRHS[capCutIndex]);
+        }
+        else
+        {
+          capConstraints.add(x[0] <= 1);
+        }
+      }
+      flowModel.add(capConstraints);
+
+      // Comb - strengthened comb cuts
+      for (int combIndex=0; combIndex<teeths.size(); ++combIndex)
+      {
+        IloExpr combSum(env);
+        for (int arcIndex : combCutArcs[combIndex])
+        {
+          combSum += x[arcIndex];
+        }
+     
+        combConstraints.add(combSum >= combRHS[combIndex]);
+      }
+      flowModel.add(combConstraints);
+
+      // SRC - subset row cuts
+      for (int srcCutIndex=0; srcCutIndex<srcCuts.size(); ++srcCutIndex)
+      {
+        IloExpr srcCutSum(env);
+        auto currSrcCutSeparatedArcs = srcCutSeparatedArcs[srcCutIndex];
+        auto currSrcCutSeparatedCoeffs = srcCutSeparatedCoeffs[srcCutIndex];
+        for (int cutIndex=0; cutIndex<currSrcCutSeparatedArcs.size(); ++cutIndex)
+        {
+          int arcIndex = currSrcCutSeparatedArcs[cutIndex];
+          int coeff = currSrcCutSeparatedCoeffs[cutIndex];
+          srcCutSum += x[arcIndex] * coeff;
         }
 
-        capConstraints.add(cutSetSum <= capCutSetsRHS[capCutIndex]);
+        SRCType srcType = srcCutTypes[srcCutIndex];
+        int rhs = getSRCRHS(srcType);
+        srcConstraints.add(srcCutSum <= rhs);
       }
-      else
-      {
-        capConstraints.add(x[0] <= 1);
-      }
+      flowModel.add(srcConstraints);
     }
-    flowModel.add(capConstraints);
-
-    // Comb - strengthened comb cuts
-    for (int combIndex=0; combIndex<teeths.size(); ++combIndex)
-    {
-      IloExpr combSum(env);
-      for (int arcIndex : combCutArcs[combIndex])
-      {
-        combSum += x[arcIndex];
-      }
-   
-      combConstraints.add(combSum >= combRHS[combIndex]);
-    }
-    flowModel.add(combConstraints);
-
-    // SRC - subset row cuts
-    for (int srcCutIndex=0; srcCutIndex<srcCuts.size(); ++srcCutIndex)
-    {
-      IloExpr srcCutSum(env);
-      auto currSrcCutSeparatedArcs = srcCutSeparatedArcs[srcCutIndex];
-      auto currSrcCutSeparatedCoeffs = srcCutSeparatedCoeffs[srcCutIndex];
-      for (int cutIndex=0; cutIndex<currSrcCutSeparatedArcs.size(); ++cutIndex)
-      {
-        int arcIndex = currSrcCutSeparatedArcs[cutIndex];
-        int coeff = currSrcCutSeparatedCoeffs[cutIndex];
-        srcCutSum += x[arcIndex] * coeff;
-      }
-
-      SRCType srcType = srcCutTypes[srcCutIndex];
-      int rhs = getSRCRHS(srcType);
-      srcConstraints.add(srcCutSum <= rhs);
-    }
-    flowModel.add(srcConstraints);
   }
 
   // Solver
@@ -2283,7 +2286,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   //solver.setParam(IloCplex::Param::RootAlgorithm, IloCplex::Barrier);
   //solver.setParam(IloCplex::Param::RootAlgorithm, IloCplex::Primal);
   solver.setParam(IloCplex::Param::Threads, 1);
-  //solver.exportModel("LPflowmodel.lp");
+  solver.exportModel("LPflowmodel.lp");
 
   // Warm starts
   if ((flowType == FlowType::LP) && (includeCoverConstraints == IncludeCoverConstraints::Y))
@@ -2310,7 +2313,7 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   {
     for (int arcIndex=0; arcIndex<arcs.size(); ++arcIndex)
     {
-      if (!arcs[arcIndex].isReverseArc)
+      if (!arcs[arcIndex].isReverseArc && isArcAlive(arcIndex))
       {
         arcs[arcIndex].decompositionFlow = solver.getValue(x[arcIndex]);
         arcs[arcIndex].heuristicFlow= solver.getValue(x[arcIndex]);
@@ -2353,43 +2356,46 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
         std::cout << "fixed path dual: " << duals.fixedPathDual << std::endl;
       }
 
-      IloNumArray lpCapDuals(env);
-      solver.getDuals(lpCapDuals, capConstraints);
-      duals.capDuals.resize(capCutSets.size());
-      for (int dualIndex=0; dualIndex<capCutSets.size(); ++dualIndex)
+      if (includeCoverConstraints == IncludeCoverConstraints::Y)
       {
-        duals.capDuals[dualIndex] = lpCapDuals[dualIndex];
-        dualValue += (lpCapDuals[dualIndex] * capCutSetsRHS[dualIndex]);
-        if (duals.capDuals[dualIndex] < 0)
+        IloNumArray lpCapDuals(env);
+        solver.getDuals(lpCapDuals, capConstraints);
+        duals.capDuals.resize(capCutSets.size());
+        for (int dualIndex=0; dualIndex<capCutSets.size(); ++dualIndex)
         {
-          std::cout << "cap dual [" << dualIndex << "]: " << duals.capDuals[dualIndex] << std::endl;
+          duals.capDuals[dualIndex] = lpCapDuals[dualIndex];
+          dualValue += (lpCapDuals[dualIndex] * capCutSetsRHS[dualIndex]);
+          if (duals.capDuals[dualIndex] < 0)
+          {
+            std::cout << "cap dual [" << dualIndex << "]: " << duals.capDuals[dualIndex] << std::endl;
+          }
         }
-      }
- 
-      IloNumArray lpCombDuals(env);
-      solver.getDuals(lpCombDuals, combConstraints);
-      duals.combDuals.resize(teeths.size());
-      for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
-      {
-        duals.combDuals[dualIndex] = lpCombDuals[dualIndex];
-        dualValue += lpCombDuals[dualIndex] * combRHS[dualIndex];
-      }
-      for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
-      {
-        std::cout << "comb dual [" << dualIndex << "]: " << duals.combDuals[dualIndex] << std::endl;
-      }
+   
+        IloNumArray lpCombDuals(env);
+        solver.getDuals(lpCombDuals, combConstraints);
+        duals.combDuals.resize(teeths.size());
+        for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
+        {
+          duals.combDuals[dualIndex] = lpCombDuals[dualIndex];
+          dualValue += lpCombDuals[dualIndex] * combRHS[dualIndex];
+        }
+        for (int dualIndex=0; dualIndex<teeths.size(); ++dualIndex)
+        {
+          std::cout << "comb dual [" << dualIndex << "]: " << duals.combDuals[dualIndex] << std::endl;
+        }
 
-      IloNumArray lpSrcDuals(env);
-      solver.getDuals(lpSrcDuals, srcConstraints);
-      duals.srcDuals.resize(srcCuts.size());
-      for (int dualIndex=0; dualIndex<srcCuts.size(); ++dualIndex)
-      {
-        duals.srcDuals[dualIndex] = lpSrcDuals[dualIndex];
-        if (duals.srcDuals[dualIndex] < 0)
+        IloNumArray lpSrcDuals(env);
+        solver.getDuals(lpSrcDuals, srcConstraints);
+        duals.srcDuals.resize(srcCuts.size());
+        for (int dualIndex=0; dualIndex<srcCuts.size(); ++dualIndex)
         {
-          std::cout << "src dual [" << dualIndex << "]: " << duals.srcDuals[dualIndex] << std::endl;
+          duals.srcDuals[dualIndex] = lpSrcDuals[dualIndex];
+          if (duals.srcDuals[dualIndex] < 0)
+          {
+            std::cout << "src dual [" << dualIndex << "]: " << duals.srcDuals[dualIndex] << std::endl;
+          }
+          dualValue += lpSrcDuals[dualIndex];
         }
-        dualValue += lpSrcDuals[dualIndex];
       }
 
       dualValue = dualValue + duals.fixedPathDual*vrptw.numVehicles;
@@ -4098,14 +4104,27 @@ void VRPTWDecisionDiagram::decomposeRoutes(std::vector<int>& routeArcs, std::vec
     routeDecomposition.push_back(routeByLoc);
     decomposedArcs.push_back(route);
     
-    //std::cout << "[loc arcIndex] route: ";
     for (int arcIndex : route)
     {
-      //std::cout << arcs[arcIndex].location << " ";
-      //std::cout << arcIndex << " ";
       arcs[arcIndex].decompositionFlow = arcs[arcIndex].decompositionFlow - routeFlow;
     }
-    //std::cout << std::endl;
+
+    /*
+    std::cout << "[loc] route: ";
+    for (int arcIndex : route)
+    {
+      std::cout << arcs[arcIndex].location << " ";
+    }
+    std::cout << std::endl;
+ 
+    std::cout << "[arc index] route: ";
+    for (int arcIndex : route)
+    {
+      std::cout << arcIndex << " ";
+      arcs[arcIndex].decompositionFlow = arcs[arcIndex].decompositionFlow - routeFlow;
+    }
+    std::cout << std::endl;
+    */
   }
 };
 
@@ -4195,7 +4214,7 @@ void VRPTWDecisionDiagram::separateRoute(const std::vector<int>& routeArcs)
           bool existingArcFeasible = generateNewStateExact(copyArcState, existingNodeArcLocation);
           if (!existingArcFeasible)
           {
-            DBG(std::cout << "remove arc " << existingNodeArcIndex << std::endl;)
+            //std::cout << "remove arc " << existingNodeArcIndex << std::endl;
             removeArc(existingNodeArcIndex);
           }
         }
@@ -4227,7 +4246,7 @@ void VRPTWDecisionDiagram::separateRoute(const std::vector<int>& routeArcs)
       {
         if (arcs[currNodeArcIndex].location == nextLocation)
         {
-          DBG(std::cout << "remove arc " << currNodeArcIndex << std::endl;)
+          //std::cout << "remove arc " << currNodeArcIndex << std::endl;
           removeArc(currNodeArcIndex);
           return;
         }
@@ -4474,20 +4493,22 @@ double VRPTWDecisionDiagram::createSolutionFromReverseArcsAndReset()
 // 2 be careful - not all arcs were flipped and/or clipped if terminated early
 double VRPTWDecisionDiagram::createSolutionFromReverseArcsAndResetWang(const std::set<int>& clippedArcs, const std::vector<std::vector<int>>& shortestPathsByArc)
 {
-  DBG(std::cout << "creating solution" << std::endl;)
-  DBG(print();)
-  // only go over arcs currently in the graph
-  for (VRPTWNode node : nodes)
+  std::cout << "creating solution" << std::endl;
+  //print();
+  // Reverse arcs
+  for (const VRPTWNode& node : nodes)
   {
-    for (int arcIndex : node.outArcs)
+    std::vector<int> outArcs = node.outArcs;
+    for (int arcIndex : outArcs)
     {
       if (arcs[arcIndex].isReverseArc)
       {
-        int solutionArcIndex = reverseArc(arcIndex);
+        reverseArc(arcIndex);
       }
     }
   }
 
+  // Clipped arcs
   for (int arcIndex : clippedArcs)
   {
     VRPTWArc& arc = arcs[arcIndex];
@@ -4495,6 +4516,7 @@ double VRPTWDecisionDiagram::createSolutionFromReverseArcsAndResetWang(const std
     nodes[arc.toNodeIndex].inArcs.push_back(arcIndex);
   }
 
+  // Create solution
   double solutionValue = 0.0;
   for (auto path : shortestPathsByArc)
   {
@@ -5042,10 +5064,35 @@ double VRPTWDecisionDiagram::solveMinCostFlowModelWang(const Dual& dual, std::ve
   /*
   for (auto path : shortestPathsByArc)
   {
-    std::cout << "path: ";
+    std::cout << "path by loc: ";
     for (int arcIndex : path)
     {
       std::cout << arcs[arcIndex].location << ", ";
+    }
+    std::cout << std::endl;
+    std::cout << "by arc: ";
+    for (int arcIndex : path)
+    {
+      std::cout << arcIndex << ", ";
+    }
+    std::cout << std::endl;
+    std::cout << "by is reverse: ";
+    for (int arcIndex : path)
+    {
+      std::cout << arcs[arcIndex].isReverseArc << ", ";
+    }
+    std::cout << std::endl;
+    std::cout << "by reverse arcs: ";
+    for (int arcIndex : path)
+    {
+      if (arcReverseArc.find(arcIndex) != arcReverseArc.end())
+      {
+        std::cout << arcReverseArc[arcIndex] << ", ";
+      }
+      else
+      {
+        std::cout << "-" << ", ";
+      }
     }
     std::cout << std::endl;
   }

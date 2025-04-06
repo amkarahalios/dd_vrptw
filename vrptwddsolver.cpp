@@ -1597,12 +1597,14 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
 /*
       const std::set<int> initialPrimalArcIndices;
       Dual newDual = dual;
-      routeDD.setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(dual, LPSolveType::LAGSolver);
+      routeDD.setCoeffsAsDistancesMinusLagrangeanPlusCapDualsPlusSrcDualsPlusCombDuals(newDual, LPSolveType::LAGSolver);
       double bestBound = routeDD.setupAndSolveFlowModel(FlowType::LP, IncludeCoverConstraints::N, UseColumnGeneration::NO_CG, initialPrimalArcIndices, newDual, false, params.timeoutSeconds);
-      std::cout << "opt: " << bestBound << std::endl;
+      std::cout << "best bound LP: " << bestBound << std::endl;
       if ((bestBound >= lagrangeanLowerBound + 0.001) || (bestBound <= lagrangeanLowerBound - 0.001))
       {
         std::cout << "ERROR: " << bestBound << " vs. " << lagrangeanLowerBound << std::endl;
+        routeDD.print();
+        return false;
       }
 */
 
@@ -2181,8 +2183,6 @@ void VRPTWDDSolver::separateSequencesAndTruncate(const std::vector<std::vector<i
   // Separate and add to output sequences
   for (auto sequence : inputSequences)
   {
-    routeDD.separateRoute(sequence);
-
     if (routeDD.isRouteFeasible(sequence))
     {
       outputSequences.push_back(sequence);
@@ -2195,7 +2195,7 @@ void VRPTWDDSolver::separateSequencesAndTruncate(const std::vector<std::vector<i
     }
   }
  
-  std::cout << "truncated routes:" << std::endl;
+  std::cout << "sequences truncated and separated:" << std::endl;
   for (auto route : outputSequences)
   {
     for (int loc : route)
@@ -2206,11 +2206,11 @@ void VRPTWDDSolver::separateSequencesAndTruncate(const std::vector<std::vector<i
   }
   std::cout << std::endl;
 
-  // Get arcs too
   for (auto sequence : outputSequences)
   {
     std::vector<int> sequenceArcs;
     routeDD.doesRouteExistByLocations(sequence, sequenceArcs);
+    routeDD.separateRoute(sequenceArcs);
     outputSequencesArcs.push_back(sequenceArcs);
   }
 }
@@ -2237,7 +2237,7 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std:
   separateSequencesAndTruncate(decomposedRoutes, truncatedExactSequences, truncatedExactSequencesArcs);
 
   std::cout << "separated sequences" << std::endl;
-
+ 
   // Use 0.99 for separation package to not see as integral solution
   Primal cutPrimal;
   cutPrimal.xDecompositions = truncatedExactSequences;
@@ -2435,22 +2435,21 @@ void VRPTWDDSolver::addRCCs(const std::vector<int>& edgeTail, const std::vector<
       }
       double RHS = MyCutsCMP->CPL[cutIndex]->RHS;
 
+      // try to get type 3 rccs working
       bool newCut = false;
       bool cutExisted = false;
       if (static_cast<int>(cutSet.size()) <= vrptw.numLocations / 2)
       {
         cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type1, params.useScaling);
+        newCut = true;
       }
+      /*
       else
       {
         cutExisted = routeDD.addCapCutSet(cutSet, sequenceArcs, RHS, RCCType::Type3, params.useScaling);
       }
-      if (!cutExisted)
-      {
-        newCut = true;
-      }
-
-      if (newCut)
+      */
+      if (!cutExisted && newCut)
       {
         stats.numCuts = stats.numCuts + 1;
         cutAdded = true;
