@@ -5,8 +5,8 @@ import pandas
 
 # Input Information
 root_directory = "/Users/akarahal/Desktop/dd_vrptw/"
-
-set_to_try = 6
+lp_only = True
+set_to_try = 8
 
 if set_to_try == 0:
   instance_type = 1
@@ -78,11 +78,11 @@ if set_to_try == 7:
 if set_to_try == 8:
   instance_type = 2
   parameter_set_names_strings = {
-    "CVRP_cut_param_files/which_cuts/CE_None_2" : "CE_NONE",
-    "CVRP_cut_param_files/which_cuts/CE_RCC_2" : "CE_RCC",
-    "CVRP_cut_param_files/which_cuts/CE_RCCSRC3_2" : "CE_RCCSRC3",
-    "CVRP_cut_param_files/which_cuts/CE_RCCSRC3SRC4_2" : "CE_RCCSRC3SRC4",
-    "CVRP_cut_param_files/which_cuts/CE_RCCSRC3SRC4SRC5_2" : "CE_RCCSRC3SRC4SRC5"
+    "CVRP_cut_param_files/which_cuts/CE_None_0" : "CE_NONE",
+    "CVRP_cut_param_files/which_cuts/CE_RCC_0" : "CE_RCC",
+    "CVRP_cut_param_files/which_cuts/CE_RCCSRC3_0" : "CE_RCCSRC3",
+    "CVRP_cut_param_files/which_cuts/CE_RCCSRC3SRC4_0" : "CE_RCCSRC3SRC4",
+    "CVRP_cut_param_files/which_cuts/CE_RCCSRC3SRC4SRC5_0" : "CE_RCCSRC3SRC4SRC5"
   }
 
 if set_to_try == 9:
@@ -120,7 +120,7 @@ times_for_metrics = range(0,3700,100)
 # Run Evaluation for the given Experiments and Instance Set
 instances = read_logs.get_instances(instance_set_name, root_directory)
 
-ce_results_df = read_logs.get_column_elimination_results(instances, parameter_set_names_strings, root_directory)
+ce_results_df = read_logs.get_column_elimination_results(instances, parameter_set_names_strings, root_directory, lp_only)
 ce_results_df = ce_results_df[['instance','parameter','lb','ub','time']]
 
 if "VRPSolver" in parameter_set_names_strings:

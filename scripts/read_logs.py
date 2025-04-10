@@ -34,8 +34,9 @@ def get_instances(instance_set_name, root_directory):
   instances.sort()
   return instances
 
-def get_column_elimination_results(instances, parameter_set_names_strings, root_directory):
+def get_column_elimination_results(instances, parameter_set_names_strings, root_directory, lp_only):
   regex_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] numHeuristicIPs: \[([0-9]+)\] numHeuristicLNS: \[([0-9]+)\] numPrimalLNSRepairs: \[([0-9]+)\] time: \[([0-9]+)\]")
+  regex_pattern_switch_ip = re.compile("LP solved - switching to IP")
 
   parameter_set_names = [x[0] for x in parameter_set_names_strings.items()]
 
@@ -68,6 +69,11 @@ def get_column_elimination_results(instances, parameter_set_names_strings, root_
 
           time_result = {'instance': instance, 'parameter': parameter_name, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
           results.append(time_result)
+
+        if lp_only:
+          switch_ip_match = regex_pattern_switch_ip.match(line)
+          if switch_ip_match:
+            break
  
     for instance in instances:
       zip_log_file_name = root_directory + "/new_logs/" + parameter_name + '/' + instance + '.log.gz'
@@ -96,6 +102,11 @@ def get_column_elimination_results(instances, parameter_set_names_strings, root_
 
             time_result = {'instance': instance, 'parameter': parameter_name, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
             results.append(time_result)
+ 
+          if lp_only:
+            switch_ip_match = regex_pattern_switch_ip.match(line)
+            if switch_ip_match:
+              break
 
   results_df = pandas.DataFrame(results)
   results_df.sort_values(by=['instance','lb','ub'],inplace=True)

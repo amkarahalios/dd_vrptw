@@ -77,7 +77,7 @@ def plot_average_gaps(instance_set_name, parameter_set_names_strings, average_ga
   elif instance_set_name == "HG":
     plt.title("Average p(t) for VRPTW HG")
   elif instance_set_name == "CVRP":
-    plt.title("Average p(t) for CVRP A")
+    plt.title("Average p(t) for CVRP")
   elif instance_set_name == "X":
     plt.title("Average p(t) for CVRP X")
   elif instance_set_name == "PDPTW":
@@ -118,7 +118,7 @@ def print_instance_table(parameter_set_names_strings, gap_results_df):
   for instance in instances:
     best_known = static.instance_upper_bounds[instance]
     instance_results_df = gap_results_df[gap_results_df['instance'] == instance]
-    result_string = f"{instance} & "
+    result_string = f"{instance}"
     for parameter in parameters:
       instance_parameter_results_df = instance_results_df[instance_results_df['parameter'] == parameter]
       if instance_parameter_results_df.empty:
@@ -127,8 +127,10 @@ def print_instance_table(parameter_set_names_strings, gap_results_df):
       else:
         primal_gap = round(min(instance_parameter_results_df['primal_gap']), 3)
         rel_gap = round(min(instance_parameter_results_df['rel_gap']), 3)
-      result_string = result_string + f"{primal_gap} & {rel_gap} & & "
+      #result_string = result_string + f"{primal_gap} & {rel_gap} & & "
+      result_string = result_string + f" & {rel_gap}"
 
+    result_string = result_string + "\\\\"
     print(result_string)
 
   header_string = "instance & & "
@@ -161,13 +163,21 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
     "800" : "L[CR]1_8",
     "1000" : "L[CR]1_10",
   }
+  cvrp_aggregations = {
+    "A" : "A-",
+    "B" : "B-",
+    "E" : "E-",
+    "F" : "F-",
+    "M" : "M-",
+    "P" : "P-"
+  }
 
   if instance_set_name == "Solomon":
     aggregations = {"Solomon" : ""}
   elif instance_set_name == "HG":
     aggregations = vrptw_aggregations
   elif instance_set_name == "CVRP":
-    aggregations = {"CVRP": ""}
+    aggregations = cvrp_aggregations
   elif instance_set_name == "X":
     aggregations = x_aggregations
   elif instance_set_name == "PDPTW":
