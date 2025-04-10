@@ -1356,14 +1356,7 @@ void VRPTWDDSolver::initializeDual(Dual& dual)
     }
     else
     {
-      if (vrptw.problemType != ProblemType::PDP)
-      {
-        dual.lambda[location] = 2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
-      }
-      else
-      {
-        dual.lambda[location] = 0;
-      }
+      dual.lambda[location] = 2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
     }
   }
 }
