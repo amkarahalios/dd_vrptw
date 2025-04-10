@@ -30,11 +30,11 @@ def calculate_gaps(ce_results_df, times_for_metrics):
             if not instance_parameter_time_results.empty:
               instance_parameter_ubs = instance_parameter_time_results['ub']
               ub = min(instance_parameter_ubs)
-              primal_gap = abs(ub - best_known) / max(abs(best_known), abs(ub))
+              primal_gap = min(1,(ub - best_known) / best_known)
 
               instance_parameter_lbs = instance_parameter_time_results['lb']
               lb = max(instance_parameter_lbs)
-              rel_gap = (ub-lb) / max(ub,lb)
+              rel_gap = (ub - lb) / ub
 
               gap_info = {'instance': instance, 'parameter' : parameter, 'rel_gap' : rel_gap, 'primal_gap' : primal_gap, 'time' : end_time} 
             else:

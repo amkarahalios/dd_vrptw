@@ -23,8 +23,8 @@ def get_instances(instance_set_name, root_directory):
     instance_dirs = [instance_dir + "/X/"]
   elif instance_set_name == "PDPTW":
     instance_dirs = [instance_dir + "/pdp_200/"]
-    instance_dirs.append(instance_dir + "/pdp_400/")
-    instance_dirs.append(instance_dir + "/pdp_600/")
+    #instance_dirs.append(instance_dir + "/pdp_400/")
+    #instance_dirs.append(instance_dir + "/pdp_600/")
 
   for instance_dir in instance_dirs:
     for instance in os.listdir(instance_dir):
@@ -112,10 +112,10 @@ def get_column_elimination_results(instances, parameter_set_names_strings, root_
   return results_df
 
 def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, root_directory):
-  regex_instance = re.compile('  instance  =>  "/CVRP/data/X/(.*)"')
+  regex_instance = re.compile('  instance  =>  "/[A-Z]*/data/[A-Z]*[0-9]*/(.*)"')
   regex_stats = re.compile('statistics: ([A-Z]+.*[0-9]) & [0-9] & [0-9]+.* & [0-9]+.* & [0-9]+.* & ([0-9]+) & ([0-9]+.*) & ([0-9\--]+.*) & ([0-9]+.*) \\.*')
   regex_pb = re.compile('<DWph.*et=([0-9]+).*PB=([0-9]+).*')
-  regex_db = re.compile('ColGenEvalAlg final dual bound: ([0-9]+)')
+  #regex_db = re.compile('ColGenEvalAlg final dual bound: ([0-9]+)')
 
   results = []
   for file_name in vrpsolver_file_names:
@@ -128,12 +128,15 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
       file_name_match = regex_instance.match(line)
       if file_name_match:
         instance = file_name_match.group(1)
+        instance = instance.replace('.TXT','.vrptw')
+        instance = instance.replace('210','2_10')
+        instance = instance.replace('410','4_10')
 
       stats_match = regex_stats.match(line)
       if stats_match:
         # update some names
         instance = stats_match.group(1)
-        if instance_set_name == 'Solomon':
+        if instance_set_name == 'Solomon' or instance_set_name == 'HG':
           instance = instance + '.vrptw'
         else:
           instance = instance + '.vrp'
@@ -147,6 +150,8 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
         else:
           ub = 1e9
         time = float(stats_match.group(5))
+        if time > 3600 and time < 4000:
+          time = 3599
         if instance in instances:
           result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : lb, 'ub' : ub, 'time' : time} 
           results.append(result)
@@ -154,17 +159,19 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
       pb_match = regex_pb.match(line)
       if pb_match:
         time = float(pb_match.group(1))
+        if time > 3600 and time < 4000:
+          time = 3599
         pb = float(pb_match.group(2))
         if instance in instances:
           result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : 0, 'ub' : pb, 'time' : time} 
           results.append(result)
  
-      db_match = regex_db.match(line)
-      if db_match:
-        db = float(db_match.group(1))
-        if instance in instances:
-          result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : db, 'ub' : 1e9, 'time' : time} 
-          results.append(result)
+      #db_match = regex_db.match(line)
+      #if db_match:
+      #  db = float(db_match.group(1))
+      #  if instance in instances:
+      #    result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : db, 'ub' : 1e9, 'time' : time} 
+      #    results.append(result)
 
   results_df = pandas.DataFrame(results)
   if results_df.empty:
@@ -187,6 +194,30 @@ def get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, ro
       result = {'parameter': 'VRPSolver', 'instance' : instance, 'lb' : 0, 'ub' : 1e9, 'time' : time} 
       results.append(result)
       print(f"VRPSolver missing instance {instance}")
+
+  return results_df
+
+def get_ropke_pisinger_results(instances):
+  results = []
+  #for instance in static.ropke_pdptw_num_vehicles:
+  for instance in instances:
+    num_vehicles = static.ropke_pdptw_num_vehicles[instance]
+    distance = static.ropke_pdptw_distance[instance]
+    ub = num_vehicles * 10000 + distance
+    result = {'parameter': 'RopkePisinger', 'instance' : instance, 'lb' : 0, 'ub' : ub, 'time' : 3600}
+    results.append(result)
+
+  results_df = pandas.DataFrame(results)
+  if results_df.empty:
+    return results_df
+  else:
+    results_df.sort_values(by=['instance','lb','ub'],inplace=True)
+    results_df.reset_index(drop=True,inplace=True)
+ 
+  print_table = True
+  if print_table:
+    table_results_df = results_df[['instance','parameter','lb','ub','time']]
+    print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
 
   return results_df
 
