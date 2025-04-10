@@ -346,7 +346,10 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           routeDD.convertSolutionForVRPTWSep(edgeTail, edgeHead, edgeFlow);
 
           std::vector<int> sequenceArcs;
-          addRCCs(edgeTail, edgeHead, edgeFlow, sequenceArcs, 100, cutAdded, dual);
+          if (vrptw.problemType != ProblemType::PDP)
+          {
+            addRCCs(edgeTail, edgeHead, edgeFlow, sequenceArcs, 100, cutAdded, dual);
+          }
 
           resizeMultipliers(dual, bestDual);
           resizeMultipliers(dual, bestDualsArcFixingLag);
@@ -2279,7 +2282,11 @@ bool VRPTWDDSolver::addCutsUsingCurrentPrimal(Dual& dual, const std::vector<std:
         allCutArcs.push_back(arcIndex);
       }
     }
-    addRCCs(edgeTail, edgeHead, edgeFlow, allCutArcs, params.numLagCuts, cutAdded, dual);
+
+    if (vrptw.problemType != ProblemType::PDP)
+    {
+      addRCCs(edgeTail, edgeHead, edgeFlow, allCutArcs, params.numLagCuts, cutAdded, dual);
+    }
 
     // Strengthened Combs
     //addCombs(edgeTail, edgeHead, edgeFlow, cutAdded);
