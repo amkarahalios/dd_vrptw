@@ -30,7 +30,7 @@ def calculate_gaps(ce_results_df, times_for_metrics):
             if not instance_parameter_time_results.empty:
               instance_parameter_ubs = instance_parameter_time_results['ub']
               ub = min(instance_parameter_ubs)
-              primal_gap = min(1,(ub - best_known) / best_known)
+              primal_gap = min(1,(ub - best_known) / max(best_known,ub))
 
               instance_parameter_lbs = instance_parameter_time_results['lb']
               lb = max(instance_parameter_lbs)
@@ -127,7 +127,7 @@ def print_instance_table(parameter_set_names_strings, gap_results_df):
       else:
         primal_gap = round(min(instance_parameter_results_df['primal_gap']), 3)
         rel_gap = round(min(instance_parameter_results_df['rel_gap']), 3)
-      #result_string = result_string + f"{primal_gap} & {rel_gap} & & "
+      #result_string = result_string + f" & & {primal_gap} & {rel_gap}"
       result_string = result_string + f" & {rel_gap}"
 
     result_string = result_string + "\\\\"
@@ -157,11 +157,10 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
     "X600-1000" : "X-n[6789]"
   }
   pdp_aggregations = {
-    "200" : "L[CR]1_2",
-    "400" : "L[CR]1_4",
-    "600" : "L[CR]1_6",
-    "800" : "L[CR]1_8",
-    "1000" : "L[CR]1_10",
+    "LC1 200" : "LC1_2",
+    "LR1 200" : "LR1_2",
+    "LC1 400" : "LC1_4",
+    "LR1 400" : "LR1_4",
   }
   cvrp_aggregations = {
     "A" : "A-",
@@ -174,7 +173,7 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
 
   if instance_set_name == "Solomon":
     aggregations = {"Solomon" : ""}
-  elif instance_set_name == "HG":
+  elif instance_set_name == "HG" or instance_set_name == "HGC1C2":
     aggregations = vrptw_aggregations
   elif instance_set_name == "CVRP":
     aggregations = cvrp_aggregations
@@ -187,7 +186,7 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
     aggregation_gap_results_df = gap_results_df[gap_results_df['instance'].str.contains(aggregation_regex, regex=True)]
     aggregation_instances = set(aggregation_gap_results_df['instance'])
 
-    averages_string = f"{aggregation_name} & "
+    averages_string = f"{aggregation_name}"
     for parameter in parameters:
       parameter_results_df = aggregation_gap_results_df[aggregation_gap_results_df['parameter'] == parameter]
       if parameter_results_df.empty:
@@ -206,7 +205,7 @@ def print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_r
         parameter_rel_gaps.append(rel_gap)
       average_primal_gap = round(sum(parameter_primal_gaps) / len(parameter_primal_gaps), 3)
       average_rel_gap = round(sum(parameter_rel_gaps) / len(parameter_rel_gaps), 3)
-      averages_string = averages_string + f"{average_primal_gap} & {average_rel_gap} & & "
+      averages_string = averages_string + f" & & {average_primal_gap} & {average_rel_gap}"
 
     header_string = "instance_class & "
     for parameter in parameters:
@@ -247,3 +246,80 @@ def print_times_table(parameter_set_names_strings, gap_results_df):
       header_string = header_string + f"{parameter_set_names_strings[parameter]} & & "
     print(averages_string)
   print(header_string)
+
+
+def print_cuts_info(parameter_set_names_strings, ce_results_df):
+  special_instances = ['A-n33-k6.vrp','A-n34-k5.vrp','A-n37-k5.vrp','A-n37-k6.vrp','A-n38-k5.vrp','A-n39-k5.vrp','A-n39-k6.vrp','A-n45-k6.vrp','A-n45-k7.vrp','A-n48-k7.vrp','A-n53-k7.vrp','A-n55-k9.vrp','B-n31-k5.vrp','B-n34-k5.vrp','E-n51-k5.vrp','P-n16-k8.vrp','P-n20-k2.vrp','P-n22-k2.vrp','P-n40-k5.vrp','P-n45-k5.vrp','P-n50-k10.vrp','P-n50-k7.vrp','P-n50-k8.vrp','P-n51-k10.vrp','P-n55-k10.vrp','P-n55-k15.vrp','P-n55-k7.vrp','P-n55-k8.vrp','P-n60-k10.vrp','P-n60-k15.vrp','P-n65-k10.vrp']
+
+  size_diff_rcc = []
+  size_diff_src3 = []
+  size_diff_src34 = []
+  size_diff_src345 = []
+
+  rcc_rcc_cuts = []
+
+  src3_rcc_cuts = []
+  src3_src3_cuts = []
+ 
+  src34_rcc_cuts = []
+  src34_src3_cuts = []
+  src34_src4_cuts = []
+ 
+  src345_rcc_cuts = []
+  src345_src3_cuts = []
+  src345_src4_cuts = []
+  src345_src5_cuts = []
+
+  for instance in special_instances:
+    print(instance)
+    instance_df = ce_results_df[ce_results_df['instance'] == instance]
+    print(instance_df)
+
+    none_df = instance_df[instance_df['parameter'].str.contains("CE_None_0")]
+    print(none_df)
+    size_none = max(none_df['numArcs'])
+
+    rcc_df = instance_df[instance_df['parameter'].str.contains("CE_RCC_0")]
+    size_rcc = max(rcc_df['numArcs'])
+    size_diff_rcc.append((size_rcc - size_none) / size_none)
+    rcc_rcc_cuts.append(max(rcc_df['rcc']))
+
+    src3_df = instance_df[instance_df['parameter'].str.contains("CE_RCCSRC3_0")]
+    size_src3 = max(src3_df['numArcs'])
+    size_diff_src3.append((size_src3 - size_none) / size_none)
+    src3_rcc_cuts.append(max(src3_df['rcc']))
+    src3_src3_cuts.append(max(src3_df['src3']))
+
+    src34_df = instance_df[instance_df['parameter'].str.contains("CE_RCCSRC3SRC4_0")]
+    size_src34 = max(src34_df['numArcs'])
+    size_diff_src34.append((size_src34 - size_none) / size_none)
+    src34_rcc_cuts.append(max(src34_df['rcc']))
+    src34_src3_cuts.append(max(src34_df['src3']))
+    src34_src4_cuts.append(max(src34_df['src4']))
+
+    src345_df = instance_df[instance_df['parameter'].str.contains("CE_RCCSRC3SRC4SRC5_0")]
+    size_src345 = max(src345_df['numArcs'])
+    size_diff_src345.append((size_src345 - size_none) / size_none)
+    src345_rcc_cuts.append(max(src345_df['rcc']))
+    src345_src3_cuts.append(max(src345_df['src3']))
+    src345_src4_cuts.append(max(src345_df['src4']))
+    src345_src5_cuts.append(max(src345_df['src5']))
+
+  print(f'rcc size diff: {sum(size_diff_rcc) / len(size_diff_rcc)}')
+  print(f'src3 size diff: {sum(size_diff_src3) / len(size_diff_src3)}')
+  print(f'src34 size diff: {sum(size_diff_src34) / len(size_diff_src34)}')
+  print(f'src345 size diff: {sum(size_diff_src345) / len(size_diff_src345)}')
+  
+  print(f'rcc rcc: {sum(rcc_rcc_cuts) / len(rcc_rcc_cuts)}')
+  
+  print(f'src3 rcc: {sum(src3_rcc_cuts) / len(src3_rcc_cuts)}')
+  print(f'src3 src3: {sum(src3_src3_cuts) / len(src3_src3_cuts)}')
+ 
+  print(f'src34 rcc: {sum(src34_rcc_cuts) / len(src34_rcc_cuts)}')
+  print(f'src34 src3: {sum(src34_src3_cuts) / len(src34_src3_cuts)}')
+  print(f'src34 src4: {sum(src34_src4_cuts) / len(src34_src4_cuts)}')
+ 
+  print(f'src345 rcc: {sum(src345_rcc_cuts) / len(src345_rcc_cuts)}')
+  print(f'src345 src3: {sum(src345_src3_cuts) / len(src345_src3_cuts)}')
+  print(f'src345 src4: {sum(src345_src4_cuts) / len(src345_src4_cuts)}')
+  print(f'src345 src4: {sum(src345_src5_cuts) / len(src345_src5_cuts)}')
