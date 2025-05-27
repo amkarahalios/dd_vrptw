@@ -10,8 +10,19 @@ VariableFixing:Y
 MuSSP:Y
 RepairDuals:Y
 
-RobustCuts:Y
-NonRobustCuts:Y
+NumLagCuts:5
+RCCs:Y
+SRC3s:Y
+SRC4s:Y
+SRC5V1s:N
+SRC5V2s:N
 VolumeAlgorithm:Y
+LimitRCCs:Y
 UseScaling:Y
-UseSparseRCCs:Y
+LowImprovementIterationsToNextRound:100
+PercentImprovementThreshold:0.00001
+
+PrimalHeuristic:BEST_KNOWN
+PrimalHeuristicLNSTimeout:5
+PrimalHeuristicRemovalStrategy:RANDOM
+PrimalHeuristicInsertionAblation:NONE
