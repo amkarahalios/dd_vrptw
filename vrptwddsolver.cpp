@@ -1897,18 +1897,21 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       }
 
       // Repair Dual - separations can change the paths available
-      repairMultipliers(repairedDual, LPSolveType::LAGSolver);
-      double repairedBound = routeDD.getDualObjectiveValue(repairedDual, LPSolveType::LAGSolver);
-      if (bestDualValue < repairedBound)
+      if (tryArcFixingOrRepair)
       {
-        std::cout << "repaired lb: " << repairedBound << std::endl;
-        stats.lowerBound = std::max(stats.lowerBound, repairedBound);
-        stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-        printMultipliers(repairedDual);
-
-        if (repairedBound > 0.95 * targetLowerBound)
+        repairMultipliers(repairedDual, LPSolveType::LAGSolver);
+        double repairedBound = routeDD.getDualObjectiveValue(repairedDual, LPSolveType::LAGSolver);
+        if (bestDualValue < repairedBound)
         {
-          targetLowerBound = std::min(repairedBound * targetBoundIncrease, stats.upperBound);
+          std::cout << "repaired lb: " << repairedBound << std::endl;
+          stats.lowerBound = std::max(stats.lowerBound, repairedBound);
+          stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
+          printMultipliers(repairedDual);
+
+          if (repairedBound > 0.95 * targetLowerBound)
+          {
+            targetLowerBound = std::min(repairedBound * targetBoundIncrease, stats.upperBound);
+          }
         }
       }
 

@@ -9,7 +9,7 @@ lp_only = True
 set_to_try = 8
 
 if set_to_try == 0:
-  instance_type = 1
+  instance_type = 5
   parameter_set_names_strings = {
   "Vrp-Set-HG-C12-124_primal_param_files/removals/CE_Random_2/" : "Random",
   "Vrp-Set-HG-C12-124_primal_param_files/removals/CE_Worst_2/" : "Worst",
@@ -20,7 +20,7 @@ if set_to_try == 0:
   }
 
 if set_to_try == 1:
-  instance_type = 1
+  instance_type = 5
   parameter_set_names_strings = {
   "Vrp-Set-HG-C12-124_primal_param_files/times/CE_5_0/" : "5s",
   "Vrp-Set-HG-C12-124_primal_param_files/times/CE_30_0/" : "30s",
@@ -28,7 +28,7 @@ if set_to_try == 1:
   }
 
 if set_to_try == 2:
-  instance_type = 1
+  instance_type = 5
   parameter_set_names_strings = {
   "Vrp-Set-HG-C12-124_primal_param_files/ablations/CE_None_0/" : "None",
   "Vrp-Set-HG-C12-124_primal_param_files/ablations/CE_Intra_0/" : "IntraSequenceSwaps",
@@ -36,7 +36,7 @@ if set_to_try == 2:
   }
 
 if set_to_try == 3:
-  instance_type = 1
+  instance_type = 5
   parameter_set_names_strings = {
   "Vrp-Set-HG-C12-124_primal_param_files/lns/CE_None_2" : 'CE',
   "Vrp-Set-HG-C12-124_primal_param_files/lns/CE_MIP_2" : "CE+MIP",
@@ -62,8 +62,10 @@ if set_to_try == 5:
 if set_to_try == 6:
   instance_type = 4
   parameter_set_names_strings = {
-    "pdp_200_primal_param_files/best/CE_Random_2/" : "CE_Random",
-    "pdp_200_primal_param_files/best/CE_SequenceRandom_2/" : "CE_Sequence",
+    "pdp_200_primal_param_files/best/CE_Random_4/" : "CE_Random200",
+    "pdp_200_primal_param_files/best/CE_SequenceRandom_4/" : "CE_Sequence200",
+    "pdp_400_primal_param_files/best/CE_Random_4/" : "CE_Random400",
+    "pdp_400_primal_param_files/best/CE_SequenceRandom_4/" : "CE_Sequence400",
     "RopkePisinger" : "RP"
   }
 
@@ -109,7 +111,7 @@ if set_to_try == 10:
     "X_cut_param_files/iterations/CE_20_0.001_8" : "CE_20_0.001"
   }
 
-instance_set_names = ["Solomon", "HG", "CVRP", "X", "PDPTW"]
+instance_set_names = ["Solomon", "HG", "CVRP", "X", "PDPTW", "HGC1C2"]
 instance_set_name = instance_set_names[instance_type]
 
 vrpsolver_file_names = ['cvrp-X-noub1.log','cvrp-X-noub2.log','cvrp-X-noub3.log','cvrp-X-noub4.log','cvrp-X-noub5.log','hg200-noub.log','hg400-noub.log','hg600-noub.log','hg800-noub.log','hg1000-noub.log']
@@ -121,7 +123,7 @@ times_for_metrics = range(0,3700,100)
 instances = read_logs.get_instances(instance_set_name, root_directory)
 
 ce_results_df = read_logs.get_column_elimination_results(instances, parameter_set_names_strings, root_directory, lp_only)
-ce_results_df = ce_results_df[['instance','parameter','lb','ub','time']]
+ce_results_df = ce_results_df[['instance','parameter','lb','ub','time','numArcs','rcc','src3','src4','src5']]
 
 if "VRPSolver" in parameter_set_names_strings:
   vrpsolver_results_df = read_logs.get_vrpsolver_results(instances, vrpsolver_file_names, instance_set_name, root_directory)
@@ -148,3 +150,5 @@ calculate_metrics.print_instance_table(parameter_set_names_strings, gap_results_
 calculate_metrics.print_aggregated_table(instance_set_name, parameter_set_names_strings, gap_results_df)
 
 calculate_metrics.print_times_table(parameter_set_names_strings, gap_results_df)
+
+calculate_metrics.print_cuts_info(parameter_set_names_strings, ce_results_df)

@@ -1,18 +1,57 @@
-Welcome to the VRPTW Solver, powered by Column Elimination, written by Anthony Karahalios.
-Right now, you can use this solver for the three main problems: VRPTW, TSPTW, SOP.
+Welcome to the CVRP/VRPTW/PDPTW/TSPTW/SOP Solver, powered by Column Elimination, written by Anthony Karahalios.
+
+Three quick notes:
+1. The code is subject to an Apache License, so you can use it quite easily. A copy of the license is in the repository.
+
+2. The code is based on research that I jointly worked on with Willem-Jan van Hoeve. My dissertation encompasses most of the work and can be found online; it is titled, "Column Elimination: Iterative Refinement for Solving Arc Flow Formulations". Consider reading and citing our works, "Column elimination for capacitated vehicle routing problems" or "Column Elimination: An Iterative Approach to Solving Integer Programs".
+
+3. You can use this solver for the five main problems: CVRP, VRPTW, PDPTW, TSPTW, SOP. It should be easy to convert the code to handle other problems. Feel free to reach out to me for anything that you may need.
 
 Below are some helpful tips to get you started:
-1. The Makefile. Check that your system and path to CPLEX are correct. We use CPLEX as the linear programming solver and g++ to compile our code, but it is possible to change these things. Typing the command "make" should output a binary file called "solver" that you will use to run instances.
+1. Makefile:
+- You need CPLEX and cvrpsep.
+- Check that your system and path to CPLEX are correct.
+- We use CPLEX as the linear programming solver and g++ to compile our code, but it is possible to change these things.
+- Typing the command "make" should output a binary file called "solver" that you will use to run instances.
 
+<<<<<<< HEAD
 2. The solver file. Once created, you can run the solver by typing ./solver instance_location COL_ELIM param_file where you have to fill in the arguments. Check the file solvevrptw.cpp to see different arguments and usage.
+=======
+2. Solver:
+- Run the solver by typing "./solver instance_file COL_ELIM parameter_file" where you have to fill-in the "instance_file" and "parameter_file".
+- Check the file solvevrptw.cpp to see different arguments and usage.
+>>>>>>> a23f2daeffc4f77cb21f65b6401b0e8afe2e06ff
 
-3. The source files:
-a) vrptw.h/cpp holds static information about the problem that you would like to solve. The main class here is the VRPTW class that holds the distance matrix, demands, and other information about your problem type.
-b) vrptwdecisiondiagram.h/cpp defines a decision diagram and relevant classes like VRPTWNodeState, VRPTWNode, VRPTWArc that hold the information necessary to compile all feasible routes as r-t paths through the decision diagram, or compile a relaxation.
-c) vrptwddsolver.h/cpp is the solver driver. It contains the main algorithm loop for column elimination, calling the appropriate dd methods when we need to solve the LP, separate a conflict, etc.
-d) solvevrptw.cpp creates the solver file by reading in the arguments that you provide
-e) vrptwcolgen.h/cpp is a basic column generation method that we used for comparing results
+3. Parameter Files:
+- Look in the param_files directory. LP_NG2_3600.csv and LAG_NG2_3600.csv are two template parameter files. They run column elimination with CPLEX and subgradient descent respectively.
+- Hopefully the names of the parameters make sense - if not - you may need to check the source codes to see where they are used, or ask me.
 
+<<<<<<< HEAD
 4. The instance files can be found in the "instances" folder.
 5. Our log files can be found in the "new_logs" folder.
 6. Several param files can be found in the "params" folder.
+=======
+4. Source Code:
+a) vrptw.h and vrptw.cpp
+- Enums and VRPTW class to hold information about an instance.
+b) vrptwdecisiondiagram.h and vrptwdecisiondiagram.cpp
+- VRPTWDecisionDiagram, VRPTWNode, VRPTWNodeState, VRPTWArc which setup the dynamic program state-transition graph. Some cut information, Primal and Dual solution information is also stuck in here for now.
+c) vrptwddsolver.h and vrptwddsolver.cpp
+- DDStats with runtime information, VRPTWDDSolver has the column elimination logic including subgradient descent, variable fixing, primal heuristics, etc. 
+d) solvevrptw.cpp
+- The main method is here. It reads the instance file and parameter file and gets the methods going.
+
+5. Instances:
+a) Check the instances directory.
+- It contains a lot of the common benchmark sets of instances in the appropriate formats.
+
+6. Logs:
+a) Check the logs and new_logs directories.
+- It contains a lot of the log files for results in our papers.
+
+7. Utility Scripts:
+a) run_instance.sh
+- Runs a whole batch of instances
+b) .py files
+- Analysis scripts that read our log files, parse them, and provide some statistics. Some of these are old.
+>>>>>>> a23f2daeffc4f77cb21f65b6401b0e8afe2e06ff

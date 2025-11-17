@@ -23,8 +23,9 @@ def get_instances(instance_set_name, root_directory):
     instance_dirs = [instance_dir + "/X/"]
   elif instance_set_name == "PDPTW":
     instance_dirs = [instance_dir + "/pdp_200/"]
-    #instance_dirs.append(instance_dir + "/pdp_400/")
-    #instance_dirs.append(instance_dir + "/pdp_600/")
+    instance_dirs.append(instance_dir + "/pdp_400/")
+  elif instance_set_name == "HGC1C2":
+    instance_dirs = [instance_dir + "/Vrp-Set-HG-C12-124/"]
 
   for instance_dir in instance_dirs:
     for instance in os.listdir(instance_dir):
@@ -38,6 +39,11 @@ def get_column_elimination_results(instances, parameter_set_names_strings, root_
   regex_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] numHeuristicIPs: \[([0-9]+)\] numHeuristicLNS: \[([0-9]+)\] numPrimalLNSRepairs: \[([0-9]+)\] time: \[([0-9]+)\]")
   regex_pattern_switch_ip = re.compile("LP solved - switching to IP")
 
+  rcc_pattern = re.compile("add capacity cutset.*")
+  src3_pattern = re.compile("add src cut type: 0.*")
+  src4_pattern = re.compile("add src cut type: 1.*")
+  src5_pattern = re.compile("add src cut type: 2.*")
+
   parameter_set_names = [x[0] for x in parameter_set_names_strings.items()]
 
   results = []
@@ -47,6 +53,10 @@ def get_column_elimination_results(instances, parameter_set_names_strings, root_
       if not os.path.exists(log_file_name):
         continue
 
+      num_rcc = 0
+      num_src3 = 0
+      num_src4 = 0
+      num_src5 = 0
       log_file = open(log_file_name, "r")
       for line in log_file:
         match = regex_pattern.match(line)
@@ -67,19 +77,36 @@ def get_column_elimination_results(instances, parameter_set_names_strings, root_
           numRepairs = int(match.group(14))
           time = float(match.group(15))
 
-          time_result = {'instance': instance, 'parameter': parameter_name, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+          time_result = {'instance': instance, 'parameter': parameter_name, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'rcc': num_rcc, 'src3': num_src3, 'src4': num_src4, 'src5': num_src5, 'time' : time}
           results.append(time_result)
 
         if lp_only:
           switch_ip_match = regex_pattern_switch_ip.match(line)
           if switch_ip_match:
             break
+
+        rcc_match = rcc_pattern.match(line)
+        if rcc_match:
+          num_rcc = num_rcc + 1
+        src3_match = src3_pattern.match(line)
+        if src3_match:
+          num_src3 = num_src3 + 1
+        src4_match = src4_pattern.match(line)
+        if src4_match:
+          num_src4 = num_src4 + 1
+        src5_match = src5_pattern.match(line)
+        if src5_match:
+          num_src5 = num_src5 + 1
  
     for instance in instances:
       zip_log_file_name = root_directory + "/new_logs/" + parameter_name + '/' + instance + '.log.gz'
       if not os.path.exists(zip_log_file_name):
         continue
 
+      num_rcc = 0
+      num_src3 = 0
+      num_src4 = 0
+      num_src5 = 0
       with gzip.open(zip_log_file_name,'rt') as log_file:
         for line in log_file:
           match = regex_pattern.match(line)
@@ -100,7 +127,7 @@ def get_column_elimination_results(instances, parameter_set_names_strings, root_
             numRepairs = int(match.group(14))
             time = float(match.group(15))
 
-            time_result = {'instance': instance, 'parameter': parameter_name, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+            time_result = {'instance': instance, 'parameter': parameter_name, 'lpIt' : lpIterations, 'lagIt' : lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'rcc': num_rcc, 'src3': num_src3, 'src4': num_src4, 'src5': num_src5, 'time' : time}
             results.append(time_result)
  
           if lp_only:
@@ -108,13 +135,26 @@ def get_column_elimination_results(instances, parameter_set_names_strings, root_
             if switch_ip_match:
               break
 
+          rcc_match = rcc_pattern.match(line)
+          if rcc_match:
+            num_rcc = num_rcc + 1
+          src3_match = src3_pattern.match(line)
+          if src3_match:
+            num_src3 = num_src3 + 1
+          src4_match = src4_pattern.match(line)
+          if src4_match:
+            num_src4 = num_src4 + 1
+          src5_match = src5_pattern.match(line)
+          if src5_match:
+            num_src5 = num_src5 + 1
+
   results_df = pandas.DataFrame(results)
   results_df.sort_values(by=['instance','lb','ub'],inplace=True)
   results_df.reset_index(drop=True,inplace=True)
 
   print_table = True
   if print_table:
-    table_results_df = results_df[['instance','parameter','lb','ub','lpIt','lagIt','time']]
+    table_results_df = results_df[['instance','parameter','lb','ub','lpIt','lagIt','numArcs','rcc','src3','src4','src5','time']]
     print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
  
   # In case it went over time

@@ -1345,13 +1345,13 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
             {
               priorityQueueKeyValue = newState.counter;
             }
+            else if (vrptw.vrptwCapacityType == VRPTWCapacityType::NO_RELAX_CAPACITY)
+            {
+              priorityQueueKeyValue = newState.load;
+            }
             else if (vrptw.vrptwTimeWindowType == VRPTWTimeWindowType::TIME_WINDOWS)
             {
               priorityQueueKeyValue = newState.timeWithMultiplier;
-            }
-            else
-            {
-              priorityQueueKeyValue = newState.load;
             }
 
             if (priorityQueue.find(priorityQueueKeyValue) != priorityQueue.end())
