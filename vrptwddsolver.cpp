@@ -1254,6 +1254,7 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
     }
     else
     {
+/*
       std::cout << "Dual needs repair, spl: " << shortestPathLength << std::endl;
       bool updated = false;
       std::vector<std::vector<int>> shortestPathsByArc;
@@ -1284,6 +1285,24 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
         {
           repairedDual.lambda[index] = std::max(0.0, repairedDual.lambda[index] - 0.01);
         }
+      }
+*/
+      std::cout << "Dual needs repair, spl: " << shortestPathLength << std::endl;
+      bool updated = false;
+      std::vector<std::vector<int>> shortestPathsByArc;
+      shortestPathsByArc.push_back(shortestPathByArc);
+      std::set<int> locations;
+      routeDD.getLocationsOnArcPaths(shortestPathsByArc, locations);
+      double updateAmount = std::min(shortestPathLength, -1.0);
+
+      if (vrptw.fixedNumPaths == FixedNumPaths::FIXED_NUM_PATHS)
+      {
+        repairedDual.fixedPathDual = repairedDual.fixedPathDual + shortestPathLength - 0.001;
+      }
+
+      for (int index=1; index<vrptw.numLocations; ++index)
+      {
+        repairedDual.lambda[index] = std::max(0.0, repairedDual.lambda[index] + (updateAmount / std::max(1,((int)shortestPathByArc.size() - 1))) - 1);
       }
     }
   }

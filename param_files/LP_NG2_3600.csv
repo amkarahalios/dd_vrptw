@@ -6,12 +6,23 @@ NGSetSize:2
 ChangeToLP:Y
 UseSeparations:Y
 
-VariableFixing:Y
+VariableFixing:N
 MuSSP:Y
 RepairDuals:Y
 
-RobustCuts:Y
-NonRobustCuts:Y
-VolumeAlgorithm:Y
-UseScaling:Y
-UseSparseRCCs:Y
+NumLagCuts:0
+RCCs:N
+SRC3s:N
+SRC4s:N
+SRC5V1s:N
+SRC5V2s:N
+VolumeAlgorithm:N
+LimitRCCs:N
+UseScaling:N
+LowImprovementIterationsToNextRound:20
+PercentImprovementThreshold:0.001
+
+PrimalHeuristic:BEST_KNOWN
+PrimalHeuristicLNSTimeout:5
+PrimalHeuristicRemovalStrategy:RANDOM
+PrimalHeuristicInsertionAblation:NONE
