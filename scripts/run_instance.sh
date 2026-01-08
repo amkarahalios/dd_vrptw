@@ -11,7 +11,7 @@ if [ $# -ne 4 ]; then
   exit 2
 fi
 
-OUTPUT_DIR=$HOME/dd_vrptw/new_logs/$1_$3_$4/
+OUTPUT_DIR=$HOME/dd_vrptw/new_new_logs/$1_$3_$4/
 mkdir -p $OUTPUT_DIR
 
 FILES=$HOME/dd_vrptw/instances/$1/*
