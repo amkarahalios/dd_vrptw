@@ -1250,7 +1250,7 @@ void VRPTWDecisionDiagram::compileNgRoute(int s)
   // reserve but do not resize
   if ((vrptw.fixedNumPaths != FIXED_NUM_PATHS) || (vrptw.numVehicles > 1))
   {
-    nodes.reserve(vrptw.capacity * (std::pow(vrptw.numLocations,2)));
+    nodes.reserve(std::pow(vrptw.numLocations,2));
   }
   else
   {
