@@ -760,7 +760,8 @@ VRPTW::VRPTW(std::string _fileName)
   fixedRouteCost = 0;
   if (problemType == ProblemType::PDP)
   {
-    fixedRouteCost = 10000;
+    //fixedRouteCost = 10000;
+    fixedRouteCost = 0;
   }
   std::cout << "fixed route cost: " << fixedRouteCost << std::endl;
 };

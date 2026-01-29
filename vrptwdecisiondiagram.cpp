@@ -4150,6 +4150,7 @@ void VRPTWDecisionDiagram::separateRoute(const std::vector<int>& routeArcs)
   }
   fixedArcs.clear();
 
+/*
   std::cout << "separating route arcs: ";
   for (int arcIndex : routeArcs)
   {
@@ -4163,6 +4164,7 @@ void VRPTWDecisionDiagram::separateRoute(const std::vector<int>& routeArcs)
     std::cout << arcs[arcIndex].location << " ";
   }
   std::cout << std::endl;
+*/
 
   // index to routeArcs.size()-1 because the last arc will be removed because it causes a conflict
   bool haveMovedFirstArc = false;

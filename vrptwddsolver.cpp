@@ -82,7 +82,7 @@ VRPTWDDSolver::VRPTWDDSolver(VRPTW _vrptw, VRPTWDDParameters _params) : vrptw(_v
   std::cout << "done compiling DD" << std::endl;
 
   // Primal heuristic
-  if (params.primalHeuristic != PrimalHeuristic::BEST_KNOWN)
+  if ((params.primalHeuristic != PrimalHeuristic::BEST_KNOWN) && (params.primalHeuristic != PrimalHeuristic::STANDALONE))
   {
     std::cout << "running primal heuristic" << std::endl;
 
@@ -303,7 +303,8 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
     {
       //primalHeuristicFeasible = routeDD.primalHeuristicGreedy(routesByLocationPrimalHeuristic);
     }
-    else if ((params.primalHeuristic == PrimalHeuristic::CE_MIP) || (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS) || (params.primalHeuristic == PrimalHeuristic::BEST_KNOWN))
+    //else if ((params.primalHeuristic == PrimalHeuristic::CE_MIP) || (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS) || (params.primalHeuristic == PrimalHeuristic::BEST_KNOWN))
+    else if ((params.primalHeuristic == PrimalHeuristic::CE_MIP) || (params.primalHeuristic == PrimalHeuristic::CE_MIP_LNS))
     {
       primalHeuristicFeasible = primalHeuristicMIP(FlowType::IP, routesByLocationPrimalHeuristic, mipPoolSolutionIndices);
     }
@@ -399,19 +400,22 @@ bool VRPTWDDSolver::solve(bool shouldSolveIP)
           decomposedRoutes.clear();
           decomposedArcs.clear();
           routeDD.decomposeRoutes(infeasibleRoute, routeFlows, decomposedRoutes, decomposedArcs, DecompositionReason::DECOMPOSE);
-          for (auto route : decomposedRoutes)
+          if ((params.primalHeuristic != PrimalHeuristic::BEST_KNOWN) && (params.primalHeuristic != PrimalHeuristic::STANDALONE))
           {
-            if (routeDD.isRouteFeasible(route))
+            for (auto route : decomposedRoutes)
             {
-              addRouteToPrimalRoutes(route);
-            }
-            else
-            {
-              if (params.insertionAblation != PrimalHeuristicInsertionAblation::TRUNCATED)
+              if (routeDD.isRouteFeasible(route))
               {
-                std::vector<int> truncatedRoute;
-                routeDD.createTruncatedRoute(route, truncatedRoute);
-                addRouteToPrimalRoutes(truncatedRoute);
+                addRouteToPrimalRoutes(route);
+              }
+              else
+              {
+                if (params.insertionAblation != PrimalHeuristicInsertionAblation::TRUNCATED)
+                {
+                  std::vector<int> truncatedRoute;
+                  routeDD.createTruncatedRoute(route, truncatedRoute);
+                  addRouteToPrimalRoutes(truncatedRoute);
+                }
               }
             }
           }
@@ -1254,7 +1258,6 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
     }
     else
     {
-/*
       std::cout << "Dual needs repair, spl: " << shortestPathLength << std::endl;
       bool updated = false;
       std::vector<std::vector<int>> shortestPathsByArc;
@@ -1286,7 +1289,7 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
           repairedDual.lambda[index] = std::max(0.0, repairedDual.lambda[index] - 0.01);
         }
       }
-*/
+/*
       std::cout << "Dual needs repair, spl: " << shortestPathLength << std::endl;
       bool updated = false;
       std::vector<std::vector<int>> shortestPathsByArc;
@@ -1304,6 +1307,7 @@ void VRPTWDDSolver::repairMultipliers(Dual& repairedDual, LPSolveType solveType)
       {
         repairedDual.lambda[index] = std::max(0.0, repairedDual.lambda[index] + (updateAmount / std::max(1,((int)shortestPathByArc.size() - 1))) - 1);
       }
+*/
     }
   }
 
@@ -1378,7 +1382,14 @@ void VRPTWDDSolver::initializeDual(Dual& dual)
     }
     else
     {
-      dual.lambda[location] = 2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
+      if (vrptw.problemType == ProblemType::PDP)
+      {
+        dual.lambda[location] = vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
+      }
+      else
+      {
+        dual.lambda[location] = 2 * vrptw.distances[0][location] * std::abs(vrptw.demands[location]) / vrptw.capacity;
+      }
     }
   }
 }
@@ -1596,7 +1607,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         {
           Dual dualToRepair = bestDualsArcFixingLag[dualMultiplierIndex];
           repairMultipliers(dualToRepair, LPSolveType::LAGSolver);
-          bestDualsArcFixingLag[dualMultiplierIndex] = dualToRepair;
+          //bestDualsArcFixingLag[dualMultiplierIndex] = dualToRepair;
+          dualsToUseForFixing.push_back(dualToRepair);
         }
         routeDD.fixArcs(dualsToUseForFixing, LPSolveType::LAGSolver, stats.upperBound);
         auto endTimeFix = std::chrono::high_resolution_clock::now();
@@ -1631,7 +1643,10 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       // Heuristic for trying arc fixing or repair
       if (stats.lowerBound + longestShortestPathLength > stats.upperBound)
       {
-        tryArcFixingOrRepair = true;
+        if (stats.numLagIterations % 10 == 0)
+        {
+          tryArcFixingOrRepair = true;
+        }
       }
 
       // Impute the dual bound value and value of fixedPathDual
@@ -1701,7 +1716,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
         isImproved = true;
         stats.lowerBound = std::max(stats.lowerBound, lagrangeanLowerBound);
         stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-        printMultipliers(dual);
+        //printMultipliers(dual);
 
         bestDual = dual;
         bestDualValue = lagrangeanLowerBound;
@@ -1758,20 +1773,23 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
 
       // Add to set for primal heuristic
       int numPrimalRoutes = primalRoutes.size();
-      for (auto route : decomposedRoutes)
+      if ((params.primalHeuristic != PrimalHeuristic::BEST_KNOWN) && (params.primalHeuristic != PrimalHeuristic::STANDALONE))
       {
-        // include feasible routes, and truncated infeasible routes
-        if (routeDD.isRouteFeasible(route))
+        for (auto route : decomposedRoutes)
         {
-          addRouteToPrimalRoutes(route);
-        }
-        else
-        {
-          if (params.insertionAblation != PrimalHeuristicInsertionAblation::TRUNCATED)
+          // include feasible routes, and truncated infeasible routes
+          if (routeDD.isRouteFeasible(route))
           {
-            std::vector<int> truncatedRoute;
-            routeDD.createTruncatedRoute(route, truncatedRoute);
-            addRouteToPrimalRoutes(truncatedRoute);
+            addRouteToPrimalRoutes(route);
+          }
+          else
+          {
+            if (params.insertionAblation != PrimalHeuristicInsertionAblation::TRUNCATED)
+            {
+              std::vector<int> truncatedRoute;
+              routeDD.createTruncatedRoute(route, truncatedRoute);
+              addRouteToPrimalRoutes(truncatedRoute);
+            }
           }
         }
       }
@@ -1824,30 +1842,30 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
             stepSizeMultiplier = std::min(stepSizeMultiplier * 1.1, 2.0);
           }
         }
-      }
 
-      // tune the weighting of the primals
-      // min ||b-A(alpha x^{t} + (1-alpha)x^{bar}|| s.t. u/10 <= alpha <= u
-      auto startTimeTryingAlpha = std::chrono::high_resolution_clock::now();
-      double alphaTry = alphaLowerBound / 10;
-      double bestAlpha = alphaTry;
-      double bestAlphaValue = INF;
-      if (!primal.xDecompositionFlows.empty())
-      {
-        bestAlpha = (alphaLowerBound / 10 + alphaLowerBound) / 2;
-      }
-      else
-      {
-        bestAlpha = 1.0;
-      }
-      std::cout << "best alpha: " << bestAlpha << std::endl;
+        // tune the weighting of the primals
+        // min ||b-A(alpha x^{t} + (1-alpha)x^{bar}|| s.t. u/10 <= alpha <= u
+        auto startTimeTryingAlpha = std::chrono::high_resolution_clock::now();
+        double alphaTry = alphaLowerBound / 10;
+        double bestAlpha = alphaTry;
+        double bestAlphaValue = INF;
+        if (!primal.xDecompositionFlows.empty())
+        {
+          bestAlpha = (alphaLowerBound / 10 + alphaLowerBound) / 2;
+        }
+        else
+        {
+          bestAlpha = 1.0;
+        }
+        std::cout << "best alpha: " << bestAlpha << std::endl;
 
-      Primal nextPrimal(primal);
-      constructNextPrimal(bestAlpha, decomposedRoutes, decomposedArcs, nextPrimal);
-      primal = nextPrimal;
-      auto endTimeTryingAlpha = std::chrono::high_resolution_clock::now();
-      auto totalTimeTryingAlpha = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeTryingAlpha - startTimeTryingAlpha).count();
-      stats.millisecondsTryingAlpha += totalTimeTryingAlpha;
+        Primal nextPrimal(primal);
+        constructNextPrimal(bestAlpha, decomposedRoutes, decomposedArcs, nextPrimal);
+        primal = nextPrimal;
+        auto endTimeTryingAlpha = std::chrono::high_resolution_clock::now();
+        auto totalTimeTryingAlpha = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeTryingAlpha - startTimeTryingAlpha).count();
+        stats.millisecondsTryingAlpha += totalTimeTryingAlpha;
+      }
 
       // Update dual
       auto startTimeUpdateDual = std::chrono::high_resolution_clock::now();
@@ -1857,7 +1875,8 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
       }
       else
       {
-        updateMultipliers(dual, lagrangeanLowerBound, stats.numLagIterations);
+        //updateMultipliers(dual, lagrangeanLowerBound, stats.numLagIterations);
+        updateMultipliers(dual, lagrangeanLowerBound, numLagIterations);
       }
       auto endTimeUpdateDual = std::chrono::high_resolution_clock::now();
       auto totalTimeUpdateDual = std::chrono::duration_cast<std::chrono::milliseconds>(endTimeUpdateDual - startTimeUpdateDual).count();
@@ -1906,7 +1925,7 @@ bool VRPTWDDSolver::solveLagrangeanRelaxation(Dual& dual, SGDAlgorithm& sgdAlgo)
           std::cout << "repaired lb: " << repairedBound << std::endl;
           stats.lowerBound = std::max(stats.lowerBound, repairedBound);
           stats.print(routeDD.getNumArcsNotRemovedOrReverse(), routeDD.getNumFixedArcs());
-          printMultipliers(repairedDual);
+          //printMultipliers(repairedDual);
 
           if (repairedBound > 0.95 * targetLowerBound)
           {
@@ -2161,11 +2180,13 @@ void VRPTWDDSolver::updateMultipliersVolumeAlgorithm(Dual& dual, Primal& currPri
     std::cout << "gamma at comb " << i << ":" << gamma[gammaIndex] << std::endl;
   }
 
-  double alpha = stepSizeMultiplier * (targetLowerBound - bestDualValue) / normGammaSquared;
+  double eta = 0.05 * 100 / (100 + iteration);
+  double psiStar = stats.lowerBound + (1 + eta);
+  double alpha = stepSizeMultiplier * (psiStar - bestDualValue) / normGammaSquared;
   std::cout << "alpha: " << alpha << std::endl;
   std::cout << "bestDualValue: " << bestDualValue << std::endl;
   std::cout << "stepSizeMultiplier: " << stepSizeMultiplier << std::endl;
-  std::cout << "targetLowerBound: " << targetLowerBound << std::endl;
+  std::cout << "targetLowerBound: " << psiStar << std::endl;
   std::cout << "||gamma||^2: " << normGammaSquared << std::endl;
 
   //printMultipliers(dual);

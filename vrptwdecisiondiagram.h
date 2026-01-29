@@ -189,7 +189,7 @@ class VRPTWDecisionDiagram
     double evaluateRouteCost(const std::vector<int>& routeByArc);
     double getPercentFixedArcs() const
     {
-      return fixedArcs.size() * 100.0 / (arcs.size() - arcReverseArc.size());
+      return fixedArcs.size() * 100.0 / (arcs.size() - removedArcs.size() - arcReverseArc.size());
     }
     int getNumArcsNotRemovedOrReverse() const
     {
