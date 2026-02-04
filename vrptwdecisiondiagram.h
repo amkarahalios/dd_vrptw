@@ -317,6 +317,7 @@ class VRPTWDecisionDiagram
     bool checkLC121SolutionPossible() const;
     bool checkLRC121SolutionPossible() const;
     bool checkLC145SolutionCost();
+    bool checkC1101SolutionPossible();
     bool checkSinglePathPossible() const;
     void printCuts() const;
     void printFixedArcs() const;
