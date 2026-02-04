@@ -7,6 +7,7 @@ import numpy
 import matplotlib.pyplot as plt
 import re
 import collections
+import gzip
 
 instance_upper_bounds = {
 "C101.vrptw":827.3,
@@ -689,14 +690,102 @@ instance_lower_bounds = {
 "ry48p.4.sop":31446,
 }
 
+# peel and bound solver
+pandb_solver_results_lb = {
+"ESC07.sop":2125,
+"ESC11.sop":2075,
+"ESC12.sop":1675,
+"ESC25.sop":1681,
+"ESC47.sop":658,
+"ESC63.sop":44,
+"ESC78.sop":5600,
+"br17.10.sop":55,
+"br17.12.sop":55,
+"ft53.1.sop":4603,
+"ft53.2.sop":3555,
+"ft53.3.sop":4852,
+"ft53.4.sop":7560,
+"ft70.1.sop":31122,
+"ft70.2.sop":31630,
+"ft70.3.sop":32539,
+"ft70.4.sop":37984,
+"kro124p.1.sop":19224,
+"kro124p.2.sop":19299,
+"kro124p.3.sop":20145,
+"kro124p.4.sop":25002,
+"p43.1.sop":27255,
+"p43.2.sop":27455,
+"p43.3.sop":27780,
+"p43.4.sop":28195,
+"prob.42.sop":103,
+"prob.100.sop":178,
+"rbg048a.sop":80,
+"rbg050c.sop":175,
+"rbg109a.sop":406,
+"rbg150a.sop":571,
+"rbg174a.sop":646,
+"rbg253a.sop":727,
+"rbg323a.sop":346,
+"rbg341a.sop":340,
+"rbg358a.sop":88,
+"rbg378a.sop":53,
+"ry48p.1.sop":9432,
+"ry48p.2.sop":6615,
+"ry48p.3.sop":8723,
+"ry48p.4.sop":17322
+}
+
+pandb_solver_results_time = {
+"ESC07.sop":0.04,
+"ESC11.sop":0.41,
+"ESC12.sop":0.34,
+"ESC25.sop":303,
+"ESC47.sop":3600,
+"ESC63.sop":3600,
+"ESC78.sop":3600,
+"br17.10.sop":3,
+"br17.12.sop":5,
+"ft53.1.sop":3600,
+"ft53.2.sop":3600,
+"ft53.3.sop":3600,
+"ft53.4.sop":3600,
+"ft70.1.sop":3600,
+"ft70.2.sop":3600,
+"ft70.3.sop":3600,
+"ft70.4.sop":3600,
+"kro124p.1.sop":3600,
+"kro124p.2.sop":3600,
+"kro124p.3.sop":3600,
+"kro124p.4.sop":3600,
+"p43.1.sop":3600,
+"p43.2.sop":3600,
+"p43.3.sop":3600,
+"p43.4.sop":3600,
+"prob.42.sop":3600,
+"prob.100.sop":3600,
+"rbg048a.sop":3600,
+"rbg050c.sop":3600,
+"rbg109a.sop":3600,
+"rbg150a.sop":3600,
+"rbg174a.sop":3600,
+"rbg253a.sop":3600,
+"rbg323a.sop":3600,
+"rbg341a.sop":3600,
+"rbg358a.sop":3600,
+"rbg378a.sop":3600,
+"ry48p.1.sop":3600,
+"ry48p.2.sop":3600,
+"ry48p.3.sop":3600,
+"ry48p.4.sop":3600
+}
+
 # Log lines for DDSolver
-#STATS - lpIterations[1] lagIterations[32] sspIterations[186] numSeparations[0] compileTime[240] sspSolveTime[349] lpSolveTime[0] lb[794.025] ub[1e+10] numArcs: [87254] numFixed: [0] time: [590]
+#STATS - lpIterations[1] lagIterations[4190] sspIterations[4190] numSeparations[4190] numCuts[0] compileTime[0] sspSolveTime[23] lpSolveTime[0] lb[2969.55] ub[83006] numArcs: [165817] numFixed: [0] numHeuristicIPs: [0] numHeuristicLNS: [0] numPrimalLNSRepairs: [0] time: [76]
+colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\].*time: \[([0-9]+)\]")
 
-colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] time: \[([0-9]+)\]")
-#colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] size: \[([0-9]+)\] time: \[([0-9]+)\]")
-
-logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
-test_set = ["ALL_sop_LAG_NG8"]
+logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_new_logs/"
+test_set = ["ALL_sop_LAG_NG2_3600_0"]
+#test_set = ["ALL_sop_LAG_NG8"]
 
 instances = []
 instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/ALL_sop/"
@@ -708,37 +797,79 @@ time_results = []
 results = []
 for test in test_set:
   for instance in instances:
-    log_file_name = logs_dir + test + '/' + instance + '.log'
+    log_file_name = logs_dir + test + '/' + instance + '.log.gz'
     if not os.path.exists(log_file_name):
       continue
 
     col_elim = False
-    log_file = open(log_file_name, "r")
+    with gzip.open(log_file_name, "rt", encoding='utf-8') as log_file:
+      for line in log_file:
+        colelim_match = colelim_pattern.match(line)
+        if colelim_match:
+          col_elim = True
+          lpIterations = int(colelim_match.group(1))
+          lagIterations = int(colelim_match.group(2))
+          sspIterations = colelim_match.group(3)
+          numSeparations = int(colelim_match.group(4))
+          compileTime = colelim_match.group(5)
+          sspSolveTime = colelim_match.group(6)
+          lpSolveTime = colelim_match.group(7)
+          lb = float(colelim_match.group(8))
+          ub = float(colelim_match.group(9))
+          numArcs = int(colelim_match.group(10))
+          numFixed = int(colelim_match.group(11))
+          time = float(colelim_match.group(12))
+          time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+          time_results.append(time_result)
+   
+      if col_elim:
+        result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+        results.append(result)
+      else:
+        result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'lagIterations': numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'numArcs': numpy.nan, 'numFixed': numpy.nan, 'time' : numpy.nan}
+        results.append(result)
+
+# cats results
+#cats_sol_pattern = re.compile(" \s*[0-9]+ \s*[0-9.]+ \s*[0-9A-Z ]+ \s*[0-9A-Z ]+\s* ([0-9\.]*) \s*([0-9\.]*) \s*BeamSearch.*PE.*")
+#cats_sol_pattern = re.compile("\s([0-9]+\.*[0-9]*)\s+([0-9]+\.*[0-9]*)\s+BeamSearch")
+cats_sol_pattern = re.compile(" \s*[0-9]+ \s*[0-9.]+ \s*[0-9]+ [A-Z]+ \s*[0-9]+ [A-Z]+ \s* ([0-9\.]*) \s*([0-9\.]*) \s*BeamSearch.*PE.*")
+cats_end_dual_pattern = re.compile("^Dual\s*([0-9\.]*)")
+cats_end_primal_pattern = re.compile("^Primal\s*([0-9\.]*)")
+cats_end_time_pattern = re.compile("^searched\s*([0-9\.]*)")
+logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_new_logs/soa-sop/"
+cats_results = {}
+for instance in instances:
+  log_file_name = logs_dir + '/' + instance + '.log.gz'
+  if not os.path.exists(log_file_name):
+    continue
+
+  print(log_file_name)
+  with gzip.open(log_file_name, "rt", encoding='utf-8') as log_file:
+    time = 3600
+    lb = -1
+    ub = 1e9
     for line in log_file:
-      colelim_match = colelim_pattern.match(line)
-      if colelim_match:
-        col_elim = True
-        lpIterations = int(colelim_match.group(1))
-        lagIterations = int(colelim_match.group(2))
-        sspIterations = colelim_match.group(3)
-        numSeparations = int(colelim_match.group(4))
-        compileTime = colelim_match.group(5)
-        sspSolveTime = colelim_match.group(6)
-        lpSolveTime = colelim_match.group(7)
-        lb = float(colelim_match.group(8))
-        ub = float(colelim_match.group(9))
-        numArcs = int(colelim_match.group(10))
-        numFixed = int(colelim_match.group(11))
-        time = float(colelim_match.group(12))
-        time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
-        time_results.append(time_result)
- 
-    if col_elim:
-      result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
-      results.append(result)
-    else:
-      result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'lagIterations': numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'numArcs': numpy.nan, 'numFixed': numpy.nan, 'time' : numpy.nan}
-      results.append(result)
+      cats_sol_match = cats_sol_pattern.match(line)
+      if cats_sol_match:
+        lb = cats_sol_match.group(1)
+        lb = lb.replace(".","")
+        ub = cats_sol_match.group(2)
+        ub = ub.replace(".","")
+      cats_dual_match = cats_end_dual_pattern.match(line)
+      if cats_dual_match:
+        lb = cats_dual_match.group(1)
+        lb = lb.replace(".","")
+      cats_primal_match = cats_end_primal_pattern.match(line)
+      if cats_primal_match:
+        ub = cats_primal_match.group(1)
+        ub = ub.replace(".","")
+      cats_time_match = cats_end_time_pattern.match(line)
+      if cats_time_match:
+        time = cats_time_match.group(1)
+        time = int(time.split(".")[0])
+    cats_results[instance] = {'lb': lb, 'ub': ub, 'time': time}
+
+print(cats_results)
 
 # give table of results
 results_df = pandas.DataFrame(results)
@@ -781,12 +912,6 @@ for i, row in table_results_df.iterrows():
   else:
     numArcs = '-'
 
-  time = row['time']
-  if not math.isnan(time):
-    time = int(time)
-  else:
-    time = '-'
-
   numLpIterations = row['iterations']
   if not math.isnan(numLpIterations):
     numLpIterations = int(numLpIterations)
@@ -812,6 +937,26 @@ for i, row in table_results_df.iterrows():
     numLagIterations = '-'
     numSeparations = '-'
 
+  time = row['time']
+  if not math.isnan(time):
+    time = int(time)
+    if lb_value != instance_upper_bounds[instance]:
+      time = max(3600, time)
+  else:
+    time = '-'
+
   percent_precedence = round(instance_percent_precedence[instance],1)
 
-  print(f"{instance_name} & {instance_sizes[instance]} & {percent_precedence} & & {instance_lower_bounds[instance]} & {instance_upper_bounds[instance]} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+  soa_lb = -1
+  soa_ub = 1e9
+  soa_time = 3600
+  if instance in cats_results:
+    soa_lb = cats_results[instance]['lb']
+    soa_ub = cats_results[instance]['ub']
+    soa_time = cats_results[instance]['time']
+  #soa_lb = pandb_solver_results_lb[instance]
+  #soa_time = pandb_solver_results_time[instance]
+
+  #print(f"{instance_name} & {instance_upper_bounds[instance]} & & {soa_lb} & {soa_ub} & {soa_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+  print(f"{instance_name} & {instance_upper_bounds[instance]} & & {soa_lb} & {soa_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+  #print(f"{instance_name} & {instance_sizes[instance]} & {percent_precedence} & & {instance_lower_bounds[instance]} & {instance_upper_bounds[instance]} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")

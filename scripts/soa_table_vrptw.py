@@ -7,6 +7,7 @@ import numpy
 import matplotlib.pyplot as plt
 import re
 import collections
+import gzip
 
 instance_upper_bounds = {
 "C101.vrptw":827.3,
@@ -648,12 +649,11 @@ instance_upper_bounds = {
 # Log lines for DDSolver
 #STATS - lpIterations[1] lagIterations[32] sspIterations[186] numSeparations[0] compileTime[240] sspSolveTime[349] lpSolveTime[0] lb[794.025] ub[1e+10] numArcs: [87254] numFixed: [0] time: [590]
 
-colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\] numCuts\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] time: \[([0-9]+)\]")
+colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\] numCuts\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\].*time: \[([0-9]+)\]")
 #colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] size: \[([0-9]+)\] time: \[([0-9]+)\]")
 
-logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
-test_set = ["Vrp-Set-HG_LAG_NG2_upper_bound_counter"]
-#test_set = ["Vrp-Long-Run_LAG_NG2_upper_bound_counter_long"]
+logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_new_logs/"
+test_set = ["Vrp-Set-HG_LAG_NG2_3600_0"]
 
 instances = []
 instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"
@@ -665,38 +665,38 @@ time_results = []
 results = []
 for test in test_set:
   for instance in instances:
-    log_file_name = logs_dir + test + '/' + instance + '.log'
+    log_file_name = logs_dir + test + '/' + instance + '.log.gz'
     if not os.path.exists(log_file_name):
       continue
 
     col_elim = False
-    log_file = open(log_file_name, "r")
-    for line in log_file:
-      colelim_match = colelim_pattern.match(line)
-      if colelim_match:
-        col_elim = True
-        lpIterations = int(colelim_match.group(1))
-        lagIterations = int(colelim_match.group(2))
-        sspIterations = colelim_match.group(3)
-        numSeparations = int(colelim_match.group(4))
-        numCuts= int(colelim_match.group(5))
-        compileTime = colelim_match.group(6)
-        sspSolveTime = colelim_match.group(7)
-        lpSolveTime = colelim_match.group(8)
-        lb = float(colelim_match.group(9))
-        ub = float(colelim_match.group(10))
-        numArcs = int(colelim_match.group(11))
-        numFixed = int(colelim_match.group(12))
-        time = float(colelim_match.group(13))
-        time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'numCut': numCuts, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
-        time_results.append(time_result)
- 
-    if col_elim:
-      result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'numCut' : numCuts, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
-      results.append(result)
-    else:
-      result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'lagIterations': numpy.nan, 'numSep' : numpy.nan, 'numCut': numpy.nan, 'lb' : numpy.nan, 'numArcs': numpy.nan, 'numFixed': numpy.nan, 'time' : numpy.nan}
-      results.append(result)
+    with gzip.open(log_file_name, "rt", encoding='utf-8') as log_file:
+      for line in log_file:
+        colelim_match = colelim_pattern.match(line)
+        if colelim_match:
+          col_elim = True
+          lpIterations = int(colelim_match.group(1))
+          lagIterations = int(colelim_match.group(2))
+          sspIterations = colelim_match.group(3)
+          numSeparations = int(colelim_match.group(4))
+          numCuts= int(colelim_match.group(5))
+          compileTime = colelim_match.group(6)
+          sspSolveTime = colelim_match.group(7)
+          lpSolveTime = colelim_match.group(8)
+          lb = float(colelim_match.group(9))
+          ub = float(colelim_match.group(10))
+          numArcs = int(colelim_match.group(11))
+          numFixed = int(colelim_match.group(12))
+          time = float(colelim_match.group(13))
+          time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'numCut': numCuts, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+          time_results.append(time_result)
+   
+      if col_elim:
+        result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'numCut' : numCuts, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+        results.append(result)
+      else:
+        result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'lagIterations': numpy.nan, 'numSep' : numpy.nan, 'numCut': numpy.nan, 'lb' : numpy.nan, 'numArcs': numpy.nan, 'numFixed': numpy.nan, 'time' : numpy.nan}
+        results.append(result)
 
 # add VrpSolver to results and time_results
 #statistics_cols: instance & :Optimal & cutoff & :bcRecRootDb & :bcTimeRootEval & :bcCountNodeProc & :bcRecBestDb & :bcRecBestInc & :bcTimeMain \\
@@ -910,13 +910,9 @@ for instance_class in instance_classes:
   vrpsolver_avg_gap = round(numpy.average(vrpsolver_avg_gaps[instance_class]),1)
   ce_avg_gap = round(numpy.average(ce_avg_gaps[instance_class]),1)
 
-  vrpsolver_total_gaps = [100] * ce_missing_lbs[instance_class]
-  vrpsolver_total_gaps = vrpsolver_total_gaps + vrpsolver_avg_gaps[instance_class]
-  vrpsolver_total_gap = round(numpy.average(vrpsolver_total_gaps),1)
+  if not instance_class in ce_missing_lbs:
+    ce_missing_lbs[instance_class] = 0
+  if not instance_class in vrpsolver_missing_lbs:
+    vrpsolver_missing_lbs[instance_class] = 0
 
-  ce_total_gaps = [100] * ce_missing_lbs[instance_class]
-  ce_total_gaps = ce_total_gaps + ce_avg_gaps[instance_class]
-  ce_total_gap = round(numpy.average(ce_total_gaps),1)
-
-  print(f"{instance_class} & 50 & & {vrpsolver_avg_gap} & {vrpsolver_missing_lbs[instance_class]} & & {ce_avg_gap} & {ce_missing_lbs[instance_class]} \\\\")
-  #print(f"{instance_class} & 50 & & {vrpsolver_avg_gap} & {vrpsolver_total_gap} & {vrpsolver_missing_lbs[instance_class]} & & {ce_avg_gap} & {ce_total_gap} & {ce_missing_lbs[instance_class]} \\\\")
+  print(f"{instance_class} & & {vrpsolver_avg_gap} & {vrpsolver_missing_lbs[instance_class]} & & {ce_avg_gap} & {ce_missing_lbs[instance_class]} \\\\")
