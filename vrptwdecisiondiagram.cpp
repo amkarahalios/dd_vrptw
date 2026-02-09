@@ -2285,7 +2285,10 @@ double VRPTWDecisionDiagram::setupAndSolveFlowModel(FlowType flowType, IncludeCo
   solver.setParam(IloCplex::Param::TimeLimit, std::max(5, timeoutSeconds));
   //solver.setParam(IloCplex::Param::RootAlgorithm, IloCplex::Barrier);
   //solver.setParam(IloCplex::Param::RootAlgorithm, IloCplex::Primal);
-  solver.setParam(IloCplex::Param::MIP::Tolerances::MIPGap, 0.00);
+  if (flowType == FlowType::IP)
+  {
+    solver.setParam(IloCplex::Param::MIP::Tolerances::MIPGap, 0.00);
+  }
   solver.setParam(IloCplex::Param::Threads, 1);
   solver.exportModel("LPflowmodel.lp");
 
