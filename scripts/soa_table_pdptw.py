@@ -7,6 +7,7 @@ import numpy
 import matplotlib.pyplot as plt
 import re
 import collections
+import gzip
 
 instance_upper_bounds = {
 "LC1_2_1.pdp":2704.6,
@@ -351,11 +352,12 @@ baldacci_bounds = {
 # Log lines for DDSolver
 #STATS - lpIterations[1] lagIterations[32] sspIterations[186] numSeparations[0] compileTime[240] sspSolveTime[349] lpSolveTime[0] lb[794.025] ub[1e+10] numArcs: [87254] numFixed: [0] time: [590]
 
-colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\] time: \[([0-9]+)\]")
-#colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] size: \[([0-9]+)\] time: \[([0-9]+)\]")
+colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\].*time: \[([0-9]+)\]")
+colelim_finish_pattern = re.compile("time elapsed: ([0-9]+)")
 
-logs_dir = "/Users/akarahal/Desktop/dd_vrptw/logs/"
-test_set = ["pdp_200_LAG_NG2_upper_bound_counter", "pdp_400_LAG_NG2_upper_bound_counter", "pdp_600_LAG_NG2_upper_bound_counter", "pdptw800_LAG_NG2_upper_bound_counter", "pdptw1000_LAG_NG2_upper_bound_counter"]
+logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_new_logs/"
+#test_set = ["pdp_200_LAG_NG2_upper_bound_counter", "pdp_400_LAG_NG2_upper_bound_counter", "pdp_600_LAG_NG2_upper_bound_counter", "pdptw800_LAG_NG2_upper_bound_counter", "pdptw1000_LAG_NG2_upper_bound_counter"]
+test_set = ["pdp_200_LAG_NG2_3600_fix_0", "pdp_400_LAG_NG2_3600_fix_0", "pdp_600_LAG_NG2_3600_fix_0", "pdptw800_LAG_NG2_3600_fix_2", "pdptw1000_LAG_NG2_3600_fix_2"]
 
 instances = []
 base_instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/"
@@ -366,41 +368,48 @@ for d in dir_list:
   for instance in os.listdir(instance_dir):
     instances.append(instance)
 
+ce_optimal_instances = []
 time_results = []
 results = []
 for test in test_set:
   for instance in instances:
-    log_file_name = logs_dir + test + '/' + instance + '.log'
+    log_file_name = logs_dir + test + '/' + instance + '.log.gz'
     if not os.path.exists(log_file_name):
       continue
 
     col_elim = False
-    log_file = open(log_file_name, "r")
-    for line in log_file:
-      colelim_match = colelim_pattern.match(line)
-      if colelim_match:
-        col_elim = True
-        lpIterations = int(colelim_match.group(1))
-        lagIterations = int(colelim_match.group(2))
-        sspIterations = colelim_match.group(3)
-        numSeparations = int(colelim_match.group(4))
-        compileTime = colelim_match.group(5)
-        sspSolveTime = colelim_match.group(6)
-        lpSolveTime = colelim_match.group(7)
-        lb = float(colelim_match.group(8))
-        ub = float(colelim_match.group(9))
-        numArcs = int(colelim_match.group(10))
-        numFixed = int(colelim_match.group(11))
-        time = float(colelim_match.group(12))
-        time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
-        time_results.append(time_result)
+    with gzip.open(log_file_name, "rt", encoding='utf-8') as log_file:
+      for line in log_file:
+        colelim_match = colelim_pattern.match(line)
+        if colelim_match:
+          col_elim = True
+          lpIterations = int(colelim_match.group(1))
+          lagIterations = int(colelim_match.group(2))
+          sspIterations = colelim_match.group(3)
+          numSeparations = int(colelim_match.group(4))
+          compileTime = colelim_match.group(5)
+          sspSolveTime = colelim_match.group(6)
+          lpSolveTime = colelim_match.group(7)
+          lb = float(colelim_match.group(8))
+          ub = float(colelim_match.group(9))
+          numArcs = int(colelim_match.group(10))
+          numFixed = int(colelim_match.group(11))
+          time = float(colelim_match.group(12))
+          time_result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'ub' : ub, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+          time_results.append(time_result)
  
-    if col_elim:
-      result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
-      results.append(result)
-    else:
-      result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'lagIterations': numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'numArcs': numpy.nan, 'numFixed': numpy.nan, 'time' : numpy.nan}
-      results.append(result)
+        finish_match = colelim_finish_pattern.match(line)
+        if finish_match:
+          finish_time = float(finish_match.group(1))
+          if finish_time < 3599:
+            ce_optimal_instances.append(instance)
+   
+      if col_elim:
+        result = {'instance': instance, 'test': test, 'iterations' : lpIterations, 'lagIterations': lagIterations, 'numSep' : numSeparations, 'lb' : lb, 'numArcs': numArcs, 'numFixed': numFixed, 'time' : time}
+        results.append(result)
+      else:
+        result = {'instance': instance, 'test': test, 'iterations' : numpy.nan, 'lagIterations': numpy.nan, 'numSep' : numpy.nan, 'lb' : numpy.nan, 'numArcs': numpy.nan, 'numFixed': numpy.nan, 'time' : numpy.nan}
+        results.append(result)
 
 # add VrpSolver to results and time_results
 #statistics_cols: instance & :Optimal & cutoff & :bcRecRootDb & :bcTimeRootEval & :bcCountNodeProc & :bcRecBestDb & :bcRecBestInc & :bcTimeMain \\
@@ -444,23 +453,31 @@ print(tabulate.tabulate(table_results_df, headers=table_results_df.columns))
 # get instance attributes: number locations
 instance_num_locations = {}
 for instance in instances:
-  instance_file_name = instance_dir + '/' + instance
-  if os.path.exists(instance_file_name):
-    instance_file = open(instance_file_name, "r")
-    for line in instance_file:
-      split_line = line.split()
-      if len(split_line) > 0:
-        num_locations = split_line[0]
-    instance_num_locations[instance] = num_locations
-  else:
-    print(f'missing {instance_file_name}')
+  for d in dir_list:
+    instance_dir = base_instance_dir + d + '/'
+    instance_file_name = instance_dir + '/' + instance
+    if os.path.exists(instance_file_name):
+      instance_file = open(instance_file_name, "r")
+      for line in instance_file:
+        split_line = line.split()
+        if len(split_line) > 0:
+          num_locations = split_line[0]
+      instance_num_locations[instance] = num_locations
+
+soa_no_bound_count = 0
+soa_optimal_count = 0
+soa_gaps = []
+
+ce_no_bound_count = 0
+ce_optimal_count = 0
+ce_gaps = []
 
 # create output table for SOA comparison
 num_printed = 0
 for i, row in table_results_df.iterrows():
   instance = row['instance']
 
-  baldacci_compare = True
+  baldacci_compare = False
   if baldacci_compare:
     if instance not in baldacci_bounds.keys():
       continue
@@ -482,7 +499,7 @@ for i, row in table_results_df.iterrows():
   if not math.isnan(time):
     time = int(time)
 
-  if lb_value < instance_upper_bounds[instance]:
+  if (not instance in ce_optimal_instances) and (lb_value < instance_upper_bounds[instance]):
     time = 3600
 
   numLpIterations = row['iterations']
@@ -554,8 +571,49 @@ for i, row in table_results_df.iterrows():
       print(f"{instance_name} & {instance_upper_bounds[instance]} & & {baldacci_lb} & {baldacci_ub} & {baldacci_time} & & {vrpsolver_lb} & {vrpsolver_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
     else:
       print(f"{instance_name} & {instance_upper_bounds[instance]} & & {baldacci_lb} & {baldacci_ub} & {baldacci_time} & & {vrpsolver_lb} & {vrpsolver_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+
+    if baldacci_lb == '-':
+      soa_no_bound_count = soa_no_bound_count + 1
+    elif baldacci_lb == instance_upper_bounds[instance]:
+      if baldacci_lb != '-':
+        soa_optimal_count = soa_optimal_count + 1
+    else:
+      gap = 100.0 * (instance_upper_bounds[instance] - baldacci_lb) / instance_upper_bounds[instance]
+      soa_gaps.append(gap)
+
+    if lb_value == '-':
+      ce_no_bound_count = ce_no_bound_count + 1
+    #elif lb_value == instance_upper_bounds[instance]:
+    elif (instance in ce_optimal_instances):
+      ce_optimal_count = ce_optimal_count + 1
+    else:
+      gap = 100.0 * (instance_upper_bounds[instance] - lb_value) / instance_upper_bounds[instance]
+      ce_gaps.append(gap)
   else:
-    if (lb_value != '-') and (lb_value == instance_upper_bounds[instance]):
+    #if (lb_value != '-') and (lb_value == instance_upper_bounds[instance]):
+    if (lb_value != '-') and (instance in ce_optimal_instances):
       print(f"{instance_name} & {instance_upper_bounds[instance]} & & \\textbf\u007b{lb_value}\u007d & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
     else:
       print(f"{instance_name} & {instance_upper_bounds[instance]} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+ 
+    if lb_value == '-':
+      ce_no_bound_count = ce_no_bound_count + 1
+    #elif lb_value == instance_upper_bounds[instance]:
+    elif (instance in ce_optimal_instances):
+      ce_optimal_count = ce_optimal_count + 1
+    else:
+      gap = 100.0 * (instance_upper_bounds[instance] - lb_value) / instance_upper_bounds[instance]
+      ce_gaps.append(gap)
+
+#print("soa optimal:")
+#print(soa_optimal_count)
+#print("soa no bound:")
+#print(soa_no_bound_count)
+#print("soa gap:")
+#print(sum(soa_gaps) / len(soa_gaps))
+print("ce optimal:")
+print(ce_optimal_count)
+print("ce no bound:")
+print(ce_no_bound_count)
+print("ce gap:")
+print(sum(ce_gaps) / len(ce_gaps))

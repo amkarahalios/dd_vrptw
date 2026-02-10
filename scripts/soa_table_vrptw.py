@@ -653,7 +653,7 @@ colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([
 #colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] size: \[([0-9]+)\] time: \[([0-9]+)\]")
 
 logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_new_logs/"
-test_set = ["Vrp-Set-HG_LAG_NG2_3600_0"]
+test_set = ["Vrp-Set-HG_LAG_NG2_3600_fix_0"]
 
 instances = []
 instance_dir = "/Users/akarahal/Desktop/dd_vrptw/instances/Vrp-Set-HG/"

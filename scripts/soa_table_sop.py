@@ -784,7 +784,7 @@ pandb_solver_results_time = {
 colelim_pattern = re.compile("STATS - lpIterations\[([0-9]+)\] lagIterations\[([0-9]+)\] sspIterations\[([0-9]+)\] numSeparations\[([0-9]+)\].*compileTime\[([0-9]+)\] sspSolveTime\[([0-9]+)\] lpSolveTime\[([0-9]+)\] lb\[([0-9]+.*)\] ub\[([0-9]+.*)\] numArcs: \[([0-9]+)\] numFixed: \[([0-9]+)\].*time: \[([0-9]+)\]")
 
 logs_dir = "/Users/akarahal/Desktop/dd_vrptw/new_new_logs/"
-test_set = ["ALL_sop_LAG_NG2_3600_0"]
+test_set = ["ALL_sop_LAG_NG2_3600_fix_0"]
 #test_set = ["ALL_sop_LAG_NG8"]
 
 instances = []
@@ -895,6 +895,14 @@ for instance in instances:
     precedence_count = precedence_count + split_line.count('-1')
   instance_percent_precedence[instance] = 100.0 * precedence_count / (n*n)
 
+soa_no_bound_count = 0
+soa_optimal_count = 0
+soa_gaps = []
+
+ce_no_bound_count = 0
+ce_optimal_count = 0
+ce_gaps = []
+
 # create output table for SOA comparison
 for i, row in table_results_df.iterrows():
   instance = row['instance']
@@ -951,12 +959,42 @@ for i, row in table_results_df.iterrows():
   soa_ub = 1e9
   soa_time = 3600
   if instance in cats_results:
-    soa_lb = cats_results[instance]['lb']
-    soa_ub = cats_results[instance]['ub']
-    soa_time = cats_results[instance]['time']
+    soa_lb = int(cats_results[instance]['lb'])
+    soa_ub = int(cats_results[instance]['ub'])
+    soa_time = int(cats_results[instance]['time'])
   #soa_lb = pandb_solver_results_lb[instance]
   #soa_time = pandb_solver_results_time[instance]
 
   #print(f"{instance_name} & {instance_upper_bounds[instance]} & & {soa_lb} & {soa_ub} & {soa_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
   print(f"{instance_name} & {instance_upper_bounds[instance]} & & {soa_lb} & {soa_time} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
   #print(f"{instance_name} & {instance_sizes[instance]} & {percent_precedence} & & {instance_lower_bounds[instance]} & {instance_upper_bounds[instance]} & & {lb_value} & {numLpIterations} & {numLagIterations} & {numSeparations} & {time} \\\\")
+
+  if soa_lb == '-':
+    soa_no_bound_count = soa_no_bound_count + 1
+  elif soa_lb == instance_upper_bounds[instance]:
+    if soa_lb != '-':
+      soa_optimal_count = soa_optimal_count + 1
+  else:
+    gap = 100.0 * (instance_upper_bounds[instance] - soa_lb) / instance_upper_bounds[instance] 
+    soa_gaps.append(gap)
+
+  if lb_value == '-':
+    ce_no_bound_count = ce_no_bound_count + 1
+  elif lb_value == instance_upper_bounds[instance]:
+    ce_optimal_count = ce_optimal_count + 1
+  else:
+    gap = 100.0 * (instance_upper_bounds[instance] - lb_value) / instance_upper_bounds[instance]
+    ce_gaps.append(gap)
+
+print("soa optimal:")
+print(soa_optimal_count)
+print("soa no bound:")
+print(soa_no_bound_count)
+print("soa gap:")
+print(sum(soa_gaps) / len(soa_gaps))
+print("ce optimal:")
+print(ce_optimal_count)
+print("ce no bound:")
+print(ce_no_bound_count)
+print("ce gap:")
+print(sum(ce_gaps) / len(ce_gaps))
