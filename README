@@ -14,23 +14,14 @@ Below are some helpful tips to get you started:
 - We use CPLEX as the linear programming solver and g++ to compile our code, but it is possible to change these things.
 - Typing the command "make" should output a binary file called "solver" that you will use to run instances.
 
-<<<<<<< HEAD
-2. The solver file. Once created, you can run the solver by typing ./solver instance_location COL_ELIM param_file where you have to fill in the arguments. Check the file solvevrptw.cpp to see different arguments and usage.
-=======
 2. Solver:
 - Run the solver by typing "./solver instance_file COL_ELIM parameter_file" where you have to fill-in the "instance_file" and "parameter_file".
 - Check the file solvevrptw.cpp to see different arguments and usage.
->>>>>>> a23f2daeffc4f77cb21f65b6401b0e8afe2e06ff
 
 3. Parameter Files:
 - Look in the param_files directory. LP_NG2_3600.csv and LAG_NG2_3600.csv are two template parameter files. They run column elimination with CPLEX and subgradient descent respectively.
 - Hopefully the names of the parameters make sense - if not - you may need to check the source codes to see where they are used, or ask me.
 
-<<<<<<< HEAD
-4. The instance files can be found in the "instances" folder.
-5. Our log files can be found in the "new_logs" folder.
-6. Several param files can be found in the "params" folder.
-=======
 4. Source Code:
 a) vrptw.h and vrptw.cpp
 - Enums and VRPTW class to hold information about an instance.
@@ -54,4 +45,3 @@ a) run_instance.sh
 - Runs a whole batch of instances
 b) .py files
 - Analysis scripts that read our log files, parse them, and provide some statistics. Some of these are old.
->>>>>>> a23f2daeffc4f77cb21f65b6401b0e8afe2e06ff
